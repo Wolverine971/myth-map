@@ -1,6 +1,6 @@
 # Myth-Map
 
-A tool for the chronically curious families looking for their next adventure!
+A tool for chronically curious families looking for their next adventure!
 
 <img src="./static/myth-map.png" alt="Myth Map Icon" width="200"/>
 
