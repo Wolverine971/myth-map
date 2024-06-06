@@ -1,6 +1,12 @@
 # Myth-Map
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+A tool for the chronically curious families looking for their next adventure!
+
+<img src="./static/myth-map.png" alt="Myth Map Icon" width="200"/>
+
+
+
+
 
 ### Setup steps
 
@@ -14,7 +20,7 @@ Everything you need to build a Svelte project, powered by [`create-svelte`](http
     `PUBLIC_SUPABASE_ANON_KEY`
 4. `pnpm run dev`
 
-### Generating SUPABASE TYPES
+### Generating SUPABASE TYPES (not required)
 
 <https://supabase.com/docs/guides/api/generating-types>
 
