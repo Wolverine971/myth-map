@@ -9,6 +9,7 @@
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
+		"devTest": "vavite-loader vite dev",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
@@ -45,6 +46,8 @@
 	"type": "module",
 	"dependencies": {
 		"@supabase/supabase-js": "^2.43.4",
+		"@vavite/node-loader": "^4.1.1",
+		"mapbox-gl": "^3.4.0",
 		"supabase": "^1.172.2"
 	}
 }
