@@ -189,7 +189,11 @@
 
 				const popup = new mapboxgl.Popup({ offset: [0, 0] }).setLngLat(coordinates)
 					.setHTML(`<div class="popup" style="background-color: #000; color: #fff; padding: 5px; border-radius: 5px;">
-                    <br>${name}<br> <p>Address: ${address}</p>
+                    <br>
+					<h1 style="font-size:2rem;">${name}</h1>
+					<br> <p>Address: ${address}</p>
+					<br>
+					<a style="border-radius: 5px; border: 1px solid white; padding:5px; margin: 5px;" href="${e.features[0].properties.website}" target="_blank">Website</a>
                     </div>`);
 
 				if (popup && map) {
