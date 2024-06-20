@@ -175,7 +175,7 @@
 				const coordinates = e.lngLat;
 
 				const name = e.features[0].properties?.name;
-				const address = `${e.features[0].properties.address} ${e.features[0].properties.city} ${e.features[0].properties.state} ${e.features[0].properties.zip_code}`;
+				const address = `${e.features[0].properties.address_line_1} ${e.features[0].properties.city} ${e.features[0].properties.state} ${e.features[0].properties.zip_code}`;
 
 				// Ensure that if the map is zoomed out such that
 				// multiple copies of the feature are visible, the
