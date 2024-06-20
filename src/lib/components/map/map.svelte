@@ -19,14 +19,69 @@
 		map = new mapboxgl.Map({
 			container: mapContainer,
 			style: 'mapbox://styles/mapbox/dark-v10',
-			center: [80.7421, 20.1336],
-			zoom: 3
+			center: [-76.7818, 39.2141],
+			zoom: 7
 		});
-		const resp = await fetch(
-			'https://gist.githubusercontent.com/thedivtagguy/0a07453f2081be9c0f5b6fc2a2681a0f/raw/3c41dbbba93f88a78af1cf13e88443d2eed7d6ec/geodata.geojson'
-		);
 
-		const data = await resp.json();
+		const data = {
+			type: 'FeatureCollection',
+			crs: {
+				type: 'name',
+				properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' }
+			},
+			features: locations?.map((location, i) => {
+				return {
+					type: 'Feature',
+					properties: {
+						// region: location.region,
+						latitude: location.lat,
+						longitude: location.lng,
+						// scatterLat: location.scatterLat,
+						// scatterLong: location.scatterLong,
+						// count: location.count,
+						address_line_1: location.address_line_1,
+						city: location.city,
+						state: location.state,
+						zip_code: location.zip_code,
+						website: location.website,
+						name: location.name,
+						location: location.location,
+						// type: location.type,
+						// active: location.active,
+						// contact: location.contact,
+						// programs: location.programs,
+						// keywords: location.keywords,
+						id: i
+					},
+					geometry: { type: 'Point', coordinates: [location.lng, location.lat] }
+				};
+			})
+
+			// [
+			// 	{
+			// 		type: 'Feature',
+			// 		properties: {
+			// 			region: 'Andhra Pradesh',
+			// 			latitude: '15.9128998',
+			// 			longitude: '79.7399875',
+			// 			scatterLat: '15.9128998',
+			// 			scatterLong: '79.7399875',
+			// 			count: '0',
+			// 			name: "Department of Women's Studies, Sri Padmavati Mahila Visvavidyalayam",
+			// 			location: 'https://www.spmvv.ac.in/acad.html',
+			// 			type: 'Academic Centre',
+			// 			active: 'NA',
+			// 			contact: '',
+			// 			programs:
+			// 				"Department Offers an MA, Mphil and Phd in Women's studies. The Key areas of Research are : 1.Gender and Development\r\n2. Women and Health\r\n3. Socio- Economic and Cultural Status of Women\r\n4. Women and Environmental issues\r\n5. Women and HIV / AIDS\r\n6. Violence against Women\r\n7. Empowerment of Women\r\n8. Gender Mainstreaming",
+			// 			keywords: 'Education',
+			// 			id: 1
+			// 		},
+			// 		geometry: { type: 'Point', coordinates: ['79.7399875', '15.9128998'] }
+			// 	}
+			// ]
+		};
+		console.log(data);
 
 		map.on('load', () => {
 			console.log('map loaded');
@@ -119,8 +174,8 @@
 			map.on('click', 'unclustered-point', (e) => {
 				const coordinates = e.lngLat;
 
-				const mag = e.features[0].properties?.mag || e.features[0].properties?.region;
-				const tsunami = e.features[0].properties.tsunami === 1 ? 'yes' : 'no';
+				const name = e.features[0].properties?.name;
+				const address = `${e.features[0].properties.address} ${e.features[0].properties.city} ${e.features[0].properties.state} ${e.features[0].properties.zip_code}`;
 
 				// Ensure that if the map is zoomed out such that
 				// multiple copies of the feature are visible, the
@@ -134,7 +189,7 @@
 
 				const popup = new mapboxgl.Popup({ offset: [0, 0] }).setLngLat(coordinates)
 					.setHTML(`<div class="popup" style="background-color: #000; color: #fff; padding: 5px; border-radius: 5px;">
-                    <br>Magnitude: ${mag}<br> <p>Was there a tsunami?: ${tsunami}</p>
+                    <br>Magnitude: ${name}<br> <p>Address: ${address}</p>
                     </div>`);
 
 				if (popup && map) {

@@ -38,7 +38,7 @@ const pingDataMapbox = async (locationId: string, address: string, city: string,
 
     // const url = `https://geocoding.geo.census.gov/geocoder/locations/address?street=${address}${city}${state}${zip}&benchmark=Public_AR_Current&format=json`
 
-    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${address}${city}${state}${zip}.json?access_token=${PUBLIC_MAP_KEY}`;
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/address_line1=${address}&place=${city}&region=${state}&postcode=${zip}&country=US.json?access_token=${PUBLIC_MAP_KEY}`;
     const res = await fetch(url);
     const data = await res.json();
     if (data?.features.length) {

@@ -42,7 +42,7 @@
 	<!-- <FilterMap /> -->
 
 	<div class="map-div">
-		<Map locations={data.locationTags} />
+		<Map locations={data.locations} />
 	</div>
 </div>
 

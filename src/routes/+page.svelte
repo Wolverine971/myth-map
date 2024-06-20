@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { Heading, P } from 'flowbite-svelte';
+
+	import Map from '$lib/components/map/map.svelte';
 	import LocationCard from '$lib/components/locations/LocationCard.svelte';
 	import type { PageData } from './$types';
 	export let data: PageData;
@@ -29,8 +31,13 @@
 <Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl">
 	Welcome to Myth-map
 </Heading>
+<div class="map-div">
+	<Map locations={data.locations} />
+</div>
+<hr />
+<br />
 <div>
-	<P class="my-5 mb-6 text-left text-lg dark:text-gray-400">Locations</P>
+	<h2 class="my-5 mb-6 text-left text-lg dark:text-gray-400">Locations</h2>
 
 	<div class="location-grid">
 		{#each data.locations as location}
@@ -50,5 +57,11 @@
 		flex-direction: column;
 		justify-content: center;
 		grid-template-columns: 1fr 1fr;
+	}
+	.map-div {
+		margin-top: 2rem;
+		min-height: 430px;
+		height: 500px;
+		width: 1000px;
 	}
 </style>
