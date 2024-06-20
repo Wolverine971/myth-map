@@ -5,6 +5,7 @@
 	import AddressGeoCode from '$lib/components/map/addressGeoCode.svelte';
 	export let data: PageData;
 	const url = 'https://myth-map.vercel.app/testbed';
+	console.log(data);
 </script>
 
 <svelte:head>
@@ -33,8 +34,8 @@
 	<P class="my-5 mb-6 text-left text-lg dark:text-gray-400">Locations</P>
 
 	<div class="location-grid">
-		{#each data.locationTags as locationTags}
-			<AddressGeoCode location={locationTags} />
+		{#each data.locations as location}
+			<AddressGeoCode {location} />
 		{/each}
 	</div>
 

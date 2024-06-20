@@ -47,6 +47,9 @@
 	"dependencies": {
 		"@supabase/supabase-js": "^2.43.4",
 		"@vavite/node-loader": "^4.1.1",
+		"google-auth-library": "^9.11.0",
+		"googleapis": "^140.0.0",
+		"googleapis-common": "^7.2.0",
 		"mapbox-gl": "^3.4.0",
 		"supabase": "^1.172.2"
 	}

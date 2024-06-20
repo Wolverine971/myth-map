@@ -33,12 +33,12 @@
 	<P class="my-5 mb-6 text-left text-lg dark:text-gray-400">Locations</P>
 
 	<div class="location-grid">
-		{#each data.locationTags as locationTags}
+		{#each data.locations as location}
 			<LocationCard
-				name={locationTags.locations.name}
-				address={`${`${locationTags.locations.address_line_1}${locationTags.locations.address_line_2 ? ` ${locationTags.locations.address_line_2}` : ''}`}, ${locationTags.locations.city}, ${locationTags.locations.state} ${locationTags.locations.zip_code}`}
-				website={locationTags.locations.website}
-				tag={locationTags.tags.name}
+				name={location.name}
+				address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
+				website={location.website}
+				tag={location?.tags?.name}
 			/>
 		{/each}
 	</div>
