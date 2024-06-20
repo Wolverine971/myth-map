@@ -1,7 +1,7 @@
 <script>
 	import { setContext, onMount } from 'svelte';
 	import { mapboxgl, key } from './mapboxgl.ts';
-	import 'mapbox-gl/dist/mapbox-gl.css';
+	import './mapbox.css';
 
 	export let locations = [];
 	let mapContainer;
@@ -187,13 +187,14 @@
 				// 	coordinates2[1] += e.lngLat.lng > coordinates[1] ? 360 : -360;
 				// }
 
-				const popup = new mapboxgl.Popup({ offset: [0, 0] }).setLngLat(coordinates)
-					.setHTML(`<div class="popup" style="background-color: #000; color: #fff; padding: 5px; border-radius: 5px;">
-                    <br>
-					<h1 style="font-size:2rem;">${name}</h1>
+				const popup = new mapboxgl.Popup({ offset: [0, 0], className: 'popups' }).setLngLat(
+					coordinates
+				).setHTML(`<div>
+                    
+					<h1 style="font-size:2rem; line-height: 2rem;">${name}</h1>
 					<br> <p>Address: ${address}</p>
 					<br>
-					<a style="border-radius: 5px; border: 1px solid white; padding:5px; margin: 5px;" href="${e.features[0].properties.website}" target="_blank">Website</a>
+					<a style="border-radius: 5px; border: 1px solid white; padding: 5px; margin: 5px 0; " href="${e.features[0].properties.website}" target="_blank">Website</a>
                     </div>`);
 
 				if (popup && map) {
@@ -217,7 +218,16 @@
 	<div class="map" id="map" bind:this={mapContainer} />
 </div>
 
-<style>
+<style lang="">
+	.mapboxgl-popup-content {
+		color: #f3f3dd;
+		background-color: #91785d;
+		border-color: #91785d;
+		max-width: 250px;
+		box-shadow: 3px 3px 2px #8b5d33;
+		font-family: 'Oswald';
+	}
+
 	.map-wrap {
 		position: relative;
 		z-index: 12343;
@@ -230,14 +240,24 @@
 		height: 100%;
 		visibility: visible !important;
 	}
+	.popups {
+		background-color: #000;
+		color: #fff;
+		border-radius: 5px;
+	}
 	.mapboxgl-popup {
-		visibility: visible !important;
+		/* visibility: visible !important; */
+		background-color: #000;
+		color: #fff;
+		border-radius: 5px;
 	}
 	.mapboxgl-popup-content {
 		background-color: #000;
 		color: #fff;
 		padding: 5px;
 		border-radius: 5px;
+		overflow-y: scroll;
+		overflow-x: scroll;
 	}
 
 	.popup h1 {

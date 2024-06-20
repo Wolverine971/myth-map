@@ -52,6 +52,23 @@
 </div>
 
 <style>
+	.mapboxgl-popup {
+		/* visibility: visible !important; */
+		background-color: #000;
+		color: #fff;
+		border-radius: 5px;
+	}
+	.mapboxgl-popup-content {
+		background-color: #000;
+		color: #fff;
+		padding: 5px;
+		border-radius: 5px;
+	}
+
+	.popup h1 {
+		font-size: 2rem;
+		color: aqua;
+	}
 	.location-grid {
 		display: grid;
 		flex-direction: column;
