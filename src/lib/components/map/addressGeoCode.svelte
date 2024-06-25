@@ -7,8 +7,6 @@
 	const getlatLng = async (loc) => {
 		loading = true;
 
-		console.log(loc);
-
 		let body = new FormData();
 		body.append('id', loc.id);
 		body.append('address', loc.address_line_1);
@@ -21,7 +19,6 @@
 			body
 		});
 	};
-	console.log(location);
 </script>
 
 <Card size="md">

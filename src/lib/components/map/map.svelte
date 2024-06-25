@@ -1,21 +1,135 @@
-<script>
+<script lang="ts">
 	import { setContext, onMount } from 'svelte';
 	import { mapboxgl, key } from './mapboxgl.ts';
 	import './mapbox.css';
 
 	export let locations = [];
+
+	export let shownLocations = [];
 	let mapContainer;
+	let map;
+	onMount(async () => {
+		await initMap();
+	});
+
+	$: shownLocations, showLocations();
+
+	const showLocations = async () => {
+		if (!map) return;
+
+		const data = {
+			type: 'FeatureCollection',
+			crs: {
+				type: 'name',
+				properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' }
+			},
+			features: shownLocations?.map((location, i) => {
+				return {
+					type: 'Feature',
+					properties: {
+						// region: location.region,
+						latitude: location.lat,
+						longitude: location.lng,
+						// scatterLat: location.scatterLat,
+						// scatterLong: location.scatterLong,
+						// count: location.count,
+						address_line_1: location.address_line_1,
+						city: location.city,
+						state: location.state,
+						zip_code: location.zip_code,
+						website: location.website,
+						name: location.name,
+						location: location.location,
+						// type: location.type,
+						// active: location.active,
+						// contact: location.contact,
+						// programs: location.programs,
+						// keywords: location.keywords,
+						id: i
+					},
+					geometry: { type: 'Point', coordinates: [location.lng, location.lat] }
+				};
+			})
+		};
+
+		const source = map?.getSource('shownLocations');
+		if (source) {
+			// await map.removeLayer('unclustered-point');
+			// await map.removeLayer('cluster-count');
+			// await map.removeLayer('clusters');
+			// await map.removeSource('shownLocations');
+			// map.setLayoutProperty('unclustered-point', 'visibility', 'none');
+			// map.setLayoutProperty('cluster-count', 'visibility', 'none');
+			// map.setLayoutProperty('clusters', 'visibility', 'none');
+			// map.setLayoutProperty('shownLocations', 'visibility', 'none');
+			map.getSource('shownLocations').setData(data);
+		}
+	};
 
 	setContext(key, {
 		getMap: () => map
 	});
 
-	let map;
-	onMount(() => {
-		initMap();
-	});
+	const initLayers = async (data: any) => {
+		if (!map) return;
 
-	const initMap = async (container) => {
+		// 		map.eachLayer(function (layer) {
+		//     map.removeLayer(layer);
+		// });
+
+		map.addSource('shownLocations', {
+			type: 'geojson',
+			// Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
+			// from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
+			data,
+			cluster: true,
+			clusterMaxZoom: 14, // Max zoom to cluster points on
+			clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
+		});
+
+		map.addLayer({
+			id: 'clusters',
+			type: 'circle',
+			source: 'shownLocations',
+			filter: ['has', 'point_count'],
+			paint: {
+				// Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
+				// with three steps to implement three types of circles:
+				//   * Blue, 20px circles when point count is less than 100
+				//   * Yellow, 30px circles when point count is between 100 and 750
+				//   * Pink, 40px circles when point count is greater than or equal to 750
+				'circle-color': ['step', ['get', 'point_count'], '#51bbd6', 100, '#f1f075', 750, '#f28cb1'],
+				'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40]
+			}
+		});
+
+		map.addLayer({
+			id: 'cluster-count',
+			type: 'symbol',
+			source: 'shownLocations',
+			filter: ['has', 'point_count'],
+			layout: {
+				'text-field': '{point_count_abbreviated}',
+				'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+				'text-size': 12
+			}
+		});
+
+		map.addLayer({
+			id: 'unclustered-point',
+			type: 'circle',
+			source: 'shownLocations',
+			filter: ['!', ['has', 'point_count']],
+			paint: {
+				'circle-color': 'green',
+				'circle-radius': 4,
+				'circle-stroke-width': 1,
+				'circle-stroke-color': '#fff'
+			}
+		});
+	};
+
+	const initMap = async () => {
 		map = new mapboxgl.Map({
 			container: mapContainer,
 			style: 'mapbox://styles/mapbox/dark-v10',
@@ -56,96 +170,14 @@
 					geometry: { type: 'Point', coordinates: [location.lng, location.lat] }
 				};
 			})
-
-			// [
-			// 	{
-			// 		type: 'Feature',
-			// 		properties: {
-			// 			region: 'Andhra Pradesh',
-			// 			latitude: '15.9128998',
-			// 			longitude: '79.7399875',
-			// 			scatterLat: '15.9128998',
-			// 			scatterLong: '79.7399875',
-			// 			count: '0',
-			// 			name: "Department of Women's Studies, Sri Padmavati Mahila Visvavidyalayam",
-			// 			location: 'https://www.spmvv.ac.in/acad.html',
-			// 			type: 'Academic Centre',
-			// 			active: 'NA',
-			// 			contact: '',
-			// 			programs:
-			// 				"Department Offers an MA, Mphil and Phd in Women's studies. The Key areas of Research are : 1.Gender and Development\r\n2. Women and Health\r\n3. Socio- Economic and Cultural Status of Women\r\n4. Women and Environmental issues\r\n5. Women and HIV / AIDS\r\n6. Violence against Women\r\n7. Empowerment of Women\r\n8. Gender Mainstreaming",
-			// 			keywords: 'Education',
-			// 			id: 1
-			// 		},
-			// 		geometry: { type: 'Point', coordinates: ['79.7399875', '15.9128998'] }
-			// 	}
-			// ]
 		};
-		console.log(data);
 
-		map.on('load', () => {
+		map.on('load', async () => {
 			console.log('map loaded');
 			// Add a new source from our GeoJSON data and
 			// set the 'cluster' option to true. GL-JS will
 			// add the point_count property to your source data.
-			map.addSource('earthquakes', {
-				type: 'geojson',
-				// Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
-				// from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
-				data,
-				cluster: true,
-				clusterMaxZoom: 14, // Max zoom to cluster points on
-				clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
-			});
-
-			map.addLayer({
-				id: 'clusters',
-				type: 'circle',
-				source: 'earthquakes',
-				filter: ['has', 'point_count'],
-				paint: {
-					// Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
-					// with three steps to implement three types of circles:
-					//   * Blue, 20px circles when point count is less than 100
-					//   * Yellow, 30px circles when point count is between 100 and 750
-					//   * Pink, 40px circles when point count is greater than or equal to 750
-					'circle-color': [
-						'step',
-						['get', 'point_count'],
-						'#51bbd6',
-						100,
-						'#f1f075',
-						750,
-						'#f28cb1'
-					],
-					'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40]
-				}
-			});
-
-			map.addLayer({
-				id: 'cluster-count',
-				type: 'symbol',
-				source: 'earthquakes',
-				filter: ['has', 'point_count'],
-				layout: {
-					'text-field': '{point_count_abbreviated}',
-					'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-					'text-size': 12
-				}
-			});
-
-			map.addLayer({
-				id: 'unclustered-point',
-				type: 'circle',
-				source: 'earthquakes',
-				filter: ['!', ['has', 'point_count']],
-				paint: {
-					'circle-color': 'green',
-					'circle-radius': 4,
-					'circle-stroke-width': 1,
-					'circle-stroke-color': '#fff'
-				}
-			});
+			await initLayers(data);
 
 			// inspect a cluster on click
 			map.on('click', 'clusters', (e) => {
@@ -154,7 +186,7 @@
 				});
 				const clusterId = features[0].properties.cluster_id;
 
-				map.getSource('earthquakes').getClusterExpansionZoom(clusterId, (err, zoom) => {
+				map.getSource('shownLocations').getClusterExpansionZoom(clusterId, (err, zoom) => {
 					if (err) return;
 
 					map.easeTo({
@@ -172,10 +204,11 @@
 				console.log(e.lngLat);
 			});
 			map.on('click', 'unclustered-point', (e) => {
+				console.log(e);
 				const coordinates = e.lngLat;
 
 				const name = e.features[0].properties?.name;
-				const address = `${e.features[0].properties.address_line_1} ${e.features[0].properties.city} ${e.features[0].properties.state} ${e.features[0].properties.zip_code}`;
+				const address = `${e.features[0].properties.address_line_1}, ${e.features[0].properties.city}, ${e.features[0].properties.state} ${e.features[0].properties.zip_code}`;
 
 				// Ensure that if the map is zoomed out such that
 				// multiple copies of the feature are visible, the
@@ -187,18 +220,26 @@
 				// 	coordinates2[1] += e.lngLat.lng > coordinates[1] ? 360 : -360;
 				// }
 
+				console.log(e.features[0].properties);
+
+				let copyId = `copy-${name.split(' ').join('-')}`;
 				const popup = new mapboxgl.Popup({ offset: [0, 0], className: 'popups' }).setLngLat(
 					coordinates
 				).setHTML(`<div>
                     
 					<h1 style="font-size:2rem; line-height: 2rem;">${name}</h1>
-					<br> <p>Address: ${address}</p>
+					<br> <p id="${copyId}-address"><b>Address</b>: <br>${address} <button type="button" id="${copyId}" 
+					style="border-radius: 5px; border: 1px solid white; padding: 3px; margin: 3px 0;">Copy Address</button></p>
 					<br>
-					<a style="border-radius: 5px; border: 1px solid white; padding: 5px; margin: 5px 0; " href="${e.features[0].properties.website}" target="_blank">Website</a>
+					<a style="border-radius: 5px; border: 1px solid white; padding: 5px; margin: 5px 0; float: right;" href="${e.features[0].properties.website}" target="_blank">Website</a>
                     </div>`);
 
 				if (popup && map) {
 					popup.addTo(map);
+
+					document.getElementById(copyId).addEventListener('click', function () {
+						navigator.clipboard.writeText(address);
+					});
 				}
 			});
 
@@ -209,6 +250,9 @@
 				map.getCanvas().style.cursor = '';
 			});
 		});
+	};
+	const copyText = (data) => {
+		console.log('copying', data);
 	};
 
 	// $: if (map) async () => {};

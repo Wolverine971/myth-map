@@ -171,7 +171,7 @@ export const ingest = async () => {
 
   for await (const row of rows?.data?.values) {
 
-    const fullAddress = row[6] // 497 Ritchie Hwy, Severna Park, MD 21146
+    const fullAddress = row[7] // 497 Ritchie Hwy, Severna Park, MD 21146
     if (!fullAddress) {
       continue
     }
@@ -187,9 +187,9 @@ export const ingest = async () => {
     const stateZip = fullAddressParts[2].trim()
     const state = stateZip.split(' ')[0]
     const zip = stateZip.split(' ')[1]
-    const link = row[4]
+    const link = row[5]
     const name = row[0]
-    const tags = [...row[1].split(',').map(r => r.trim()), row[2]]
+    const tags = [...row[2].split(',').map(r => r.trim()), ...row[3].split(',').map(r => r.trim()), row[1]]
 
 
     const { data: existingLocationData, error: existingLocationDataError } = await supabase.from('locations')
