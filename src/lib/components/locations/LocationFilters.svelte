@@ -41,15 +41,19 @@
 
 	const baseSelection = (e) => {
 		// dispatch('baseSelection', [e.target.innerText]);
-		checkedItems = displayTags.filter((tag) => tag.name === e.target.innerText);
+		baseSelect = e.target.innerText;
+		const selectedItem = displayTags.find((tag) => tag.name === e.target.innerText);
+		selectedItem.checked = true;
+
+		checkedItems = [...displayTags.filter((tag) => tag.checked)];
 
 		dispatch(
 			'selected',
 			checkedItems.map((tag) => tag.name)
 		);
 		baseDropdownOpen = false;
-		baseSelect = e.target.innerText;
 	};
+
 	const closeBtn = (name: string) => {
 		console.log(name);
 		displayTags.forEach((tag) => {
