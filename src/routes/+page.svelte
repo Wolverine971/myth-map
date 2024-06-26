@@ -10,7 +10,7 @@
 
 	let shownLocations = data.locations;
 
-	// let availableTags = data.tags;
+	let availableTags = data.tags;
 	const filterBase = (tags: string[]) => {
 		const tagMap = {};
 		tags.forEach((tag) => {
