@@ -12,17 +12,12 @@
 	let baseSelect: string | null = null;
 
 	onMount(() => {
-		// console.log(tags);
-
 		displayTags = tags.map((tag) => {
 			return { ...tag, checked: false };
 		});
 	});
 
 	const updateChecked = (item, event) => {
-		// console.log(e);
-		// console.log(e.target.innerText);
-
 		displayTags.forEach((tag) => {
 			if (tag.name === item.name) {
 				tag.checked = event.target.checked;

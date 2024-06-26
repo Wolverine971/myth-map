@@ -9,6 +9,8 @@
 	const url = 'https://myth-map.vercel.app/';
 
 	let shownLocations = data.locations;
+
+	// let availableTags = data.tags;
 	const filterBase = (tags: string[]) => {
 		const tagMap = {};
 		tags.forEach((tag) => {
@@ -26,6 +28,28 @@
 			.map((location) => location.locations);
 		shownLocations = filteredLocations.flat().length ? filteredLocations.flat() : data.locations;
 	};
+
+	// // todo
+	// const updateTags = () => {
+	// 	const locationMap = {};
+	// 	const tagMap = {};
+
+	// 	shownLocations.forEach((location) => {
+	// 		if (!locationMap[location.name]) {
+	// 			locationMap[location.name] = 1;
+	// 		}
+	// 	});
+
+	// 	data.locationTags.forEach((location) => {
+	// 		if (locationMap[location.locations.name]) {
+	// 			tagMap[location.tags.name] = 1;
+	// 		}
+	// 	});
+
+	// 	const tags = Object.keys(tagMap);
+
+	// 	availableTags = tags;
+	// };
 </script>
 
 <svelte:head>
@@ -53,7 +77,7 @@
 </Heading>
 <div class="map-div">
 	<LocationFilters
-		tags={data.tags}
+		tags={availableTags}
 		on:baseSelection={({ detail }) => filterBase(detail)}
 		on:selected={({ detail }) => filterBase(detail)}
 	/>
