@@ -6,7 +6,7 @@ import { google } from 'googleapis'
 import { BaseExternalAccountClient, Compute, GoogleAuth, JWT, UserRefreshClient } from 'googleapis-common'
 import { getAndUpdateLatLng } from '../../utils/locations';
 
-const locationsSpreadsheetId = '16DAbbvkCQSzaXHvj8QxwenEYl97PIfZ1aM0vv2-K-kI'
+const locationsSpreadsheetId = '1qwosSmGUG9f8pwIyl8AfUWrJAy5eGahbfl51V6JRMjs'
 export const getToken = async (): Promise<UserRefreshClient | Compute | JWT | Impersonated | BaseExternalAccountClient | null> => {
   try {
     const { privateKey } = JSON.parse(PRIVATE_GOOGLE_KEY);
@@ -65,7 +65,7 @@ const updateRows = async (rows, sheets) => {
       resource: {
         data: rows,
       },
-      spreadsheetId: '1jh7DgNv15Z-ihCz1jC3HYRunBtYLyMIPBQOAEPq5Sdk',
+      spreadsheetId: locationsSpreadsheetId,
       valueInputOption: 'USER_ENTERED',
     })
     if (!updatedRows) {
