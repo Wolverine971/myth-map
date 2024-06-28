@@ -75,28 +75,28 @@
 <Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl">
 	Welcome to Myth-map
 </Heading>
-<div class="map-div">
-	<LocationFilters
-		tags={availableTags}
-		on:baseSelection={({ detail }) => filterBase(detail)}
-		on:selected={({ detail }) => filterBase(detail)}
-	/>
-	<Map locations={data.locations} {shownLocations} />
-</div>
-<hr />
-<br />
-<div>
-	<h2 class="my-5 mb-6 text-left text-lg dark:text-gray-400">Locations</h2>
-
-	<div class="location-grid">
-		{#each shownLocations as location}
-			<LocationCard
-				name={location.name}
-				address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
-				website={location.website}
-				tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
-			/>
-		{/each}
+<div style="display: flex; flex-direction: column; gap: 1rem;">
+	<div class="map-div">
+		<LocationFilters
+			tags={availableTags}
+			on:baseSelection={({ detail }) => filterBase(detail)}
+			on:selected={({ detail }) => filterBase(detail)}
+		/>
+		<Map locations={data.locations} {shownLocations} />
+	</div>
+	<hr />
+	<br />
+	<div>
+		<div class="location-grid">
+			{#each shownLocations as location}
+				<LocationCard
+					name={location.name}
+					address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
+					website={location.website}
+					tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
+				/>
+			{/each}
+		</div>
 	</div>
 </div>
 

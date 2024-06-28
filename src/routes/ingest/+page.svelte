@@ -3,7 +3,7 @@
 	import type { PageData } from './$types';
 	import { dev } from '$app/environment';
 	import { notifications } from '$lib/components/shared/notifications';
-	
+
 	export let data: PageData;
 
 	const ingest = async () => {
@@ -41,13 +41,15 @@
 					</h5>
 					<br />
 					<p class="font-normal leading-tight text-gray-700 dark:text-gray-400">
-						Address: {location[6]}
+						Address: {location[7]}
 					</p>
 					<!-- {JSON.stringify(location)} -->
 				</A>
 			</Card>
 		{/if}
 	{/each}
+{:else}
+	Protected route
 {/if}
 
 <style>

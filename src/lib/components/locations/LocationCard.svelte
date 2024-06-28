@@ -5,7 +5,6 @@
 	export let address;
 	export let website;
 	export let tags;
-	console.log(tags);
 </script>
 
 <!-- img={`/tag-images/${tags[0] || 'myth-map'}.png`} -->

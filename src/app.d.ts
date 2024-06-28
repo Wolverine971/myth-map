@@ -22,10 +22,33 @@ declare global {
 
 		interface MdsvexFile {
 			default: import('svelte/internal').SvelteComponent;
-			metadata: Record<string, string>;
+			metadata: Record<string, string> | BlogPost;
 		}
 
 		type MdsvexResolver = () => Promise<MdsvexFile>;
+
+		interface BlogPost {
+			slug: string;
+			title: string;
+			author: string;
+			description: string;
+			date: string;
+			loc: string;
+			lastmod: string;
+			changefreq: string;
+			priority: string;
+			published: boolean;
+			enneagram?: number;
+			type?: string[];
+			person?: string;
+			wikipedia?: string;
+			twitter?: string;
+			instagram?: string;
+			tiktok?: string;
+			blog?: boolean;
+			jsonld: string;
+			pic?: string;
+		}
 	}
 }
 

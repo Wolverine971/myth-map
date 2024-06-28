@@ -5,3 +5,5 @@
 </script>
 
 <Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl">About Us</Heading>
+
+<p>Project by Zach and Kerry, DJ and Anna 👋</p>
