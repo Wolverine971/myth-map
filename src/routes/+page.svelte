@@ -5,10 +5,29 @@
 	import LocationCard from '$lib/components/locations/LocationCard.svelte';
 	import LocationFilters from '$lib/components/locations/LocationFilters.svelte';
 	import type { PageData } from './$types';
+	import { onMount } from 'svelte';
 	export let data: PageData;
 	const url = 'https://myth-map.vercel.app/';
 
 	let shownLocations = data.locations;
+	let currentLocation: { lat: number; lng: number } = null;
+
+	const options = {
+		enableHighAccuracy: true,
+		timeout: 5000,
+		maximumAge: 0
+	};
+
+	function success(pos) {
+		currentLocation = { lat: pos.latitude, lng: pos.longitude };
+	}
+	function error(err) {
+		console.warn(`ERROR(${err.code}): ${err.message}`);
+	}
+
+	onMount(() => {
+		navigator.geolocation.getCurrentPosition(success, error, options);
+	});
 
 	let availableTags = data.tags;
 	const filterBase = (tags: string[]) => {
@@ -82,7 +101,7 @@
 			on:baseSelection={({ detail }) => filterBase(detail)}
 			on:selected={({ detail }) => filterBase(detail)}
 		/>
-		<Map locations={data.locations} {shownLocations} />
+		<Map locations={data.locations} {shownLocations} {currentLocation} />
 	</div>
 	<hr />
 	<br />

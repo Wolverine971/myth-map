@@ -6,6 +6,7 @@
 	export let locations = [];
 
 	export let shownLocations = [];
+	export let currentLocation = null;
 	let mapContainer;
 	let map;
 	onMount(async () => {
@@ -13,6 +14,29 @@
 	});
 
 	$: shownLocations, showLocations();
+
+	$: currentLocation, showCurrentLocation();
+
+	const showCurrentLocation = async () => {
+		console.log('gotcurrentLocation', currentLocation);
+		if (!map || !currentLocation) return;
+
+		const el = document.createElement('div');
+		const width = 20;
+		const height = 20;
+		el.className = 'marker';
+		el.style.backgroundImage = `url(http://localhost:5173/map/location-arrow.svg)`;
+		el.style.width = `${width}px`;
+		el.style.height = `${height}px`;
+		el.style.backgroundSize = '100%';
+
+		const marker = new mapboxgl.Marker(el).setLngLat(currentLocation).setPopup(
+			new mapboxgl.Popup({ offset: 25 }) // add popups
+				.setHTML(`<h3>Current Location</h3>`)
+		);
+
+		marker.addTo(map);
+	};
 
 	const showLocations = async () => {
 		if (!map) return;
