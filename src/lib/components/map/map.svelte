@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { setContext, onMount } from 'svelte';
+
+	import { dev } from '$app/environment';
 	import { mapboxgl, key } from './mapboxgl.ts';
 	import './mapbox.css';
 
@@ -18,14 +20,18 @@
 	$: currentLocation, showCurrentLocation();
 
 	const showCurrentLocation = async () => {
-		console.log('gotcurrentLocation', currentLocation);
-		if (!map || !currentLocation) return;
+		console.log('gotcurrentLocation', currentLocation?.lat);
+		if (!map || !currentLocation?.lat) return;
 
 		const el = document.createElement('div');
 		const width = 20;
 		const height = 20;
 		el.className = 'marker';
-		el.style.backgroundImage = `url(http://localhost:5173/map/location-arrow.svg)`;
+		if (dev) {
+			el.style.backgroundImage = `url(http://localhost:5173/map/location-arrow.svg)`;
+		} else {
+			el.style.backgroundImage = `url(https://myth-map.vercel.app/map/location-arrow.svg)`;
+		}
 		el.style.width = `${width}px`;
 		el.style.height = `${height}px`;
 		el.style.backgroundSize = '100%';

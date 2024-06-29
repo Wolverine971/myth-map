@@ -19,7 +19,9 @@
 	};
 
 	function success(pos) {
-		currentLocation = { lat: pos.latitude, lng: pos.longitude };
+		const crd = pos.coords;
+
+		currentLocation = { lat: crd.latitude, lng: crd.longitude };
 	}
 	function error(err) {
 		console.warn(`ERROR(${err.code}): ${err.message}`);
