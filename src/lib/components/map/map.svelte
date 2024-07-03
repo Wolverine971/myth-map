@@ -20,7 +20,6 @@
 	$: currentLocation, showCurrentLocation();
 
 	const showCurrentLocation = async () => {
-		console.log('gotcurrentLocation', currentLocation?.lat);
 		if (!map || !currentLocation?.lat) return;
 
 		const el = document.createElement('div');
@@ -30,7 +29,7 @@
 		if (dev) {
 			el.style.backgroundImage = `url(http://localhost:5173/map/location-arrow.svg)`;
 		} else {
-			el.style.backgroundImage = `url(https://myth-map.vercel.app/map/location-arrow.svg)`;
+			el.style.backgroundImage = `url(https://mythmap.vercel.app/map/location-arrow.svg)`;
 		}
 		el.style.width = `${width}px`;
 		el.style.height = `${height}px`;
@@ -84,14 +83,6 @@
 
 		const source = map?.getSource('shownLocations');
 		if (source) {
-			// await map.removeLayer('unclustered-point');
-			// await map.removeLayer('cluster-count');
-			// await map.removeLayer('clusters');
-			// await map.removeSource('shownLocations');
-			// map.setLayoutProperty('unclustered-point', 'visibility', 'none');
-			// map.setLayoutProperty('cluster-count', 'visibility', 'none');
-			// map.setLayoutProperty('clusters', 'visibility', 'none');
-			// map.setLayoutProperty('shownLocations', 'visibility', 'none');
 			map.getSource('shownLocations').setData(data);
 		}
 	};
@@ -100,6 +91,21 @@
 		getMap: () => map
 	});
 
+	const getIcon = (name: string) => {
+		const lowerCaseName = name.toLowerCase();
+		if (lowerCaseName.includes('playground')) {
+			return 'playground1';
+		} else if (lowerCaseName.includes('park')) {
+			return 'park1';
+		} else if (lowerCaseName.includes('library')) {
+			return 'library1';
+		} else if (lowerCaseName.includes('museum')) {
+			return 'museum1';
+		}
+
+		return 'mythmap1';
+	};
+
 	const initLayers = async (data: any) => {
 		if (!map) return;
 
@@ -107,62 +113,93 @@
 		//     map.removeLayer(layer);
 		// });
 
-		map.addSource('shownLocations', {
-			type: 'geojson',
-			// Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
-			// from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
-			data,
-			cluster: true,
-			clusterMaxZoom: 14, // Max zoom to cluster points on
-			clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
-		});
+		const images = [
+			{ url: 'map/playground.PNG', id: 'playground1' },
+			{ url: 'map/park.png', id: 'park1' },
+			{ url: 'map/mythmap.png', id: 'mythmap1' },
+			{ url: 'map/library.png', id: 'library1' },
+			{ url: 'map/museum.png', id: 'museum1' }
+		];
 
-		map.addLayer({
-			id: 'clusters',
-			type: 'circle',
-			source: 'shownLocations',
-			filter: ['has', 'point_count'],
-			paint: {
-				// Use step expressions (https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-step)
-				// with three steps to implement three types of circles:
-				//   * Blue, 20px circles when point count is less than 100
-				//   * Yellow, 30px circles when point count is between 100 and 750
-				//   * Pink, 40px circles when point count is greater than or equal to 750
-				'circle-color': ['step', ['get', 'point_count'], '#51bbd6', 100, '#f1f075', 750, '#f28cb1'],
-				'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40]
-			}
-		});
+		Promise.all(
+			images.map(
+				(img) =>
+					new Promise((resolve, reject) => {
+						map.loadImage(img.url, function (error, res) {
+							map.addImage(img.id, res);
+							resolve(res);
+						});
+					})
+			)
+		).then(() => {
+			map.addSource('shownLocations', {
+				type: 'geojson',
+				// Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
+				// from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
+				data,
+				cluster: true,
+				clusterMaxZoom: 14, // Max zoom to cluster points on
+				clusterRadius: 50, // Radius of each cluster when clustering points (defaults to 50)
+				clusterProperties: {}
+			});
 
-		map.addLayer({
-			id: 'cluster-count',
-			type: 'symbol',
-			source: 'shownLocations',
-			filter: ['has', 'point_count'],
-			layout: {
-				'text-field': '{point_count_abbreviated}',
-				'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-				'text-size': 12
-			}
-		});
+			map.addLayer({
+				id: 'clusters',
+				type: 'circle',
+				source: 'shownLocations',
+				filter: ['has', 'point_count'],
+				paint: {
+					'circle-color': [
+						'step',
+						['get', 'point_count'],
+						'#51bbd6',
+						100,
+						'#f1f075',
+						750,
+						'#f28cb1'
+					],
+					'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40]
+				}
+			});
 
-		map.addLayer({
-			id: 'unclustered-point',
-			type: 'circle',
-			source: 'shownLocations',
-			filter: ['!', ['has', 'point_count']],
-			paint: {
-				'circle-color': 'green',
-				'circle-radius': 4,
-				'circle-stroke-width': 1,
-				'circle-stroke-color': '#fff'
-			}
+			map.addLayer({
+				id: 'cluster-count',
+				type: 'symbol',
+				source: 'shownLocations',
+				filter: ['has', 'point_count'],
+				layout: {
+					'text-field': '{point_count_abbreviated}',
+					'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+					'text-size': 12,
+					'text-allow-overlap': true
+				}
+			});
+
+			map.addLayer({
+				id: 'unclustered-point',
+				type: 'symbol',
+				source: 'shownLocations',
+				filter: ['!', ['has', 'point_count']],
+				layout: {
+					'icon-image': ['get', 'icon'],
+					'icon-size': 0.15,
+					'icon-allow-overlap': true,
+					'icon-halo-color': 'black',
+					'icon-halo-width': 10,
+					'iconhalo-blur': 1,
+					'text-color': 'black',
+					'text-halo-color': 'white',
+					'text-halo-width': 2,
+					'text-halo-blur': 1
+				}
+			});
 		});
 	};
 
 	const initMap = async () => {
 		map = new mapboxgl.Map({
 			container: mapContainer,
-			style: 'mapbox://styles/mapbox/dark-v10',
+			style: 'mapbox://styles/mapbox/outdoors-v12', //'mapbox://styles/mapbox/dark-v10',
 			center: [-76.7818, 39.2141],
 			zoom: 7
 		});
@@ -195,7 +232,8 @@
 						// contact: location.contact,
 						// programs: location.programs,
 						// keywords: location.keywords,
-						id: i
+						id: i,
+						icon: getIcon(location.name)
 					},
 					geometry: { type: 'Point', coordinates: [location.lng, location.lat] }
 				};
