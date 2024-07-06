@@ -8,7 +8,7 @@
 	export let locations = [];
 
 	export let shownLocations = [];
-	export let currentLocation = null;
+	export let currentLocation: { lat: number; lng: number } | null = null;
 	let mapContainer;
 	let map;
 	onMount(async () => {
@@ -74,7 +74,8 @@
 						// contact: location.contact,
 						// programs: location.programs,
 						// keywords: location.keywords,
-						id: i
+						id: i,
+						icon: getIcon(location.name)
 					},
 					geometry: { type: 'Point', coordinates: [location.lng, location.lat] }
 				};
@@ -114,11 +115,11 @@
 		// });
 
 		const images = [
-			{ url: 'map/playground.PNG', id: 'playground1' },
-			{ url: 'map/park.png', id: 'park1' },
+			{ url: 'map/playground.png', id: 'playground1' },
+			{ url: 'map/park1.png', id: 'park1' },
 			{ url: 'map/mythmap.png', id: 'mythmap1' },
 			{ url: 'map/library.png', id: 'library1' },
-			{ url: 'map/museum.png', id: 'museum1' }
+			{ url: 'map/museum1.png', id: 'museum1' }
 		];
 
 		Promise.all(

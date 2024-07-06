@@ -2,27 +2,56 @@
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { Button, Checkbox, Dropdown, DropdownItem } from 'flowbite-svelte';
 	import { ChevronDownOutline, CloseCircleSolid } from 'flowbite-svelte-icons';
+
+	import { fade } from 'svelte/transition';
+	// import { availableTagsStore } from '../../../stores';
+
+	// let selectableTagsMap;
+	// availableTagsStore.subscribe((value) => {
+	// 	selectableTagsMap = value;
+	// });
+
 	const dispatch = createEventDispatcher();
-	export let tags: { name: string }[] = [];
+	export let allTags: { name: string }[] = [];
+	export let selectableTagsMap;
 	export let locationTags: any[] = [];
 	let baseDropdownOpen = false;
-	let moreDropdownOpen = false;
 	let checkedItems: { name: string; checked: boolean }[] = [];
-	let displayTags: { name: string; checked: boolean }[] = [];
+	let displayTags: { name: string; checked: boolean; disabled: boolean }[] = [];
 	let baseSelect: string | null = null;
+	$: displayTags,
+		() => {
+			console.log('displayTagschanged', displayTags);
+		};
 
 	onMount(() => {
-		displayTags = tags.map((tag) => {
-			return { ...tag, checked: false };
+		displayTags = allTags.map((tag) => {
+			return { ...tag, checked: false, disabled: false };
 		});
+
+		console.log('selectableTagsMap', selectableTagsMap);
+		// availableTagsMap = Object.assign({}, selectableTagsMap);
 	});
 
+	let clicks = 0;
+
+	// $: selectableTagsMap,
+	// 	() => {
+	// 		clicks += 1;
+	// 		displayTags = displayTags.map((tag) => {
+	// 			if (selectableTagsMap[tag.name]) {
+	// 				tag.disabled = false;
+	// 			} else {
+	// 				tag.disabled = true;
+	// 			}
+	// 			return tag;
+	// 		});
+	// 	};
 	const updateChecked = (item, event) => {
 		displayTags.forEach((tag) => {
 			if (tag.name === item.name) {
 				tag.checked = event.target.checked;
 			}
-			return tag;
 		});
 
 		checkedItems = displayTags.filter((tag) => tag.checked);
@@ -43,14 +72,13 @@
 		checkedItems = [...displayTags.filter((tag) => tag.checked)];
 
 		dispatch(
-			'selected',
+			'baseSelection',
 			checkedItems.map((tag) => tag.name)
 		);
 		baseDropdownOpen = false;
 	};
 
 	const closeBtn = (name: string) => {
-		console.log(name);
 		displayTags.forEach((tag) => {
 			if (tag.name === name) {
 				tag.checked = false;
@@ -61,81 +89,88 @@
 		if (name === baseSelect) {
 			baseSelect = null;
 		}
-		dispatch(
-			'selected',
-			checkedItems.map((tag) => tag.name)
-		);
+		if (name === 'Activity' || name === 'Food') {
+			baseSelect = null;
+			dispatch(
+				'baseSelection',
+				checkedItems.map((tag) => tag.name)
+			);
+		} else {
+			dispatch(
+				'selected',
+				checkedItems.map((tag) => tag.name)
+			);
+		}
 	};
+
 	let activeClass =
 		'text-orange-700 dark:text-orange-300 hover:text-orange-900 dark:hover:text-orange-500';
 </script>
 
-<div>
-	<div class="mb-4 flex flex-wrap items-center gap-1">
-		<div class="flex items-center">
-			<!-- <label for="search" class="mr-2">Search:</label>
+<div class="mb-4 flex flex-wrap items-center gap-1">
+	<div class="flex items-center">
+		<!-- <label for="search" class="mr-2">Search:</label>
 			<input type="text" id="search" class="form-input" placeholder="Search..." /> -->
-			<Button>
-				Location Type: {baseSelect ? `${baseSelect}` : 'Any'}
-				<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
-			</Button>
-			<Dropdown
-				style="z-index: 1232134234"
-				placement={'bottom'}
-				bind:open={baseDropdownOpen}
-				{activeClass}
+		<Button>
+			Location Type: {baseSelect ? `${baseSelect}` : 'Any'}
+			<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
+		</Button>
+		<Dropdown
+			style="z-index: 1232134234"
+			placement={'bottom'}
+			bind:open={baseDropdownOpen}
+			{activeClass}
+		>
+			<DropdownItem
+				class="hover:bg-gray-100 {baseSelect === 'Activity' && 'active'}"
+				activeClass={'active'}
+				on:click={baseSelection}>Activity</DropdownItem
 			>
-				<DropdownItem
-					class="hover:bg-gray-100 {baseSelect === 'Activity' && 'active'}"
-					activeClass={'active'}
-					on:click={baseSelection}>Activity</DropdownItem
-				>
-				<DropdownItem
-					class="hover:bg-gray-100 {baseSelect === 'Food' && 'active'}"
-					activeClass={'active'}
-					on:click={baseSelection}>Food</DropdownItem
-				>
-			</Dropdown>
-		</div>
-		<div class="flex items-center">
-			<!-- <label for="search" class="mr-2">Search:</label>
+			<DropdownItem
+				class="hover:bg-gray-100 {baseSelect === 'Food' && 'active'}"
+				activeClass={'active'}
+				on:click={baseSelection}>Food</DropdownItem
+			>
+		</Dropdown>
+	</div>
+	<div class="flex items-center" transition:fade={{ duration: 1000 }} style="z-index: 123423543;">
+		<!-- <label for="search" class="mr-2">Search:</label>
 			<input type="text" id="search" class="form-input" placeholder="Search..." /> -->
-			<Button>
-				Tags ({checkedItems.length})
-				<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
-			</Button>
-			<Dropdown
-				style="z-index: 1232134234"
-				placement={'bottom'}
-				bind:open={moreDropdownOpen}
-				on:close={() => {
-					console.log('closed');
-				}}
-			>
-				{#each displayTags as tag}
-					<!-- <DropdownItem class="hover:bg-gray-100" on:click={selected}>{tag.name}</DropdownItem> -->
-					<li class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600">
-						<Checkbox on:change={(e) => updateChecked(tag, e)} checked={tag.checked}
-							>{tag.name}</Checkbox
-						>
-					</li>
-				{/each}
-			</Dropdown>
-		</div>
-
-		<ul style="display: flex;">
-			{#each checkedItems as checkedItem}
-				<li class="chip">
-					{checkedItem.name}
-					<CloseCircleSolid
-						withEvents
-						on:click={() => closeBtn(checkedItem.name)}
-						class="text-grey dark:text-grey ms-2 h-6 w-6 cursor-pointer hover:text-red-500"
-					/>
+		<Button>
+			Tags ({checkedItems.length})
+			<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
+		</Button>
+		<Dropdown placement={'bottom'}>
+			{#each displayTags as tag}
+				<!-- <DropdownItem class="hover:bg-gray-100" on:click={selected}>{tag.name}</DropdownItem> -->
+				<li
+					class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600"
+					transition:fade={{ duration: 100 }}
+				>
+					<Checkbox
+						class={!selectableTagsMap[tag.name] && 'text-gray-400 dark:text-gray-300'}
+						on:change={(e) => updateChecked(tag, e)}
+						bind:checked={tag.checked}
+						bind:disabled={tag.disabled}
+					>
+						{tag.name}
+					</Checkbox>
 				</li>
 			{/each}
-		</ul>
+		</Dropdown>
 	</div>
+	<ul style="display: flex;">
+		{#each checkedItems as checkedItem}
+			<li class="chip">
+				{checkedItem.name}
+				<CloseCircleSolid
+					withEvents
+					on:click={() => closeBtn(checkedItem.name)}
+					class="text-grey dark:text-grey ms-2 h-6 w-6 cursor-pointer hover:text-red-500"
+				/>
+			</li>
+		{/each}
+	</ul>
 </div>
 
 <style>
