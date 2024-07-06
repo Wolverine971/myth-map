@@ -118,11 +118,11 @@
 		// });
 
 		const images = [
-			{ url: '/map/playground.png', id: 'playground1' },
-			{ url: '/map/park1.png', id: 'park1' },
-			{ url: '/map/mythmap.png', id: 'mythmap1' },
-			{ url: '/map/library.png', id: 'library1' },
-			{ url: '/map/museum1.png', id: 'museum1' }
+			{ url: 'map/playground1.png', id: 'playground1' },
+			{ url: 'map/park1.png', id: 'park1' },
+			{ url: 'map/mythmap.png', id: 'mythmap1' },
+			{ url: 'map/library.png', id: 'library1' },
+			{ url: 'map/museum1.png', id: 'museum1' }
 		];
 
 		Promise.all(
