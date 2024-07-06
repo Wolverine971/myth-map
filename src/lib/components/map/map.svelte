@@ -187,14 +187,7 @@
 				layout: {
 					'icon-image': ['get', 'icon'],
 					'icon-size': 0.15,
-					'icon-allow-overlap': true,
-					'icon-halo-color': 'black',
-					'icon-halo-width': 10,
-					'iconhalo-blur': 1,
-					'text-color': 'black',
-					'text-halo-color': 'white',
-					'text-halo-width': 2,
-					'text-halo-blur': 1
+					'icon-allow-overlap': true
 				}
 			});
 		});
@@ -245,7 +238,6 @@
 		};
 
 		map.on('load', async () => {
-			console.log('map loaded');
 			// Add a new source from our GeoJSON data and
 			// set the 'cluster' option to true. GL-JS will
 			// add the point_count property to your source data.
@@ -292,8 +284,6 @@
 				// 	coordinates2[1] += e.lngLat.lng > coordinates[1] ? 360 : -360;
 				// }
 
-				console.log(e.features[0].properties);
-
 				let copyId = `copy-${name.split(' ').join('-')}`;
 				const popup = new mapboxgl.Popup({ offset: [0, 0], className: 'popups' }).setLngLat(
 					coordinates
@@ -323,11 +313,6 @@
 			});
 		});
 	};
-	const copyText = (data) => {
-		console.log('copying', data);
-	};
-
-	// $: if (map) async () => {};
 </script>
 
 <div class="map-wrap">
@@ -351,8 +336,6 @@
 		height: 100%;
 	}
 	.map {
-		position: absolute;
-		width: 100%;
 		height: 100%;
 		visibility: visible !important;
 	}
@@ -380,10 +363,4 @@
 		font-size: 2rem;
 		color: aqua;
 	}
-
-	/* div {
-		position: absolute;
-		height: 500px;
-		width: 1000px;
-	} */
 </style>

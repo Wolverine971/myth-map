@@ -155,31 +155,25 @@
 <Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl">
 	Welcome to Myth-map
 </Heading>
-<div style="display: flex; flex-direction: column; gap: 1rem;">
+<div style="display: flex; flex-direction: column;  gap: 1rem;">
+	<LocationFilters
+		allTags={data.tags}
+		selectableTagsMap={availableTagsMap}
+		on:baseSelection={({ detail }) => filterBaseLocations(detail)}
+		on:selected={({ detail }) => filterSubSelection(detail)}
+	/>
 	<div class="map-div">
-		<LocationFilters
-			allTags={data.tags}
-			selectableTagsMap={availableTagsMap}
-			on:baseSelection={({ detail }) => filterBaseLocations(detail)}
-			on:selected={({ detail }) => filterSubSelection(detail)}
-		/>
-
 		<Map locations={data.locations} {shownLocations} {currentLocation} />
-		<a href="https://www.kittl.com">Created with www.kittl.com</a>
 	</div>
-	<hr />
-	<br />
-	<div>
-		<div class="location-grid">
-			{#each shownLocations as location}
-				<LocationCard
-					name={location.name}
-					address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
-					website={location.website}
-					tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
-				/>
-			{/each}
-		</div>
+	<div class="location-grid">
+		{#each shownLocations as location}
+			<LocationCard
+				name={location.name}
+				address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
+				website={location.website}
+				tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
+			/>
+		{/each}
 	</div>
 </div>
 
@@ -205,12 +199,14 @@
 		display: grid;
 		flex-direction: column;
 		justify-content: center;
+		align-self: center;
 		grid-template-columns: 1fr 1fr;
 	}
 	.map-div {
-		margin-top: 2rem;
+		/* margin-top: 2rem; */
+		align-self: center;
 		min-height: 430px;
 		height: 500px;
-		width: 1000px;
+		width: 100%;
 	}
 </style>

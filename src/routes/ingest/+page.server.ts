@@ -11,7 +11,6 @@ import { getLocations, ingest, updateSpreadsheet } from './googleSpreadsheet';
 export const load: PageServerLoad = async (event) => {
 
     const locations = await getLocations();
-    // console.log('locations', locations);
     return {
         // session: await getServerSession(event),
         locations: locations

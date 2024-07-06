@@ -19,18 +19,11 @@
 	let checkedItems: { name: string; checked: boolean }[] = [];
 	let displayTags: { name: string; checked: boolean; disabled: boolean }[] = [];
 	let baseSelect: string | null = null;
-	$: displayTags,
-		() => {
-			console.log('displayTagschanged', displayTags);
-		};
 
 	onMount(() => {
 		displayTags = allTags.map((tag) => {
 			return { ...tag, checked: false, disabled: false };
 		});
-
-		console.log('selectableTagsMap', selectableTagsMap);
-		// availableTagsMap = Object.assign({}, selectableTagsMap);
 	});
 
 	let clicks = 0;
@@ -134,24 +127,27 @@
 		</Dropdown>
 	</div>
 	<div class="flex items-center" transition:fade={{ duration: 1000 }} style="z-index: 123423543;">
-		<!-- <label for="search" class="mr-2">Search:</label>
-			<input type="text" id="search" class="form-input" placeholder="Search..." /> -->
 		<Button>
 			Tags ({checkedItems.length})
 			<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
 		</Button>
 		<Dropdown placement={'bottom'}>
 			{#each displayTags as tag}
-				<!-- <DropdownItem class="hover:bg-gray-100" on:click={selected}>{tag.name}</DropdownItem> -->
 				<li
-					class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600"
+					class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600 {!selectableTagsMap[
+						tag.name
+					] && 'disabled'}"
 					transition:fade={{ duration: 100 }}
 				>
 					<Checkbox
-						class={!selectableTagsMap[tag.name] && 'text-gray-400 dark:text-gray-300'}
-						on:change={(e) => updateChecked(tag, e)}
+						class={!selectableTagsMap[tag.name] &&
+							'disabled text-gray-400 disabled:cursor-not-allowed dark:text-gray-300'}
+						on:change={(e) => {
+							if (selectableTagsMap[tag.name]) {
+								updateChecked(tag, e);
+							}
+						}}
 						bind:checked={tag.checked}
-						bind:disabled={tag.disabled}
 					>
 						{tag.name}
 					</Checkbox>
@@ -174,6 +170,10 @@
 </div>
 
 <style>
+	.disabled {
+		cursor: not-allowed;
+		pointer-events: none;
+	}
 	.active {
 		background-color: red;
 	}

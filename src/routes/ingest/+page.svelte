@@ -20,7 +20,6 @@
 			notifications.warning('ingested Failed', 3000);
 		}
 	};
-	console.log(data);
 
 	import { A, Card, Button } from 'flowbite-svelte';
 </script>

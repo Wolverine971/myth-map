@@ -21,15 +21,17 @@
 		</a>
 	</div>
 
-	<div style="width: 50%;">
-		<ul class="tag-list">
-			{#each tags as tag}
-				<li class="chip">
-					{tag.tags.name}
-				</li>
-			{/each}
-		</ul>
-	</div>
+	{#if tags?.length}
+		<div style="width: 50%;">
+			<ul class="tag-list">
+				{#each tags as tag}
+					<li class="chip">
+						{tag?.tags.name}
+					</li>
+				{/each}
+			</ul>
+		</div>
+	{/if}
 </Card>
 
 <style>

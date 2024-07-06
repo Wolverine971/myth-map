@@ -2,7 +2,6 @@
 	import { Button, Card } from 'flowbite-svelte';
 	import LocationCard from '$lib/components/locations/LocationCard.svelte';
 	export let location;
-	const url = 'https://myth-map.vercel.app/';
 	let loading = false;
 	const getlatLng = async (loc) => {
 		loading = true;
@@ -26,7 +25,7 @@
 		name={location?.name}
 		address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
 		website={location.website}
-		tag={location?.tags?.name}
+		tags={location?.tags?.name}
 	/>
 
 	{#if loading}
