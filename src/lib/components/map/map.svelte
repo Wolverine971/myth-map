@@ -27,9 +27,9 @@
 		const height = 20;
 		el.className = 'marker';
 		if (dev) {
-			el.style.backgroundImage = `url(http://localhost:5173/map/location-arrow.svg)`;
+			el.style.backgroundImage = `url(/map/location-arrow.svg)`;
 		} else {
-			el.style.backgroundImage = `url(https://mythmap.vercel.app/map/location-arrow.svg)`;
+			el.style.backgroundImage = `url(/map/location-arrow.svg)`;
 		}
 		el.style.width = `${width}px`;
 		el.style.height = `${height}px`;
@@ -115,11 +115,11 @@
 		// });
 
 		const images = [
-			{ url: 'map/playground.png', id: 'playground1' },
-			{ url: 'map/park1.png', id: 'park1' },
-			{ url: 'map/mythmap.png', id: 'mythmap1' },
-			{ url: 'map/library.png', id: 'library1' },
-			{ url: 'map/museum1.png', id: 'museum1' }
+			{ url: '/map/playground.png', id: 'playground1' },
+			{ url: '/map/park1.png', id: 'park1' },
+			{ url: '/map/mythmap.png', id: 'mythmap1' },
+			{ url: '/map/library.png', id: 'library1' },
+			{ url: '/map/museum1.png', id: 'museum1' }
 		];
 
 		Promise.all(
