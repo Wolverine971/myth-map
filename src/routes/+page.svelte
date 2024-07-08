@@ -130,6 +130,8 @@
 		availableTagsMap = Object.assign({}, newAvailableTags);
 		console.log('tags updated');
 	};
+
+	let innerWidth = 0;
 </script>
 
 <svelte:head>
@@ -152,9 +154,12 @@
 	<meta property="og:image:type" content="image/png" />
 </svelte:head>
 
-<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl">
-	Welcome to Tiny Tribe Adventures
-</Heading>
+<svelte:window bind:innerWidth />
+{#if innerWidth > 500}
+	<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl">
+		Welcome to Tiny Tribe Adventures
+	</Heading>
+{/if}
 <div style="display: flex; flex-direction: column;  gap: 1rem;">
 	<LocationFilters
 		allTags={data.tags}

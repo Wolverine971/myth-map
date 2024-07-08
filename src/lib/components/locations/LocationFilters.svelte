@@ -100,7 +100,7 @@
 		'text-orange-700 dark:text-orange-300 hover:text-orange-900 dark:hover:text-orange-500';
 </script>
 
-<div class="mb-4 flex flex-wrap items-center gap-1">
+<div class="flex flex-wrap items-center gap-1">
 	<div class="flex items-center">
 		<!-- <label for="search" class="mr-2">Search:</label>
 			<input type="text" id="search" class="form-input" placeholder="Search..." /> -->
