@@ -4,7 +4,7 @@
 
 	let title: string = data?.title;
 	let description: string = data?.description;
-	const formattedTitle = title ? `${title}` : 'Myth-Map';
+	const formattedTitle = title ? `${title}` : 'Tiny Tribe Adventures';
 
 	let jsonldString = {
 		'@context': 'http://schema.org',
@@ -42,7 +42,7 @@
 	<meta name="description" content={description || title} />
 	<meta name="viewport" content="width=device-width,initial-scale=1" />
 
-	<meta property="og:site_name" content="Myth-map" />
+	<meta property="og:site_name" content="Tiny Tribe Adventures" />
 	<meta property="og:title" content={title} />
 	<meta property="og:description" content={data.description} />
 	<meta property="og:type" content="website" />

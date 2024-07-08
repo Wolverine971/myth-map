@@ -5,8 +5,10 @@
 	import { notifications } from '$lib/components/shared/notifications';
 
 	export let data: PageData;
+	let ingesting = false;
 
 	const ingest = async () => {
+		ingesting = true;
 		const { data, error: emailError } = await (
 			await fetch(`/ingest?/ingest`, {
 				method: 'POST',
@@ -19,18 +21,23 @@
 		} else {
 			notifications.warning('ingested Failed', 3000);
 		}
+		ingesting = false;
 	};
 
 	import { A, Card, Button } from 'flowbite-svelte';
 </script>
 
 {#if dev}
-	<Button
-		type="button"
-		on:click={async () => {
-			await ingest();
-		}}>Ingest</Button
-	>
+	{#if ingesting}
+		<Button type="button"><div class="loader" /></Button>
+	{:else}
+		<Button
+			type="button"
+			on:click={async () => {
+				await ingest();
+			}}>Ingest</Button
+		>
+	{/if}
 	{#each data?.locations as location, i}
 		{#if i !== 0}
 			<Card>

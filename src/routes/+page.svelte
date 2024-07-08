@@ -133,15 +133,15 @@
 </script>
 
 <svelte:head>
-	<title>Myth-Map</title>
+	<title>Tiny Tribe Adventures</title>
 	<meta
 		name="description"
 		content="A tool for chronically curious families looking for their next adventure!"
 	/>
 	<link rel="canonical" href={url} />
 
-	<meta property="og:site_name" content="Myth-Map" />
-	<meta property="og:title" content="Myth-Map home page" />
+	<meta property="og:site_name" content="Tiny Tribe Adventures" />
+	<meta property="og:title" content="Tiny Tribe Adventures home page" />
 	<meta
 		property="og:description"
 		content="A tool for chronically curious families looking for their next adventure!"
@@ -153,7 +153,7 @@
 </svelte:head>
 
 <Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl">
-	Welcome to Myth-map
+	Welcome to Tiny Tribe Adventures
 </Heading>
 <div style="display: flex; flex-direction: column;  gap: 1rem;">
 	<LocationFilters

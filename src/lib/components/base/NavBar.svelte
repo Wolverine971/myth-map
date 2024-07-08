@@ -6,10 +6,10 @@
 
 <Navbar>
 	<NavBrand href="/">
-		<img src="/myth-map-small.svg" class="me-3 h-6 sm:h-20" alt="Myth-Map" />
+		<img src="/myth-map-small.svg" class="me-3 h-6 sm:h-20" alt="Tiny Tribe Adventures" />
 		{#if $page.url.pathname !== '/'}
 			<span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white"
-				>Myth-Map</span
+				>Tiny Tribe Adventures</span
 			>
 		{/if}
 	</NavBrand>

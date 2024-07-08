@@ -12,7 +12,7 @@
 
 <BlogPageHead
 	data={{
-		title: 'Mythmap Blogs',
+		title: 'Tiny Tribe Adventures Blogs',
 		description: 'Topics realted to family friendly locations'
 	}}
 	slug={'blog/enneagram'}

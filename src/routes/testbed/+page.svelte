@@ -10,15 +10,15 @@
 </script>
 
 <svelte:head>
-	<title>Myth-Map</title>
+	<title>Tiny Tribe Adventures</title>
 	<meta
 		name="description"
 		content="A tool for chronically curious families looking for their next adventure!"
 	/>
 	<link rel="canonical" href={url} />
 
-	<meta property="og:site_name" content="Myth-Map" />
-	<meta property="og:title" content="Myth-Map Test Bed" />
+	<meta property="og:site_name" content="Tiny Tribe Adventures" />
+	<meta property="og:title" content="Tiny Tribe Adventures Test Bed" />
 	<meta
 		property="og:description"
 		content="A tool for chronically curious families looking for their next adventure!"

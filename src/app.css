@@ -2,8 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-
 main {
-  max-width: 64rem;
-  margin: 1rem auto;
+	max-width: 64rem;
+	margin: 1rem auto;
+}
+
+.loader {
+	box-sizing: border-box;
+	display: inline-block;
+	border: 5px solid #fff;
+	border-radius: 50%;
+	border-bottom-color: transparent;
+	animation: rotation 1s linear infinite;
 }
