@@ -5,63 +5,145 @@
 	import LocationCard from '$lib/components/locations/LocationCard.svelte';
 	import LocationFilters from '$lib/components/locations/LocationFilters.svelte';
 	import type { PageData } from './$types';
+	import { onMount } from 'svelte';
 	export let data: PageData;
 	const url = 'https://myth-map.vercel.app/';
 
 	let shownLocations = data.locations;
+	let currentLocation: { lat: number; lng: number } | null = null;
+	let availableTagsMap = {};
+	const baseTagMap: any = {};
+	let locationNamesMap = {};
 
-	let availableTags = data.tags;
-	const filterBase = (tags: string[]) => {
+	onMount(() => {
+		navigator.geolocation.getCurrentPosition(currentLocationSuccess, currentLocationError, options);
+		data.tags.forEach((tag) => {
+			baseTagMap[tag.name] = true;
+			availableTagsMap[tag.name] = 1;
+		});
+
+		data.locations.forEach((location) => {
+			locationNamesMap[location.name] = true;
+		});
+	});
+
+	const options = {
+		enableHighAccuracy: true,
+		timeout: 5000,
+		maximumAge: 0
+	};
+
+	const currentLocationSuccess = (pos) => {
+		const crd = pos.coords;
+		currentLocation = { lat: crd.latitude, lng: crd.longitude };
+	};
+
+	const currentLocationError = (err) => {
+		console.warn(`ERROR(${err.code}): ${err.message}`);
+	};
+
+	const filterBaseLocations = (tags: string[]) => {
+		if (tags.length === 0) {
+			shownLocations = data.locations;
+			return;
+		}
+
 		const tagMap = {};
 		tags.forEach((tag) => {
 			tagMap[tag] = true;
 		});
-		const locationMap = {};
-		const filteredLocations = data.locationTags
-			.filter((location) => {
-				if (tagMap[location.tags.name] && !locationMap[location.locations.name]) {
-					locationMap[location.locations.name] = 1;
-					return true;
+
+		let filteredLocationNames: string[] = [];
+
+		tags.forEach((tag) => {
+			const availableTagLocations = {};
+			data.locationTags.forEach((location) => {
+				if (location.tags.name === tag) {
+					availableTagLocations[location.locations.name] = 1;
 				}
-				return false;
-			})
-			.map((location) => location.locations);
+			});
+
+			if (filteredLocationNames.length === 0) {
+				// generate filtered location names
+				Object.keys(availableTagLocations).forEach((locationName) => {
+					filteredLocationNames.push(locationName);
+				});
+			} else {
+				// filter out filtered location names
+				const namesToRemove = {};
+				filteredLocationNames.forEach((fLocation) => {
+					if (!availableTagLocations[fLocation]) {
+						namesToRemove[fLocation] = 1;
+					}
+				});
+				filteredLocationNames = filteredLocationNames.filter(
+					(fLocation) => !namesToRemove[fLocation]
+				);
+			}
+		});
+
+		// cleanup
+		let filteredLocationsMap = {};
+		filteredLocationNames.forEach((name) => {
+			filteredLocationsMap[name] = true;
+		});
+
+		const filteredLocations = data.locations.filter((location) => {
+			if (filteredLocationsMap[location.name]) {
+				return true;
+			}
+		});
 		shownLocations = filteredLocations.flat().length ? filteredLocations.flat() : data.locations;
 	};
 
+	const filterSubSelection = (tags: string[]) => {
+		filterBaseLocations(tags);
+		updateTags(tags);
+	};
+
 	// // todo
-	// const updateTags = () => {
-	// 	const locationMap = {};
-	// 	const tagMap = {};
+	const updateTags = (tags) => {
+		if (tags.length === 0) {
+			availableTagsMap = Object.assign({}, baseTagMap);
+			return;
+		}
+		const locationMap = {};
+		// const tagMap = {};
 
-	// 	shownLocations.forEach((location) => {
-	// 		if (!locationMap[location.name]) {
-	// 			locationMap[location.name] = 1;
-	// 		}
-	// 	});
+		shownLocations.forEach((l) => {
+			locationMap[l?.name] = true;
+		});
 
-	// 	data.locationTags.forEach((location) => {
-	// 		if (locationMap[location.locations.name]) {
-	// 			tagMap[location.tags.name] = 1;
-	// 		}
-	// 	});
+		const newAvailableTags = {};
 
-	// 	const tags = Object.keys(tagMap);
+		data.locationTags.forEach((location) => {
+			if (locationMap[location.locations.name]) {
+				newAvailableTags[location.tags.name] = 1;
+			}
+		});
 
-	// 	availableTags = tags;
-	// };
+		// steps
+		// find locations with tags
+		// put locations in a map
+		// find tags for locations
+		// those tags are the available tags
+		availableTagsMap = Object.assign({}, newAvailableTags);
+		console.log('tags updated');
+	};
+
+	let innerWidth = 0;
 </script>
 
 <svelte:head>
-	<title>Myth-Map</title>
+	<title>Tiny Tribe Adventures</title>
 	<meta
 		name="description"
 		content="A tool for chronically curious families looking for their next adventure!"
 	/>
 	<link rel="canonical" href={url} />
 
-	<meta property="og:site_name" content="Myth-Map" />
-	<meta property="og:title" content="Myth-Map home page" />
+	<meta property="og:site_name" content="Tiny Tribe Adventures" />
+	<meta property="og:title" content="Tiny Tribe Adventures home page" />
 	<meta
 		property="og:description"
 		content="A tool for chronically curious families looking for their next adventure!"
@@ -72,22 +154,22 @@
 	<meta property="og:image:type" content="image/png" />
 </svelte:head>
 
-<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl">
-	Welcome to Myth-map
-</Heading>
-<div class="map-div">
+<svelte:window bind:innerWidth />
+{#if innerWidth > 500}
+	<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl">
+		Welcome to Tiny Tribe Adventures
+	</Heading>
+{/if}
+<div style="display: flex; flex-direction: column;  gap: 1rem;">
 	<LocationFilters
-		tags={availableTags}
-		on:baseSelection={({ detail }) => filterBase(detail)}
-		on:selected={({ detail }) => filterBase(detail)}
+		allTags={data.tags}
+		selectableTagsMap={availableTagsMap}
+		on:baseSelection={({ detail }) => filterBaseLocations(detail)}
+		on:selected={({ detail }) => filterSubSelection(detail)}
 	/>
-	<Map locations={data.locations} {shownLocations} />
-</div>
-<hr />
-<br />
-<div>
-	<h2 class="my-5 mb-6 text-left text-lg dark:text-gray-400">Locations</h2>
-
+	<div class="map-div">
+		<Map locations={data.locations} {shownLocations} {currentLocation} />
+	</div>
 	<div class="location-grid">
 		{#each shownLocations as location}
 			<LocationCard
@@ -122,12 +204,14 @@
 		display: grid;
 		flex-direction: column;
 		justify-content: center;
+		align-self: center;
 		grid-template-columns: 1fr 1fr;
 	}
 	.map-div {
-		margin-top: 2rem;
+		/* margin-top: 2rem; */
+		align-self: center;
 		min-height: 430px;
 		height: 500px;
-		width: 1000px;
+		width: 100%;
 	}
 </style>

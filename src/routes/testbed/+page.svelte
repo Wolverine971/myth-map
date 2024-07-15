@@ -5,19 +5,20 @@
 	import AddressGeoCode from '$lib/components/map/addressGeoCode.svelte';
 	export let data: PageData;
 	const url = 'https://myth-map.vercel.app/testbed';
-	console.log(data);
+	let shownLocations = data.locations;
+	let currentLocation = null;
 </script>
 
 <svelte:head>
-	<title>Myth-Map</title>
+	<title>Tiny Tribe Adventures</title>
 	<meta
 		name="description"
 		content="A tool for chronically curious families looking for their next adventure!"
 	/>
 	<link rel="canonical" href={url} />
 
-	<meta property="og:site_name" content="Myth-Map" />
-	<meta property="og:title" content="Myth-Map Test Bed" />
+	<meta property="og:site_name" content="Tiny Tribe Adventures" />
+	<meta property="og:title" content="Tiny Tribe Adventures Test Bed" />
 	<meta
 		property="og:description"
 		content="A tool for chronically curious families looking for their next adventure!"
@@ -34,7 +35,7 @@
 	<P class="my-5 mb-6 text-left text-lg dark:text-gray-400">Locations</P>
 
 	<div class="location-grid">
-		{#each data.locations as location}
+		{#each data?.locations as location}
 			<AddressGeoCode {location} />
 		{/each}
 	</div>
@@ -42,21 +43,9 @@
 	<!-- <FilterMap /> -->
 
 	<div class="map-div">
-		<Map locations={data.locations} />
+		<Map locations={data.locations} {shownLocations} {currentLocation} />
 	</div>
 </div>
 
 <style>
-	.location-grid {
-		display: grid;
-		flex-direction: column;
-		justify-content: center;
-		grid-template-columns: 1fr 1fr;
-	}
-	.map-div {
-		margin-top: 2rem;
-		min-height: 430px;
-		height: 500px;
-		width: 1000px;
-	}
 </style>

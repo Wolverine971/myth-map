@@ -3,10 +3,12 @@
 	import type { PageData } from './$types';
 	import { dev } from '$app/environment';
 	import { notifications } from '$lib/components/shared/notifications';
-	
+
 	export let data: PageData;
+	let ingesting = false;
 
 	const ingest = async () => {
+		ingesting = true;
 		const { data, error: emailError } = await (
 			await fetch(`/ingest?/ingest`, {
 				method: 'POST',
@@ -19,19 +21,23 @@
 		} else {
 			notifications.warning('ingested Failed', 3000);
 		}
+		ingesting = false;
 	};
-	console.log(data);
 
 	import { A, Card, Button } from 'flowbite-svelte';
 </script>
 
 {#if dev}
-	<Button
-		type="button"
-		on:click={async () => {
-			await ingest();
-		}}>Ingest</Button
-	>
+	{#if ingesting}
+		<Button type="button"><div class="loader" /></Button>
+	{:else}
+		<Button
+			type="button"
+			on:click={async () => {
+				await ingest();
+			}}>Ingest</Button
+		>
+	{/if}
 	{#each data?.locations as location, i}
 		{#if i !== 0}
 			<Card>
@@ -41,13 +47,15 @@
 					</h5>
 					<br />
 					<p class="font-normal leading-tight text-gray-700 dark:text-gray-400">
-						Address: {location[6]}
+						Address: {location[7]}
 					</p>
 					<!-- {JSON.stringify(location)} -->
 				</A>
 			</Card>
 		{/if}
 	{/each}
+{:else}
+	Protected route
 {/if}
 
 <style>

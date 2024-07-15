@@ -5,7 +5,6 @@
 	export let address;
 	export let website;
 	export let tags;
-	console.log(tags);
 </script>
 
 <!-- img={`/tag-images/${tags[0] || 'myth-map'}.png`} -->
@@ -22,15 +21,17 @@
 		</a>
 	</div>
 
-	<div style="width: 50%;">
-		<ul class="tag-list">
-			{#each tags as tag}
-				<li class="chip">
-					{tag.tags.name}
-				</li>
-			{/each}
-		</ul>
-	</div>
+	{#if tags?.length}
+		<div style="width: 50%;">
+			<ul class="tag-list">
+				{#each tags as tag}
+					<li class="chip">
+						{tag?.tags.name}
+					</li>
+				{/each}
+			</ul>
+		</div>
+	{/if}
 </Card>
 
 <style>
