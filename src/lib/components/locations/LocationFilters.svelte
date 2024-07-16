@@ -16,9 +16,11 @@
 	export let selectableTagsMap;
 	export let locationTags: any[] = [];
 	let baseDropdownOpen = false;
+	let indoorOutdoorDropdownOpen = false;
 	let checkedItems: { name: string; checked: boolean }[] = [];
 	let displayTags: { name: string; checked: boolean; disabled: boolean }[] = [];
 	let baseSelect: string | null = null;
+	let indoorOutdoorSelect: string | null = null;
 
 	onMount(() => {
 		displayTags = allTags.map((tag) => {
@@ -71,6 +73,20 @@
 		baseDropdownOpen = false;
 	};
 
+	const indoorOutdoorSelection = (e) => {
+		// dispatch('baseSelection', [e.target.innerText]);
+		indoorOutdoorSelect = e.target.innerText;
+		const selectedItem = displayTags.find((tag) => tag.name === e.target.innerText);
+		selectedItem.checked = true;
+
+		checkedItems = [...displayTags.filter((tag) => tag.checked)];
+		dispatch(
+			'indoorOutdoorSelection',
+			checkedItems.map((tag) => tag.name)
+		);
+		indoorOutdoorDropdownOpen = false;
+	};
+
 	const closeBtn = (name: string) => {
 		displayTags.forEach((tag) => {
 			if (tag.name === name) {
@@ -86,6 +102,12 @@
 			baseSelect = null;
 			dispatch(
 				'baseSelection',
+				checkedItems.map((tag) => tag.name)
+			);
+		} else if (name === 'Outdoor' || name === 'Indoor') {
+			indoorOutdoorSelect = null;
+			dispatch(
+				'indoorOutdoorSelection',
 				checkedItems.map((tag) => tag.name)
 			);
 		} else {
@@ -123,6 +145,31 @@
 				class="hover:bg-gray-100 {baseSelect === 'Food' && 'active'}"
 				activeClass={'active'}
 				on:click={baseSelection}>Food</DropdownItem
+			>
+		</Dropdown>
+	</div>
+	<div class="flex items-center">
+		<!-- <label for="search" class="mr-2">Search:</label>
+			<input type="text" id="search" class="form-input" placeholder="Search..." /> -->
+		<Button>
+			Location Type: {indoorOutdoorSelect ? `${indoorOutdoorSelect}` : 'Any'}
+			<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
+		</Button>
+		<Dropdown
+			style="z-index: 1232134234"
+			placement={'bottom'}
+			bind:open={indoorOutdoorDropdownOpen}
+			{activeClass}
+		>
+			<DropdownItem
+				class="hover:bg-gray-100 {indoorOutdoorSelect === 'Indoor' && 'active'}"
+				activeClass={'active'}
+				on:click={indoorOutdoorSelection}>Indoor</DropdownItem
+			>
+			<DropdownItem
+				class="hover:bg-gray-100 {indoorOutdoorSelect === 'Outdoor' && 'active'}"
+				activeClass={'active'}
+				on:click={indoorOutdoorSelection}>Outdoor</DropdownItem
 			>
 		</Dropdown>
 	</div>

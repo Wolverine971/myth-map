@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Heading, P } from 'flowbite-svelte';
+	import { Heading, Tabs, TabItem } from 'flowbite-svelte';
 
 	import Map from '$lib/components/map/map.svelte';
 	import LocationCard from '$lib/components/locations/LocationCard.svelte';
@@ -71,6 +71,7 @@
 			} else {
 				// filter out filtered location names
 				const namesToRemove = {};
+				console.log('filter', filteredLocationNames);
 				filteredLocationNames.forEach((fLocation) => {
 					if (!availableTagLocations[fLocation]) {
 						namesToRemove[fLocation] = 1;
@@ -165,21 +166,28 @@
 		allTags={data.tags}
 		selectableTagsMap={availableTagsMap}
 		on:baseSelection={({ detail }) => filterBaseLocations(detail)}
+		on:indoorOutdoorSelection={({ detail }) => filterSubSelection(detail)}
 		on:selected={({ detail }) => filterSubSelection(detail)}
 	/>
-	<div class="map-div">
-		<Map locations={data.locations} {shownLocations} {currentLocation} />
-	</div>
-	<div class="location-grid">
-		{#each shownLocations as location}
-			<LocationCard
-				name={location.name}
-				address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
-				website={location.website}
-				tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
-			/>
-		{/each}
-	</div>
+	<Tabs>
+		<TabItem open title="Gallery View">
+			<div class="location-grid">
+				{#each shownLocations as location}
+					<LocationCard
+						name={location.name}
+						address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
+						website={location.website}
+						tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
+					/>
+				{/each}
+			</div>
+		</TabItem>
+		<TabItem title="Map View">
+			<div class="map-div">
+				<Map locations={data.locations} {shownLocations} {currentLocation} />
+			</div>
+		</TabItem>
+	</Tabs>
 </div>
 
 <style>
