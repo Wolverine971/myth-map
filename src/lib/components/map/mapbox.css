@@ -511,7 +511,7 @@ a.mapboxgl-ctrl-logo.mapboxgl-compact {
 .mapboxgl-popup-content {
 	pointer-events: auto;
 	position: relative;
-	background-color: #03a9f4d4;
+	background-color: #ffffffcc;
 	color: #545454;
 	padding: 0.5rem;
 	/* margin: 1rem; */
