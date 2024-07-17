@@ -283,17 +283,21 @@
 				// while (Math.abs(e.lngLat.lng - coordinates[1]) > 180) {
 				// 	coordinates2[1] += e.lngLat.lng > coordinates[1] ? 360 : -360;
 				// }
+				const addressPart1 = address.split(',')[0];
+				const addressPart2 = address.split(',').slice(1);
 
 				let copyId = `copy-${name.split(' ').join('-')}`;
 				const popup = new mapboxgl.Popup({ offset: [0, 0], className: 'popups' }).setLngLat(
 					coordinates
 				).setHTML(`<div>
                     
-					<h1 style="font-size:2rem; line-height: 2rem;">${name}</h1>
-					<br> <p id="${copyId}-address"><b>Address</b>: <br>${address} <button type="button" id="${copyId}" 
-					style="border-radius: 5px; border: 1px solid white; padding: 3px; margin: 3px 0;">Copy Address</button></p>
+					<h1 style="font-size:2rem; line-height: 2rem; font-weight: bold;">${name}</h1>
+					<br> <p id="${copyId}-address"><b>Address</b>: <button type="button" id="${copyId}" 
+					style="border-radius: 5px; border: 1px solid #201f1f;  padding: 2px 5px; margin: 3px 0; color: white; background: #00000070; font-weight: bold;">Copy Address</button>
+					
+					<br>${addressPart1},<br> ${addressPart2}  </p>
 					<br>
-					<a style="border-radius: 5px; border: 1px solid white; padding: 5px; margin: 5px 0; float: right;" href="${e.features[0].properties.website}" target="_blank">Website</a>
+					<a style="border-radius: 5px; border: 1px solid #201f1f; padding: 2px 5px; margin: 3px 0; color: white; background: #00000070; font-weight: bold; float: right;" href="${e.features[0].properties.website}" target="_blank">Website</a>
                     </div>`);
 
 				if (popup && map) {
@@ -320,15 +324,6 @@
 </div>
 
 <style lang="">
-	.mapboxgl-popup-content {
-		color: #f3f3dd;
-		background-color: #91785d;
-		border-color: #91785d;
-		max-width: 250px;
-		box-shadow: 3px 3px 2px #8b5d33;
-		font-family: 'Oswald';
-	}
-
 	.map-wrap {
 		position: relative;
 		z-index: 12343;
@@ -351,7 +346,7 @@
 		border-radius: 5px;
 	}
 	.mapboxgl-popup-content {
-		background-color: #000;
+		background-color: #03a9f485;
 		color: #fff;
 		padding: 5px;
 		border-radius: 5px;

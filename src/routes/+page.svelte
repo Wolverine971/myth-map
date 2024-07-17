@@ -160,7 +160,7 @@
 		Welcome to Tiny Tribe Adventures
 	</Heading>
 {/if}
-<div style="display: flex; flex-direction: column;  gap: 1rem;">
+<div style="display: flex; flex-direction: column;  gap: 1rem; width: 100%;">
 	<LocationFilters
 		allTags={data.tags}
 		selectableTagsMap={availableTagsMap}
@@ -169,7 +169,7 @@
 		on:selected={({ detail }) => filterSubSelection(detail)}
 	/>
 	<Tabs>
-		<TabItem title="Gallery View">
+		<TabItem open title="Gallery View">
 			<div class="location-grid">
 				{#each shownLocations as location}
 					<LocationCard

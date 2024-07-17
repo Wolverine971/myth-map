@@ -511,15 +511,16 @@ a.mapboxgl-ctrl-logo.mapboxgl-compact {
 .mapboxgl-popup-content {
 	pointer-events: auto;
 	position: relative;
-	background-color: #2a2a2a;
-	color: #fff;
+	background-color: #03a9f4d4;
+	color: #545454;
 	padding: 0.5rem;
 	/* margin: 1rem; */
+	font-size: larger;
 	border-radius: 5px;
 	border-color: #000000;
 	border: 1px solid grey;
 	max-width: 250px;
-	box-shadow: 3px 3px 2px #101010;
+	box-shadow: 2px 2px 1px #0e577875;
 	font-family: 'Oswald';
 }
 .mapboxgl-popup-anchor-top-left .mapboxgl-popup-content {
