@@ -5,16 +5,26 @@
 	export let address;
 	export let website;
 	export let tags;
+
+	const addressPart1 = address.split(',')[0];
+	const addressPart2 = address.split(',').slice(1);
 </script>
 
 <!-- img={`/tag-images/${tags[0] || 'myth-map'}.png`} -->
 <Card href="/" horizontal size="md" reverse={hCard}>
-	<div style="width: calc(100% - 10px);">
+	<div
+		style="width: calc(100% - 10px); display: flex; flex-direction: column; height: 100%; min-height: 170px;"
+	>
 		<h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
 			{name}
 		</h5>
-		<p class="mb-3 font-normal leading-tight text-gray-700 dark:text-gray-400">
-			{address}
+		<p
+			class="mb-3 font-normal leading-tight text-gray-700 dark:text-gray-400"
+			style="margin-top: auto;"
+		>
+			{addressPart1}
+			<br />
+			{addressPart2}
 		</p>
 		<a href={website} target="_blank" rel="noopener noreferrer">
 			<Button color="primary" size="md" block>Visit Website</Button>

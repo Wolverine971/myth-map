@@ -120,7 +120,7 @@
 </script>
 
 <div class="flex flex-wrap items-center gap-1">
-	<div class="flex items-center">
+	<div class="flex items-center" transition:fade={{ duration: 600 }}>
 		<!-- <label for="search" class="mr-2">Search:</label>
 			<input type="text" id="search" class="form-input" placeholder="Search..." /> -->
 		<Button>
@@ -145,7 +145,7 @@
 			>
 		</Dropdown>
 	</div>
-	<div class="flex items-center">
+	<div class="flex items-center" transition:fade={{ duration: 800 }}>
 		<Button>
 			Location Type: {indoorOutdoorSelect ? `${indoorOutdoorSelect}` : 'Any'}
 			<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />

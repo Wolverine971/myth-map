@@ -38,7 +38,6 @@ declare global {
 			changefreq: string;
 			priority: string;
 			published: boolean;
-			enneagram?: number;
 			type?: string[];
 			person?: string;
 			wikipedia?: string;
