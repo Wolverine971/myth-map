@@ -1,10 +1,10 @@
-
 import { error, json } from '@sveltejs/kit';
+
 import type { PageServerLoad } from './$types';
 import type { Actions, RequestHandler } from '@sveltejs/kit';
 // import { supabase } from '$lib/supabase';
 // import { joinEmail2 } from '../../emails';
-import { getLocations, ingest, updateSpreadsheet } from './googleSpreadsheet';
+import { getLocations, ingest, ingestBlogs } from './googleSpreadsheet';
 
 // import { google } from 'googleapis';
 
@@ -30,7 +30,22 @@ export const actions: Actions = {
             return { success: true };
         } catch (e) {
             throw error(404, {
-                message: `Failed to submit email, ${JSON.stringify(e)}`
+                message: `Failed to ingest, ${JSON.stringify(e)}`
+            });
+        }
+
+    },
+    ingestBlogs: async ({ request, locals: { supabase, getSession } }) => {
+        try {
+            // const body = Object.fromEntries(await request.formData());
+
+
+            await ingestBlogs();
+
+            return { success: true };
+        } catch (e) {
+            throw error(404, {
+                message: `Failed to ingest blogs, ${JSON.stringify(e)}`
             });
         }
 

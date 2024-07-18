@@ -4,6 +4,7 @@ import { supabase } from '$lib/supabaseClient';
 import { Impersonated } from 'google-auth-library'
 import { google } from 'googleapis'
 import { BaseExternalAccountClient, Compute, GoogleAuth, JWT, UserRefreshClient } from 'googleapis-common'
+
 import { getAndUpdateLatLng } from '../../utils/locations';
 
 const locationsSpreadsheetId = '1qwosSmGUG9f8pwIyl8AfUWrJAy5eGahbfl51V6JRMjs'
@@ -229,6 +230,78 @@ export const ingest = async () => {
         await getAndUpdateLatLng(locationData?.[0].id, address_line_1, city, state, zip)
         await tagLocation(locationData?.[0].id, tags)
       }
+    }
+
+
+  }
+
+
+
+
+}
+
+export const ingestBlogs = async () => {
+  const client = await getToken()
+  const sheets = google.sheets({ auth: client, version: 'v4' })
+  const rows = await sheets.spreadsheets.values.get({
+    range: 'Sheet1!A:H',
+    spreadsheetId: locationsSpreadsheetId,
+  })
+
+  for await (const row of rows?.data?.values) {
+
+    const fullAddress = row[7] // 497 Ritchie Hwy, Severna Park, MD 21146
+    if (!fullAddress) {
+      continue
+    }
+    const fullAddressParts = fullAddress.split(',')
+    if (fullAddressParts.length !== 3) {
+      console.log('skipping row', row)
+      continue
+
+    }
+
+    const address_line_1 = fullAddressParts[0].trim()
+    const city = fullAddressParts[1].trim()
+    const stateZip = fullAddressParts[2].trim()
+    const state = stateZip.split(' ')[0]
+    const zip = stateZip.split(' ')[1]
+    const link = row[5]
+    const name = row[0]
+    const tags = [...row[2].split(',').map(r => r.trim()), ...row[3].split(',').map(r => r.trim()), row[1]]
+
+
+    const { data: existingLocationData, error: existingLocationDataError } = await supabase.from('content_locations')
+      .select('*')
+      .eq('title', name)
+
+    if (existingLocationDataError) {
+      console.error(existingLocationDataError)
+    }
+    if (existingLocationData?.[0]) {
+      // if (!existingLocationData[0].lat) {
+      //   await getAndUpdateLatLng(existingLocationData[0].id, address_line_1, city, state, zip)
+      // }
+      // await tagLocation(existingLocationData?.[0].id, tags)
+      // console.log('existing location data', existingLocationData)
+      continue
+    } else {
+      const { data: locationData, error: locationDataError } = await supabase
+        .from('content_locations')
+        .insert({
+          title: name,
+          published: false,
+          loc: name.split(' ').join('-')
+        })
+        .select();
+      if (locationDataError) {
+
+        console.error(locationDataError)
+      }
+      // if (locationData?.[0]) {
+      //   await getAndUpdateLatLng(locationData?.[0].id, address_line_1, city, state, zip)
+      //   await tagLocation(locationData?.[0].id, tags)
+      // }
     }
 
 

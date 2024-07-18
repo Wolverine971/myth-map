@@ -3,27 +3,28 @@
 
 	// import twitter from '$lib/images/twitter.svg';
 
-	const formattedDate = new Date(metaData.date).toDateString();
+	const formattedDate = new Date(metaData?.date).toDateString();
 </script>
 
 <p>
-	<span
-		class="author"
-		title="he is so cool"
-		itemprop="author"
-		itemscope
-		itemtype="https://schema.org/Person"
-	>
-		<a
-			itemprop="url"
-			class="external-link"
-			target="_blank"
-			rel="noreferrer"
-			href="https://twitter.com/djwayne3"
-			style="padding: 0.5rem"
+	{#if metaData?.author}
+		<span
+			class="author"
+			title="he is so cool"
+			itemprop="author"
+			itemscope
+			itemtype="https://schema.org/Person"
 		>
-			{metaData.author}
-			<!-- <img
+			<a
+				itemprop="url"
+				class="external-link"
+				target="_blank"
+				rel="noreferrer"
+				href="https://twitter.com/djwayne3"
+				style="padding: 0.5rem"
+			>
+				{metaData.author}
+				<!-- <img
 				src={twitter}
 				alt="djwayne3 Twitter"
 				title="djwayne3 Twitter"
@@ -31,8 +32,9 @@
 				style="width:1.5rem"
 				width="150"
 			/> -->
-		</a>
-	</span>
+			</a>
+		</span>
+	{/if}
 	<span class="date">{formattedDate}</span>
 </p>
 

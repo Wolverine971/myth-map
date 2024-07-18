@@ -9,8 +9,24 @@
 
 	const ingest = async () => {
 		ingesting = true;
-		const { data, error: emailError } = await (
+		const { data, error: ingestError } = await (
 			await fetch(`/ingest?/ingest`, {
+				method: 'POST',
+				body: JSON.stringify({})
+			})
+		).json();
+
+		if (data) {
+			notifications.info('ingested', 3000);
+		} else {
+			notifications.warning('ingested Failed', 3000);
+		}
+		ingesting = false;
+	};
+	const ingestBlogs = async () => {
+		ingesting = true;
+		const { data, error: ingestError } = await (
+			await fetch(`/ingest?/ingestBlogs`, {
 				method: 'POST',
 				body: JSON.stringify({})
 			})
@@ -31,12 +47,20 @@
 	{#if ingesting}
 		<Button type="button"><div class="loader" /></Button>
 	{:else}
-		<Button
-			type="button"
-			on:click={async () => {
-				await ingest();
-			}}>Ingest</Button
-		>
+		<div>
+			<Button
+				type="button"
+				on:click={async () => {
+					await ingest();
+				}}>Ingest</Button
+			>
+			<Button
+				type="button"
+				on:click={async () => {
+					await ingestBlogs();
+				}}>Ingest Blogs</Button
+			>
+		</div>
 	{/if}
 	{#each data?.locations as location, i}
 		{#if i !== 0}

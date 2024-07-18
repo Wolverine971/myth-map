@@ -2,7 +2,7 @@
 	export let slug = '';
 	export let title: string;
 	const id = title
-		.toLowerCase()
+		?.toLowerCase()
 		.replace(/[^a-zA-Z ]/g, '')
 		.replace(/\s/g, '-');
 

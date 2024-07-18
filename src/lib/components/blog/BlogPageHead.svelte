@@ -44,7 +44,7 @@
 
 	<meta property="og:site_name" content="Tiny Tribe Adventures" />
 	<meta property="og:title" content={title} />
-	<meta property="og:description" content={data.description} />
+	<meta property="og:description" content={data?.description} />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content={`https://myth-map.vercel.app/${slug}`} />
 	<meta property="og:image" content={`https://myth-map.vercel.app/blogs/${data?.pic}.webp`} />

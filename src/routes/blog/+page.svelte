@@ -33,12 +33,12 @@
 	</ul>
 </details> -->
 
-<div class=" text-left">
+<div class="text-left" style="align-self: baseline;">
 	{#each data.blogs as blog}
 		<div class="mb-8">
 			<h2 class="text-2xl font-bold text-gray-900 dark:text-white">{blog.title}</h2>
 			<p class="text-gray-700 dark:text-gray-400">{blog.description}</p>
-			<a href={`blog/${blog.slug}`} class="text-primary mt-2 flex items-center">
+			<a href={`blog/${blog.loc}`} class="text-primary mt-2 flex items-center">
 				Read More
 				<ArrowRightIcon class="ml-1 h-4 w-4" />
 			</a>
