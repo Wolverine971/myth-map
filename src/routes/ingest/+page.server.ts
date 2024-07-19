@@ -5,6 +5,7 @@ import type { Actions, RequestHandler } from '@sveltejs/kit';
 // import { supabase } from '$lib/supabase';
 // import { joinEmail2 } from '../../emails';
 import { getLocations, ingest, ingestBlogs } from './googleSpreadsheet';
+import { supabase } from '$lib/supabaseClient';
 
 // import { google } from 'googleapis';
 
@@ -49,7 +50,42 @@ export const actions: Actions = {
             });
         }
 
+    },
+    ingestGeographies: async ({ request }) => {
+        try {
+            // const body = Object.fromEntries(await request.formData());
+
+            const { data: locationCoords, error: locationCoordsError } = await supabase.from('locations').select('*')
+
+            if (locationCoordsError) {
+                console.error(locationCoordsError)
+            }
+
+            const mapData = locationCoords?.map((location) => {
+                return {
+                    name: location.name,
+                    location_id: location.id,
+                    location: `POINT(${location.lng} ${location.lat})`
+                }
+            })
+
+            const { error: insertError } = await supabase.from('location_coordinates').insert(mapData)
+
+            if (insertError) {
+                console.error(insertError)
+            }
+
+            return { success: true };
+        } catch (e) {
+            throw error(404, {
+                message: `Failed to ingest blogs, ${JSON.stringify(e)}`
+            });
+        }
+
     }
+
+
+
 };
 
 const makeBody = ({

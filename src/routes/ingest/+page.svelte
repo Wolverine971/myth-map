@@ -10,7 +10,7 @@
 	const ingest = async () => {
 		ingesting = true;
 		const { data, error: ingestError } = await (
-			await fetch(`/ingest?/ingest`, {
+			await fetch(`/ingest?/ingestGeographies`, {
 				method: 'POST',
 				body: JSON.stringify({})
 			})

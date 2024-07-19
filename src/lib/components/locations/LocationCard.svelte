@@ -1,17 +1,18 @@
-<script>
+<script lang="ts">
 	import { Card, Button } from 'flowbite-svelte';
 	let hCard = false;
 	export let name;
 	export let address;
 	export let website;
 	export let tags;
+	export let size: string = 'md';
 
 	const addressPart1 = address.split(',')[0];
 	const addressPart2 = address.split(',').slice(1);
 </script>
 
 <!-- img={`/tag-images/${tags[0] || 'myth-map'}.png`} -->
-<Card href="/" horizontal size="md" reverse={hCard}>
+<Card href="/" horizontal {size} reverse={hCard}>
 	<div
 		style="width: calc(100% - 10px); display: flex; flex-direction: column; height: 100%; min-height: 170px;"
 	>
@@ -31,8 +32,10 @@
 		</a>
 	</div>
 
+	<div
+		style="width: 50%; height: 100%;display: flex; flex-direction: column; gap: 0.5rem;"
+	>
 	{#if tags?.length}
-		<div style="width: 50%;">
 			<ul class="tag-list">
 				{#each tags as tag}
 					<li class="chip">
@@ -40,8 +43,11 @@
 					</li>
 				{/each}
 			</ul>
-		</div>
 	{/if}
+	<a href={`/blog/locations/${name.replace(/\s/g, '-')}`} style="margin-top: auto; margin-left: auto; border: 1px solid; border-radius: .5rem;" >
+		<Button outline color="secondary" size="md" block>Visit Blog</Button>
+	</a>
+</div>
 </Card>
 
 <style>
