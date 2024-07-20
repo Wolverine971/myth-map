@@ -10,105 +10,95 @@ import { supabase } from '$lib/supabaseClient';
 // import { google } from 'googleapis';
 
 export const load: PageServerLoad = async (event) => {
-
-    const locations = await getLocations();
-    return {
-        // session: await getServerSession(event),
-        locations: locations
-    };
+	const locations = await getLocations();
+	return {
+		// session: await getServerSession(event),
+		locations: locations
+	};
 };
 
-
-
 export const actions: Actions = {
-    ingest: async ({ request, locals: { supabase, getSession } }) => {
-        try {
-            // const body = Object.fromEntries(await request.formData());
+	ingest: async ({ request, locals: { supabase, getSession } }) => {
+		try {
+			// const body = Object.fromEntries(await request.formData());
 
+			await ingest();
 
-            await ingest();
+			return { success: true };
+		} catch (e) {
+			throw error(404, {
+				message: `Failed to ingest, ${JSON.stringify(e)}`
+			});
+		}
+	},
+	ingestBlogs: async ({ request, locals: { supabase, getSession } }) => {
+		try {
+			// const body = Object.fromEntries(await request.formData());
 
-            return { success: true };
-        } catch (e) {
-            throw error(404, {
-                message: `Failed to ingest, ${JSON.stringify(e)}`
-            });
-        }
+			await ingestBlogs();
 
-    },
-    ingestBlogs: async ({ request, locals: { supabase, getSession } }) => {
-        try {
-            // const body = Object.fromEntries(await request.formData());
+			return { success: true };
+		} catch (e) {
+			throw error(404, {
+				message: `Failed to ingest blogs, ${JSON.stringify(e)}`
+			});
+		}
+	},
+	ingestGeographies: async ({ request }) => {
+		try {
+			// const body = Object.fromEntries(await request.formData());
 
+			const { data: locationCoords, error: locationCoordsError } = await supabase
+				.from('locations')
+				.select('*');
 
-            await ingestBlogs();
+			if (locationCoordsError) {
+				console.error(locationCoordsError);
+			}
 
-            return { success: true };
-        } catch (e) {
-            throw error(404, {
-                message: `Failed to ingest blogs, ${JSON.stringify(e)}`
-            });
-        }
+			const mapData = locationCoords?.map((location) => {
+				return {
+					name: location.name,
+					location_id: location.id,
+					location: `POINT(${location.lng} ${location.lat})`
+				};
+			});
 
-    },
-    ingestGeographies: async ({ request }) => {
-        try {
-            // const body = Object.fromEntries(await request.formData());
+			const { error: insertError } = await supabase.from('location_coordinates').insert(mapData);
 
-            const { data: locationCoords, error: locationCoordsError } = await supabase.from('locations').select('*')
+			if (insertError) {
+				console.error(insertError);
+			}
 
-            if (locationCoordsError) {
-                console.error(locationCoordsError)
-            }
-
-            const mapData = locationCoords?.map((location) => {
-                return {
-                    name: location.name,
-                    location_id: location.id,
-                    location: `POINT(${location.lng} ${location.lat})`
-                }
-            })
-
-            const { error: insertError } = await supabase.from('location_coordinates').insert(mapData)
-
-            if (insertError) {
-                console.error(insertError)
-            }
-
-            return { success: true };
-        } catch (e) {
-            throw error(404, {
-                message: `Failed to ingest blogs, ${JSON.stringify(e)}`
-            });
-        }
-
-    }
-
-
-
+			return { success: true };
+		} catch (e) {
+			throw error(404, {
+				message: `Failed to ingest blogs, ${JSON.stringify(e)}`
+			});
+		}
+	}
 };
 
 const makeBody = ({
-    toEmails,
-    fromEmail,
-    subject,
-    message
+	toEmails,
+	fromEmail,
+	subject,
+	message
 }: {
-    toEmails: string[];
-    fromEmail: string;
-    subject: string;
-    message: string;
+	toEmails: string[];
+	fromEmail: string;
+	subject: string;
+	message: string;
 }) => {
-    const str = [
-        'Content-Type: text/html; charset="UTF-8"\n',
-        'MIME-Version: 1.0\n',
-        'Content-Transfer-Encoding: 7bit\n',
-        `to: ${toEmails.join(',')}\n`,
-        `from: ${fromEmail}\n`,
-        `subject: ${subject}\n\n`,
-        message
-    ].join('');
+	const str = [
+		'Content-Type: text/html; charset="UTF-8"\n',
+		'MIME-Version: 1.0\n',
+		'Content-Transfer-Encoding: 7bit\n',
+		`to: ${toEmails.join(',')}\n`,
+		`from: ${fromEmail}\n`,
+		`subject: ${subject}\n\n`,
+		message
+	].join('');
 
-    return Buffer.from(str).toString('base64').replace(/\+/g, '-').replace(/\//g, '_');
+	return Buffer.from(str).toString('base64').replace(/\+/g, '-').replace(/\//g, '_');
 };
-
