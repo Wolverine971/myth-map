@@ -41,6 +41,15 @@ export const load: PageLoad = async ({ params }) => {
     if (nearByLocationsError) {
         console.error(nearByLocationsError)
     }
+    const filteredNearByLocations = nearByLocations.filter((location) => location.name !== blogData.title)
+
+    const { data: locationTags, error: locationTagsError } = await supabase.from("location_tags")
+        .select("*, locations(*), tags(*)")
+        .in('location_id', filteredNearByLocations.map((location) => location.id))
+        ;
+    if (locationTagsError) {
+        console.error(locationTagsError);
+    }
 
 
 
@@ -49,7 +58,8 @@ export const load: PageLoad = async ({ params }) => {
     return {
         blog: blogData,
         locationData,
-        nearbyLocations: nearByLocations.filter((location) => location.name !== blogData.title)
+        locationTags,
+        nearbyLocations: filteredNearByLocations
     };
 };
 

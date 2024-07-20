@@ -159,6 +159,9 @@
 	<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl">
 		Welcome to Tiny Tribe Adventures
 	</Heading>
+
+	<Heading tag="h5">Your one stop shop for planning family friendly activities</Heading>
+	<br />
 {/if}
 <div style="display: flex; flex-direction: column;  gap: 1rem; width: 100%;">
 	<LocationFilters

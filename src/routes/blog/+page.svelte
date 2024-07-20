@@ -24,7 +24,7 @@
 <Card href="/blog/locations" style="align-self: baseline;">
 	<h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Locations</h5>
 	<p class="font-normal leading-tight text-gray-700 dark:text-gray-400">
-		Activities, food, indoor, outdoor-- get in the know
+		Get the scoop on all the activities, places to eat and all family friendly locations
 	</p>
 </Card>
 
