@@ -214,13 +214,21 @@
 		});
 
 		class FullscreenControl {
+			constructor() {
+				this._fullscreen = false;
+			}
+
 			onAdd(map) {
 				this._map = map;
 				this._container = document.createElement('div');
 				this._container.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
-				this._container.innerHTML =
-					'<button class="fullscreen-button"><span class="fullscreen-icon"></span></button>';
-				this._container.onclick = () => this.toggleFullscreen();
+				this._button = document.createElement('button');
+				this._button.className = 'fullscreen-button';
+				this._icon = document.createElement('span');
+				this._icon.className = 'fullscreen-icon';
+				this._button.appendChild(this._icon);
+				this._container.appendChild(this._button);
+				this._button.addEventListener('click', () => this.toggleFullscreen());
 				return this._container;
 			}
 
@@ -231,26 +239,73 @@
 
 			toggleFullscreen() {
 				const mapContainer = this._map.getContainer();
-				if (!document.fullscreenElement) {
-					if (mapContainer.requestFullscreen) {
-						mapContainer.requestFullscreen();
-					} else if (mapContainer.mozRequestFullScreen) {
-						mapContainer.mozRequestFullScreen();
-					} else if (mapContainer.webkitRequestFullscreen) {
-						mapContainer.webkitRequestFullscreen();
-					} else if (mapContainer.msRequestFullscreen) {
-						mapContainer.msRequestFullscreen();
-					}
+				if (!this._fullscreen) {
+					this._enterFullscreen(mapContainer);
 				} else {
-					if (document.exitFullscreen) {
-						document.exitFullscreen();
-					} else if (document.mozCancelFullScreen) {
-						document.mozCancelFullScreen();
-					} else if (document.webkitExitFullscreen) {
-						document.webkitExitFullscreen();
-					} else if (document.msExitFullscreen) {
-						document.msExitFullscreen();
-					}
+					this._exitFullscreen(mapContainer);
+				}
+			}
+
+			_enterFullscreen(element) {
+				if (element.requestFullscreen) {
+					element.requestFullscreen();
+				} else if (element.mozRequestFullScreen) {
+					element.mozRequestFullScreen();
+				} else if (element.webkitRequestFullscreen) {
+					element.webkitRequestFullscreen();
+				} else if (element.msRequestFullscreen) {
+					element.msRequestFullscreen();
+				} else {
+					// Fallback for mobile devices
+					this._setMobileFullscreen(element, true);
+				}
+				this._fullscreen = true;
+				this._updateButtonIcon();
+			}
+
+			_exitFullscreen(element) {
+				if (document.exitFullscreen) {
+					document.exitFullscreen();
+				} else if (document.mozCancelFullScreen) {
+					document.mozCancelFullScreen();
+				} else if (document.webkitExitFullscreen) {
+					document.webkitExitFullscreen();
+				} else if (document.msExitFullscreen) {
+					document.msExitFullscreen();
+				} else {
+					// Fallback for mobile devices
+					this._setMobileFullscreen(element, false);
+				}
+				this._fullscreen = false;
+				this._updateButtonIcon();
+			}
+
+			_setMobileFullscreen(element, fullscreen) {
+				if (fullscreen) {
+					element.style.position = 'fixed';
+					element.style.top = '0';
+					element.style.left = '0';
+					element.style.width = '100%';
+					element.style.height = '100%';
+					element.style.zIndex = '9999';
+				} else {
+					element.style.position = '';
+					element.style.top = '';
+					element.style.left = '';
+					element.style.width = '';
+					element.style.height = '';
+					element.style.zIndex = '';
+				}
+				this._map.resize();
+			}
+
+			_updateButtonIcon() {
+				if (this._fullscreen) {
+					this._icon.classList.remove('fullscreen-icon');
+					this._icon.classList.add('exit-fullscreen-icon');
+				} else {
+					this._icon.classList.remove('exit-fullscreen-icon');
+					this._icon.classList.add('fullscreen-icon');
 				}
 			}
 		}
@@ -374,6 +429,22 @@
 			});
 		});
 	};
+
+	document.addEventListener('fullscreenchange', () => {
+		map.resize();
+	});
+
+	document.addEventListener('webkitfullscreenchange', () => {
+		map.resize();
+	});
+
+	document.addEventListener('mozfullscreenchange', () => {
+		map.resize();
+	});
+
+	document.addEventListener('MSFullscreenChange', () => {
+		map.resize();
+	});
 </script>
 
 <div class="map-wrap">
