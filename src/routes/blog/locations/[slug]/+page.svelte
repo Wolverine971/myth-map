@@ -95,6 +95,25 @@
 				Near By Family Friendly Activities
 			</Heading>
 
+			{#if data.suggestions}
+				<!-- todo suggestions -->
+				<div style="display: flex; flex-direction: column; max-width: 50%; gap: 0.2rem;">
+					<h3>Suggestions</h3>
+					{#if data.suggestions.length === 0}
+						<p>No suggestions found</p>
+					{:else}
+						{#each placesToEat as location}
+							<LocationCard
+								name={location.name}
+								address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
+								website={location.website}
+								tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
+							/>
+						{/each}
+					{/if}
+				</div>
+			{/if}
+
 			<div style="display: flex; gap: 1rem">
 				<div style="display: flex; flex-direction: column; max-width: 50%; gap: 0.2rem;">
 					<h3>Places to Eat</h3>

@@ -113,7 +113,7 @@
 			{ url: 'map/farm.png', id: 'farm1' },
 			{ url: 'map/hiking-trail.png', id: 'hiking-trail1' },
 			{ url: 'map/nasa.png', id: 'nasa1' },
-			{ url: 'map/ice-cream-truck.png', id: 'ice-cream1' },
+			{ url: 'map/ice-cream-truck.png', id: 'ice-cream-truck1' },
 			{ url: 'map/mini-golf.png', id: 'mini-golf1' },
 			{ url: 'map/bakery.png', id: 'bakery1' },
 			{ url: 'map/brewery.png', id: 'brewery1' },
