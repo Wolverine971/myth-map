@@ -2,21 +2,26 @@
 	import { setContext, onMount } from 'svelte';
 
 	import { dev } from '$app/environment';
-	import { mapboxgl, key } from './mapboxgl.ts';
+	import { PUBLIC_MAP_KEY } from '$env/static/public';
 	import './mapbox.css';
 	import { getLocationIcon } from '../../../utils/locationPhotos.js';
 
 	export let locations = [];
-
 	export let shownLocations = [];
 	export let currentLocation: { lat: number; lng: number } | null = null;
 	let mapContainer;
+	let mapboxgl;
 	let map;
+	const key = Symbol();
 	onMount(async () => {
+		mapboxgl = await import('mapbox-gl');
+
 		await initMap();
 	});
 
-	$: shownLocations, showLocations();
+	$: if (map && shownLocations) {
+		showLocations();
+	}
 
 	$: currentLocation, showCurrentLocation();
 
@@ -204,7 +209,8 @@
 			container: mapContainer,
 			style: 'mapbox://styles/mapbox/outdoors-v12', //'mapbox://styles/mapbox/dark-v10',
 			center: [-76.7818, 39.2141],
-			zoom: 7
+			zoom: 7,
+			accessToken: PUBLIC_MAP_KEY
 		});
 
 		class FullscreenControl {

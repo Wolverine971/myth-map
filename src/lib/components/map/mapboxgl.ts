@@ -1,9 +1,9 @@
-import { PUBLIC_MAP_KEY } from '$env/static/public';
-import mapboxgl from 'mapbox-gl';
+// import { PUBLIC_MAP_KEY } from '$env/static/public';
+// import mapboxgl from 'mapbox-gl';
 
-// https://docs.mapbox.com/help/glossary/access-token/
-mapboxgl.accessToken = PUBLIC_MAP_KEY;
+// // https://docs.mapbox.com/help/glossary/access-token/
+// mapboxgl.accessToken = PUBLIC_MAP_KEY;
 
-const key = Symbol();
+// const key = Symbol();
 
-export { mapboxgl, key };
+// export { mapboxgl, key };
