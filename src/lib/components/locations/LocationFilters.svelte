@@ -123,9 +123,9 @@
 	<div class="flex items-center" transition:fade={{ duration: 600 }}>
 		<!-- <label for="search" class="mr-2">Search:</label>
 			<input type="text" id="search" class="form-input" placeholder="Search..." /> -->
-		<Button>
+		<Button outline>
 			Location Type: {baseSelect ? `${baseSelect}` : 'Any'}
-			<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
+			<ChevronDownOutline class="ms-2 h-6 w-6 " />
 		</Button>
 		<Dropdown
 			style="z-index: 1232134234"
@@ -146,9 +146,9 @@
 		</Dropdown>
 	</div>
 	<div class="flex items-center" transition:fade={{ duration: 800 }}>
-		<Button>
+		<Button outline>
 			Location Type: {indoorOutdoorSelect ? `${indoorOutdoorSelect}` : 'Any'}
-			<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
+			<ChevronDownOutline class="ms-2 h-6 w-6 " />
 		</Button>
 		<Dropdown
 			style="z-index: 1232134234"
@@ -169,9 +169,9 @@
 		</Dropdown>
 	</div>
 	<div class="flex items-center" transition:fade={{ duration: 1000 }} style="z-index: 123423543;">
-		<Button>
+		<Button outline>
 			Tags ({checkedItems.length})
-			<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
+			<ChevronDownOutline class="ms-2 h-6 w-6 " />
 		</Button>
 		<Dropdown placement={'bottom'}>
 			{#each displayTags as tag}

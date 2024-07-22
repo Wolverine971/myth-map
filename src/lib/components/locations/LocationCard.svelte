@@ -38,7 +38,7 @@
 		{/if}
 		<div style="margin-top: auto;">
 			<a href={website} target="_blank" rel="noopener noreferrer">
-				<Button color="primary" size="md" block>Visit Website</Button>
+				<Button outline color="primary" size="md" block>Visit Website</Button>
 			</a>
 			<a
 				href={`/blog/locations/${name.replace(/\s/g, '-')}`}
