@@ -4,6 +4,7 @@
 	import { dev } from '$app/environment';
 	import { mapboxgl, key } from './mapboxgl.ts';
 	import './mapbox.css';
+	import { getLocationIcon } from '../../../utils/locationPhotos.js';
 
 	export let locations = [];
 
@@ -19,66 +20,6 @@
 
 	$: currentLocation, showCurrentLocation();
 
-	const allPlaceIcons = {
-		'Science Center': '',
-		'Port Discovery': '',
-		'NASA Goddard Flight Center': 'nasa1',
-		'National Aquarium': 'aquarium',
-		'Maryland Zoo': 'aquarium',
-		'Robinson Nature Center': 'nature-preserve1',
-		'B&O Train Museum': 'train1',
-		'Baltimore & Ohio Ellicott City Station Museum': 'train1',
-		'The Fire Museum of MD': 'fire-truck',
-		'Bland Air Regional Park North Playground': 'playground',
-		'Bland Air Regional Park West Playground': 'playground',
-		'Bland Air Regional Park South Playground': 'playground',
-		'Schooley Mill Playground': 'playground',
-		'Swansfield Neighborhood Playground': 'playground',
-		'Cedar Lane Park Playground': 'playground',
-		'Cedar Lane Park East Playground': 'playground',
-		'Hilton Tire Park': 'park-with-trails',
-		'Centennial Park': 'park-with-trails',
-		'Centennial Park West': 'park-with-trails',
-		'Centennial Park North': 'park-with-trails',
-		'Rockburn Branch Park': 'park-with-trails',
-		'Rockburn Branch Park East': 'park-with-trails',
-		'Piney Run Park': 'park-with-trails',
-		'Splash Pad of Sykesville': 'splash-pad',
-		'Color Burst Park': '', // 'splash-pad',
-		'Mayo Beach Park': 'beach',
-		Skyzone: 'trampoline-park',
-		Cimbzone: 'climbing-gym',
-		Playseum: 'art-studio1',
-		'Doodle Hatch': 'art-studio1',
-		Storyville: 'art-studio1',
-		'Play n Learn': 'indoor-playground',
-		'Hyper Kidz': 'indoor-playground',
-		'Monster Mini Golf': 'mini-golf',
-		'My Gym - Columbia': 'kids-gym',
-		'Donut shack': 'donut-shop',
-		"Carlson's donuts": 'donut-shop',
-		"Charlsie's Bakehouse": 'bakery1',
-		'Guiness Brewery': 'brewery1',
-		'Manor Hill Brewery': 'brewery1',
-		'The Ice Shack': 'ice-cream1',
-		"Mary's Land Farm": 'farm',
-		"Clark's Elioak Farm": 'farm',
-		'Larriland Farm': 'farm',
-		'Howard County Library Central Branch': 'library',
-		'Howard County Library East Columbia Branch': 'library',
-		'Howard County Library Elkridge Branch': 'library',
-		'Howard County Library Glenwood Branch': 'library',
-		'Howard County Library Miller Branch & Historical Center': 'library',
-		'Howard County Library Savage Branch & STEM Education Center': 'library',
-		"Ellicott Mills Children's Museum": 'childrens-museum',
-		'Patuxent Research Refuge - South Tract': 'nature-preserve1',
-		'Patuxent Research Refuge - North Tract': 'nature-preserve1',
-		'Greenbrier State Park': 'hiking-trail',
-		'Lake Elkhorn': 'lake',
-		Grounded: 'outdoor-adventure',
-		'Village Center': 'community-center1',
-		'Thomas A. Dixon, Jr. Aircraft Observation Area': 'aircraft-viewing'
-	};
 
 	const showCurrentLocation = async () => {
 		if (!map || !currentLocation?.lat) return;
@@ -139,7 +80,7 @@
 						// programs: location.programs,
 						// keywords: location.keywords,
 						id: i,
-						icon: getIcon(location.name)
+						icon: `${getLocationIcon(location.name)}1`
 					},
 					geometry: { type: 'Point', coordinates: [location.lng, location.lat] }
 				};
@@ -156,26 +97,6 @@
 		getMap: () => map
 	});
 
-	const getIcon = (name: string) => {
-		const lowerCaseName = name.toLowerCase();
-		if (lowerCaseName.includes('playground')) {
-			return 'playground1';
-		} else if (lowerCaseName.includes('park')) {
-			return 'park-with-trails';
-		} else if (lowerCaseName.includes('library')) {
-			return 'library1';
-		} else if (lowerCaseName.includes('museum')) {
-			return 'museum1';
-		} else if (lowerCaseName.includes('farm')) {
-			return 'farm1';
-		} else if (lowerCaseName.includes('brewery')) {
-			return 'brewery1';
-		} else if (allPlaceIcons[name]) {
-			return allPlaceIcons[name];
-		}
-
-		return 'mythmap1';
-	};
 
 	const initLayers = async (data: any) => {
 		if (!map) return;
@@ -188,25 +109,25 @@
 			{ url: 'map/playground.png', id: 'playground1' },
 			{ url: 'map/park1.png', id: 'park1' },
 			{ url: 'map/mythmap.png', id: 'mythmap1' },
-			{ url: 'map/donut-shack.png', id: 'donut-shop' },
+			{ url: 'map/donut-shop.png', id: 'donut-shop1' },
 			{ url: 'map/library.png', id: 'library1' },
 			{ url: 'map/museum.png', id: 'museum1' },
 			{ url: 'map/farm.png', id: 'farm1' },
 			{ url: 'map/hiking-trail.png', id: 'hiking-trail1' },
 			{ url: 'map/nasa.png', id: 'nasa1' },
 			{ url: 'map/ice-cream-truck.png', id: 'ice-cream1' },
-			{ url: 'map/golf-course.png', id: 'golf1' },
+			{ url: 'map/mini-golf.png', id: 'mini-golf1' },
 			{ url: 'map/bakery.png', id: 'bakery1' },
 			{ url: 'map/brewery.png', id: 'brewery1' },
-			{ url: 'map/trampoline-park.png', id: 'trampoline-park' },
-			{ url: 'map/climbing-gym.png', id: 'climbing-gym' },
-			{ url: 'map/lake.png', id: 'lake' },
+			{ url: 'map/trampoline-park.png', id: 'trampoline-park1' },
+			{ url: 'map/climbing-gym.png', id: 'climbing-gym1' },
+			{ url: 'map/lake.png', id: 'lake1' },
 			{ url: 'map/nature-preserve.png', id: 'nature-preserve1' },
 			{ url: 'map/community-center.png', id: 'community-center1' },
 			{ url: 'map/art-studio.png', id: 'art-studio1' },
-			{ url: 'map/splash-pad.png', id: 'splash-pad' },
+			{ url: 'map/splash-pad.png', id: 'splash-pad1' },
 			{ url: 'map/train.png', id: 'train1' },
-			{ url: 'map/park-with-trails.png', id: 'park-with-trails' }
+			{ url: 'map/park-with-trails.png', id: 'park-with-trails1' }
 		];
 
 		Promise.all(
@@ -315,7 +236,7 @@
 						// programs: location.programs,
 						// keywords: location.keywords,
 						id: i,
-						icon: getIcon(location.name)
+						icon: `${getLocationIcon(location.name)}1`
 					},
 					geometry: { type: 'Point', coordinates: [location.lng, location.lat] }
 				};
