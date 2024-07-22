@@ -207,6 +207,51 @@
 			zoom: 7
 		});
 
+		class FullscreenControl {
+			onAdd(map) {
+				this._map = map;
+				this._container = document.createElement('div');
+				this._container.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
+				this._container.innerHTML =
+					'<button class="fullscreen-button"><span class="fullscreen-icon"></span></button>';
+				this._container.onclick = () => this.toggleFullscreen();
+				return this._container;
+			}
+
+			onRemove() {
+				this._container.parentNode.removeChild(this._container);
+				this._map = undefined;
+			}
+
+			toggleFullscreen() {
+				const mapContainer = this._map.getContainer();
+				if (!document.fullscreenElement) {
+					if (mapContainer.requestFullscreen) {
+						mapContainer.requestFullscreen();
+					} else if (mapContainer.mozRequestFullScreen) {
+						mapContainer.mozRequestFullScreen();
+					} else if (mapContainer.webkitRequestFullscreen) {
+						mapContainer.webkitRequestFullscreen();
+					} else if (mapContainer.msRequestFullscreen) {
+						mapContainer.msRequestFullscreen();
+					}
+				} else {
+					if (document.exitFullscreen) {
+						document.exitFullscreen();
+					} else if (document.mozCancelFullScreen) {
+						document.mozCancelFullScreen();
+					} else if (document.webkitExitFullscreen) {
+						document.webkitExitFullscreen();
+					} else if (document.msExitFullscreen) {
+						document.msExitFullscreen();
+					}
+				}
+			}
+		}
+
+		// Add the custom control to the map
+		map.addControl(new FullscreenControl(), 'top-right');
+
 		const data = {
 			type: 'FeatureCollection',
 			crs: {
