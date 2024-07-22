@@ -127,7 +127,11 @@
 			{ url: 'map/art-studio.png', id: 'art-studio1' },
 			{ url: 'map/splash-pad.png', id: 'splash-pad1' },
 			{ url: 'map/train.png', id: 'train1' },
-			{ url: 'map/park-with-trails.png', id: 'park-with-trails1' }
+			{ url: 'map/park-with-trails.png', id: 'park-with-trails1' },
+			{ url: 'map/zoo.png', id: 'park-with-zoo1' },
+			{ url: 'map/aircraft-observation.png', id: 'aircraft-observation1' },
+
+			
 		];
 
 		Promise.all(

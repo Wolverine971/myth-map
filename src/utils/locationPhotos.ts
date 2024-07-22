@@ -3,7 +3,7 @@ export const allPlaceIcons = {
     'Port Discovery': '',
     'NASA Goddard Flight Center': 'nasa',
     'National Aquarium': 'aquarium',
-    'Maryland Zoo': 'aquarium',
+    'Maryland Zoo': 'zoo',
     'Robinson Nature Center': 'nature-preserve',
     'B&O Train Museum': 'train',
     'Baltimore & Ohio Ellicott City Station Museum': 'train',
@@ -56,7 +56,7 @@ export const allPlaceIcons = {
     'Lake Elkhorn': 'lake',
     Grounded: '', // 'outdoor-adventure',
     'Village Center': 'community-center',
-    'Thomas A. Dixon, Jr. Aircraft Observation Area': ''
+    'Thomas A. Dixon, Jr. Aircraft Observation Area': 'aircraft-observation'
 };
 
 export const getLocationIcon = (name: string) => {
