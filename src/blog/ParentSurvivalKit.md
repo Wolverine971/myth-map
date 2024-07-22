@@ -12,7 +12,6 @@ type: ['']
 pic: ''
 ---
 
-
 We get it we know its hard.
 
 Deal with the kids and catch a break.

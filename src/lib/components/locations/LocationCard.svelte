@@ -14,24 +14,19 @@
 
 <!-- img={`/tag-images/${tags[0] || 'myth-map'}.png`} -->
 <!-- img="{`/map/${getLocationIcon(name)}.png`}" -->
-<Card  horizontal {size} reverse={hCard} >
-	<img src="{`/map/${getLocationIcon(name)}.png`}" alt="" class="img-icon"/>
-	
-	<div
-		style="display: flex; flex-direction: column; min-height: 170px; margin-left: .5rem;"
-	>
+<Card horizontal {size} reverse={hCard}>
+	<img src={`/map/${getLocationIcon(name)}.png`} alt="" class="img-icon" />
+
+	<div style="display: flex; flex-direction: column; min-height: 170px; margin-left: .5rem;">
 		<h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
 			{name}
 		</h5>
-		<p
-			class="mb-3 font-normal leading-tight text-gray-700 dark:text-gray-400"
-			style=""
-		>
+		<p class="mb-3 font-normal leading-tight text-gray-700 dark:text-gray-400" style="">
 			{addressPart1}
 			<br />
 			{addressPart2}
 		</p>
-		
+
 		{#if tags?.length}
 			<ul class="tag-list">
 				{#each tags as tag}
@@ -45,16 +40,15 @@
 			<a href={website} target="_blank" rel="noopener noreferrer">
 				<Button color="primary" size="md" block>Visit Website</Button>
 			</a>
-		<a
-			href={`/blog/locations/${name.replace(/\s/g, '-')}`}
-			style="margin-top: auto; margin-left: auto; "
-		>
-			<Button outline color="alternative" size="md" block>More Info</Button>
-		</a>
-	</div>
+			<a
+				href={`/blog/locations/${name.replace(/\s/g, '-')}`}
+				style="margin-top: auto; margin-left: auto; "
+			>
+				<Button outline color="alternative" size="md" block>More Info</Button>
+			</a>
+		</div>
 	</div>
 </Card>
-
 
 <!-- <div class="space-y-4">
   <Card img="/images/image-1.webp" href="/" horizontal size="md" reverse={hCard}>
@@ -67,11 +61,10 @@
 	.img-icon {
 		object-fit: contain !important;
 		width: 12rem;
-		
 	}
 	.object-cover {
-    object-fit: contain;
-}
+		object-fit: contain;
+	}
 	.tag-list {
 		display: flex;
 		align-items: baseline;
