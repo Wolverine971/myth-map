@@ -2,13 +2,13 @@
 title: 'Parent survival kit'
 description: ''
 author: 'DJ Wayne'
-date: '2024-06-28'
+date: '2024-07-22'
 loc: 'https://myth-map.vercel.app/blog/ParentSurvivalKit'
-lastmod: '2024-06-28'
+lastmod: '2024-07-22'
 changefreq: 'monthly'
 priority: '0.6'
 published: true
-type: ['situational']
+type: ['']
 pic: ''
 ---
 
