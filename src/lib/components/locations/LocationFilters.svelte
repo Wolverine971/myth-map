@@ -168,7 +168,7 @@
 			>
 		</Dropdown>
 	</div>
-	<div class="flex items-center" transition:fade={{ duration: 1000 }} style="z-index: 123423543;">
+	<div class="flex items-center" transition:fade={{ duration: 1000 }}>
 		<Button outline>
 			Tags ({checkedItems.length})
 			<ChevronDownOutline class="ms-2 h-6 w-6 " />

@@ -207,7 +207,7 @@
 	const initMap = async () => {
 		map = new mapboxgl.Map({
 			container: mapContainer,
-			style: 'mapbox://styles/mapbox/outdoors-v12', //'mapbox://styles/mapbox/dark-v10',
+			style: 'mapbox://styles/mapbox/streets-v12', //'mapbox://styles/mapbox/dark-v10',
 			center: [-76.7818, 39.2141],
 			zoom: 7,
 			accessToken: PUBLIC_MAP_KEY
