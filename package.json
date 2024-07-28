@@ -22,6 +22,7 @@
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@tailwindcss/typography": "^0.5.13",
 		"@types/eslint": "^8.56.7",
+		"@types/mapbox__mapbox-sdk": "^0.15.1",
 		"autoprefixer": "^10.4.19",
 		"eslint": "^9.0.0",
 		"eslint-config-prettier": "^9.1.0",
@@ -47,6 +48,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@mapbox/mapbox-sdk": "^0.16.0",
 		"@supabase/supabase-js": "^2.43.4",
 		"@types/mapbox-gl": "^3.1.0",
 		"@vavite/node-loader": "^4.1.1",

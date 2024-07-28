@@ -1,0 +1,3 @@
+## Suggestions/ Tips
+
+Store hours

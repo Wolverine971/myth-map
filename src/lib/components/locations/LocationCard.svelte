@@ -1,15 +1,59 @@
 <script lang="ts">
 	import { Card, Button, type SizeType } from 'flowbite-svelte';
 	import { getLocationIcon } from '../../../utils/locationPhotos';
+
+	import { currentLocation } from '$lib/stores/locationStore';
+	import { deserialize } from '$app/forms';
 	let hCard = false;
 	export let name;
 	export let address;
 	export let website;
 	export let tags;
+	export let coords: { lat: number; lng: number };
 	export let size: SizeType = 'md';
+	let duration: number;
+	let distance: number;
+
+	let userLocation: { lat: number; lng: number } | null;
+
+	currentLocation.subscribe((value) => {
+		userLocation = value;
+	});
 
 	const addressPart1 = address.split(',')[0];
 	const addressPart2 = address.split(',').slice(1);
+
+	const getHowFarAwayIsLocation = async () => {
+		console.log('How far away is it?');
+		const originlat = userLocation?.lat.toString();
+		const originlng = userLocation?.lng.toString();
+		const destinationlat = coords.lat.toString();
+		const destinationlng = coords.lng.toString();
+
+		// { coordinates: [originlat, originlng] },
+		// 				{ coordinates: [destinationlat, destinationlng] }
+
+		let body = new FormData();
+		body.append('originlat', originlat);
+		body.append('originlng', originlng);
+		body.append('destinationlat', destinationlat);
+		body.append('destinationlng', destinationlng);
+
+		const response = await await fetch(`?/getHowFarAwayIsLocation`, {
+			method: 'POST',
+			body
+		});
+
+		// const result = await response.json();
+		const result: any = deserialize(await response.text());
+		if (result.type === 'success') {
+			console.log(`Estimated travel time: ${result.duration} minutes`);
+			duration = result.data.duration;
+			distance = result.data.distance;
+		} else {
+			console.error('Error:', result.error);
+		}
+	};
 </script>
 
 <!-- img={`/tag-images/${tags[0] || 'myth-map'}.png`} -->
@@ -46,6 +90,22 @@
 			>
 				<Button outline color="alternative" size="md" block>More Info</Button>
 			</a>
+			{#if distance}
+				<div>
+					<p>Distance: {distance} miles</p>
+					<p>Duration: {duration} minutes</p>
+				</div>
+			{:else}
+				<Button
+					style="margin-top: .25rem;"
+					type="button"
+					outline
+					color="alternative"
+					size="md"
+					on:click={getHowFarAwayIsLocation}
+					block>How far away is it?</Button
+				>
+			{/if}
 		</div>
 	</div>
 </Card>

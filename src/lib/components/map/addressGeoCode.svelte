@@ -23,6 +23,7 @@
 <Card size="md">
 	<LocationCard
 		name={location?.name}
+		coords={{ lat: location.lat, lng: location.long }}
 		address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
 		website={location.website}
 		tags={location?.tags?.name}

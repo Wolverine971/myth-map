@@ -5,12 +5,12 @@
 	import LocationCard from '$lib/components/locations/LocationCard.svelte';
 	import LocationFilters from '$lib/components/locations/LocationFilters.svelte';
 	import type { PageData } from './$types';
+	import { currentLocation } from '$lib/stores/locationStore';
 	import { onMount } from 'svelte';
 	export let data: PageData;
 	const url = 'https://myth-map.vercel.app/';
 
 	let shownLocations = data.locations;
-	let currentLocation: { lat: number; lng: number } | null = null;
 	let availableTagsMap = {};
 	const baseTagMap: any = {};
 	let locationNamesMap = {};
@@ -35,7 +35,7 @@
 
 	const currentLocationSuccess = (pos) => {
 		const crd = pos.coords;
-		currentLocation = { lat: crd.latitude, lng: crd.longitude };
+		currentLocation.set({ lat: crd.latitude, lng: crd.longitude });
 	};
 
 	const currentLocationError = (err) => {
@@ -177,6 +177,7 @@
 				{#each shownLocations as location}
 					<LocationCard
 						name={location.name}
+						coords={{ lat: location.lat, lng: location.lng }}
 						address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
 						website={location.website}
 						tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}

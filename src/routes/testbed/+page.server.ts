@@ -1,9 +1,16 @@
 import { supabase } from '$lib/supabaseClient';
 import type { PageServerLoad } from './$types';
 
+import { PUBLIC_MAP_KEY } from '$env/static/public';
+
 import type { Actions } from './$types';
 
 import { getAndUpdateLatLng } from '../../utils/locations';
+
+import mbxDirections from '@mapbox/mapbox-sdk/services/directions';
+import { json } from '@sveltejs/kit';
+
+const directionsClient = mbxDirections({ accessToken: PUBLIC_MAP_KEY });
 
 /** @type {import('./$types').PageLoad} */
 export const load: PageServerLoad = async (event) => {
@@ -35,5 +42,34 @@ export const actions: Actions = {
 		const zip = body.zip as string;
 
 		return await getAndUpdateLatLng(locationId, address, city, state, zip);
+	},
+
+	getHowFarAwayIsLocation: async ({ request }) => {
+		try {
+			const { origin, destination } = await request.json();
+
+			const response = await directionsClient
+				.getDirections({
+					profile: 'driving',
+					waypoints: [
+						{ coordinates: origin },
+						{ coordinates: destination }
+					]
+				})
+				.send();
+
+			const routes = response.body.routes;
+			if (routes.length > 0) {
+				const duration = routes[0].duration / 60; // Convert seconds to minutes
+				return json({ duration: Math.round(duration) });
+			} else {
+				return json({ error: 'No route found' }, { status: 404 });
+			}
+		} catch (error) {
+			console.error('Error calculating directions:', error);
+			return json({ error: 'Failed to calculate directions' }, { status: 500 });
+		}
+
+
 	}
 };
