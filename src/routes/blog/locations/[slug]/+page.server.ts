@@ -44,7 +44,12 @@ export const load: PageLoad = async ({ params }) => {
 	}
 	const filteredNearByLocations = nearByLocations.filter(
 		(location) => location.name !== blogData.title
-	);
+	).map((location) => {
+		return {
+			...location,
+			lng: location.long
+		};
+	});
 
 	const { data: locationTags, error: locationTagsError } = await supabase
 		.from('location_tags')

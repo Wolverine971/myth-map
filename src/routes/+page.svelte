@@ -14,9 +14,13 @@
 	let availableTagsMap = {};
 	const baseTagMap: any = {};
 	let locationNamesMap = {};
+	let userLocation: { lat: number; lng: number } | null;
+
+	currentLocation.subscribe((value) => {
+		userLocation = value;
+	});
 
 	onMount(() => {
-		navigator.geolocation.getCurrentPosition(currentLocationSuccess, currentLocationError, options);
 		data.tags.forEach((tag) => {
 			baseTagMap[tag.name] = true;
 			availableTagsMap[tag.name] = 1;
@@ -26,21 +30,6 @@
 			locationNamesMap[location.name] = true;
 		});
 	});
-
-	const options = {
-		enableHighAccuracy: true,
-		timeout: 5000,
-		maximumAge: 0
-	};
-
-	const currentLocationSuccess = (pos) => {
-		const crd = pos.coords;
-		currentLocation.set({ lat: crd.latitude, lng: crd.longitude });
-	};
-
-	const currentLocationError = (err) => {
-		console.warn(`ERROR(${err.code}): ${err.message}`);
-	};
 
 	const filterBaseLocations = (tags: string[]) => {
 		if (tags.length === 0) {
@@ -186,7 +175,7 @@
 			</div>
 		</TabItem><TabItem title="Map View"
 			><div class="map-div">
-				<Map locations={data.locations} {shownLocations} {currentLocation} />
+				<Map locations={data.locations} {shownLocations} currentLocation={userLocation} />
 			</div></TabItem
 		>
 	</Tabs>

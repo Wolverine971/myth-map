@@ -4,6 +4,7 @@
 
 	import { currentLocation } from '$lib/stores/locationStore';
 	import { deserialize } from '$app/forms';
+	import { getCurrentLocation } from '../../../utils/userLocation';
 	let hCard = false;
 	export let name;
 	export let address;
@@ -13,6 +14,7 @@
 	export let size: SizeType = 'md';
 	let duration: number;
 	let distance: number;
+	let distanceLoading = false;
 
 	let userLocation: { lat: number; lng: number } | null;
 
@@ -24,6 +26,14 @@
 	const addressPart2 = address.split(',').slice(1);
 
 	const getHowFarAwayIsLocation = async () => {
+		distanceLoading = true;
+		if (!userLocation) {
+			setTimeout(async () => {
+				await getCurrentLocation();
+				await getHowFarAwayIsLocation();
+			}, 1000);
+			return;
+		}
 		console.log('How far away is it?');
 		const originlat = userLocation?.lat.toString();
 		const originlng = userLocation?.lng.toString();
@@ -53,6 +63,7 @@
 		} else {
 			console.error('Error:', result.error);
 		}
+		distanceLoading = false;
 	};
 </script>
 
@@ -103,8 +114,10 @@
 					color="alternative"
 					size="md"
 					on:click={getHowFarAwayIsLocation}
-					block>How far away is it?</Button
+					block
 				>
+					{distanceLoading ? 'Loading...' : 'How far away is it?'}
+				</Button>
 			{/if}
 		</div>
 	</div>

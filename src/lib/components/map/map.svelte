@@ -5,6 +5,7 @@
 	import { PUBLIC_MAP_KEY } from '$env/static/public';
 	import './mapbox.css';
 	import { getLocationIcon } from '../../../utils/locationPhotos.js';
+	import { getCurrentLocation } from '../../../utils/userLocation';
 
 	export let locations = [];
 	export let shownLocations = [];
@@ -26,12 +27,21 @@
 	$: currentLocation, showCurrentLocation();
 
 	const showCurrentLocation = async () => {
-		if (!map || !currentLocation?.lat) return;
+		console.log(currentLocation);
+		if (!currentLocation?.lat) {
+			await getCurrentLocation();
+		}
+
+		if (!map || !mapboxgl?.Marker) {
+			setTimeout(() => {
+				showCurrentLocation();
+			}, 1000);
+		}
 
 		const el = document.createElement('div');
-		const width = 20;
-		const height = 20;
-		if (el) {
+		const width = 30;
+		const height = 30;
+		if (el && mapboxgl) {
 			el.className = 'marker';
 
 			if (dev) {
