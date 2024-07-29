@@ -90,7 +90,7 @@ export const actions: Actions = {
 };
 
 
-export function metersToMiles(meters: number): number {
+const metersToMiles = (meters: number): number => {
 	const miles = meters / 1609.344;
 	return Number(miles.toFixed(2)); // Round to 2 decimal places
 }
