@@ -13,6 +13,7 @@
 	let mapContainer;
 	let mapboxgl;
 	let map;
+	let popup;
 	const key = Symbol();
 	onMount(async () => {
 		mapboxgl = await import('mapbox-gl');
@@ -27,7 +28,6 @@
 	$: currentLocation, showCurrentLocation();
 
 	const showCurrentLocation = async () => {
-		console.log(currentLocation);
 		if (!currentLocation?.lat) {
 			await getCurrentLocation();
 		}
@@ -149,14 +149,21 @@
 			images.map(
 				(img) =>
 					new Promise((resolve, reject) => {
-						map.loadImage(img.url, function (error, res) {
-							if (error) debugger;
-							map.addImage(img.id, res);
-							resolve(res);
-						});
+						if (!map.hasImage(img?.id)) {
+							map.loadImage(img.url, function (error, res) {
+								if (error) debugger;
+								map.addImage(img.id, res);
+								resolve(res);
+							});
+						} else {
+							resolve();
+						}
 					})
 			)
 		).then(() => {
+			if (map.getSource('shownLocations')) {
+				return;
+			}
 			map.addSource('shownLocations', {
 				type: 'geojson',
 				// Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
@@ -223,6 +230,51 @@
 			accessToken: PUBLIC_MAP_KEY
 		});
 
+		map.on('idle', async () => {
+			// Add a new source from our GeoJSON data and
+			// set the 'cluster' option to true. GL-JS will
+			// add the point_count property to your source data.
+			await mapLoadSuccess();
+		});
+	};
+
+	const layerData = {
+		type: 'FeatureCollection',
+		crs: {
+			type: 'name',
+			properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' }
+		},
+		features: locations?.map((location, i) => {
+			return {
+				type: 'Feature',
+				properties: {
+					// region: location.region,
+					latitude: location.lat,
+					longitude: location.lng,
+					// scatterLat: location.scatterLat,
+					// scatterLong: location.scatterLong,
+					// count: location.count,
+					address_line_1: location.address_line_1,
+					city: location.city,
+					state: location.state,
+					zip_code: location.zip_code,
+					website: location.website,
+					name: location.name,
+					location: location.location,
+					// type: location.type,
+					// active: location.active,
+					// contact: location.contact,
+					// programs: location.programs,
+					// keywords: location.keywords,
+					id: i,
+					icon: `${getLocationIcon(location.name)}1`
+				},
+				geometry: { type: 'Point', coordinates: [location.lng, location.lat] }
+			};
+		})
+	};
+
+	const mapLoadSuccess = async () => {
 		class FullscreenControl {
 			constructor() {
 				this._fullscreen = false;
@@ -322,96 +374,58 @@
 
 		// Add the custom control to the map
 		map.addControl(new FullscreenControl(), 'top-right');
+		await initLayers(layerData);
+		popup = new mapboxgl.Popup({ offset: [0, 0], className: 'popups' });
 
-		const data = {
-			type: 'FeatureCollection',
-			crs: {
-				type: 'name',
-				properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' }
-			},
-			features: locations?.map((location, i) => {
-				return {
-					type: 'Feature',
-					properties: {
-						// region: location.region,
-						latitude: location.lat,
-						longitude: location.lng,
-						// scatterLat: location.scatterLat,
-						// scatterLong: location.scatterLong,
-						// count: location.count,
-						address_line_1: location.address_line_1,
-						city: location.city,
-						state: location.state,
-						zip_code: location.zip_code,
-						website: location.website,
-						name: location.name,
-						location: location.location,
-						// type: location.type,
-						// active: location.active,
-						// contact: location.contact,
-						// programs: location.programs,
-						// keywords: location.keywords,
-						id: i,
-						icon: `${getLocationIcon(location.name)}1`
-					},
-					geometry: { type: 'Point', coordinates: [location.lng, location.lat] }
-				};
-			})
-		};
+		// inspect a cluster on click
+		map.on('click', 'clusters', (e) => {
+			const features = map.queryRenderedFeatures(e.point, {
+				layers: ['clusters']
+			});
+			const clusterId = features[0].properties.cluster_id;
 
-		map.on('load', async () => {
-			// Add a new source from our GeoJSON data and
-			// set the 'cluster' option to true. GL-JS will
-			// add the point_count property to your source data.
-			await initLayers(data);
+			map.getSource('shownLocations').getClusterExpansionZoom(clusterId, (err, zoom) => {
+				if (err) return;
 
-			// inspect a cluster on click
-			map.on('click', 'clusters', (e) => {
-				const features = map.queryRenderedFeatures(e.point, {
-					layers: ['clusters']
-				});
-				const clusterId = features[0].properties.cluster_id;
-
-				map.getSource('shownLocations').getClusterExpansionZoom(clusterId, (err, zoom) => {
-					if (err) return;
-
-					map.easeTo({
-						center: features[0].geometry.coordinates,
-						zoom: zoom
-					});
+				map.easeTo({
+					center: features[0].geometry.coordinates,
+					zoom: zoom
 				});
 			});
+		});
 
-			// When a click event occurs on a feature in
-			// the unclustered-point layer, open a popup at
-			// the location of the feature, with
-			// description HTML from its properties.
-			map.on('click', (e) => {
-				console.log(e.lngLat);
-			});
-			map.on('click', 'unclustered-point', (e) => {
-				console.log(e);
-				const coordinates = e.lngLat;
+		// When a click event occurs on a feature in
+		// the unclustered-point layer, open a popup at
+		// the location of the feature, with
+		// description HTML from its properties.
+		map.on('click', (e) => {
+			console.log(e.lngLat);
+		});
+		map.on('click', 'unclustered-point', (e) => {
+			console.log(e);
+			const coordinates = e.lngLat;
 
-				const name = e.features[0].properties?.name;
-				const address = `${e.features[0].properties.address_line_1}, ${e.features[0].properties.city}, ${e.features[0].properties.state} ${e.features[0].properties.zip_code}`;
+			const name = e.features[0].properties?.name;
+			const address = `${e.features[0].properties.address_line_1}, ${e.features[0].properties.city}, ${e.features[0].properties.state} ${e.features[0].properties.zip_code}`;
 
-				// Ensure that if the map is zoomed out such that
-				// multiple copies of the feature are visible, the
-				// popup appears over the copy being pointed to.
-				while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-					coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-				}
-				// while (Math.abs(e.lngLat.lng - coordinates[1]) > 180) {
-				// 	coordinates2[1] += e.lngLat.lng > coordinates[1] ? 360 : -360;
-				// }
-				const addressPart1 = address.split(',')[0];
-				const addressPart2 = address.split(',').slice(1);
+			// Ensure that if the map is zoomed out such that
+			// multiple copies of the feature are visible, the
+			// popup appears over the copy being pointed to.
+			while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+				coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+			}
+			// while (Math.abs(e.lngLat.lng - coordinates[1]) > 180) {
+			// 	coordinates2[1] += e.lngLat.lng > coordinates[1] ? 360 : -360;
+			// }
+			const addressPart1 = address.split(',')[0];
+			const addressPart2 = address.split(',').slice(1);
 
-				let copyId = `copy-${name.split(' ').join('-')}`;
-				const popup = new mapboxgl.Popup({ offset: [0, 0], className: 'popups' }).setLngLat(
-					coordinates
-				).setHTML(`<div>
+			let copyId = `copy-${name.split(' ').join('-')}`;
+
+			popup
+				.setLngLat(coordinates)
+				.setHTML(
+					`<div>
                     
 					<h1 style="font-size:2rem; line-height: 2rem; font-weight: bold;">${name}</h1>
 					<br> <p id="${copyId}-address"><b>Address</b>: <button type="button" id="${copyId}" 
@@ -420,23 +434,20 @@
 					<br>${addressPart1},<br> ${addressPart2}  </p>
 					<br>
 					<a style="border-radius: 5px; border: 1px solid #201f1f; padding: 2px 5px; margin: 3px 0; color: white; background: #00000070; font-weight: bold; float: right;" href="${e.features[0].properties.website}" target="_blank">Website</a>
-                    </div>`);
+                    </div>`
+				)
+				.addTo(map);
 
-				if (popup && map) {
-					popup.addTo(map);
+			document.getElementById(copyId).addEventListener('click', function () {
+				navigator.clipboard.writeText(address);
+			});
+		});
 
-					document.getElementById(copyId).addEventListener('click', function () {
-						navigator.clipboard.writeText(address);
-					});
-				}
-			});
-
-			map.on('mouseenter', 'clusters', () => {
-				map.getCanvas().style.cursor = 'pointer';
-			});
-			map.on('mouseleave', 'clusters', () => {
-				map.getCanvas().style.cursor = '';
-			});
+		map.on('mouseenter', 'clusters', () => {
+			map.getCanvas().style.cursor = 'pointer';
+		});
+		map.on('mouseleave', 'clusters', () => {
+			map.getCanvas().style.cursor = '';
 		});
 	};
 
