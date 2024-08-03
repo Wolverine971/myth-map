@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename);
 
 const citiesDir = path.join(__dirname, './src/geographies/cities');
 
-async function generateCityIndex() {
+export async function generateCityIndex() {
 	try {
 		const stateDirs = await fs.readdir(citiesDir);
 
@@ -31,4 +31,4 @@ async function generateCityIndex() {
 	}
 }
 
-generateCityIndex();
+// generateCityIndex();
