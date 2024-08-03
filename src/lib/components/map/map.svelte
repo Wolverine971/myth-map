@@ -28,6 +28,40 @@
 		if (selectedState && selectedCity) updateCityFilter(selectedState, selectedCity);
 	}
 
+	$: currentLocation, showCurrentLocation();
+
+	const showCurrentLocation = async () => {
+		if (!currentLocation?.lat) {
+			await getCurrentLocation();
+		}
+
+		if (!map || !mapboxgl?.Marker) {
+			setTimeout(() => {
+				showCurrentLocation();
+			}, 1000);
+		}
+
+		const el = document.createElement('div');
+		const width = 30;
+		const height = 30;
+		if (el && mapboxgl) {
+			el.className = 'marker';
+
+			el.style.backgroundImage = `url(/map/location-arrow.svg)`;
+
+			el.style.width = `${width}px`;
+			el.style.height = `${height}px`;
+			el.style.backgroundSize = '100%';
+
+			const marker = new mapboxgl.Marker(el).setLngLat(currentLocation).setPopup(
+				new mapboxgl.Popup({ offset: 25 }) // add popups
+					.setHTML(`<h3>Current Location</h3>`)
+			);
+
+			marker.addTo(map);
+		}
+	};
+
 	onMount(async () => {
 		mapboxgl = await import('mapbox-gl');
 		await initMap();
@@ -396,6 +430,7 @@
 					</p>
 					<br>
 					<a style="border-radius: 5px; border: 1px solid #201f1f; padding: 2px 5px; margin: 3px 0; color: white; background: #00000070; font-weight: bold; float: right;" href="${website}" target="_blank">Website</a>
+					<a style="border-radius: 5px; border: 1px solid #201f1f; padding: 2px 5px; margin: 3px 0; color: white; background: #00000070; font-weight: bold; float: right; margin-right: 0.2rem;" href="/blog/locations/${properties.name.split(' ').join('-')}">Details</a>
 				</div>
 			`
 			)

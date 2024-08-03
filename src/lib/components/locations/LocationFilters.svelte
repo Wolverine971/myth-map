@@ -121,49 +121,43 @@
 
 <div class="flex flex-wrap items-center gap-1">
 	<div class="flex items-center" transition:fade={{ duration: 600 }}>
-		<!-- <label for="search" class="mr-2">Search:</label>
-			<input type="text" id="search" class="form-input" placeholder="Search..." /> -->
 		<Button outline>
-			Location Type: {baseSelect ? `${baseSelect}` : 'Any'}
-			<ChevronDownOutline class="ms-2 h-6 w-6 " />
+			Location Type: {baseSelect ?? 'Any'}
+			<ChevronDownOutline class="ms-2 h-6 w-6" />
 		</Button>
 		<Dropdown
 			style="z-index: 1232134234"
-			placement={'bottom'}
+			placement="bottom"
 			bind:open={baseDropdownOpen}
 			{activeClass}
 		>
 			<DropdownItem
 				class="hover:bg-gray-100 {baseSelect === 'Activity' && 'active'}"
-				activeClass={'active'}
 				on:click={baseSelection}>Activity</DropdownItem
 			>
 			<DropdownItem
 				class="hover:bg-gray-100 {baseSelect === 'Food' && 'active'}"
-				activeClass={'active'}
 				on:click={baseSelection}>Food</DropdownItem
 			>
 		</Dropdown>
 	</div>
 	<div class="flex items-center" transition:fade={{ duration: 800 }}>
 		<Button outline>
-			Location Type: {indoorOutdoorSelect ? `${indoorOutdoorSelect}` : 'Any'}
-			<ChevronDownOutline class="ms-2 h-6 w-6 " />
+			Location Type: {indoorOutdoorSelect ?? 'Any'}
+			<ChevronDownOutline class="ms-2 h-6 w-6" />
 		</Button>
 		<Dropdown
 			style="z-index: 1232134234"
-			placement={'bottom'}
+			placement="bottom"
 			bind:open={indoorOutdoorDropdownOpen}
 			{activeClass}
 		>
 			<DropdownItem
 				class="hover:bg-gray-100 {indoorOutdoorSelect === 'Indoor' && 'active'}"
-				activeClass={'active'}
 				on:click={indoorOutdoorSelection}>Indoor</DropdownItem
 			>
 			<DropdownItem
 				class="hover:bg-gray-100 {indoorOutdoorSelect === 'Outdoor' && 'active'}"
-				activeClass={'active'}
 				on:click={indoorOutdoorSelection}>Outdoor</DropdownItem
 			>
 		</Dropdown>
@@ -171,25 +165,21 @@
 	<div class="flex items-center" transition:fade={{ duration: 1000 }}>
 		<Button outline>
 			Tags ({checkedItems.length})
-			<ChevronDownOutline class="ms-2 h-6 w-6 " />
+			<ChevronDownOutline class="ms-2 h-6 w-6" />
 		</Button>
-		<Dropdown placement={'bottom'}>
-			{#each displayTags as tag}
+		<Dropdown placement="bottom">
+			{#each displayTags as tag (tag.name)}
 				<li
-					class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600 {!selectableTagsMap[
-						tag.name
-					] && 'disabled'}"
+					class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600 {tag.disabled && 'disabled'}"
 					transition:fade={{ duration: 100 }}
 				>
 					<Checkbox
-						class={!selectableTagsMap[tag.name] &&
-							'disabled text-gray-400 disabled:cursor-not-allowed dark:text-gray-300'}
-						on:change={(e) => {
-							if (selectableTagsMap[tag.name]) {
-								updateChecked(tag, e);
-							}
-						}}
+						class={tag.disabled
+							? 'disabled text-gray-400 disabled:cursor-not-allowed dark:text-gray-300'
+							: ''}
+						on:change={(e) => updateChecked(tag, e)}
 						bind:checked={tag.checked}
+						disabled={tag.disabled}
 					>
 						{tag.name}
 					</Checkbox>
@@ -197,8 +187,8 @@
 			{/each}
 		</Dropdown>
 	</div>
-	<ul style="display: flex;">
-		{#each checkedItems as checkedItem}
+	<ul class="flex">
+		{#each checkedItems as checkedItem (checkedItem.name)}
 			<li class="chip">
 				{checkedItem.name}
 				<CloseCircleSolid
