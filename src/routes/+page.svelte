@@ -7,6 +7,7 @@
 	import type { PageData } from './$types';
 	import { currentLocation } from '$lib/stores/locationStore';
 	import { onMount } from 'svelte';
+	import GeoFilters from '$lib/components/locations/GeoFilters.svelte';
 	export let data: PageData;
 	const url = 'https://myth-map.vercel.app/';
 
@@ -15,6 +16,10 @@
 	const baseTagMap: any = {};
 	let locationNamesMap = {};
 	let userLocation: { lat: number; lng: number } | null;
+
+	let selectedState: { name: string; abr: string } | null = null;
+	let selectedCity: string | null = null;
+	let selectedTab = 'gallery';
 
 	currentLocation.subscribe((value) => {
 		userLocation = value;
@@ -117,8 +122,12 @@
 		// find tags for locations
 		// those tags are the available tags
 		availableTagsMap = Object.assign({}, newAvailableTags);
-		console.log('tags updated');
 	};
+
+	function handleFilterChange(event: CustomEvent) {
+		selectedState = event.detail.state;
+		selectedCity = event.detail.city;
+	}
 
 	let innerWidth = 0;
 </script>
@@ -160,8 +169,16 @@
 		on:indoorOutdoorSelection={({ detail }) => filterSubSelection(detail)}
 		on:selected={({ detail }) => filterSubSelection(detail)}
 	/>
+	{#if selectedTab === 'map'}
+		<GeoFilters
+			on:filterChange={handleFilterChange}
+			{shownLocations}
+			{selectedState}
+			{selectedCity}
+		/>
+	{/if}
 	<Tabs>
-		<TabItem open title="Gallery View">
+		<TabItem open title="Gallery View" on:click={() => (selectedTab = 'gallery')}>
 			<div class="location-grid">
 				{#each shownLocations as location}
 					<LocationCard
@@ -173,9 +190,16 @@
 					/>
 				{/each}
 			</div>
-		</TabItem><TabItem title="Map View"
+		</TabItem>
+		<TabItem title="Map View" on:click={() => (selectedTab = 'map')}
 			><div class="map-div">
-				<Map locations={data.locations} {shownLocations} currentLocation={userLocation} />
+				<Map
+					locations={data.locations}
+					{shownLocations}
+					currentLocation={userLocation}
+					{selectedState}
+					{selectedCity}
+				/>
 			</div></TabItem
 		>
 	</Tabs>

@@ -49,7 +49,7 @@
 		body.append('destinationlat', destinationlat);
 		body.append('destinationlng', destinationlng);
 
-		const response = await await fetch(`?/getHowFarAwayIsLocation`, {
+		const response = await fetch(`?/getHowFarAwayIsLocation`, {
 			method: 'POST',
 			body
 		});

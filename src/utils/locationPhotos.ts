@@ -3,7 +3,7 @@ export const allPlaceIcons = {
 	'Port Discovery': '',
 	'NASA Goddard Flight Center': 'nasa',
 	'National Aquarium': 'aquarium',
-	'Maryland Zoo': 'zoo',
+	'Maryland Zoo': 'park-with-zoo',
 	'Robinson Nature Center': 'nature-preserve',
 	'B&O Train Museum': 'train',
 	'Baltimore & Ohio Ellicott City Station Museum': 'train',
