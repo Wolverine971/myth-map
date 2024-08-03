@@ -128,7 +128,6 @@
 		selectedState = event.detail.state;
 		selectedCity = event.detail.city;
 	}
-
 	let innerWidth = 0;
 </script>
 
@@ -139,7 +138,6 @@
 		content="A tool for chronically curious families looking for their next adventure!"
 	/>
 	<link rel="canonical" href={url} />
-
 	<meta property="og:site_name" content="Tiny Tribe Adventures" />
 	<meta property="og:title" content="Tiny Tribe Adventures home page" />
 	<meta
@@ -153,15 +151,16 @@
 </svelte:head>
 
 <svelte:window bind:innerWidth />
+
 {#if innerWidth > 500}
 	<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl">
 		Welcome to Tiny Tribe Adventures
 	</Heading>
-
 	<Heading tag="h5">Your one stop shop for planning family friendly activities</Heading>
 	<br />
 {/if}
-<div style="display: flex; flex-direction: column;  gap: 1rem; width: 100%;">
+
+<div class="flex w-full flex-col gap-4">
 	<LocationFilters
 		allTags={data.tags}
 		selectableTagsMap={availableTagsMap}
@@ -169,6 +168,7 @@
 		on:indoorOutdoorSelection={({ detail }) => filterSubSelection(detail)}
 		on:selected={({ detail }) => filterSubSelection(detail)}
 	/>
+
 	{#if selectedTab === 'map'}
 		<GeoFilters
 			on:filterChange={handleFilterChange}
@@ -177,6 +177,7 @@
 			{selectedCity}
 		/>
 	{/if}
+
 	<Tabs>
 		<TabItem open title="Gallery View" on:click={() => (selectedTab = 'gallery')}>
 			<div class="location-grid">
@@ -184,15 +185,15 @@
 					<LocationCard
 						name={location.name}
 						coords={{ lat: location.lat, lng: location.lng }}
-						address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
+						address={`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}, ${location.city}, ${location.state} ${location.zip_code}`}
 						website={location.website}
 						tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
 					/>
 				{/each}
 			</div>
 		</TabItem>
-		<TabItem title="Map View" on:click={() => (selectedTab = 'map')}
-			><div class="map-div">
+		<TabItem title="Map View" on:click={() => (selectedTab = 'map')}>
+			<div class="map-div">
 				<Map
 					locations={data.locations}
 					{shownLocations}
@@ -200,14 +201,13 @@
 					{selectedState}
 					{selectedCity}
 				/>
-			</div></TabItem
-		>
+			</div>
+		</TabItem>
 	</Tabs>
 </div>
 
 <style>
 	.mapboxgl-popup {
-		/* visibility: visible !important; */
 		background-color: #000;
 		color: #fff;
 		border-radius: 5px;
@@ -218,20 +218,18 @@
 		padding: 5px;
 		border-radius: 5px;
 	}
-
 	.popup h1 {
 		font-size: 2rem;
 		color: aqua;
 	}
 	.location-grid {
 		display: grid;
-		flex-direction: column;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1rem;
 		justify-content: center;
 		align-self: center;
-		grid-template-columns: 1fr 1fr;
 	}
 	.map-div {
-		/* margin-top: 2rem; */
 		align-self: center;
 		min-height: 430px;
 		height: 500px;

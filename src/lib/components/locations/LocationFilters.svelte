@@ -170,16 +170,20 @@
 		<Dropdown placement="bottom">
 			{#each displayTags as tag (tag.name)}
 				<li
-					class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600 {tag.disabled && 'disabled'}"
+					class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600 {!selectableTagsMap[
+						tag.name
+					] && 'disabled'}"
 					transition:fade={{ duration: 100 }}
 				>
 					<Checkbox
-						class={tag.disabled
-							? 'disabled text-gray-400 disabled:cursor-not-allowed dark:text-gray-300'
-							: ''}
-						on:change={(e) => updateChecked(tag, e)}
+						class={!selectableTagsMap[tag.name] &&
+							'disabled text-gray-400 disabled:cursor-not-allowed dark:text-gray-300'}
+						on:change={(e) => {
+							if (selectableTagsMap[tag.name]) {
+								updateChecked(tag, e);
+							}
+						}}
 						bind:checked={tag.checked}
-						disabled={tag.disabled}
 					>
 						{tag.name}
 					</Checkbox>
