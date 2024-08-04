@@ -5,7 +5,7 @@
 	import AddressGeoCode from '$lib/components/map/addressGeoCode.svelte';
 	import { allPlaceIcons } from '../../utils/locationPhotos';
 	export let data: PageData;
-	const url = 'https://myth-map.vercel.app/testbed';
+	const url = 'https://tinytribeadventures.com/testbed';
 	let shownLocations = data.locations;
 	let currentLocation = null;
 

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import { states } from '../../../utils/geoDataLoader';
-	import { Dropdown, DropdownItem, GradientButton } from 'flowbite-svelte';
+	import { Dropdown, DropdownItem, Button } from 'flowbite-svelte';
 	import { ChevronDownOutline } from 'flowbite-svelte-icons';
 	import { fade } from 'svelte/transition';
 
@@ -10,7 +10,7 @@
 			const indexModule = await import(
 				`../../../geographies/cities/${stateAbbr.toLowerCase()}/index.json`
 			);
-			const cityList = indexModule.default.map((city) =>
+			const cityList = await indexModule.default.map((city) =>
 				`${city.charAt(0).toUpperCase() + city.slice(1)}`.replace('-', ' ')
 			);
 
@@ -21,7 +21,7 @@
 		}
 	}
 
-	export let selectedState: { name: string; abr: string } | null = null;
+	export let selectedState: { name: string; abr: string } | null = { name: 'Maryland', abr: 'MD' };
 	export let selectedCity: string | null = null;
 	let stateOpen = false;
 	let cityOpen = false;
@@ -33,6 +33,12 @@
 
 	$: shownLocations, allCities, filterCities();
 
+	onMount(async () => {
+		if (selectedState) {
+			handleStateChange(selectedState);
+		}
+	});
+
 	const filterCities = () => {
 		shownLocations.forEach((location) => (flatCityMap[location.city.toLowerCase()] = 1));
 		filteredCities = allCities.filter((city) => flatCityMap[city.toLowerCase()]);
@@ -40,8 +46,11 @@
 
 	const dispatch = createEventDispatcher();
 
-	async function handleStateChange(state: { name: string; abr: string }) {
-		selectedState = state;
+	async function handleStateChange(state?: { name: string; abr: string }) {
+		if (state) {
+			selectedState = state;
+		}
+
 		if (selectedState) {
 			const tempCities = await loadCitiesForState(selectedState.abr);
 
@@ -85,10 +94,10 @@
 
 <div class="flex gap-1">
 	<div class="flex items-center" transition:fade={{ duration: 800 }}>
-		<GradientButton outline color="pinkToOrange">
+		<Button outline color="blue">
 			State: {selectedState ? `${selectedState.name}` : 'Any'}
 			<ChevronDownOutline class="ms-2 h-6 w-6 " />
-		</GradientButton>
+		</Button>
 		<Dropdown style="z-index: 1232134234" placement={'bottom'} bind:open={stateOpen}>
 			{#each states as state}
 				<!-- <option value={state}>{state.name}</option> -->
@@ -103,10 +112,10 @@
 	</div>
 
 	<div class="flex items-center" transition:fade={{ duration: 800 }}>
-		<GradientButton outline color="pinkToOrange" disabled={!selectedState}>
+		<Button outline color="blue" disabled={!selectedState}>
 			City: {selectedCity ? `${selectedCity}` : 'Any'}
 			<ChevronDownOutline class="ms-2 h-6 w-6 " />
-		</GradientButton>
+		</Button>
 		<Dropdown style="z-index: 1232134234" placement={'bottom'} bind:open={cityOpen}>
 			<DropdownItem
 				class="hover:bg-gray-100 "

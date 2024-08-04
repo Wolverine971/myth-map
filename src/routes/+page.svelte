@@ -9,7 +9,7 @@
 	import { onMount } from 'svelte';
 	import GeoFilters from '$lib/components/locations/GeoFilters.svelte';
 	export let data: PageData;
-	const url = 'https://myth-map.vercel.app/';
+	const url = 'https://tinytribeadventures.com';
 
 	let shownLocations = data.locations;
 	let availableTagsMap = {};
@@ -17,7 +17,7 @@
 	let locationNamesMap = {};
 	let userLocation: { lat: number; lng: number } | null;
 
-	let selectedState: { name: string; abr: string } | null = null;
+	let selectedState: { name: string; abr: string } | null = { name: 'Maryland', abr: 'MD' };
 	let selectedCity: string | null = null;
 	let selectedTab = 'gallery';
 

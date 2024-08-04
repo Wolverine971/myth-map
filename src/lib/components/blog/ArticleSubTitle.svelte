@@ -9,7 +9,7 @@
 </script>
 
 <p>
-	{#if metaData?.author}
+	{#if metaData?.author && metaData?.author !== 'null'}
 		<span
 			class="author"
 			title="he is so cool"

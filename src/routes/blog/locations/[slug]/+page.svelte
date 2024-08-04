@@ -5,20 +5,21 @@
 	import ArticleTitle from '$lib/components/blog/ArticleTitle.svelte';
 	import ArticleSubTitle from '$lib/components/blog/ArticleSubTitle.svelte';
 	import { marked } from 'marked';
-	import { Button, Card, Heading } from 'flowbite-svelte';
+	import { Heading, A } from 'flowbite-svelte';
 	import { notifications } from '$lib/components/shared/notifications';
 	import LocationCard from '$lib/components/locations/LocationCard.svelte';
+	import { getLocationIcon } from '../../../../utils/locationPhotos';
 	// import ArticleDescription from '$lib/components/blog/ArticleDescription.svelte';
 	// import SuggestionsBlog from '$lib/components/blog/SuggestionsBlog.svelte';
 	// import EmailSignup from '$lib/components/molecules/Email-Signup.svelte';
 	export let data: PageData;
 	const content = data.blog?.content ? marked(data.blog?.content) : '';
-
 	let loading = false;
 	const placesToEatMap = {};
 	const activityMap = {};
 	let placesToEat: any[] = [];
 	let activities: any[] = [];
+	let icon = getLocationIcon(data?.blog?.title);
 
 	onMount(() => {
 		const filteredPlacesToEat = data.locationTags.filter((tag) => tag.tags.name === 'Food');
@@ -76,9 +77,21 @@
 {#if data.blog}
 	<article itemscope itemtype="https://schema.org/BlogPosting" style="" class="blog">
 		<div style="align-items: inherit;">
-			<BlogPageHead data={data.blog} slug={`blog/${data?.blog?.loc}`} />
-			<ArticleTitle title={data.blog?.title} />
-			<ArticleSubTitle metaData={data.blog} />
+			<BlogPageHead data={data.blog} slug={`blog/locations/${data?.blog?.loc}`} />
+			<div class="flex" style="align-items: center; gap:2rem;">
+				<img
+					src={`/map/${icon}.png`}
+					alt={data.blog?.title}
+					style="max-width: 30%; width: 100%; height: 100%; object-fit: cover; border-radius: 0.5rem;"
+				/>
+				<div>
+					<ArticleTitle title={data.blog?.title} />
+					<ArticleSubTitle metaData={data.blog} />
+					{#if data.locationData.website}
+						<A href={data.locationData.website} target="_blank">Webpage</A>
+					{/if}
+				</div>
+			</div>
 		</div>
 
 		<!-- <Button type="button" on:click={findNearby}>Find Nearby Locations</Button> -->
