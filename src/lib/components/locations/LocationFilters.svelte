@@ -14,7 +14,7 @@
 	const dispatch = createEventDispatcher();
 	export let allTags: { name: string }[] = [];
 	export let selectableTagsMap;
-	export let locationTags: any[] = [];
+	// export let locationTags: any[] = [];
 	let baseDropdownOpen = false;
 	let indoorOutdoorDropdownOpen = false;
 	let checkedItems: { name: string; checked: boolean }[] = [];

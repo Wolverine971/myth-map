@@ -525,20 +525,6 @@
 		color: #fff;
 		border-radius: 5px;
 	}
-	.mapboxgl-popup {
-		/* visibility: visible !important; */
-		background-color: #000;
-		color: #fff;
-		border-radius: 5px;
-	}
-	.mapboxgl-popup-content {
-		background-color: #03a9f485;
-		color: #fff;
-		padding: 5px;
-		border-radius: 5px;
-		overflow-y: scroll;
-		overflow-x: scroll;
-	}
 
 	.popup h1 {
 		font-size: 2rem;
