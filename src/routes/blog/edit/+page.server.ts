@@ -25,8 +25,6 @@ export const actions: Actions = {
 			const markdown = body.markdown as string;
 			const description = body.description as string;
 
-			console.log('loc', loc);
-
 			const { data: locationData, error: locationDataError } = await supabase
 				.from('content_locations')
 				.select('*')
@@ -50,7 +48,6 @@ export const actions: Actions = {
 					console.log('updatedLocationDataError', updatedLocationDataError);
 				}
 			}
-			console.log('locationData', locationData);
 			return { success: true };
 		} catch (e) {
 			throw error(404, {

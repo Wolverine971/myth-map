@@ -42,7 +42,10 @@ export async function loadState(stateAbbr: string) {
         return [];
     }
 }
-
+export function findState(name: string) {
+    const lowercaseName = name.toLowerCase()
+    return states.find((s) => s.name.toLowerCase() === lowercaseName || s.abr.toLowerCase() === lowercaseName);
+}
 export function getStateAbbreviation(stateName) {
     const state = states.find((s) => s.name === stateName);
     return state ? state.abr : null;

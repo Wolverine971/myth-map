@@ -71,7 +71,6 @@
 				});
 
 			allCities = updatedCityData;
-			console.log('updatedCityData:', updatedCityData);
 			selectedCity = null;
 		} else {
 			allCities = [];

@@ -8,7 +8,7 @@
 	import { Heading, A } from 'flowbite-svelte';
 	import { notifications } from '$lib/components/shared/notifications';
 	import LocationCard from '$lib/components/locations/LocationCard.svelte';
-	import { getLocationIcon } from '../../../../utils/locationPhotos';
+	import { getLocationIcon } from '../../../../../../utils/locationPhotos';
 	// import ArticleDescription from '$lib/components/blog/ArticleDescription.svelte';
 	// import SuggestionsBlog from '$lib/components/blog/SuggestionsBlog.svelte';
 	// import EmailSignup from '$lib/components/molecules/Email-Signup.svelte';
@@ -47,8 +47,6 @@
 		});
 		placesToEat = tempPlacesToEat;
 		activities = tempActivities;
-		console.log(placesToEat);
-		console.log(activities);
 	});
 
 	const findNearby = async () => {
@@ -122,6 +120,7 @@
 								address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
 								website={location.website}
 								tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
+								{location}
 							/>
 						{/each}
 					{/if}
@@ -141,6 +140,7 @@
 								address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
 								website={location.website}
 								tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
+								{location}
 							/>
 						{/each}
 					{/if}
@@ -158,6 +158,7 @@
 								address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
 								website={location.website}
 								tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
+								{location}
 							/>
 						{/each}
 					{/if}

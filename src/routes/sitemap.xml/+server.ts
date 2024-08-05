@@ -44,14 +44,8 @@ export async function GET() {
 	    <priority>1.0</priority>
 	</url>
 	<url>
-	    <loc>https://tinytribeadventures.com/blog</loc>
-	    <lastmod>2024-05-04</lastmod>
-	    <changefreq>monthly</changefreq>
-	    <priority>1.0</priority>
-	</url>
-	<url>
-	    <loc>https://tinytribeadventures.com/blog/locations</loc>
-	    <lastmod>2024-05-04</lastmod>
+	    <loc>https://tinytribeadventures.com/locations</loc>
+	    <lastmod>2024-08-05</lastmod>
 	    <changefreq>monthly</changefreq>
 	    <priority>1.0</priority>
 	</url>
@@ -69,16 +63,7 @@ export async function GET() {
 	</url>
 	
 
-	  ${locations
-				.map((post) => {
-					return `<url>
-			<loc>${post.loc}</loc>
-			<lastmod>${post?.lastmod ? new Date(post?.lastmod).toISOString() : new Date().toISOString()}</lastmod>
-			<changefreq>monthly</changefreq>
-			<priority>0.7</priority>
-			</url>`
-				})
-				.join('')}
+	  
 			
 
 	</urlset>`.trim(),
@@ -89,6 +74,19 @@ export async function GET() {
 		}
 	);
 }
+
+// ${
+// 	locations
+// 		.map((post) => {
+// 			return `<url>
+// 			<loc>${post.loc}</loc>
+// 			<lastmod>${post?.lastmod ? new Date(post?.lastmod).toISOString() : new Date().toISOString()}</lastmod>
+// 			<changefreq>monthly</changefreq>
+// 			<priority>0.7</priority>
+// 			</url>`
+// 		})
+// 	.join('')
+// }
 
 
 function escapeXmlUrl(url) {

@@ -27,6 +27,7 @@
 		address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
 		website={location.website}
 		tags={location?.tags?.name}
+		{location}
 	/>
 
 	{#if loading}

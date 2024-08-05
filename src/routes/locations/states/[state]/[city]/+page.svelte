@@ -1,0 +1,68 @@
+<script lang="ts">
+	import { Heading, P, A } from 'flowbite-svelte';
+
+	import { ArrowRightAltSolid } from 'flowbite-svelte-icons';
+	import { page } from '$app/stores';
+	import type { PageData } from './$types';
+
+	$: state = $page.params.state;
+	$: city = $page.params.city;
+	import LocationCard from '$lib/components/locations/LocationCard.svelte';
+
+	export let data: PageData;
+	const cityMap = new Map();
+	let cities = data.locations?.sort(function (a, b) {
+		if (a.city < b.city) {
+			return -1;
+		}
+		if (a.city > b.city) {
+			return 1;
+		}
+		return 0;
+	});
+	cities.forEach((location) => (cityMap[location.city] = location.id));
+</script>
+
+<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl"
+	>{city.toLocaleUpperCase()}, {state.toLocaleUpperCase()}</Heading
+>
+<div style="display: flex; flex-direction: column; width: 100%; gap: 0.2rem;">
+	{#if cityMap}
+		<ul>
+			{#each Object.keys(cityMap) as city, index}
+				{#each data.locations.filter((l) => l.city === city) as location}
+					<li>
+						<div class="panel">
+							<LocationCard
+								name={location.name}
+								coords={{ lat: location.lat, lng: location.lng }}
+								address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
+								website={location.website}
+								tags={[]}
+								{location}
+							/>
+						</div>
+					</li>
+				{/each}
+			{/each}
+		</ul>
+	{:else}
+		<p>No cities found for {city}</p>
+	{/if}
+</div>
+
+<!-- Display list of cities and counties, or allow user to choose -->
+
+<style>
+	/* details {
+		margin: 1rem 0;
+	} */
+	.accordion {
+		/* display: inline-flex;
+		gap: 1rem; */
+	}
+	.inlineit {
+		display: inline-flex;
+		gap: 1rem;
+	}
+</style>

@@ -14,7 +14,7 @@ export const load: PageLoad = async ({ params }) => {
 	const { data: blogData, error: blogDataError } = await supabase
 		.from('content_locations')
 		.select('*')
-		.eq('loc', params.slug)
+		.eq('loc', params.place)
 		.single();
 
 	if (blogDataError) {

@@ -11,6 +11,7 @@
 	export let tags: Array<{ tags: { name: string } }>;
 	export let coords: { lat: number; lng: number };
 	export let size: SizeType = 'md';
+	export let location;
 
 	let duration: number;
 	let distance: number;
@@ -80,7 +81,10 @@
 			<a href={website} target="_blank" rel="noopener noreferrer">
 				<Button outline color="primary" size="md" block>Visit Website</Button>
 			</a>
-			<a href="/blog/locations/{name.replace(/\s/g, '-')}" style="margin-left: auto;">
+			<a
+				href="/locations/states/{location.state}/{location.city}/{name.replace(/\s/g, '-')}"
+				style="margin-left: auto;"
+			>
 				<Button outline color="alternative" size="md" block>Details</Button>
 			</a>
 			{#if distance}

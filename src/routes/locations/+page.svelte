@@ -6,6 +6,7 @@
 	import ArrowRightIcon from '$lib/components/icons/arrowRightIcon.svelte';
 	export let data: PageData;
 	let innerWidth = 0;
+	console.log(data);
 </script>
 
 <svelte:window bind:innerWidth />
@@ -21,17 +22,22 @@
 <Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold  md:text-5xl">Locations</Heading>
 <hr />
 
+<Heading tag="h2" class="mb-3" customSize="text-2xl font-extrabold  md:text-3xl">Maryland</Heading>
+
 <div class="text-left" style="align-self: baseline;">
-	{#each data.blogs as blog}
+	{#each data.locations as location}
 		<div class="mb-8">
-			<h2 class="text-2xl font-bold text-gray-900 dark:text-white">{blog.title}</h2>
-			{#if blog.description}
-				<p class="text-gray-700 dark:text-gray-400">{blog.description}</p>
+			<h2 class="text-2xl font-bold text-gray-900 dark:text-white">{location.title}</h2>
+			{#if location.description}
+				<p class="text-gray-700 dark:text-gray-400">{location.description}</p>
 			{/if}
 
-			<a href={`locations/${blog.loc}`} class="text-primary mt-2 flex items-center">
+			<a
+				href={`locations/states/${location.state}/${location.city}/${location.loc}`}
+				class="text-primary mt-2 flex items-center"
+			>
 				Read More
-				<ArrowRightIcon class="ml-1 h-4 w-4" />
+				<ArrowRightIcon className="ml-1 h-4 w-4" />
 			</a>
 		</div>
 	{/each}
