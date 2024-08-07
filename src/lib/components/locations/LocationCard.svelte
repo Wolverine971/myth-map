@@ -94,7 +94,7 @@
 				</div>
 			{:else}
 				<Button
-					style="margin-top: .25rem; height: 43px;"
+					style="height: 43px;"
 					type="button"
 					outline
 					color="alternative"
@@ -155,6 +155,9 @@
 	}
 	.card-actions {
 		margin-top: auto;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem;
 	}
 	.distance-info {
 		margin-top: 0.25rem;
