@@ -152,14 +152,18 @@
 
 <svelte:window bind:innerWidth />
 
-{#if innerWidth > 500}
+{#if innerWidth >= 500}
 	<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl">
 		Welcome to Tiny Tribe Adventures
 	</Heading>
 	<Heading tag="h5">Your one stop shop for planning family friendly activities</Heading>
-	<br />
 {/if}
 
+{#if innerWidth < 500}
+	<Heading tag="h5" style="margin-bottom: .5rem;"
+		>Your one stop shop for planning family friendly activities!</Heading
+	>
+{/if}
 <div class="flex w-full flex-col gap-4">
 	<LocationFilters
 		allTags={data.tags}
@@ -178,7 +182,7 @@
 		/>
 	{/if}
 
-	<Tabs>
+	<Tabs contentClass="test">
 		<TabItem open title="Gallery View" on:click={() => (selectedTab = 'gallery')}>
 			<div class="location-grid">
 				{#each shownLocations as location}
@@ -208,6 +212,9 @@
 </div>
 
 <style>
+	.test {
+		margin: 1rem 0;
+	}
 	.location-grid {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
