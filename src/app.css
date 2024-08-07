@@ -126,6 +126,12 @@ main {
 	}
 }
 
+@media screen and (max-width: 1050px) {
+	main {
+		margin: 1rem;
+	}
+}
+
 @media screen and (max-width: 500px) {
 	main {
 		margin: 1rem 0.5rem;

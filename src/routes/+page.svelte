@@ -156,7 +156,9 @@
 	<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl">
 		Welcome to Tiny Tribe Adventures
 	</Heading>
-	<Heading tag="h5">Your one stop shop for planning family friendly activities</Heading>
+	<Heading tag="h5" style="margin-bottom: 1rem;"
+		>Your one stop shop for planning family friendly activities!</Heading
+	>
 {/if}
 
 {#if innerWidth < 500}

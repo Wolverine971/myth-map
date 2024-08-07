@@ -59,7 +59,7 @@
 	}
 </script>
 
-<Card horizontal {size}>
+<Card horizontal {size} class="cardSize" padding="sm">
 	<img src="/map/{getLocationIcon(name)}.png" alt="" class="img-icon" />
 
 	<div class="card-content">
@@ -79,13 +79,13 @@
 
 		<div class="card-actions">
 			<a href={website} target="_blank" rel="noopener noreferrer">
-				<Button outline color="primary" size="md" block>Visit Website</Button>
+				<Button outline color="primary" size="sm" block>Visit Website</Button>
 			</a>
 			<a
 				href="/locations/states/{location.state}/{location.city}/{name.replace(/\s/g, '-')}"
-				style="margin-left: auto;"
+				style=""
 			>
-				<Button outline color="alternative" size="md" block>Details</Button>
+				<Button outline color="alternative" size="sm" block>Details</Button>
 			</a>
 			{#if distance}
 				<div class="distance-info">
@@ -98,7 +98,7 @@
 					type="button"
 					outline
 					color="alternative"
-					size="md"
+					size="sm"
 					on:click={getHowFarAwayIsLocation}
 					block
 				>
@@ -110,6 +110,11 @@
 </Card>
 
 <style>
+	@media (max-width: 500px) {
+		.cardSize {
+			padding: 0.5rem !important;
+		}
+	}
 	.img-icon {
 		object-fit: contain;
 		width: 12rem;

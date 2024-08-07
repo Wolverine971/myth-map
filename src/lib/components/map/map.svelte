@@ -413,6 +413,7 @@
 
 		const address = `${address_line_1}, ${city}, ${state} ${zip_code}`;
 		const copyId = `copy-${name.split(' ').join('-')}`;
+		const detailsLink = `/locations/states/${properties.state}/${properties.city}/${properties.name.replace(/\s/g, '-')}`;
 
 		popup
 			.setLngLat(coordinates)
@@ -430,7 +431,7 @@
 					</p>
 					<br>
 					<a style="border-radius: 5px; border: 1px solid #201f1f; padding: 2px 5px; margin: 3px 0; color: white; background: #00000070; font-weight: bold; float: right;" href="${website}" target="_blank">Website</a>
-					<a style="border-radius: 5px; border: 1px solid #201f1f; padding: 2px 5px; margin: 3px 0; color: white; background: #00000070; font-weight: bold; float: right; margin-right: 0.2rem;" href="/blog/locations/${properties.name.split(' ').join('-')}">Details</a>
+					<a style="border-radius: 5px; border: 1px solid #201f1f; padding: 2px 5px; margin: 3px 0; color: white; background: #00000070; font-weight: bold; float: right; margin-right: 0.2rem;" href="${detailsLink}">Details</a>
 				</div>
 			`
 			)

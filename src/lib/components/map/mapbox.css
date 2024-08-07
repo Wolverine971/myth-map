@@ -115,6 +115,13 @@
 	padding: 0;
 	width: 29px;
 }
+
+@media screen and (max-width: 500px) {
+	.mapboxgl-ctrl-group button {
+		width: 35px;
+		height: 35px;
+	}
+}
 .mapboxgl-ctrl-group button + button {
 	border-top: 1px solid #ddd;
 }
