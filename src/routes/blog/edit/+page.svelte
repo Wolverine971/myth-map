@@ -11,7 +11,7 @@
 	const blogs: any[] = data?.locationBlogs
 		? data?.locationBlogs.map((blog) => {
 				if (blog) {
-					blog.name = blog.title;
+					blog.name = blog?.title;
 					blog.value = blog || '';
 				}
 				return blog;
@@ -52,7 +52,7 @@
 {/if}
 
 {#if selected}
-	<div>{selected.title}</div>
+	<div>{selected?.title}</div>
 
 	<!-- <input type="text" bind:value={description} placeholder="Description" class=""/> -->
 	<Input type="text" id="description" bind:value={description} placeholder="Description" />

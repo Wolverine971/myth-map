@@ -60,6 +60,9 @@ export const allPlaceIcons = {
 };
 
 export const getLocationIcon = (name: string) => {
+	if (!name) {
+		return 'mythmap';
+	}
 	const cleanedName = name.replace('’', "'");
 	const lowerCaseName = name.toLowerCase();
 

@@ -1,13 +1,16 @@
 <script lang="ts">
 	import { Heading, P, A } from 'flowbite-svelte';
-
-	import { ArrowRightAltSolid } from 'flowbite-svelte-icons';
+	import { browser } from '$app/environment';
+	// import { ArrowRightAltSolid } from 'flowbite-svelte-icons';
 	import { page } from '$app/stores';
 	import type { PageData } from './$types';
+
+	import CityMap from '$lib/components/map/map.svelte';
 
 	$: state = $page.params.state;
 	$: city = $page.params.city;
 	import LocationCard from '$lib/components/locations/LocationCard.svelte';
+	import { currentLocation } from '$lib/stores/locationStore';
 
 	export let data: PageData;
 	const cityMap = new Map();
@@ -21,12 +24,29 @@
 		return 0;
 	});
 	cities.forEach((location) => (cityMap[location.city] = location.id));
+	let userLocation: { lat: number; lng: number } | null;
+
+	currentLocation.subscribe((value) => {
+		userLocation = value;
+	});
 </script>
 
 <Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl"
 	>{city.toLocaleUpperCase()}, {state.toLocaleUpperCase()}</Heading
 >
-<div style="display: flex; flex-direction: column; width: 100%; gap: 0.2rem;">
+
+{#if browser}
+	<div class="map-div">
+		<CityMap
+			locations={data.locations || []}
+			shownLocations={data.locations || []}
+			currentLocation={userLocation}
+			selectedState={{ name: 'Maryland', abr: 'MD' }}
+			selectedCity={city}
+		/>
+	</div>
+{/if}
+<div style="display: flex; flex-direction: column; width: 100%; gap: 0.2rem; margin-top: 1rem;">
 	{#if cityMap}
 		<ul>
 			{#each Object.keys(cityMap) as city, index}
@@ -64,5 +84,11 @@
 	.inlineit {
 		display: inline-flex;
 		gap: 1rem;
+	}
+	.map-div {
+		align-self: center;
+		min-height: 430px;
+		height: 500px;
+		width: 100%;
 	}
 </style>

@@ -1,16 +1,10 @@
-// import { supabase } from "$lib/supabaseClient";
-// // import type { Actions } from "@sveltejs/kit";
-
-// // import { supabase } from "$lib/supabaseClient";
-// // import type { PageServerLoad } from './$types';
-
-// import type { PageLoad } from './$types';
-// import { supabase } from '$lib/supabaseClient';
-
 import { supabase } from '$lib/supabaseClient';
 import type { Actions, PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params }) => {
+	if (params.place.includes('.')) {
+		return
+	}
 	const { data: blogData, error: blogDataError } = await supabase
 		.from('content_locations')
 		.select('*')
@@ -24,10 +18,10 @@ export const load: PageLoad = async ({ params }) => {
 	const { data: locationData, error: locationDataError } = await supabase
 		.from('locations')
 		.select('*')
-		.eq('name', blogData.title)
+		.eq('name', blogData?.title)
 		.single();
 
-	if (locationDataError) {
+	if (locationDataError || !locationData) {
 		console.error(locationDataError);
 	}
 
@@ -43,7 +37,7 @@ export const load: PageLoad = async ({ params }) => {
 		console.error(nearByLocationsError);
 	}
 	const filteredNearByLocations = nearByLocations.filter(
-		(location) => location.name !== blogData.title
+		(location) => location.name !== blogData?.title
 	).map((location) => {
 		return {
 			...location,

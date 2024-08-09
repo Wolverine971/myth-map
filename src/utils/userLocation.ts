@@ -1,6 +1,7 @@
 
 import { currentLocation } from '$lib/stores/locationStore';
 
+
 export const getCurrentLocation = async () => {
     const options = {
         enableHighAccuracy: true,
@@ -8,6 +9,10 @@ export const getCurrentLocation = async () => {
         maximumAge: 0
     };
 
+    if (!navigator?.geolocation) {
+        console.log('Geolocation is not supported by your browser');
+        return
+    }
     navigator.geolocation.getCurrentPosition(currentLocationSuccess, currentLocationError, options);
 
 

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { setContext, onMount, onDestroy } from 'svelte';
 	import { PUBLIC_MAP_KEY } from '$env/static/public';
+	import { browser } from '$app/environment';
 	import './mapbox.css';
 	import { getLocationIcon } from '../../../utils/locationPhotos.js';
 	import { getCurrentLocation } from '../../../utils/userLocation';
@@ -31,7 +32,7 @@
 	$: currentLocation, showCurrentLocation();
 
 	const showCurrentLocation = async () => {
-		if (!currentLocation?.lat) {
+		if (!currentLocation?.lat && browser) {
 			await getCurrentLocation();
 		}
 
@@ -108,30 +109,30 @@
 
 	async function loadMapImages() {
 		const images = [
-			{ url: 'map/playground.png', id: 'playground1' },
-			{ url: 'map/park1.png', id: 'park1' },
-			{ url: 'map/mythmap.png', id: 'mythmap1' },
-			{ url: 'map/donut-shop.png', id: 'donut-shop1' },
-			{ url: 'map/library.png', id: 'library1' },
-			{ url: 'map/museum.png', id: 'museum1' },
-			{ url: 'map/farm.png', id: 'farm1' },
-			{ url: 'map/hiking-trail.png', id: 'hiking-trail1' },
-			{ url: 'map/nasa.png', id: 'nasa1' },
-			{ url: 'map/ice-cream-truck.png', id: 'ice-cream-truck1' },
-			{ url: 'map/mini-golf.png', id: 'mini-golf1' },
-			{ url: 'map/bakery.png', id: 'bakery1' },
-			{ url: 'map/brewery.png', id: 'brewery1' },
-			{ url: 'map/trampoline-park.png', id: 'trampoline-park1' },
-			{ url: 'map/climbing-gym.png', id: 'climbing-gym1' },
-			{ url: 'map/lake.png', id: 'lake1' },
-			{ url: 'map/nature-preserve.png', id: 'nature-preserve1' },
-			{ url: 'map/community-center.png', id: 'community-center1' },
-			{ url: 'map/art-studio.png', id: 'art-studio1' },
-			{ url: 'map/splash-pad.png', id: 'splash-pad1' },
-			{ url: 'map/train.png', id: 'train1' },
-			{ url: 'map/park-with-trails.png', id: 'park-with-trails1' },
-			{ url: 'map/park-with-zoo.png', id: 'park-with-zoo1' },
-			{ url: 'map/aircraft-observation.png', id: 'aircraft-observation1' }
+			{ url: '/map/playground.png', id: 'playground1' },
+			{ url: '/map/park1.png', id: 'park1' },
+			{ url: '/map/mythmap.png', id: 'mythmap1' },
+			{ url: '/map/donut-shop.png', id: 'donut-shop1' },
+			{ url: '/map/library.png', id: 'library1' },
+			{ url: '/map/museum.png', id: 'museum1' },
+			{ url: '/map/farm.png', id: 'farm1' },
+			{ url: '/map/hiking-trail.png', id: 'hiking-trail1' },
+			{ url: '/map/nasa.png', id: 'nasa1' },
+			{ url: '/map/ice-cream-truck.png', id: 'ice-cream-truck1' },
+			{ url: '/map/mini-golf.png', id: 'mini-golf1' },
+			{ url: '/map/bakery.png', id: 'bakery1' },
+			{ url: '/map/brewery.png', id: 'brewery1' },
+			{ url: '/map/trampoline-park.png', id: 'trampoline-park1' },
+			{ url: '/map/climbing-gym.png', id: 'climbing-gym1' },
+			{ url: '/map/lake.png', id: 'lake1' },
+			{ url: '/map/nature-preserve.png', id: 'nature-preserve1' },
+			{ url: '/map/community-center.png', id: 'community-center1' },
+			{ url: '/map/art-studio.png', id: 'art-studio1' },
+			{ url: '/map/splash-pad.png', id: 'splash-pad1' },
+			{ url: '/map/train.png', id: 'train1' },
+			{ url: '/map/park-with-trails.png', id: 'park-with-trails1' },
+			{ url: '/map/park-with-zoo.png', id: 'park-with-zoo1' },
+			{ url: '/map/aircraft-observation.png', id: 'aircraft-observation1' }
 		];
 
 		await Promise.all(
@@ -140,7 +141,10 @@
 					!map.hasImage(img.id) &&
 					new Promise((resolve, reject) => {
 						map.loadImage(img.url, (error, res) => {
-							if (error) reject(error);
+							if (error) {
+								console.error('Error loading image:', error);
+								reject(error);
+							}
 							map.addImage(img.id, res);
 							resolve(res);
 						});
@@ -324,7 +328,7 @@
 
 	async function updateCurrentLocation(location: { lat: number; lng: number }) {
 		if (!location || !map || !mapboxgl) {
-			if (!location) {
+			if (!location && browser) {
 				await getCurrentLocation();
 			}
 			return;

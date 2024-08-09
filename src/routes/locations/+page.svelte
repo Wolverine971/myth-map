@@ -27,7 +27,7 @@
 <div class="text-left" style="align-self: baseline;">
 	{#each data.locations as location}
 		<div class="mb-8">
-			<h2 class="text-2xl font-bold text-gray-900 dark:text-white">{location.title}</h2>
+			<h2 class="text-2xl font-bold text-gray-900 dark:text-white">{location?.title}</h2>
 			{#if location.description}
 				<p class="text-gray-700 dark:text-gray-400">{location.description}</p>
 			{/if}
@@ -48,6 +48,12 @@
 		display: flex;
 		flex-direction: column;
 		align-items: start;
+		width: 100%;
+	}
+	.map-div {
+		align-self: center;
+		min-height: 430px;
+		height: 500px;
 		width: 100%;
 	}
 </style>

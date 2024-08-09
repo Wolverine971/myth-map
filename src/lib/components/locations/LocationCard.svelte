@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Card, Button, type SizeType } from 'flowbite-svelte';
+	import { browser } from '$app/environment';
 	import { getLocationIcon } from '../../../utils/locationPhotos';
 	import { currentLocation } from '$lib/stores/locationStore';
 	import { deserialize } from '$app/forms';
@@ -26,7 +27,7 @@
 		if (distanceLoading) return;
 		distanceLoading = true;
 
-		if (!userLocation) {
+		if (!userLocation && browser) {
 			await getCurrentLocation();
 			userLocation = $currentLocation;
 		}
