@@ -6,9 +6,11 @@
 	import { page } from '$app/stores';
 	import type { PageData } from './$types';
 
-	import LocationCard from '$lib/components/locations/LocationCard.svelte';
+	import LocationCardSmall from '$lib/components/locations/LocationCardSmall.svelte';
 	import { browser } from '$app/environment';
 	import { currentLocation } from '$lib/stores/locationStore';
+	import { findState } from '../../../../utils/geoDataLoader';
+	import { onMount } from 'svelte';
 
 	$: state = $page.params.state;
 	export let data: PageData;
@@ -23,6 +25,10 @@
 		}
 		return 0;
 	});
+	let stateName
+	onMount(() => {
+		stateName = findState(state || '')?.name;
+	})
 	cities.forEach((location) => (cityMap[location.city] = location.id));
 	let userLocation: { lat: number; lng: number } | null;
 
@@ -32,7 +38,7 @@
 </script>
 
 <Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl"
-	>{state.toLocaleUpperCase()}</Heading
+	>{stateName?.toLocaleUpperCase()}</Heading
 >
 
 {#if browser}
@@ -59,10 +65,10 @@
 							</span>
 						</summary>
 						<div class="panel">
-							<ul>
+							<ul class="ul-wrap">
 								{#each data.locations.filter((l) => l.city === city) as location}
 									<li>
-										<LocationCard
+										<LocationCardSmall
 											name={location.name}
 											coords={{ lat: location.lat, lng: location.lng }}
 											address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
@@ -102,5 +108,13 @@
 		min-height: 430px;
 		height: 500px;
 		width: 100%;
+	}
+	.ul-wrap {
+		display: flex;
+		flex-wrap: wrap;
+		width: 100%;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
 	}
 </style>

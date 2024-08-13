@@ -7,7 +7,7 @@
 	import { marked } from 'marked';
 	import { Heading, A } from 'flowbite-svelte';
 	import { notifications } from '$lib/components/shared/notifications';
-	import LocationCard from '$lib/components/locations/LocationCard.svelte';
+	import LocationCardSmall from '$lib/components/locations/LocationCardSmall.svelte';
 	import { getLocationIcon } from '../../../../../../utils/locationPhotos';
 	// import ArticleDescription from '$lib/components/blog/ArticleDescription.svelte';
 	// import SuggestionsBlog from '$lib/components/blog/SuggestionsBlog.svelte';
@@ -114,7 +114,7 @@
 						<p>No suggestions found</p>
 					{:else}
 						{#each placesToEat as location}
-							<LocationCard
+							<LocationCardSmall
 								name={location.name}
 								coords={{ lat: location.lat, lng: location.lng }}
 								address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
@@ -134,7 +134,7 @@
 						<p>No places to eat found</p>
 					{:else}
 						{#each placesToEat as location}
-							<LocationCard
+							<LocationCardSmall
 								name={location.name}
 								coords={{ lat: location.lat, lng: location.lng }}
 								address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
@@ -152,7 +152,7 @@
 						<p>No activities found</p>
 					{:else}
 						{#each activities as location}
-							<LocationCard
+							<LocationCardSmall
 								name={location.name}
 								coords={{ lat: location.lat, lng: location.lng }}
 								address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}

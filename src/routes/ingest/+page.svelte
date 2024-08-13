@@ -7,10 +7,10 @@
 	export let data: PageData;
 	let ingesting = false;
 
-	const ingest = async () => {
+	const createOrUpdateLocations = async () => {
 		ingesting = true;
 		const { data, error: ingestError } = await (
-			await fetch(`/ingest?/ingestGeographies`, {
+			await fetch(`/ingest?/createOrUpdateLocations`, {
 				method: 'POST',
 				body: JSON.stringify({})
 			})
@@ -40,6 +40,23 @@
 		ingesting = false;
 	};
 
+	const ingestGeos = async () => {
+		ingesting = true;
+		const { data, error: ingestError } = await (
+			await fetch(`/ingest?/ingestGeographies`, {
+				method: 'POST',
+				body: JSON.stringify({})
+			})
+		).json();
+
+		if (data) {
+			notifications.info('ingested', 3000);
+		} else {
+			notifications.warning('ingested Failed', 3000);
+		}
+		ingesting = false;
+	};
+
 	import { A, Card, Button } from 'flowbite-svelte';
 </script>
 
@@ -51,8 +68,8 @@
 			<Button
 				type="button"
 				on:click={async () => {
-					await ingest();
-				}}>Ingest</Button
+					await createOrUpdateLocations();
+				}}>Create/ Update Locations</Button
 			>
 			<Button
 				type="button"
@@ -60,6 +77,14 @@
 					await ingestBlogs();
 				}}>Ingest Blogs</Button
 			>
+			<Button
+				type="button"
+				on:click={async () => {
+					await ingestGeos();
+				}}>Ingest Geos</Button
+			>
+
+			
 		</div>
 	{/if}
 	{#each data?.locations as location, i}

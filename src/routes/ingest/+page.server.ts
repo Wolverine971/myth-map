@@ -4,7 +4,7 @@ import type { PageServerLoad } from './$types';
 import type { Actions, RequestHandler } from '@sveltejs/kit';
 // import { supabase } from '$lib/supabase';
 // import { joinEmail2 } from '../../emails';
-import { getLocations, ingest, ingestBlogs } from './googleSpreadsheet';
+import { getLocations, ingestAndCreateLocations, ingestBlogs } from './googleSpreadsheet';
 import { supabase } from '$lib/supabaseClient';
 
 // import { google } from 'googleapis';
@@ -18,11 +18,11 @@ export const load: PageServerLoad = async (event) => {
 };
 
 export const actions: Actions = {
-	ingest: async ({ request, locals: { supabase, getSession } }) => {
+	createOrUpdateLocations: async ({ request, locals: { supabase, getSession } }) => {
 		try {
 			// const body = Object.fromEntries(await request.formData());
 
-			await ingest();
+			await ingestAndCreateLocations();
 
 			return { success: true };
 		} catch (e) {

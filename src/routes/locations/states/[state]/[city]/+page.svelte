@@ -9,7 +9,7 @@
 
 	$: state = $page.params.state;
 	$: city = $page.params.city;
-	import LocationCard from '$lib/components/locations/LocationCard.svelte';
+	import LocationCardSmall from '$lib/components/locations/LocationCardSmall.svelte';
 	import { currentLocation } from '$lib/stores/locationStore';
 
 	export let data: PageData;
@@ -48,12 +48,12 @@
 {/if}
 <div style="display: flex; flex-direction: column; width: 100%; gap: 0.2rem; margin-top: 1rem;">
 	{#if cityMap}
-		<ul>
+		<ul class="ul-wrap" >
 			{#each Object.keys(cityMap) as city, index}
 				{#each data.locations.filter((l) => l.city === city) as location}
 					<li>
 						<div class="panel">
-							<LocationCard
+							<LocationCardSmall
 								name={location.name}
 								coords={{ lat: location.lat, lng: location.lng }}
 								address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
@@ -90,5 +90,13 @@
 		min-height: 430px;
 		height: 500px;
 		width: 100%;
+	}
+	.ul-wrap {
+		display: flex;
+		flex-wrap: wrap;
+		width: 100%;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
 	}
 </style>

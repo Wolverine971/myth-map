@@ -31,6 +31,7 @@
 			{#if location.description}
 				<p class="text-gray-700 dark:text-gray-400">{location.description}</p>
 			{/if}
+			<p>{location.city}</p>
 
 			<a
 				href={`locations/states/${location.state}/${location.city}/${location.loc}`}
