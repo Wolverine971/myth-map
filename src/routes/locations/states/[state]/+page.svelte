@@ -25,10 +25,10 @@
 		}
 		return 0;
 	});
-	let stateName
+	let stateName;
 	onMount(() => {
 		stateName = findState(state || '')?.name;
-	})
+	});
 	cities.forEach((location) => (cityMap[location.city] = location.id));
 	let userLocation: { lat: number; lng: number } | null;
 

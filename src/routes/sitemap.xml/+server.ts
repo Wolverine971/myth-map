@@ -16,14 +16,10 @@ const getAllLocations = async () => {
 			changefreq: 'weekly'
 		};
 	});
-
-
-}
-
+};
 
 export async function GET() {
 	const locations = await getAllLocations();
-
 
 	return new Response(
 		`
@@ -87,7 +83,6 @@ export async function GET() {
 // 		})
 // 	.join('')
 // }
-
 
 function escapeXmlUrl(url) {
 	const xmlEntities = {

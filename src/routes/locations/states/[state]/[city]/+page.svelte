@@ -48,7 +48,7 @@
 {/if}
 <div style="display: flex; flex-direction: column; width: 100%; gap: 0.2rem; margin-top: 1rem;">
 	{#if cityMap}
-		<ul class="ul-wrap" >
+		<ul class="ul-wrap">
 			{#each Object.keys(cityMap) as city, index}
 				{#each data.locations.filter((l) => l.city === city) as location}
 					<li>

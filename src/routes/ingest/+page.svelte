@@ -83,8 +83,6 @@
 					await ingestGeos();
 				}}>Ingest Geos</Button
 			>
-
-			
 		</div>
 	{/if}
 	{#each data?.locations as location, i}

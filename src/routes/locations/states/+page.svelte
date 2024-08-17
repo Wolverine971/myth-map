@@ -2,7 +2,7 @@
 	import { Heading, Card } from 'flowbite-svelte';
 
 	import type { PageData } from './$types';
-	
+
 	import { findState } from '../../../utils/geoDataLoader';
 	export let data: PageData;
 	let innerWidth = 0;
@@ -13,30 +13,27 @@
 			name: findState(state.state)?.name,
 			location_count: state.location_count,
 			abr: state.state
-
-		}
-	})
-	
+		};
+	});
 </script>
 
 <Heading tag="h1" class="mb-3" customSize="text-2xl font-extrabold  md:text-3xl">States</Heading>
 <!-- Display list of states -->
 
-
 {#each stateData as state}
-<Card horizontal {size} class="cardSize" padding="sm" href="/locations/states/maryland">
-	<!-- <a href="https://www.flaticon.com/free-icons/maryland" title="maryland icons">Maryland icons created by Linseed Studio - Flaticon</a> -->
-	<img src="/states/{state.name}.png" alt="" class="img-icon" />
+	<Card horizontal {size} class="cardSize" padding="sm" href="/locations/states/maryland">
+		<!-- <a href="https://www.flaticon.com/free-icons/maryland" title="maryland icons">Maryland icons created by Linseed Studio - Flaticon</a> -->
+		<img src="/states/{state.name}.png" alt="" class="img-icon" />
 
-	<div class="card-content">
-		<h5 class="card-title">{state.name}</h5>
-		<div class="card-actions">
-			Location Count: {state.location_count}
+		<div class="card-content">
+			<h5 class="card-title">{state.name}</h5>
+			<div class="card-actions">
+				Location Count: {state.location_count}
+			</div>
 		</div>
-	</div>
-</Card>
-
+	</Card>
 {/each}
+
 <style>
 	@media (max-width: 500px) {
 		.cardSize {

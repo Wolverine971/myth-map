@@ -51,10 +51,7 @@ export const actions: Actions = {
 			const response = await directionsClient
 				.getDirections({
 					profile: 'driving',
-					waypoints: [
-						{ coordinates: origin },
-						{ coordinates: destination }
-					]
+					waypoints: [{ coordinates: origin }, { coordinates: destination }]
 				})
 				.send();
 
@@ -69,7 +66,5 @@ export const actions: Actions = {
 			console.error('Error calculating directions:', error);
 			return json({ error: 'Failed to calculate directions' }, { status: 500 });
 		}
-
-
 	}
 };

@@ -3,7 +3,7 @@ import type { Actions, PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params }) => {
 	if (params.place.includes('.')) {
-		return
+		return;
 	}
 	const { data: blogData, error: blogDataError } = await supabase
 		.from('content_locations')
@@ -36,14 +36,14 @@ export const load: PageLoad = async ({ params }) => {
 	if (nearByLocationsError) {
 		console.error(nearByLocationsError);
 	}
-	const filteredNearByLocations = nearByLocations.filter(
-		(location) => location.name !== blogData?.title
-	).map((location) => {
-		return {
-			...location,
-			lng: location.long
-		};
-	});
+	const filteredNearByLocations = nearByLocations
+		.filter((location) => location.name !== blogData?.title)
+		.map((location) => {
+			return {
+				...location,
+				lng: location.long
+			};
+		});
 
 	const { data: locationTags, error: locationTagsError } = await supabase
 		.from('location_tags')

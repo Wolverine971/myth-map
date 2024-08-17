@@ -2,9 +2,7 @@
 import { redirect, type Actions } from '@sveltejs/kit';
 import { supabase } from '$lib/supabaseClient';
 
-export const load = async (
-	event
-) => {
+export const load = async (event) => {
 	// const session = await getServerSession(event);
 
 	// if (!session?.user?.id) {
@@ -20,10 +18,9 @@ export const load = async (
 	}
 
 	return {
-		locations: locationContent,
+		locations: locationContent
 	};
 };
-
 
 export const actions: Actions = {
 	updateStage: async ({ request }) => {

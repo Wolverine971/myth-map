@@ -18,23 +18,24 @@ export const load: PageServerLoad = async () => {
 		if (LocationAddressDataError) {
 			console.log('LocationAddressDataError', LocationAddressDataError);
 		}
-		const addressMap = {}
+		const addressMap = {};
 
 		LocationAddressData.forEach((location) => {
-
-			addressMap[location.name] = location
-		})
+			addressMap[location.name] = location;
+		});
 
 		return {
 			locations: existingLocationData.map((location) => {
 				return {
 					...location,
-					...(location.title && addressMap[location.title]) ? addressMap[location.title] : {
-						address: 'No Address'
-					}
+					...(location.title && addressMap[location.title]
+						? addressMap[location.title]
+						: {
+								address: 'No Address'
+							})
 				};
 			})
-		}
+		};
 	} catch (error) {
 		console.error('error', error);
 	}
