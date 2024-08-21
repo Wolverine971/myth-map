@@ -21,7 +21,7 @@ function createItineraryStore() {
 						name: `${name} Itinerary`,
 						start_date: new Date().toISOString().split('T')[0],
 						end_date: new Date().toISOString().split('T')[0],
-						user_id: (await supabase.auth.getUser()).data.user?.id,
+						user_id: (await supabase.auth.getUser()).data?.user?.id,
 						tracking_link: `https://tinytribeadventures.com/itineraries/${crypto.randomUUID()}`
 					})
 					.select();

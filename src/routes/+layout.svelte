@@ -16,8 +16,6 @@
 
 	$: ({ session } = data);
 
-	console.log('layoutsession', session);
-
 	let innerWidth = 0;
 	let isItineraryModalOpen = false;
 	let hasItinerary = false;
@@ -54,8 +52,6 @@
 		} = supabase.auth.onAuthStateChange(( state, _session) => {
 			if (state == 'SIGNED_IN') {
 				session = _session;
-				// session.user.set(session.user);
-				console.log('session.user', _session.user);
 			} else {
 				session?.user?.set(false);
 			}

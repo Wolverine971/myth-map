@@ -8,9 +8,7 @@ import { goto } from '$app/navigation';
 export const load: PageLoad = async (event) => {
 	const data = await event.parent();
 
-	console.log('data:', data);
 	const session = await event.locals.getSession()
-	console.log('session:', session);
 	if (!session?.user) {
 		throw redirect(303, '/login');
 	}
@@ -26,7 +24,7 @@ export const load: PageLoad = async (event) => {
 	// 	// Handle error as appropriate for your application
 	// }
 
-	return { user: session.user };
+	return { user: session?.user };
 };
 
 

@@ -126,12 +126,14 @@
 					{distanceLoading ? 'Loading...' : 'How far away is it?'}
 				</Button>
 			{/if}
-			{#if isInItinerary}
-				<Button style="height: 43px;" type="button" disabled block>Added to Itinerary</Button>
-			{:else}
-				<Button style="height: 43px;" type="button" on:click={addToItinerary}
-					>Add to Itinerary</Button
-				>
+			{#if user}
+				{#if isInItinerary}
+					<Button style="height: 43px;" type="button" disabled block>Added to Itinerary</Button>
+				{:else}
+					<Button style="height: 43px;" type="button" on:click={addToItinerary}
+						>Add to Itinerary</Button
+					>
+				{/if}
 			{/if}
 		</div>
 	</div>
