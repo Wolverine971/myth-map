@@ -9,6 +9,7 @@
 	import { onMount } from 'svelte';
 	import GeoFilters from '$lib/components/locations/GeoFilters.svelte';
 	export let data: PageData;
+	console.log('data', data);
 	const url = 'https://tinytribeadventures.com';
 
 	let shownLocations = data.locations;
@@ -195,6 +196,7 @@
 						website={location.website}
 						tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
 						{location}
+						user={data.session.user}
 					/>
 				{/each}
 			</div>

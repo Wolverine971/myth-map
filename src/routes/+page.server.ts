@@ -4,6 +4,7 @@ import type { PageServerLoad } from './$types';
 
 /** @type {import('./$types').PageLoad} */
 export const load: PageServerLoad = async (event) => {
+	const session = await event.locals.getSession()
 	const { data: locations, error: locationsError } = await supabase.from('locations').select('*');
 	if (locationsError) {
 		console.error(locationsError);
@@ -23,7 +24,8 @@ export const load: PageServerLoad = async (event) => {
 	return {
 		locations: locations ?? [],
 		locationTags: locationTags ?? [],
-		tags: tags ?? []
+		tags: tags ?? [],
+		session
 	};
 };
 

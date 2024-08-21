@@ -1,11 +1,12 @@
 <script>
 	import { page } from '$app/stores';
-	import { Navbar, NavBrand, NavLi, NavUl, NavHamburger } from 'flowbite-svelte';
+	import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, Button } from 'flowbite-svelte';
+	import { UserSolid } from 'flowbite-svelte-icons';
 	$: activeUrl = $page.url.pathname;
 	export let innerWidth = 0;
 </script>
 
-<Navbar>
+<Navbar let:hidden let:toggle>
 	<NavBrand href="/">
 		<img src="/myth-map-small.svg" class="me-3 h-14 sm:h-20" alt="Tiny Tribe Adventures" />
 		{#if $page.url.pathname !== '/' || innerWidth < 500}
@@ -15,8 +16,14 @@
 		{/if}
 	</NavBrand>
 
-	<NavHamburger />
-	<NavUl {activeUrl}>
+	<div class="flex md:order-2">
+		<Button href="/account" color="light" class="!p-2">
+			<UserSolid class="h-5 w-5" />
+		</Button>
+		<NavHamburger on:click={toggle} />
+	</div>
+
+	<NavUl {activeUrl} {hidden}>
 		<NavLi href="/">Home</NavLi>
 		<NavLi href="/locations">Locations</NavLi>
 		<NavLi href="/about">About us</NavLi>

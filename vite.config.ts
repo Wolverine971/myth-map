@@ -8,6 +8,6 @@ export default defineConfig({
 	plugins: [sveltekit(), geoJsonPlugin()],
 
 	build: {
-		assetsInlineLimit: 1000000000, // 100MB
-	},
+		assetsInlineLimit: 1000000000 // 100MB
+	}
 });

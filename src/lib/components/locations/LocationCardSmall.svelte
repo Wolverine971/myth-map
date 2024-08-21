@@ -5,6 +5,7 @@
 	import { currentLocation } from '$lib/stores/locationStore';
 	import { deserialize } from '$app/forms';
 	import { getCurrentLocation } from '../../../utils/userLocation';
+	import { currentItinerary } from '$lib/stores/itineraryStore';
 
 	export let name: string;
 	export let address: string;
@@ -13,6 +14,7 @@
 	export let coords: { lat: number; lng: number };
 	export let size: SizeType = 'md';
 	export let location;
+	export let user
 
 	let duration: number;
 	let distance: number;
@@ -20,6 +22,12 @@
 	let userLocation: { lat: number; lng: number } | null;
 
 	currentLocation.subscribe((value) => (userLocation = value));
+	let itinerary;
+	let isInItinerary = false;
+	currentItinerary.subscribe((value) => {
+		itinerary = value;
+		isInItinerary = itinerary?.items?.some((item) => item.location.id === location.id);
+	});
 
 	const [addressPart1, ...addressPart2] = address.split(',');
 
@@ -57,6 +65,17 @@
 		} finally {
 			distanceLoading = false;
 		}
+	}
+	function addToItinerary() {
+		const newLocation: Location = {
+			id: location.id,
+			name: name,
+			latitude: coords.lat,
+			longitude: coords.lng,
+			address: location.address,
+			description: location.description
+		};
+		currentItinerary.addItem({location: newLocation, itineraryId: itinerary?.id, name: user.email})
 	}
 </script>
 
@@ -105,6 +124,13 @@
 				>
 					{distanceLoading ? 'Loading...' : 'How far away is it?'}
 				</Button>
+			{/if}
+			{#if isInItinerary}
+				<Button style="height: 43px;" type="button" disabled block>Added to Itinerary</Button>
+			{:else}
+				<Button style="height: 43px;" type="button" on:click={addToItinerary}
+					>Add to Itinerary</Button
+				>
 			{/if}
 		</div>
 	</div>

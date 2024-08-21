@@ -447,104 +447,104 @@
 	}
 
 	class FullscreenControl {
-    private _fullscreen = false;
-    private _map: Map;
-    private _container: HTMLElement;
-    private _button: HTMLButtonElement;
-    private _icon: HTMLSpanElement;
-    private _originalStyles: { [key: string]: string } = {};
+		private _fullscreen = false;
+		private _map: Map;
+		private _container: HTMLElement;
+		private _button: HTMLButtonElement;
+		private _icon: HTMLSpanElement;
+		private _originalStyles: { [key: string]: string } = {};
 
-    onAdd(map: Map) {
-        this._map = map;
-        this._container = document.createElement('div');
-        this._container.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
-        this._button = document.createElement('button');
-        this._button.className = 'fullscreen-button';
-        this._icon = document.createElement('span');
-        this._icon.className = 'fullscreen-icon';
-        this._button.appendChild(this._icon);
-        this._container.appendChild(this._button);
-        this._button.addEventListener('click', () => this.toggleFullscreen());
-        return this._container;
-    }
+		onAdd(map: Map) {
+			this._map = map;
+			this._container = document.createElement('div');
+			this._container.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
+			this._button = document.createElement('button');
+			this._button.className = 'fullscreen-button';
+			this._icon = document.createElement('span');
+			this._icon.className = 'fullscreen-icon';
+			this._button.appendChild(this._icon);
+			this._container.appendChild(this._button);
+			this._button.addEventListener('click', () => this.toggleFullscreen());
+			return this._container;
+		}
 
-    onRemove() {
-        this._container.parentNode.removeChild(this._container);
-        this._map = undefined;
-    }
+		onRemove() {
+			this._container.parentNode.removeChild(this._container);
+			this._map = undefined;
+		}
 
-    toggleFullscreen() {
-        const mapContainer = this._map.getContainer();
-        this._fullscreen ? this._exitFullscreen(mapContainer) : this._enterFullscreen(mapContainer);
-    }
+		toggleFullscreen() {
+			const mapContainer = this._map.getContainer();
+			this._fullscreen ? this._exitFullscreen(mapContainer) : this._enterFullscreen(mapContainer);
+		}
 
-    private _enterFullscreen(element: HTMLElement) {
-        if (element.requestFullscreen) {
-            element.requestFullscreen();
-        } else if ((element as any).webkitRequestFullscreen) {
-            (element as any).webkitRequestFullscreen();
-        } else if ((element as any).mozRequestFullScreen) {
-            (element as any).mozRequestFullScreen();
-        } else if ((element as any).msRequestFullscreen) {
-            (element as any).msRequestFullscreen();
-        } else {
-            this._fallbackFullscreen(element);
-        }
-        
-        this._fullscreen = true;
-        this._updateButtonIcon();
-    }
+		private _enterFullscreen(element: HTMLElement) {
+			if (element.requestFullscreen) {
+				element.requestFullscreen();
+			} else if ((element as any).webkitRequestFullscreen) {
+				(element as any).webkitRequestFullscreen();
+			} else if ((element as any).mozRequestFullScreen) {
+				(element as any).mozRequestFullScreen();
+			} else if ((element as any).msRequestFullscreen) {
+				(element as any).msRequestFullscreen();
+			} else {
+				this._fallbackFullscreen(element);
+			}
 
-    private _exitFullscreen(element: HTMLElement) {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if ((document as any).webkitExitFullscreen) {
-            (document as any).webkitExitFullscreen();
-        } else if ((document as any).mozCancelFullScreen) {
-            (document as any).mozCancelFullScreen();
-        } else if ((document as any).msExitFullscreen) {
-            (document as any).msExitFullscreen();
-        } else {
-            this._fallbackExitFullscreen(element);
-        }
-        
-        this._fullscreen = false;
-        this._updateButtonIcon();
-    }
+			this._fullscreen = true;
+			this._updateButtonIcon();
+		}
 
-    private _fallbackFullscreen(element: HTMLElement) {
-        this._originalStyles = {
-            position: element.style.position,
-            top: element.style.top,
-            left: element.style.left,
-            width: element.style.width,
-            height: element.style.height,
-            zIndex: element.style.zIndex
-        };
+		private _exitFullscreen(element: HTMLElement) {
+			if (document.exitFullscreen) {
+				document.exitFullscreen();
+			} else if ((document as any).webkitExitFullscreen) {
+				(document as any).webkitExitFullscreen();
+			} else if ((document as any).mozCancelFullScreen) {
+				(document as any).mozCancelFullScreen();
+			} else if ((document as any).msExitFullscreen) {
+				(document as any).msExitFullscreen();
+			} else {
+				this._fallbackExitFullscreen(element);
+			}
 
-        element.style.position = 'fixed';
-        element.style.top = '0';
-        element.style.left = '0';
-        element.style.width = '100%';
-        element.style.height = '100%';
-        element.style.zIndex = '9999';
+			this._fullscreen = false;
+			this._updateButtonIcon();
+		}
 
-        setTimeout(() => this._map.resize(), 0);
-    }
+		private _fallbackFullscreen(element: HTMLElement) {
+			this._originalStyles = {
+				position: element.style.position,
+				top: element.style.top,
+				left: element.style.left,
+				width: element.style.width,
+				height: element.style.height,
+				zIndex: element.style.zIndex
+			};
 
-    private _fallbackExitFullscreen(element: HTMLElement) {
-        for (const [prop, value] of Object.entries(this._originalStyles)) {
-            element.style[prop] = value;
-        }
+			element.style.position = 'fixed';
+			element.style.top = '0';
+			element.style.left = '0';
+			element.style.width = '100%';
+			element.style.height = '100%';
+			element.style.zIndex = '9999';
 
-        setTimeout(() => this._map.resize(), 0);
-    }
+			setTimeout(() => this._map.resize(), 0);
+		}
 
-    private _updateButtonIcon() {
-        this._icon.classList.toggle('fullscreen-icon', !this._fullscreen);
-        this._icon.classList.toggle('exit-fullscreen-icon', this._fullscreen);
-    }
-}
+		private _fallbackExitFullscreen(element: HTMLElement) {
+			for (const [prop, value] of Object.entries(this._originalStyles)) {
+				element.style[prop] = value;
+			}
+
+			setTimeout(() => this._map.resize(), 0);
+		}
+
+		private _updateButtonIcon() {
+			this._icon.classList.toggle('fullscreen-icon', !this._fullscreen);
+			this._icon.classList.toggle('exit-fullscreen-icon', this._fullscreen);
+		}
+	}
 
 	setContext(key, { getMap: () => map });
 </script>
@@ -575,21 +575,21 @@
 		color: aqua;
 	}
 	.fullscreen-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 6px;
-}
+		background: none;
+		border: none;
+		cursor: pointer;
+		padding: 6px;
+	}
 
-.fullscreen-icon {
-    background-image: url('path-to-your-fullscreen-icon.svg');
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    background-size: contain;
-}
+	.fullscreen-icon {
+		background-image: url('path-to-your-fullscreen-icon.svg');
+		display: inline-block;
+		width: 20px;
+		height: 20px;
+		background-size: contain;
+	}
 
-.exit-fullscreen-icon {
-    background-image: url('path-to-your-exit-fullscreen-icon.svg');
-}
+	.exit-fullscreen-icon {
+		background-image: url('path-to-your-exit-fullscreen-icon.svg');
+	}
 </style>

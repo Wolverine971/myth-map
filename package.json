@@ -49,6 +49,8 @@
 	"type": "module",
 	"dependencies": {
 		"@mapbox/mapbox-sdk": "^0.16.0",
+		"@supabase/auth-helpers-sveltekit": "^0.13.0",
+		"@supabase/ssr": "^0.4.0",
 		"@supabase/supabase-js": "^2.43.4",
 		"@types/mapbox-gl": "^3.1.0",
 		"@vavite/node-loader": "^4.1.1",
@@ -57,9 +59,11 @@
 		"googleapis-common": "^7.2.0",
 		"mapbox-gl": "^3.4.0",
 		"marked": "^13.0.2",
+		"qrcode": "^1.5.4",
 		"rehype-slug": "^6.0.0",
 		"remark-abbr": "^1.4.2",
 		"remark-github": "^12.0.0",
-		"supabase": "^1.172.2"
+		"supabase": "^1.172.2",
+		"svelte-dnd-action": "^0.9.49"
 	}
 }

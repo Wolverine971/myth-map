@@ -3,7 +3,6 @@
 
 	import BlogPageHead from '$lib/components/blog/BlogPageHead.svelte';
 	import type { PageData } from './$types';
-	import ArrowRightIcon from '$lib/components/icons/arrowRightIcon.svelte';
 	export let data: PageData;
 	let innerWidth = 0;
 </script>
