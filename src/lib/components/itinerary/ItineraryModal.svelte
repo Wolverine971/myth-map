@@ -1,179 +1,280 @@
 <script lang="ts">
 	import { currentItinerary } from '$lib/stores/itineraryStore';
-	import type { Location, Itinerary } from '$lib/types/itinerary';
+	import type { ItineraryItem } from '$lib/types/itinerary';
 	import { flip } from 'svelte/animate';
 	import { dndzone } from 'svelte-dnd-action';
+	import { Input, Button, Modal, Label } from 'flowbite-svelte';
+	import { DateInput } from 'date-picker-svelte';
+	import {
+		formatTime,
+		formatDateTimeRange,
+		getCurrentTime,
+		ensureTimeNotBeforeCurrent
+	} from '../../../utils/dateUtils';
+	import { notifications } from '$lib/components/shared/notifications';
+	import { derived } from 'svelte/store';
 
 	export let isOpen = false;
 
-	let items: Location[] = [];
 	let itineraryName = '';
 	let editingName = false;
+	let startDate: Date;
+	let endDate: Date;
+	let hasUnsavedChanges = false;
+	let initialLoad = true;
 
-	currentItinerary.subscribe((value) => {
-		if (value) {
-			items =
-				value.items?.map((item) => item.location).sort((a, b) => a.order_index - b.order_index) ||
-				[];
-			itineraryName = value.name;
+	function initializeItineraryData(currentIt) {
+		if (currentIt) {
+			itineraryName = currentIt.name;
+			startDate = currentIt.start_date ? new Date(currentIt.start_date) : new Date();
+			endDate = currentIt.end_date ? new Date(currentIt.end_date) : new Date();
 		}
-	});
-
-	function handleDndConsider(e: CustomEvent<{ items: Location[] }>) {
-		items = e.detail.items;
 	}
 
-	function handleDndFinalize(e: CustomEvent<{ items: Location[] }>) {
-		items = e.detail.items;
-		currentItinerary.updateOrder(items);
+	$: {
+		if ($currentItinerary && initialLoad) {
+			initializeItineraryData($currentItinerary);
+			initialLoad = false;
+		}
+	}
+
+	// Derived store for displayed items
+	const displayItems = derived(
+		currentItinerary,
+		($currentItinerary) =>
+			$currentItinerary?.items
+				?.sort((a, b) => a.order_index - b.order_index)
+				.map((item) => ({
+					...item,
+					displayStartTime: item.start_time || roundToNearestQuarter(getCurrentTime()),
+					displayEndTime: item.end_time || null
+				})) || []
+	);
+
+	// $: {
+	// 	if ($currentItinerary) {
+	// 		itineraryName = $currentItinerary.name;
+	// 		startDate = $currentItinerary.start_date
+	// 			? new Date($currentItinerary.start_date)
+	// 			: new Date();
+	// 		endDate = $currentItinerary.end_date ? new Date($currentItinerary.end_date) : new Date();
+	// 	}
+	// }
+
+	$: dateRangeDisplay = formatDateTimeRange(
+		startDate?.toISOString().split('T')[0],
+		endDate?.toISOString().split('T')[0]
+	);
+
+	// Watch for changes in startDate and update endDate
+	$: if (startDate && (!endDate || startDate > endDate)) {
+		endDate = new Date(startDate);
+		hasUnsavedChanges = true;
+	}
+
+	function roundToNearestQuarter(time: string): string {
+		if (!time) return '';
+		const [hours, minutes] = time.split(':').map(Number);
+		const totalMinutes = hours * 60 + minutes;
+		const roundedMinutes = Math.round(totalMinutes / 15) * 15;
+		const newHours = Math.floor(roundedMinutes / 60);
+		const newMinutes = roundedMinutes % 60;
+		return `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`;
+	}
+
+	function handleDndConsider(e: CustomEvent<{ items: ItineraryItem[] }>) {
+		currentItinerary.update((current) => ({
+			...current,
+			items: e.detail.items
+		}));
+		hasUnsavedChanges = true;
+	}
+
+	function handleDndFinalize(e: CustomEvent<{ items: ItineraryItem[] }>) {
+		currentItinerary.update((current) => ({
+			...current,
+			items: e.detail.items
+		}));
+		hasUnsavedChanges = true;
 	}
 
 	function removeLocation(id: string) {
-		currentItinerary.removeLocation(id);
+		currentItinerary.update((current) => ({
+			...current,
+			items: current.items.filter((item) => item.location.id !== id)
+		}));
+		hasUnsavedChanges = true;
 	}
 
-	function startEditingName() {
-		editingName = true;
+	function handleNameChange() {
+		currentItinerary.update((current) => ({
+			...current,
+			name: itineraryName
+		}));
+		hasUnsavedChanges = true;
 	}
 
-	function saveName() {
-		currentItinerary.updateName(itineraryName);
-		editingName = false;
+	function handleDateChange() {
+		currentItinerary.update((current) => ({
+			...current,
+			start_date: startDate.toISOString().split('T')[0],
+			end_date: endDate.toISOString().split('T')[0]
+		}));
+		hasUnsavedChanges = true;
+	}
+
+	function handleTimeInput(item: ItineraryItem, timeType: 'start' | 'end', newTime: string) {
+		const roundedTime = roundToNearestQuarter(newTime);
+		currentItinerary.update((current) => ({
+			...current,
+			items: current.items.map((i) => {
+				if (i.id === item.id) {
+					if (timeType === 'start') {
+						return { ...i, start_time: roundedTime, displayStartTime: roundedTime };
+					} else if (timeType === 'end') {
+						return { ...i, end_time: roundedTime, displayEndTime: roundedTime };
+					}
+				}
+				return i;
+			})
+		}));
+		hasUnsavedChanges = true;
+	}
+
+	async function saveItinerary() {
+		try {
+			await currentItinerary.updateItinerary({
+				id: $currentItinerary.id,
+				name: $currentItinerary.name,
+				startDate: $currentItinerary.start_date,
+				endDate: $currentItinerary.end_date,
+				items: $currentItinerary.items
+			});
+
+			hasUnsavedChanges = false;
+			notifications.success('Itinerary saved successfully');
+		} catch (error) {
+			notifications.danger('Failed to save itinerary');
+		}
 	}
 </script>
 
-{#if isOpen}
-	<div class="modal-overlay">
-		<div class="modal">
-			<div class="modal-header">
-				{#if editingName}
-					<input
-						bind:value={itineraryName}
-						on:blur={saveName}
-						on:keydown={(e) => e.key === 'Enter' && saveName()}
-						autofocus
-					/>
-				{:else}
-					<h2 on:click={startEditingName}>{itineraryName}</h2>
-				{/if}
-				<button class="close-button" on:click={() => (isOpen = false)}>&times;</button>
+<Modal bind:open={isOpen} size="xl" autoclose={false} class="w-full">
+	<div class="p-4 md:p-6">
+		<h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+			{#if editingName}
+				<Input
+					bind:value={itineraryName}
+					on:input={() => (hasUnsavedChanges = true)}
+					on:blur={() => {
+						editingName = false;
+						handleNameChange();
+					}}
+					on:keydown={(e) => {
+						if (e.key === 'Enter') {
+							e.preventDefault();
+							editingName = false;
+							handleNameChange();
+						}
+					}}
+					autofocus
+				/>
+			{:else}
+				<span on:click={() => (editingName = true)} class="cursor-pointer hover:underline">
+					{itineraryName}
+				</span>
+			{/if}
+		</h3>
+		<p class="mb-4 text-sm text-gray-600">{dateRangeDisplay}</p>
+		<div class="mb-6 grid gap-4 sm:grid-cols-2">
+			<div>
+				<Label for="start-date">Start Date</Label>
+				<DateInput
+					bind:value={startDate}
+					on:change={handleDateChange}
+					id="start-date"
+					format="yyyy/MM/dd"
+				/>
 			</div>
-			<div class="modal-content">
-				{#if items.length === 0}
-					<p>Your itinerary is empty!</p>
-				{:else}
-					<section
-						use:dndzone={{ items }}
-						on:consider={handleDndConsider}
-						on:finalize={handleDndFinalize}
-					>
-						{#each items as item (item.id)}
-							<div animate:flip={{ duration: 200 }} class="itinerary-item">
-								<span class="item-name">{item.name}</span>
-								<button class="remove-button" on:click={() => removeLocation(item.id)}
-									>Remove</button
-								>
-							</div>
-						{/each}
-					</section>
-				{/if}
+			<div>
+				<Label for="end-date">End Date</Label>
+				<DateInput
+					bind:value={endDate}
+					on:change={handleDateChange}
+					id="end-date"
+					format="yyyy/MM/dd"
+				/>
 			</div>
 		</div>
+		{#if $displayItems.length === 0}
+			<p class="text-center text-gray-500">Your itinerary is empty!</p>
+		{:else}
+			<section
+				use:dndzone={{ items: $displayItems }}
+				on:consider={handleDndConsider}
+				on:finalize={handleDndFinalize}
+				class="space-y-4"
+			>
+				{#each $displayItems as item (item.id)}
+					<div
+						animate:flip={{ duration: 200 }}
+						class="flex flex-col items-center justify-between rounded-lg bg-gray-100 p-4 shadow sm:flex-row"
+					>
+						<div class="mb-2 flex flex-col sm:mb-0">
+							<span class="text-lg font-medium">{item.location.name}</span>
+							<span class="text-sm text-gray-600">
+								{item.displayStartTime} - {item.displayEndTime || 'No end time'}
+							</span>
+						</div>
+						<div class="flex flex-col items-center space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
+							<Input
+								type="time"
+								value={item.displayStartTime}
+								on:input={(e) => handleTimeInput(item, 'start', e.target.value)}
+								label="Start"
+								step="900"
+							/>
+							<Input
+								type="time"
+								value={item.displayEndTime}
+								on:input={(e) => handleTimeInput(item, 'end', e.target.value)}
+								label="End"
+								step="900"
+							/>
+							<Button size="sm" color="red" on:click={() => removeLocation(item.location.id)}>
+								Remove
+							</Button>
+						</div>
+					</div>
+				{/each}
+			</section>
+		{/if}
+
+		<div class="mt-6 flex justify-end">
+			<Button color="green" on:click={saveItinerary} disabled={!hasUnsavedChanges}>
+				Save Itinerary
+			</Button>
+		</div>
 	</div>
-{/if}
+</Modal>
 
 <style>
-	/* ... (existing styles) ... */
-
-	.modal-header h2 {
-		margin: 0;
-		font-size: 1.5rem;
-		cursor: pointer;
+	:global(.modal-background) {
+		background-color: rgba(0, 0, 0, 0.5) !important;
 	}
 
-	.modal-header input {
-		font-size: 1.5rem;
-		width: 100%;
-		border: none;
-		border-bottom: 1px solid #ccc;
-		outline: none;
-		padding: 5px 0;
-	}
-	.modal-overlay {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background-color: rgba(0, 0, 0, 0.5);
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		z-index: 1000;
+	:global(.date-input) {
+		--date-picker-background: #ffffff;
+		--date-picker-foreground: #374151;
+		--date-input-width: 100%;
+		--date-picker-highlight-border: #3b82f6;
+		--date-picker-highlight-shadow: rgba(59, 130, 246, 0.5);
+		--date-picker-selected-color: #ffffff;
+		--date-picker-selected-background: #3b82f6;
 	}
 
-	.modal {
-		background-color: white;
-		border-radius: 8px;
-		width: 90%;
-		max-width: 500px;
-		max-height: 80vh;
-		display: flex;
-		flex-direction: column;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-	}
-
-	.modal-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 1rem;
-		border-bottom: 1px solid #e0e0e0;
-	}
-
-	.modal-header h2 {
-		margin: 0;
-		font-size: 1.5rem;
-	}
-
-	.close-button {
-		background: none;
-		border: none;
-		font-size: 1.5rem;
-		cursor: pointer;
-		color: #666;
-	}
-
-	.modal-content {
-		padding: 1rem;
-		overflow-y: auto;
-	}
-
-	.itinerary-item {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 0.5rem;
-		margin-bottom: 0.5rem;
-		background-color: #f0f0f0;
-		border-radius: 4px;
-		cursor: move;
-	}
-
-	.item-name {
-		font-weight: bold;
-	}
-
-	.remove-button {
-		background-color: #ff4136;
-		color: white;
-		border: none;
-		padding: 0.25rem 0.5rem;
-		border-radius: 4px;
-		cursor: pointer;
-	}
-
-	.remove-button:hover {
-		background-color: #dc352d;
+	:global(.dark .date-input) {
+		--date-picker-background: #1f2937;
+		--date-picker-foreground: #f3f4f6;
 	}
 </style>

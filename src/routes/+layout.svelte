@@ -3,6 +3,8 @@
 	import { currentItinerary } from '$lib/stores/itineraryStore';
 	import NavBar from '$lib/components/base/NavBar.svelte';
 	import ItineraryModal from '$lib/components/itinerary/ItineraryModal.svelte';
+
+	import Toast from '$lib/components/shared/Toast.svelte';
 	import '../app.css';
 	import { Button } from 'flowbite-svelte';
 	import { supabase } from '$lib/supabaseClient';
@@ -70,6 +72,8 @@
 <svelte:window bind:innerWidth />
 
 <NavBar {innerWidth} />
+
+<Toast />
 
 <hr />
 

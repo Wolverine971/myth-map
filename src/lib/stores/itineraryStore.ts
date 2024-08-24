@@ -7,20 +7,27 @@ import { supabase } from '$lib/supabaseClient';
 function createItineraryStore() {
 	const { subscribe, set, update } = writable<Itinerary | null>(null);
 
+	function formatTime(time: string | null): string | null {
+		if (!time) return null;
+		// Ensure the time is in HH:MM format
+		const [hours, minutes] = time.split(':');
+		return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
+	}
+
 	return {
 		subscribe,
 		setItinerary: (itinerary: Itinerary) => set(itinerary),
-		addItem: async ({ location, itineraryId, name }: { location: Location, itineraryId?: string, name?: string }) => {
+		addItem: async ({ location, itineraryId, name, startTime, endTime }: { location: Location, itineraryId?: string, name?: string, startTime?: string, endTime?: string }) => {
 			let currentItineraryId = itineraryId;
 
-			// If no itineraryId is provided, create a new itinerary
 			if (!currentItineraryId) {
+				const today = new Date().toISOString().split('T')[0];
 				const { data: newItinerary, error: createError } = await supabase
 					.from('itineraries')
 					.insert({
 						name: `${name} Itinerary`,
-						start_date: new Date().toISOString().split('T')[0],
-						end_date: new Date().toISOString().split('T')[0],
+						start_date: today,
+						end_date: today,
 						user_id: (await supabase.auth.getUser()).data?.user?.id,
 						tracking_link: `https://tinytribeadventures.com/itineraries/${crypto.randomUUID()}`
 					})
@@ -36,13 +43,15 @@ function createItineraryStore() {
 				.insert({
 					itinerary_id: currentItineraryId,
 					location_id: location.id,
-					order_index: await getNextOrderIndex(currentItineraryId)
+					order_index: await getNextOrderIndex(currentItineraryId),
+					start_time: formatTime(startTime),
+					end_time: formatTime(endTime)
 				})
 				.select(
 					`
-                    *,
-                    location:locations(*)
-                `
+					*,
+					location:locations(*)
+				`
 				)
 				.single();
 
@@ -73,6 +82,28 @@ function createItineraryStore() {
 				};
 			});
 		},
+		updateItemTime: async (itemId: string, startTime: string, endTime?: string) => {
+			const { data, error } = await supabase
+				.from('itinerary_items')
+				.update({ start_time: formatTime(startTime), end_time: formatTime(endTime) })
+				.match({ id: itemId })
+				.select()
+				.single();
+
+			if (error) throw error;
+
+			update((itinerary) => {
+				if (!itinerary) return null;
+				return {
+					...itinerary,
+					items: itinerary.items.map(item =>
+						item.id === itemId ? { ...item, start_time: startTime, end_time: endTime } : item
+					)
+				};
+			});
+
+			return data;
+		},
 		updateOrder: async (newOrder: Location[]) => {
 			const currentItineraryId = get({ subscribe })?.id;
 			const updates = newOrder.map((location, index) => ({
@@ -102,48 +133,69 @@ function createItineraryStore() {
 				};
 			});
 		},
+		updateItinerary: async (updates: {
+			id: string;
+			name?: string;
+			startDate?: string;
+			endDate?: string;
+			items?: ItineraryItem[];
+		}) => {
+			const { id, name, startDate, endDate, items } = updates;
 
-		updateName: async (newName: string) => {
-			const currentItineraryId = get({ subscribe })?.id;
+			// Update itinerary details
+			const { data: updatedItinerary, error: itineraryError } = await supabase
+				.from('itineraries')
+				.update({
+					name: name,
+					start_date: startDate ? new Date(startDate) : undefined,
+					end_date: endDate ? new Date(endDate) : undefined
+				})
+				.eq('id', id)
+				.select()
+				.single();
 
-			if (!currentItineraryId) {
-				throw new Error('No current itinerary');
+			if (itineraryError) {
+				console.error('Error updating itinerary:', itineraryError);
+				throw itineraryError;
 			}
 
-			const { data, error } = await supabase
-				.from('itineraries')
-				.update({ name: newName })
-				.match({ id: currentItineraryId })
-				.select()
-				.single();
+			// Update item order if items are provided
+			if (items) {
+				const itemUpdates = items.map((item, index) => ({
+					id: item.id,
+					order_index: index,
+					start_time: formatTime(item.start_time),
+					end_time: formatTime(item.end_time)
+				}));
 
-			if (error) throw error;
+				const { error: itemsError } = await supabase
+					.from('itinerary_items')
+					.upsert(itemUpdates, { onConflict: 'id' });
 
-			update((itinerary) => {
-				if (!itinerary) return null;
-				return { ...itinerary, name: newName };
-			});
+				if (itemsError) {
+					console.error('Error updating itinerary items:', itemsError);
+					throw itemsError;
+				}
+			}
 
-			return data;
-		},
-		updateDateRange: async (itineraryId: string, startDate: string, endDate: string) => {
-			const { data, error } = await supabase
-				.from('itineraries')
-				.update({ start_date: startDate, end_date: endDate })
-				.match({ id: itineraryId })
-				.select()
-				.single();
-
-			if (error) throw error;
-			update((itinerary) => {
+			// Update the store
+			update(itinerary => {
 				if (!itinerary) return null;
 				return {
 					...itinerary,
-					start_date: startDate,
-					end_date: endDate
+					...updatedItinerary,
+					items: items || itinerary.items
 				};
 			});
-		}
+
+			return updatedItinerary;
+		},
+		update: (updater: (itinerary: Itinerary) => Itinerary) => {
+			update(currentItinerary => {
+				if (currentItinerary === null) return null;
+				return updater(currentItinerary);
+			});
+		},
 	};
 }
 

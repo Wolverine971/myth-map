@@ -8,7 +8,6 @@
 	import { onMount } from 'svelte';
 
 	export let data: PageData;
-	console.log('data', data);
 
 	let qrCodeUrl = '';
 	const QR_OPTS = {
@@ -27,7 +26,6 @@
 
 	let innerWidth = 0;
 
-	console.log(data.itinerary);
 	onMount(() => {
 		QRCode.toDataURL(`https://tinytribeadventures.com/itineraries/${data.itinerary.id}`, QR_OPTS)
 			.then((url) => (qrCodeUrl = url))

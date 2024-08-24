@@ -13,8 +13,7 @@ export const load: PageServerLoad = async (event) => {
 			`
             *,
             items:itinerary_items(
-                id,
-                order_index,
+                *,
                 location:locations(*)
             )
         `

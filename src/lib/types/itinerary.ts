@@ -20,6 +20,10 @@ export interface Itinerary {
 
 export interface ItineraryItem {
 	id: string;
+	start_time: string;
+	end_time: string | null;
+	displayStartTime: string;
+	displayEndTime: string | null;
 	itinerary_id: string;
 	location_id: string;
 	order_index: number;
