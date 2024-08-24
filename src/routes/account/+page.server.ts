@@ -1,5 +1,6 @@
 // src/routes/account/+page.ts
-import { redirect, type Actions } from '@sveltejs/kit';
+import { Actions, redirect, type } from '@sveltejs/kit';
+
 import type { PageLoad } from './$types';
 
 import { supabase } from '$lib/supabaseClient';
@@ -8,8 +9,8 @@ import { goto } from '$app/navigation';
 export const load: PageLoad = async (event) => {
 	const data = await event.parent();
 
-	const session = await event.locals.getSession()
-	if (!session?.user) {
+	const user = await event.locals.getUser()
+	if (!user) {
 		throw redirect(303, '/login');
 	}
 
@@ -24,7 +25,7 @@ export const load: PageLoad = async (event) => {
 	// 	// Handle error as appropriate for your application
 	// }
 
-	return { user: session?.user };
+	return { user };
 };
 
 

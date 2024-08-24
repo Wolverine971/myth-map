@@ -172,7 +172,7 @@
 
 <!-- <SuggestionsBlog posts={data?.posts} blogType={'enneagram'} /> -->
 
-{#if !data?.session?.user}
+{#if !data?.user}
 	<div class="join">
 		<!-- <EmailSignup /> -->
 	</div>

@@ -184,7 +184,7 @@
 		/>
 	{/if}
 
-	<Tabs contentClass="test">
+	<Tabs contentClass="">
 		<TabItem open title="Gallery View" on:click={() => (selectedTab = 'gallery')}>
 			<div class="location-grid">
 				{#each shownLocations as location}
@@ -195,7 +195,7 @@
 						website={location.website}
 						tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
 						{location}
-						user={data?.session?.user}
+						user={data?.user}
 					/>
 				{/each}
 			</div>
@@ -215,9 +215,6 @@
 </div>
 
 <style>
-	.test {
-		margin: 1rem 0;
-	}
 	.location-grid {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);

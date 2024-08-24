@@ -5,16 +5,16 @@ import { supabase } from '$lib/supabaseClient';
 
 export const load: PageServerLoad = async (event) => {
 
-	const session = await event.locals.getSession()
+	const user = await event.locals.getUser()
 
-	if (!session.user.id) {
+	if (!user.id) {
 		throw error(401, 'Unauthorized');
 	}
 
 	const { data: itineraries, error: fetchError } = await supabase
 		.from('itineraries')
 		.select('*')
-		.eq('user_id', session.user.id)
+		.eq('user_id', user.id)
 		.order('created_at', { ascending: false });
 
 	if (fetchError) {
@@ -23,6 +23,6 @@ export const load: PageServerLoad = async (event) => {
 
 	return {
 		itineraries,
-		session
+		user
 	};
 };

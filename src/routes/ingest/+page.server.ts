@@ -12,13 +12,12 @@ import { supabase } from '$lib/supabaseClient';
 export const load: PageServerLoad = async (event) => {
 	const locations = await getLocations();
 	return {
-		// session: await getServerSession(event),
 		locations: locations
 	};
 };
 
 export const actions: Actions = {
-	createOrUpdateLocations: async ({ request, locals: { supabase, getSession } }) => {
+	createOrUpdateLocations: async ({ request, locals: { supabase, getUser } }) => {
 		try {
 			// const body = Object.fromEntries(await request.formData());
 
@@ -31,7 +30,7 @@ export const actions: Actions = {
 			});
 		}
 	},
-	ingestBlogs: async ({ request, locals: { supabase, getSession } }) => {
+	ingestBlogs: async ({ request, locals: { supabase, getUser } }) => {
 		try {
 			// const body = Object.fromEntries(await request.formData());
 

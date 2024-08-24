@@ -1,15 +1,16 @@
 import { AuthApiError } from '@supabase/supabase-js';
 import { fail, redirect } from '@sveltejs/kit';
+
 import type { Actions, PageServerLoad } from './$types';
 
 import { PRIVATE_ADMIN_EMAIL } from '$env/static/private';
 
 export const load: PageServerLoad = async (event) => {
 	// redirect user if logged in
-	// const session = await getServerSession(event);
-	// if (session?.user?.id) {
-	// 	throw redirect(302, '/');
-	// }
+	const user = await event.locals.getUser()
+	if (user?.id) {
+		throw redirect(302, '/account');
+	}
 };
 
 export const actions: Actions = {
