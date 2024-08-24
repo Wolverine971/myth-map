@@ -38,7 +38,9 @@
 <svelte:window bind:innerWidth />
 <Card class="mb-6 max-w-lg">
 	<div class="heading-container">
-		<Heading tag="h1" class="mb-2" style="overflow-wrap: anywhere; font-size: 2rem">{data.itinerary.name}</Heading>
+		<Heading tag="h1" class="mb-2" style="overflow-wrap: anywhere; font-size: 2rem"
+			>{data.itinerary.name}</Heading
+		>
 		<img
 			src={qrCodeUrl}
 			alt="9takes QR Code"
@@ -63,6 +65,8 @@
 				website={item.location.website}
 				tags={[]}
 				location={item.location}
+				user={data.user}
+				{innerWidth}
 			/>
 		{/each}
 	{/if}

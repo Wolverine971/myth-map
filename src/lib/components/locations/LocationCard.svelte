@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { Card, Button, type SizeType } from 'flowbite-svelte';
+	import { Card, Button } from 'flowbite-svelte';
 	import { browser } from '$app/environment';
 	import { getLocationIcon } from '../../../utils/locationPhotos';
 	import { currentLocation } from '$lib/stores/locationStore';
 	import { deserialize } from '$app/forms';
 	import { getCurrentLocation } from '../../../utils/userLocation';
 	import { currentItinerary } from '$lib/stores/itineraryStore';
+	import type { SizeType } from 'flowbite-svelte/dist/types';
+	import type { Location } from '$lib/types';
 
 	export let name: string;
 	export let address: string;
@@ -13,29 +15,28 @@
 	export let tags: Array<{ tags: { name: string } }>;
 	export let coords: { lat: number; lng: number };
 	export let size: SizeType = 'md';
-	export let location;
-	export let user
+	export let location: Location;
+	export let user: { email: string } | null;
 
 	let duration: number;
 	let distance: number;
 	let distanceLoading = false;
 	let userLocation: { lat: number; lng: number } | null;
+	let isInItinerary = false;
+
+	$: [addressPart1, ...addressPart2] = address.split(',');
+	$: addressPart2Joined = addressPart2.join(',').trim();
 
 	currentLocation.subscribe((value) => (userLocation = value));
-	let itinerary;
-	let isInItinerary = false;
 	currentItinerary.subscribe((value) => {
-		itinerary = value;
-		isInItinerary = itinerary?.items?.some((item) => item.location.id === location.id);
+		isInItinerary = value?.items?.some((item) => item.location.id === location.id) ?? false;
 	});
 
-	const [addressPart1, ...addressPart2] = address.split(',');
-
 	async function getHowFarAwayIsLocation() {
-		if (distanceLoading) return;
+		if (distanceLoading || !browser) return;
 		distanceLoading = true;
 
-		if (!userLocation && browser) {
+		if (!userLocation) {
 			await getCurrentLocation();
 			userLocation = $currentLocation;
 		}
@@ -70,127 +71,83 @@
 	function addToItinerary() {
 		const newLocation: Location = {
 			id: location.id,
-			name: name,
+			name,
 			latitude: coords.lat,
 			longitude: coords.lng,
 			address: location.address,
 			description: location.description
 		};
-		currentItinerary.addItem({location: newLocation, itineraryId: itinerary?.id, name: user.email});
+		currentItinerary.addItem({
+			location: newLocation,
+			itineraryId: $currentItinerary?.id,
+			name: user?.email ?? ''
+		});
 	}
 </script>
 
-<Card horizontal {size} class="cardSize" padding="sm">
-	<img src="/map/{getLocationIcon(name)}.png" alt="" class="img-icon" />
+<Card horizontal={true} {size} class="flex flex-col gap-4 p-4 sm:flex-row sm:p-6">
+	<img src="/map/{getLocationIcon(name)}.png" alt="" class="h-48 w-full object-contain sm:w-48" />
 
-	<div class="card-content">
-		<h5 class="card-title">{name}</h5>
-		<p class="card-address">
-			{addressPart1}<br />
-			{addressPart2}
+	<div class="flex flex-grow flex-col">
+		<h5 class="mb-2 text-xl font-bold">{name}</h5>
+		<p class="mb-3 text-sm">
+			<span class="hidden sm:inline">{addressPart1}<br /></span>
+			{addressPart2Joined}
 		</p>
 
 		{#if tags?.length}
-			<ul class="tag-list">
+			<details class="mb-3 sm:hidden">
+				<summary class="cursor-pointer rounded-md border border-gray-300 p-2 text-center">
+					Tags
+				</summary>
+				<ul class="mt-2 flex flex-wrap gap-1">
+					{#each tags as tag}
+						<li class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
+							{tag?.tags.name}
+						</li>
+					{/each}
+				</ul>
+			</details>
+			<ul class="mb-3 hidden flex-wrap gap-1 sm:flex">
 				{#each tags as tag}
-					<li class="chip {size === 'sm' ? 'small-chip' : ''}">{tag?.tags.name}</li>
+					<li class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
+						{tag?.tags.name}
+					</li>
 				{/each}
 			</ul>
 		{/if}
 
-		<div class="card-actions">
+		<div class="mt-auto flex flex-col gap-2">
 			<a href={website} target="_blank" rel="noopener noreferrer">
-				<Button outline color="primary" size="sm" block>Visit Website</Button>
+				<Button outline color="primary" size="sm" class="w-full">Visit Website</Button>
 			</a>
 			<a
-				href="/locations/states/{location.state}/{location.city}/{name.replace(/\s/g, '-')}"
-				style=""
+				href={`/locations/states/${location.state}/${location.city}/${name}`.replace(/\s/g, '-')}
+				class="w-full"
 			>
-				<Button outline color="alternative" size="sm" block>Details</Button>
+				<Button outline color="alternative" size="sm" class="w-full">Details</Button>
 			</a>
 			{#if distance}
-				<div class="distance-info">
+				<div class="text-sm">
 					<p>Distance: {distance} miles</p>
 					<p>Duration: {duration} minutes</p>
 				</div>
 			{:else}
 				<Button
-					style="height: 43px;"
-					type="button"
 					outline
 					color="alternative"
 					size="sm"
 					on:click={getHowFarAwayIsLocation}
-					block
+					class="w-full"
 				>
 					{distanceLoading ? 'Loading...' : 'How far away is it?'}
 				</Button>
 			{/if}
 			{#if user}
-				{#if isInItinerary}
-					<Button style="height: 43px;" type="button" disabled block>Added to Itinerary</Button>
-				{:else}
-					<Button style="height: 43px;" type="button" on:click={addToItinerary}
-						>Add to Itinerary</Button
-					>
-				{/if}
+				<Button disabled={isInItinerary} on:click={addToItinerary} class="w-full">
+					{isInItinerary ? 'Added' : 'Add to Itinerary'}
+				</Button>
 			{/if}
 		</div>
 	</div>
 </Card>
-
-<style>
-	@media (max-width: 500px) {
-		.cardSize {
-			padding: 0.5rem !important;
-		}
-	}
-	.img-icon {
-		object-fit: contain;
-		width: 12rem;
-	}
-	.card-content {
-		display: flex;
-		flex-direction: column;
-		min-height: 170px;
-		margin-left: 0.5rem;
-	}
-	.card-title {
-		margin-bottom: 0.5rem;
-		font-size: 1.5rem;
-		font-weight: bold;
-		line-height: 1.2;
-	}
-	.card-address {
-		margin-bottom: 0.75rem;
-		font-size: 0.875rem;
-		line-height: 1.25;
-	}
-	.tag-list {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.2rem;
-		margin: 0.5rem 0;
-	}
-	.chip {
-		background-color: #f1f1f1;
-		border-radius: 10px;
-		padding: 0.2rem 0.5rem;
-		font-size: medium;
-		pointer-events: none;
-	}
-	.small-chip {
-		padding: 0.1rem 0.3rem;
-		font-size: small;
-	}
-	.card-actions {
-		margin-top: auto;
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.25rem;
-	}
-	.distance-info {
-		margin-top: 0.25rem;
-		height: 43px;
-	}
-</style>

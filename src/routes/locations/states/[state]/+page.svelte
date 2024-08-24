@@ -29,7 +29,7 @@
 	onMount(() => {
 		stateName = findState(state || '')?.name;
 	});
-	cities.forEach((location) => (cityMap[location.city] = location.id));
+	cities?.forEach((location) => (cityMap[location.city] = location.id));
 	let userLocation: { lat: number; lng: number } | null;
 
 	currentLocation.subscribe((value) => {
@@ -61,7 +61,9 @@
 						<summary class="accordion">
 							<span class="inlineit">
 								<h2>{city}</h2>
-								<A href={`/locations/states/${state}/${city}`}>Go <ArrowRightAltSolid /></A>
+								<A href={`/locations/states/${state}/${city}`.replace(/\s/g, '-')}
+									>Go <ArrowRightAltSolid /></A
+								>
 							</span>
 						</summary>
 						<div class="panel">
@@ -75,6 +77,8 @@
 											website={location.website}
 											tags={[]}
 											{location}
+											user={data.user}
+											{innerWidth}
 										/>
 									</li>
 								{/each}

@@ -23,13 +23,16 @@
 		}
 		return 0;
 	});
-	cities.forEach((location) => (cityMap[location.city] = location.id));
+	cities?.forEach((location) => (cityMap[location.city] = location.id));
 	let userLocation: { lat: number; lng: number } | null;
 
 	currentLocation.subscribe((value) => {
 		userLocation = value;
 	});
+	let innerWidth = 0;
 </script>
+
+<svelte:window bind:innerWidth />
 
 <Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl"
 	>{city.toLocaleUpperCase()}, {state.toLocaleUpperCase()}</Heading
@@ -50,7 +53,7 @@
 	{#if cityMap}
 		<ul class="ul-wrap">
 			{#each Object.keys(cityMap) as city, index}
-				{#each data.locations.filter((l) => l.city === city) as location}
+				{#each data?.locations.filter((l) => l.city === city) as location}
 					<li>
 						<div class="panel">
 							<LocationCardSmall
@@ -60,6 +63,8 @@
 								website={location.website}
 								tags={[]}
 								{location}
+								user={data.user}
+								{innerWidth}
 							/>
 						</div>
 					</li>

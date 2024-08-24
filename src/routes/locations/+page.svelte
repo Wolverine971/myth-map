@@ -6,7 +6,6 @@
 	import ArrowRightIcon from '$lib/components/icons/arrowRightIcon.svelte';
 	export let data: PageData;
 	let innerWidth = 0;
-	console.log(data);
 </script>
 
 <svelte:window bind:innerWidth />

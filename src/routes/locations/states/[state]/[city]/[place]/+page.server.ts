@@ -1,14 +1,16 @@
 import { supabase } from '$lib/supabaseClient';
 import type { Actions, PageLoad } from './$types';
 
-export const load: PageLoad = async ({ params }) => {
-	if (params.place.includes('.')) {
+export const load: PageLoad = async (event) => {
+	if (event.params.place.includes('.')) {
 		return;
 	}
+
+	const user = await event.locals.getUser()
 	const { data: blogData, error: blogDataError } = await supabase
 		.from('content_locations')
 		.select('*')
-		.eq('loc', params.place)
+		.eq('loc', event.params.place)
 		.single();
 
 	if (blogDataError) {
@@ -60,7 +62,8 @@ export const load: PageLoad = async ({ params }) => {
 		blog: blogData,
 		locationData,
 		locationTags,
-		nearbyLocations: filteredNearByLocations
+		nearbyLocations: filteredNearByLocations,
+		user
 	};
 };
 

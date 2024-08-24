@@ -1,135 +1,93 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
-	import BlogPageHead from '$lib/components/blog/BlogPageHead.svelte';
-	import ArticleTitle from '$lib/components/blog/ArticleTitle.svelte';
-	import ArticleSubTitle from '$lib/components/blog/ArticleSubTitle.svelte';
 	import { marked } from 'marked';
 	import { Heading, A } from 'flowbite-svelte';
 	import { notifications } from '$lib/components/shared/notifications';
-	import LocationCardSmall from '$lib/components/locations/LocationCardSmall.svelte';
 	import { getLocationIcon } from '../../../../../../utils/locationPhotos';
-	// import ArticleDescription from '$lib/components/blog/ArticleDescription.svelte';
-	// import SuggestionsBlog from '$lib/components/blog/SuggestionsBlog.svelte';
-	// import EmailSignup from '$lib/components/molecules/Email-Signup.svelte';
+	import BlogPageHead from '$lib/components/blog/BlogPageHead.svelte';
+	import ArticleTitle from '$lib/components/blog/ArticleTitle.svelte';
+	import ArticleSubTitle from '$lib/components/blog/ArticleSubTitle.svelte';
+	import LocationCardSmall from '$lib/components/locations/LocationCardSmall.svelte';
+
 	export let data: PageData;
-	const content = data.blog?.content ? marked(data.blog?.content) : '';
-	let loading = false;
-	const placesToEatMap = {};
-	const activityMap = {};
-	let placesToEat: any[] = [];
-	let activities: any[] = [];
-	let icon = getLocationIcon(data?.blog?.title);
+
+	$: content = data.blog?.content ? marked(data.blog.content) : '';
+	$: icon = getLocationIcon(data?.blog?.title);
+	$: placesToEat = [];
+	$: activities = [];
 
 	onMount(() => {
-		const filteredPlacesToEat = data.locationTags.filter((tag) => tag.tags.name === 'Food');
-		filteredPlacesToEat.forEach((tag) => {
-			placesToEatMap[tag.locations.name] = true;
-		});
+		const placesToEatMap = new Set(
+			data.locationTags.filter((tag) => tag.tags.name === 'Food').map((tag) => tag.locations.name)
+		);
 
-		data.locationTags.forEach((tag) => {
-			if (!placesToEatMap[tag.locations.name]) {
-				activityMap[tag.locations.name] = true;
-			}
-		});
-
-		const tempPlacesToEat = [];
-		data.nearbyLocations.forEach((location) => {
-			if (placesToEatMap[location.name]) {
-				tempPlacesToEat.push(location);
-			}
-		});
-		const tempActivities = [];
-		data.nearbyLocations.forEach((location) => {
-			if (activityMap[location.name]) {
-				tempActivities.push(location);
-			}
-		});
-		placesToEat = tempPlacesToEat;
-		activities = tempActivities;
+		[placesToEat, activities] = data.nearbyLocations.reduce(
+			([eat, act], location) => {
+				if (placesToEatMap.has(location.name)) {
+					eat.push(location);
+				} else {
+					act.push(location);
+				}
+				return [eat, act];
+			},
+			[[], []]
+		);
 	});
 
-	const findNearby = async () => {
-		loading = true;
+	async function findNearby() {
+		const body = new FormData();
+		body.append('lat', '39.272216');
+		body.append('lng', '-76.731829');
 
-		let body = new FormData();
-		body.append('lat', '39.272216'.toString());
-		body.append('lng', '-76.731829'.toString());
+		try {
+			const response = await fetch('?/findNearby', { method: 'POST', body });
+			const { data: nearbyData, error } = await response.json();
 
-		const { data, error: ingestError } = await (
-			await fetch(`?/findNearby`, {
-				method: 'POST',
-				body
-			})
-		).json();
-
-		if (data) {
-			notifications.info('locations found', 3000);
-		} else {
-			notifications.warning('locations not found', 3000);
+			if (nearbyData) {
+				notifications.info('Locations found', 3000);
+			} else {
+				notifications.warning('Locations not found', 3000);
+			}
+		} catch (error) {
+			notifications.error('Error finding nearby locations', 3000);
 		}
-		loading = false;
-	};
+	}
 </script>
 
 {#if data.blog}
-	<article itemscope itemtype="https://schema.org/BlogPosting" style="" class="blog">
-		<div style="align-items: inherit;">
-			<BlogPageHead data={data.blog} slug={`blog/locations/${data?.blog?.loc}`} />
-			<div class="flex" style="align-items: center; gap:2rem;">
-				<img
-					src={`/map/${icon}.png`}
-					alt={data.blog?.title}
-					style="max-width: 30%; width: 100%; height: 100%; object-fit: cover; border-radius: 0.5rem;"
-				/>
-				<div>
-					<ArticleTitle title={data.blog?.title} />
-					<ArticleSubTitle metaData={data.blog} />
-					{#if data.locationData.website}
-						<A href={data.locationData.website} target="_blank">Webpage</A>
-					{/if}
-				</div>
+	<article itemscope itemtype="https://schema.org/BlogPosting" class="blog">
+		<BlogPageHead data={data.blog} slug={`blog/locations/${data?.blog?.loc}`} />
+
+		<div class="mb-6 flex items-center gap-8">
+			<img
+				src={`/map/${icon}.png`}
+				alt={data.blog?.title}
+				class="h-auto w-1/3 max-w-[30%] rounded-lg object-cover"
+			/>
+			<div>
+				<ArticleTitle title={data.blog?.title} />
+				<ArticleSubTitle metaData={data.blog} />
+				{#if data.locationData.website}
+					<A href={data.locationData.website} target="_blank" rel="noopener noreferrer">Webpage</A>
+				{/if}
 			</div>
 		</div>
 
-		<!-- <Button type="button" on:click={findNearby}>Find Nearby Locations</Button> -->
 		{#if content}
 			<div class="preview">{@html content}</div>
 		{:else}
-			<p style="margin: 5rem 0;">Information Needed</p>
+			<p class="my-20">Information Needed</p>
 		{/if}
 
-		<hr />
-		<br />
+		<hr class="my-8" />
+
 		{#if data.nearbyLocations}
-			<Heading tag="h2" class="mb-4" customSize="text-4xl ">
-				Near By Family Friendly Activities
-			</Heading>
+			<Heading tag="h2" class="mb-6 text-4xl">Nearby Family Friendly Activities</Heading>
 
-			{#if data.suggestions}
-				<!-- todo suggestions -->
-				<div style="display: flex; flex-direction: column; max-width: 50%; gap: 0.2rem;">
-					<h3>Suggestions</h3>
-					{#if data.suggestions.length === 0}
-						<p>No suggestions found</p>
-					{:else}
-						{#each placesToEat as location}
-							<LocationCardSmall
-								name={location.name}
-								coords={{ lat: location.lat, lng: location.lng }}
-								address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
-								website={location.website}
-								tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
-								{location}
-							/>
-						{/each}
-					{/if}
-				</div>
-			{/if}
-
-			<div style="display: flex; gap: 1rem">
-				<div style="display: flex; flex-direction: column; max-width: 50%; gap: 0.2rem;">
-					<h3>Places to Eat</h3>
+			<div class="flex flex-col gap-4 md:flex-row">
+				<div class="flex-1">
+					<h3 class="mb-4 text-2xl">Places to Eat</h3>
 					{#if placesToEat.length === 0}
 						<p>No places to eat found</p>
 					{:else}
@@ -137,17 +95,18 @@
 							<LocationCardSmall
 								name={location.name}
 								coords={{ lat: location.lat, lng: location.lng }}
-								address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
+								address={`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}, ${location.city}, ${location.state} ${location.zip_code}`}
 								website={location.website}
 								tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
 								{location}
+								user={data.user}
 							/>
 						{/each}
 					{/if}
 				</div>
 
-				<div style="display: flex; flex-direction: column; max-width: 50%; gap: 0.2rem;">
-					<h3>Activities</h3>
+				<div class="flex-1">
+					<h3 class="mb-4 text-2xl">Activities</h3>
 					{#if activities.length === 0}
 						<p>No activities found</p>
 					{:else}
@@ -155,10 +114,11 @@
 							<LocationCardSmall
 								name={location.name}
 								coords={{ lat: location.lat, lng: location.lng }}
-								address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
+								address={`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}, ${location.city}, ${location.state} ${location.zip_code}`}
 								website={location.website}
 								tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
 								{location}
+								user={data.user}
 							/>
 						{/each}
 					{/if}
@@ -168,23 +128,16 @@
 	</article>
 {/if}
 
-<hr style="margin: 5rem;" />
-
-<!-- <SuggestionsBlog posts={data?.posts} blogType={'enneagram'} /> -->
-
-{#if !data?.user}
-	<div class="join">
-		<!-- <EmailSignup /> -->
-	</div>
-{/if}
-
 <style lang="scss">
 	.preview {
-		h1 {
-			font-size: 2.5rem;
+		:global(h1) {
+			@apply mb-4 text-4xl;
 		}
-		h2 {
-			font-size: 2rem;
+		:global(h2) {
+			@apply mb-3 text-3xl;
+		}
+		:global(p) {
+			@apply mb-4;
 		}
 	}
 </style>

@@ -1,134 +1,71 @@
 <script lang="ts">
 	import { Heading, P, TabItem, Tabs } from 'flowbite-svelte';
-
 	import Map from '$lib/components/map/map.svelte';
 	import LocationCard from '$lib/components/locations/LocationCard.svelte';
 	import LocationFilters from '$lib/components/locations/LocationFilters.svelte';
+	import GeoFilters from '$lib/components/locations/GeoFilters.svelte';
 	import type { PageData } from './$types';
 	import { currentLocation } from '$lib/stores/locationStore';
 	import { onMount } from 'svelte';
-	import GeoFilters from '$lib/components/locations/GeoFilters.svelte';
+
 	export let data: PageData;
+
 	const url = 'https://tinytribeadventures.com';
-
 	let shownLocations = data.locations;
-	let availableTagsMap = {};
-	const baseTagMap: any = {};
-	let locationNamesMap = {};
-	let userLocation: { lat: number; lng: number } | null;
-
-	let selectedState: { name: string; abr: string } | null = { name: 'Maryland', abr: 'MD' };
+	let availableTagsMap: Record<string, number> = {};
+	let userLocation: { lat: number; lng: number } | null = null;
+	let selectedState = { name: 'Maryland', abr: 'MD' };
 	let selectedCity: string | null = null;
 	let selectedTab = 'gallery';
+	let innerWidth = 0;
 
-	currentLocation.subscribe((value) => {
-		userLocation = value;
-	});
+	$: isDesktop = innerWidth >= 768; // Changed to 768px for a more standard breakpoint
+
+	currentLocation.subscribe((value) => (userLocation = value));
 
 	onMount(() => {
-		data.tags.forEach((tag) => {
-			baseTagMap[tag.name] = true;
-			availableTagsMap[tag.name] = 1;
-		});
-
-		data.locations.forEach((location) => {
-			locationNamesMap[location.name] = true;
-		});
+		const baseTagMap = Object.fromEntries(data.tags.map((tag) => [tag.name, 1]));
+		availableTagsMap = { ...baseTagMap };
 	});
 
-	const filterBaseLocations = (tags: string[]) => {
+	function filterLocations(tags: string[]): void {
 		if (tags.length === 0) {
 			shownLocations = data.locations;
 			return;
 		}
 
-		const tagMap = {};
-		tags.forEach((tag) => {
-			tagMap[tag] = true;
-		});
+		const filteredLocations = data.locations.filter((location) =>
+			tags.every((tag) =>
+				data.locationTags.some((lt) => lt.locations.name === location.name && lt.tags.name === tag)
+			)
+		);
 
-		let filteredLocationNames: string[] = [];
+		shownLocations = filteredLocations.length ? filteredLocations : data.locations;
+		updateAvailableTags(tags);
+	}
 
-		tags.forEach((tag) => {
-			const availableTagLocations = {};
-			data.locationTags.forEach((location) => {
-				if (location.tags.name === tag) {
-					availableTagLocations[location.locations.name] = 1;
-				}
-			});
-
-			if (filteredLocationNames.length === 0) {
-				// generate filtered location names
-				Object.keys(availableTagLocations).forEach((locationName) => {
-					filteredLocationNames.push(locationName);
-				});
-			} else {
-				// filter out filtered location names
-				const namesToRemove = {};
-				filteredLocationNames.forEach((fLocation) => {
-					if (!availableTagLocations[fLocation]) {
-						namesToRemove[fLocation] = 1;
-					}
-				});
-				filteredLocationNames = filteredLocationNames.filter(
-					(fLocation) => !namesToRemove[fLocation]
-				);
-			}
-		});
-
-		// cleanup
-		let filteredLocationsMap = {};
-		filteredLocationNames.forEach((name) => {
-			filteredLocationsMap[name] = true;
-		});
-
-		const filteredLocations = data.locations.filter((location) => {
-			if (filteredLocationsMap[location.name]) {
-				return true;
-			}
-		});
-		shownLocations = filteredLocations.flat().length ? filteredLocations.flat() : data.locations;
-	};
-
-	const filterSubSelection = (tags: string[]) => {
-		filterBaseLocations(tags);
-		updateTags(tags);
-	};
-
-	// // todo
-	const updateTags = (tags) => {
-		if (tags.length === 0) {
-			availableTagsMap = Object.assign({}, baseTagMap);
+	function updateAvailableTags(selectedTags: string[]): void {
+		if (selectedTags.length === 0) {
+			availableTagsMap = Object.fromEntries(data.tags.map((tag) => [tag.name, 1]));
 			return;
 		}
-		const locationMap = {};
-		// const tagMap = {};
 
-		shownLocations.forEach((l) => {
-			locationMap[l?.name] = true;
-		});
-
+		const locationMap = new Set(shownLocations.map((l) => l.name));
 		const newAvailableTags = {};
 
 		data.locationTags.forEach((location) => {
-			if (locationMap[location.locations.name]) {
+			if (locationMap.has(location.locations.name)) {
 				newAvailableTags[location.tags.name] = 1;
 			}
 		});
 
-		// steps
-		// find locations with tags
-		// put locations in a map
-		// find tags for locations
-		// those tags are the available tags
-		availableTagsMap = Object.assign({}, newAvailableTags);
-	};
+		availableTagsMap = newAvailableTags;
+	}
 
-	function handleFilterChange(event: CustomEvent) {
+	function handleFilterChange(event: CustomEvent): void {
 		selectedState = event.detail.state;
 		selectedCity = event.detail.city;
 	}
-	let innerWidth = 0;
 </script>
 
 <svelte:head>
@@ -152,27 +89,21 @@
 
 <svelte:window bind:innerWidth />
 
-{#if innerWidth >= 500}
-	<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl">
+{#if isDesktop}
+	<Heading tag="h1" class="mb-4 text-4xl font-extrabold md:text-5xl">
 		Welcome to Tiny Tribe Adventures
 	</Heading>
-	<Heading tag="h5" style="margin-bottom: 1rem;"
-		>Your one stop shop for planning family friendly activities!</Heading
-	>
 {/if}
 
-{#if innerWidth < 500}
-	<Heading tag="h5" style="margin-bottom: .5rem;"
-		>Your one stop shop for planning family friendly activities!</Heading
-	>
-{/if}
+<Heading tag="h5" class="mb-4">Your one stop shop for planning family friendly activities!</Heading>
+
 <div class="flex w-full flex-col gap-4">
 	<LocationFilters
 		allTags={data.tags}
 		selectableTagsMap={availableTagsMap}
-		on:baseSelection={({ detail }) => filterBaseLocations(detail)}
-		on:indoorOutdoorSelection={({ detail }) => filterSubSelection(detail)}
-		on:selected={({ detail }) => filterSubSelection(detail)}
+		on:baseSelection={({ detail }) => filterLocations(detail)}
+		on:indoorOutdoorSelection={({ detail }) => filterLocations(detail)}
+		on:selected={({ detail }) => filterLocations(detail)}
 	/>
 
 	{#if selectedTab === 'map'}
@@ -186,7 +117,7 @@
 
 	<Tabs contentClass="">
 		<TabItem open title="Gallery View" on:click={() => (selectedTab = 'gallery')}>
-			<div class="location-grid">
+			<div class="grid grid-cols-2 justify-center gap-2 sm:gap-4">
 				{#each shownLocations as location}
 					<LocationCard
 						name={location.name}
@@ -201,7 +132,7 @@
 			</div>
 		</TabItem>
 		<TabItem title="Map View" on:click={() => (selectedTab = 'map')}>
-			<div class="map-div">
+			<div class="h-[500px] min-h-[430px] w-full">
 				<Map
 					locations={data.locations}
 					{shownLocations}
@@ -213,19 +144,3 @@
 		</TabItem>
 	</Tabs>
 </div>
-
-<style>
-	.location-grid {
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		gap: 1rem;
-		justify-content: center;
-		align-self: center;
-	}
-	.map-div {
-		align-self: center;
-		min-height: 430px;
-		height: 500px;
-		width: 100%;
-	}
-</style>

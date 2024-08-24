@@ -5,6 +5,8 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
 	try {
+
+		const user = await event.locals.getUser()
 		const state = findState(event.params?.state || { abr: 'MD' });
 
 		const { data: stateLocationData, error: stateLocationDataError } = await supabase
@@ -17,7 +19,8 @@ export const load: PageServerLoad = async (event) => {
 		}
 
 		return {
-			locations: stateLocationData
+			locations: stateLocationData,
+			user
 		};
 	} catch (error) {
 		console.error('error', error);

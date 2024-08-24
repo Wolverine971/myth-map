@@ -417,7 +417,11 @@
 
 		const address = `${address_line_1}, ${city}, ${state} ${zip_code}`;
 		const copyId = `copy-${name.split(' ').join('-')}`;
-		const detailsLink = `/locations/states/${properties.state}/${properties.city}/${properties.name.replace(/\s/g, '-')}`;
+		const detailsLink =
+			`/locations/states/${properties.state}/${properties.city}/${properties.name}`.replace(
+				/\s/g,
+				'-'
+			);
 
 		popup
 			.setLngLat(coordinates)
