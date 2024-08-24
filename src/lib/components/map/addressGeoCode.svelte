@@ -2,8 +2,9 @@
 	import { Button, Card } from 'flowbite-svelte';
 	import LocationCard from '$lib/components/locations/LocationCard.svelte';
 	export let location;
-	export let user
+	export let user;
 	let loading = false;
+	export let innerWidth;
 
 	const getlatLng = async (loc) => {
 		loading = true;
@@ -31,6 +32,7 @@
 		tags={location?.tags?.name}
 		{location}
 		{user}
+		{innerWidth}
 	/>
 
 	{#if loading}

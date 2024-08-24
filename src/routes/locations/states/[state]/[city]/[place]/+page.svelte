@@ -53,7 +53,10 @@
 			notifications.error('Error finding nearby locations', 3000);
 		}
 	}
+	let innerWidth = 0;
 </script>
+
+<svelte:window bind:innerWidth />
 
 {#if data.blog}
 	<article itemscope itemtype="https://schema.org/BlogPosting" class="blog">
@@ -100,6 +103,7 @@
 								tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
 								{location}
 								user={data.user}
+								{innerWidth}
 							/>
 						{/each}
 					{/if}
@@ -119,6 +123,7 @@
 								tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
 								{location}
 								user={data.user}
+								{innerWidth}
 							/>
 						{/each}
 					{/if}

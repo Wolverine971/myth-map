@@ -14,6 +14,8 @@ const directionsClient = mbxDirections({ accessToken: PUBLIC_MAP_KEY });
 
 /** @type {import('./$types').PageLoad} */
 export const load: PageServerLoad = async (event) => {
+
+	const user = await event.locals.getUser()
 	const { data: locations, error: locationsError } = await supabase.from('locations').select('*');
 	if (locationsError) {
 		console.error(locationsError);
@@ -26,7 +28,8 @@ export const load: PageServerLoad = async (event) => {
 	}
 	return {
 		locations: locations ?? [],
-		locationTags: locationTags ?? []
+		locationTags: locationTags ?? [],
+		user
 	};
 };
 

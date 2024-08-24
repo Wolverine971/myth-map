@@ -86,8 +86,36 @@
 	}
 </script>
 
-<Card horizontal={true} {size} class="mx-auto flex max-w-md flex-col gap-4 p-4 sm:flex-row sm:p-6">
-	<img src="/map/{getLocationIcon(name)}.png" alt="" class="h-48 w-full object-contain sm:w-48" />
+<Card
+	horizontal={true}
+	{size}
+	class="mx-auto flex max-w-md flex-col gap-4 p-4 sm:flex-row sm:gap-2 sm:p-2 sm:p-6"
+>
+	<div style={innerWidth > 500 ? 'width: 50%;' : ''}>
+		<img src="/map/{getLocationIcon(name)}.png" alt="" class="w-full object-contain sm:w-48" />
+
+		{#if tags?.length}
+			<details class="mb-3 sm:hidden">
+				<summary class="cursor-pointer rounded-md border border-gray-300 p-2 text-center">
+					Tags
+				</summary>
+				<ul class="mt-2 flex flex-wrap gap-1">
+					{#each tags as tag}
+						<li class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
+							{tag?.tags.name}
+						</li>
+					{/each}
+				</ul>
+			</details>
+			<ul class="mb-3 hidden flex-wrap gap-1 sm:flex">
+				{#each tags as tag}
+					<li class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
+						{tag?.tags.name}
+					</li>
+				{/each}
+			</ul>
+		{/if}
+	</div>
 
 	<div class="flex flex-grow flex-col">
 		<h5 class="mb-2 text-xl font-bold">{name}</h5>

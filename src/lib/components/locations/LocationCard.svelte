@@ -17,6 +17,7 @@
 	export let size: SizeType = 'md';
 	export let location: Location;
 	export let user: { email: string } | null;
+	export let innerWidth: number;
 
 	let duration: number;
 	let distance: number;
@@ -85,19 +86,17 @@
 	}
 </script>
 
-<Card horizontal={true} {size} class="flex flex-col gap-4 p-4 sm:flex-row sm:p-6">
-	<img src="/map/{getLocationIcon(name)}.png" alt="" class="h-48 w-full object-contain sm:w-48" />
-
-	<div class="flex flex-grow flex-col">
-		<h5 class="mb-2 text-xl font-bold">{name}</h5>
-		<p class="mb-3 text-sm">
-			<span class="hidden sm:inline">{addressPart1}<br /></span>
-			{addressPart2Joined}
-		</p>
+<Card
+	horizontal={true}
+	{size}
+	class="flex flex-col p-4 min-[320px]:gap-2 sm:flex-row sm:p-2 md:gap-4 "
+>
+	<div style={innerWidth > 500 ? 'width: 50%;' : ''}>
+		<img src="/map/{getLocationIcon(name)}.png" alt="" class="w-full object-contain sm:w-48" />
 
 		{#if tags?.length}
 			<details class="mb-3 sm:hidden">
-				<summary class="cursor-pointer rounded-md border border-gray-300 p-2 text-center">
+				<summary class="cursor-pointer rounded-md border border-gray-300 p-1 text-center">
 					Tags
 				</summary>
 				<ul class="mt-2 flex flex-wrap gap-1">
@@ -116,6 +115,13 @@
 				{/each}
 			</ul>
 		{/if}
+	</div>
+	<div class="flex flex-grow flex-col">
+		<h5 class="mb-2 text-xl font-bold">{name}</h5>
+		<p class="mb-3 text-sm">
+			<span class="hidden sm:inline">{addressPart1}<br /></span>
+			{addressPart2Joined}
+		</p>
 
 		<div class="mt-auto flex flex-col gap-2">
 			<a href={website} target="_blank" rel="noopener noreferrer">

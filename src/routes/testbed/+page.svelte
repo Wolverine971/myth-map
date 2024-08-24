@@ -56,7 +56,7 @@
 
 	<div class="location-grid">
 		{#each data?.locations as location}
-			<AddressGeoCode {location} />
+			<AddressGeoCode {location} {innerWidth} user={data.user} />
 		{/each}
 	</div>
 

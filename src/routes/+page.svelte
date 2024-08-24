@@ -127,6 +127,7 @@
 						tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
 						{location}
 						user={data?.user}
+						{innerWidth}
 					/>
 				{/each}
 			</div>

@@ -1,124 +1,146 @@
 <script lang="ts">
-	import { Heading, P, A } from 'flowbite-svelte';
-
+	import { Heading, A } from 'flowbite-svelte';
 	import CityMap from '$lib/components/map/map.svelte';
 	import { ArrowRightAltSolid } from 'flowbite-svelte-icons';
 	import { page } from '$app/stores';
 	import type { PageData } from './$types';
-
 	import LocationCardSmall from '$lib/components/locations/LocationCardSmall.svelte';
 	import { browser } from '$app/environment';
 	import { currentLocation } from '$lib/stores/locationStore';
 	import { findState } from '../../../../utils/geoDataLoader';
 	import { onMount } from 'svelte';
 
-	$: state = $page.params.state;
 	export let data: PageData;
-	// Fetch cities and counties for the state
-	const cityMap = new Map();
-	let cities = data.locations?.sort(function (a, b) {
-		if (a.city < b.city) {
-			return -1;
-		}
-		if (a.city > b.city) {
-			return 1;
-		}
-		return 0;
-	});
-	let stateName;
-	onMount(() => {
-		stateName = findState(state || '')?.name;
-	});
-	cities?.forEach((location) => (cityMap[location.city] = location.id));
+
+	$: state = $page.params.state;
+	$: cities = data.locations?.sort((a, b) => a.city.localeCompare(b.city));
+	$: cityMap = new Map(cities?.map((location) => [location.city, location.id]));
+
+	let stateName: string;
 	let userLocation: { lat: number; lng: number } | null;
+	let innerWidth = 0;
+
+	onMount(() => {
+		stateName = findState(state || '')?.name || '';
+	});
 
 	currentLocation.subscribe((value) => {
 		userLocation = value;
 	});
 </script>
 
-<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl"
-	>{stateName?.toLocaleUpperCase()}</Heading
->
+<svelte:window bind:innerWidth />
 
-{#if browser}
-	<div class="map-div">
-		<CityMap
-			locations={data.locations || []}
-			shownLocations={data.locations || []}
-			currentLocation={userLocation}
-			selectedState={{ name: 'Maryland', abr: 'MD' }}
-			selectedCity={null}
-		/>
-	</div>
-{/if}
-<div style="display: flex; flex-direction: column; width: 100%; gap: 0.2rem; margin-top: 1rem;">
-	{#if cityMap}
-		<ul>
-			{#each Object.keys(cityMap) as city, index}
-				<li>
-					<details open={index === 0}>
-						<summary class="accordion">
-							<span class="inlineit">
-								<h2>{city}</h2>
-								<A href={`/locations/states/${state}/${city}`.replace(/\s/g, '-')}
-									>Go <ArrowRightAltSolid /></A
-								>
-							</span>
-						</summary>
-						<div class="panel">
-							<ul class="ul-wrap">
-								{#each data.locations.filter((l) => l.city === city) as location}
-									<li>
-										<LocationCardSmall
-											name={location.name}
-											coords={{ lat: location.lat, lng: location.lng }}
-											address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
-											website={location.website}
-											tags={[]}
-											{location}
-											user={data.user}
-											{innerWidth}
-										/>
-									</li>
-								{/each}
-							</ul>
-						</div>
-					</details>
-				</li>
-			{/each}
-		</ul>
-	{:else}
-		<p>No cities found for {state.toLocaleUpperCase()}</p>
+<div class="container mx-auto px-4 py-8">
+	<Heading tag="h1" customSize="text-4xl md:text-5xl font-extrabold mb-8"
+		>{stateName?.toLocaleUpperCase()}</Heading
+	>
+
+	{#if browser}
+		<div class="map-container mb-8">
+			<CityMap
+				locations={data.locations || []}
+				shownLocations={data.locations || []}
+				currentLocation={userLocation}
+				selectedState={{ name: stateName, abr: state }}
+				selectedCity={null}
+			/>
+		</div>
 	{/if}
+
+	<div class="cities-list">
+		{#if cityMap.size > 0}
+			{#each [...cityMap.keys()] as city, index}
+				<details class="city-details" open={index === 0}>
+					<summary class="city-summary">
+						<h2 class="text-2xl font-bold">{city}</h2>
+						<A
+							href={`/locations/states/${state}/${city}`.replace(/\s/g, '-')}
+							class="flex items-center"
+						>
+							Go <ArrowRightAltSolid class="ml-1" />
+						</A>
+					</summary>
+					<div class="location-grid">
+						{#each data.locations.filter((l) => l.city === city) as location}
+							<LocationCardSmall
+								name={location.name}
+								coords={{ lat: location.lat, lng: location.lng }}
+								address={`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}, ${location.city}, ${location.state} ${location.zip_code}`}
+								website={location.website}
+								tags={[]}
+								{location}
+								user={data.user}
+								{innerWidth}
+							/>
+						{/each}
+					</div>
+				</details>
+			{/each}
+		{:else}
+			<p class="text-center text-gray-600">No cities found for {state.toLocaleUpperCase()}</p>
+		{/if}
+	</div>
 </div>
 
-<!-- Display list of cities and counties, or allow user to choose -->
+<style lang="scss">
+	.container {
+		max-width: 1200px;
+	}
 
-<style>
-	/* details {
-		margin: 1rem 0;
-	} */
-	.accordion {
-		/* display: inline-flex;
-		gap: 1rem; */
-	}
-	.inlineit {
-		display: inline-flex;
-		gap: 1rem;
-	}
-	.map-div {
-		align-self: center;
-		min-height: 430px;
+	.map-container {
 		height: 500px;
+		min-height: 430px;
 		width: 100%;
 	}
-	.ul-wrap {
+
+	.cities-list {
 		display: flex;
-		flex-wrap: wrap;
-		width: 100%;
-		align-items: center;
-		justify-content: center;
+		flex-direction: column;
 		gap: 1rem;
+	}
+
+	.city-details {
+		border: 1px solid #e2e8f0;
+		border-radius: 0.5rem;
+		overflow: hidden;
+
+		&[open] {
+			.city-summary {
+				background-color: #f8fafc;
+			}
+		}
+	}
+
+	.city-summary {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 1rem;
+		cursor: pointer;
+		background-color: #ffffff;
+		transition: background-color 0.3s ease;
+
+		&:hover {
+			background-color: #f1f5f9;
+		}
+
+		&::marker {
+			display: none;
+		}
+	}
+
+	.location-grid {
+		display: grid;
+		gap: 1rem;
+		padding: 1rem;
+
+		@media (min-width: 640px) {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		@media (min-width: 1024px) {
+			grid-template-columns: repeat(3, 1fr);
+		}
 	}
 </style>
