@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { supabase } from '$lib/supabaseClient';
+	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import { Button, Input, Label } from 'flowbite-svelte';
 
@@ -8,36 +8,53 @@
 	let confirmPassword = '';
 	let errorMessage = '';
 
-	async function handleRegister() {
+	function handleEnhance() {
+		return async ({ result }) => {
+			if (result.type === 'failure') {
+				errorMessage = result.data?.error || 'An error occurred during registration.';
+			} else if (result.type === 'redirect') {
+				goto(result.location);
+			}
+		};
+	}
+
+	function validateForm() {
 		if (password !== confirmPassword) {
 			errorMessage = "Passwords don't match";
-			return;
+			return false;
 		}
-
-		try {
-			const { error } = await supabase.auth.signUp({ email, password });
-			if (error) throw error;
-			goto('/login'); // Redirect to login page after successful registration
-		} catch (error) {
-			console.error('Error registering:', error);
-			errorMessage = error.message;
-		}
+		errorMessage = '';
+		return true;
 	}
 </script>
 
 <div class="flex min-h-screen flex-col items-center justify-center bg-gray-100">
 	<div class="w-full max-w-md rounded-lg bg-white p-6 shadow-md">
 		<h2 class="mb-6 text-center text-2xl font-bold">Register</h2>
-		<form on:submit|preventDefault={handleRegister} class="space-y-4">
+		<form
+			action="?/register"
+			method="POST"
+			class="space-y-4"
+			use:enhance={handleEnhance}
+			on:submit|preventDefault={() => validateForm() && void 0}
+		>
 			<div>
 				<Label for="email" class="mb-2">Email</Label>
-				<Input type="email" id="email" placeholder="Enter your email" bind:value={email} required />
+				<Input
+					type="email"
+					id="email"
+					name="email"
+					placeholder="Enter your email"
+					bind:value={email}
+					required
+				/>
 			</div>
 			<div>
 				<Label for="password" class="mb-2">Password</Label>
 				<Input
 					type="password"
 					id="password"
+					name="password"
 					placeholder="Enter your password"
 					bind:value={password}
 					required

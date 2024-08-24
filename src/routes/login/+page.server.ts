@@ -1,14 +1,10 @@
 import { AuthApiError } from '@supabase/supabase-js';
 import { fail, redirect } from '@sveltejs/kit';
-
 import type { Actions, PageServerLoad } from './$types';
 
-import { PRIVATE_ADMIN_EMAIL } from '$env/static/private';
-
-export const load: PageServerLoad = async (event) => {
-	// redirect user if logged in
-	const user = await event.locals.getUser()
-	if (user?.id) {
+export const load: PageServerLoad = async ({ locals }) => {
+	const user = await locals.getUser();
+	if (user) {
 		throw redirect(302, '/account');
 	}
 };
@@ -23,20 +19,15 @@ export const actions: Actions = {
 		});
 
 		if (err) {
-			console.log(err);
 			if (err instanceof AuthApiError && err.status === 400) {
 				return fail(400, {
 					error: 'Invalid credentials'
 				});
 			}
 			return fail(500, {
-				message: 'Server error. Try again later.'
+				error: 'Server error. Please try again later.'
 			});
 		}
-
-		// if (body.email === PRIVATE_ADMIN_EMAIL) {
-		// 	throw redirect(303, '/admin');
-		// }
 
 		throw redirect(303, '/');
 	}

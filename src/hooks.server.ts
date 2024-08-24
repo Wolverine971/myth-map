@@ -1,11 +1,6 @@
-// src/hooks.server.ts
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
 import { createSupabaseServerClient } from '@supabase/auth-helpers-sveltekit';
 import type { Handle } from '@sveltejs/kit';
-import { supabase } from '$lib/supabaseClient';
-
-// import { getSupabase } from '@supabase/auth-helpers-sveltekit';
-
 
 export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.supabase = createSupabaseServerClient({
@@ -14,19 +9,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 		event
 	});
 
-	// const { session, supabaseClient } = await getSupabase(event);
-	// event.locals.supabase = supabaseClient;
-
-
-	/**
-	 * a little helper that is written for convenience so that instead
-	 * of calling `const { data: { session } } = await supabase.auth.getSession()`
-	 * you just call this `await getSession()`
-	 */
 	event.locals.getUser = async () => {
-		const {
-			data: { user }
-		} = await event.locals.supabase.auth.getUser()
+		const { data: { user } } = await event.locals.supabase.auth.getUser();
 		return user;
 	};
 
