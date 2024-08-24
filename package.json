@@ -48,6 +48,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@google-cloud/local-auth": "^3.0.1",
 		"@mapbox/mapbox-sdk": "^0.16.0",
 		"@supabase/auth-helpers-sveltekit": "^0.13.0",
 		"@supabase/ssr": "^0.4.0",

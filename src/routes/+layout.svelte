@@ -85,19 +85,19 @@
 	<div
 		class="fixed bottom-0 left-0 right-0 flex h-20 items-center justify-center gap-2 bg-gray-100 p-2 shadow-md"
 	>
-		<a href="/itineraries/{itinerary.id}" class="w-1/3">
+		<a href="/itineraries/{itinerary.id}" class="w-1/4">
 			<Button outline color="primary" size="sm" class="w-full">Go to Itinerary</Button>
 		</a>
 		<Button
 			outline
 			color="alternative"
 			size="sm"
-			class="w-1/3"
+			class="w-1/4"
 			on:click={() => (isItineraryModalOpen = true)}
 		>
 			Edit Itinerary
 		</Button>
-		<Button outline color="success" size="sm" class="w-1/3" on:click={shareItinerary}>
+		<Button outline color="primary" size="sm" class="w-1/4" on:click={shareItinerary}>
 			Share Itinerary
 		</Button>
 	</div>
