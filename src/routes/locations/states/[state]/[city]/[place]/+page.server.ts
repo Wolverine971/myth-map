@@ -6,7 +6,29 @@ export const load: PageLoad = async (event) => {
 		return;
 	}
 
-	const user = await event.locals.getUser()
+	let user = await event.locals.getUser()
+
+	if (user) {
+		const { data: userProfileData, error: userProfileError } = await event.locals.supabase
+			.from('user_profiles')
+			.select('*')
+			.eq('id', user.id)
+			.single();
+
+		if (userProfileError) {
+			console.error(userProfileError);
+		} else {
+			user = {
+				...userProfileData
+			}
+
+		}
+	}
+
+
+
+
+
 	const { data: blogData, error: blogDataError } = await event.locals.supabase
 		.from('content_locations')
 		.select('*')
