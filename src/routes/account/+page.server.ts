@@ -3,7 +3,6 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 
-
 export const load: PageServerLoad = async ({ locals }) => {
 	const user = await locals.getUser();
 	if (!user) {
@@ -16,7 +15,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 		.eq('id', user.id)
 		.single();
 
-	if (profileError && profileError.code !== 'PGRST116') { // PGRST116 is the error code for no rows returned
+	if (profileError && profileError.code !== 'PGRST116') {
+		// PGRST116 is the error code for no rows returned
 		console.error('Error fetching user profile:', profileError);
 		throw error(500, 'Error fetching user profile');
 	}
@@ -43,14 +43,17 @@ export const actions: Actions = {
 
 		const { data, error: upsertError } = await locals.supabase
 			.from('user_profiles')
-			.upsert({
-				id: user.id,
-				username,
-				first_name: firstName,
-				last_name: lastName
-			}, {
-				onConflict: 'id'
-			})
+			.upsert(
+				{
+					id: user.id,
+					username,
+					first_name: firstName,
+					last_name: lastName
+				},
+				{
+					onConflict: 'id'
+				}
+			)
 			.select()
 			.single();
 

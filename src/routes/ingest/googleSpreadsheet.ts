@@ -166,11 +166,11 @@ export const getCity = async () => {
 		const city2 =
 			city1.length >= 2
 				? city1[2]
-					.replace(`${valToExtract}-`, '')
-					.replace('-', ' ')
-					.replace(/[0-9]/g, '')
-					.replace('-', '')
-					.trim()
+						.replace(`${valToExtract}-`, '')
+						.replace('-', ' ')
+						.replace(/[0-9]/g, '')
+						.replace('-', '')
+						.trim()
 				: '';
 		cities.push(city2);
 	});

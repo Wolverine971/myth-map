@@ -62,7 +62,9 @@ export const actions: Actions = {
 				};
 			});
 
-			const { error: insertError } = await locals.supabase.from('location_coordinates').insert(mapData);
+			const { error: insertError } = await locals.supabase
+				.from('location_coordinates')
+				.insert(mapData);
 
 			if (insertError) {
 				console.error(insertError);

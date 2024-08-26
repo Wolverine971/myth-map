@@ -14,7 +14,7 @@ declare global {
 		interface Locals {
 			supabase: SupabaseClient;
 			getUser(): Promise<User | null>;
-			safeGetSession(): Promise<{ session: Session | null; user: User | null }>
+			safeGetSession(): Promise<{ session: Session | null; user: User | null }>;
 			session: Session | null;
 			user: User | null;
 		}
@@ -67,4 +67,4 @@ declare global {
 	}
 }
 
-export { };
+export {};

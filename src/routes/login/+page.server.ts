@@ -2,13 +2,11 @@ import { AuthApiError } from '@supabase/supabase-js';
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 
-
 export const load: PageServerLoad = async ({ locals }) => {
 	const user = await locals.getUser();
 	if (user) {
 		throw redirect(302, '/account');
 	}
-
 };
 
 export const actions: Actions = {
@@ -32,6 +30,5 @@ export const actions: Actions = {
 		}
 
 		throw redirect(303, '/');
-
 	}
 };

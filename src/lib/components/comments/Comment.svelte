@@ -153,7 +153,9 @@
 					<MessageCircle size={16} />
 					<span>
 						{#if comment.comment_count > 0}
-							{showReplies ? 'Hide' : 'Show'} {comment.comment_count} {comment.comment_count === 1 ? 'Reply' : 'Replies'}
+							{showReplies ? 'Hide' : 'Show'}
+							{comment.comment_count}
+							{comment.comment_count === 1 ? 'Reply' : 'Replies'}
 						{:else}
 							Reply
 						{/if}
@@ -178,13 +180,7 @@
 		</div>
 
 		{#if showReplies}
-			<Comments
-				parentId={comment.id}
-				parentType="comment"
-				depth={depth + 1}
-				{displayName}
-				{user}
-			/>
+			<Comments parentId={comment.id} parentType="comment" depth={depth + 1} {displayName} {user} />
 		{/if}
 	{/if}
 

@@ -31,8 +31,8 @@ export const load: PageServerLoad = async (event) => {
 					...(location.title && addressMap[location.title]
 						? addressMap[location.title]
 						: {
-							address: 'No Address'
-						})
+								address: 'No Address'
+							})
 				};
 			})
 		};

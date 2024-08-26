@@ -1,4 +1,3 @@
-
 import type { PageServerLoad } from './$types';
 
 import { PUBLIC_MAP_KEY } from '$env/static/public';
@@ -14,9 +13,10 @@ const directionsClient = mbxDirections({ accessToken: PUBLIC_MAP_KEY });
 
 /** @type {import('./$types').PageLoad} */
 export const load: PageServerLoad = async (event) => {
-
-	const user = await event.locals.getUser()
-	const { data: locations, error: locationsError } = await event.locals.supabase.from('locations').select('*');
+	const user = await event.locals.getUser();
+	const { data: locations, error: locationsError } = await event.locals.supabase
+		.from('locations')
+		.select('*');
 	if (locationsError) {
 		console.error(locationsError);
 	}

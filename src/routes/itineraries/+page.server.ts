@@ -3,8 +3,7 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
-
-	const user = await event.locals.getUser()
+	const user = await event.locals.getUser();
 
 	if (!user.id) {
 		throw error(401, 'Unauthorized');

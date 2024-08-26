@@ -4,8 +4,7 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
 	try {
-
-		const user = await event.locals.getUser()
+		const user = await event.locals.getUser();
 		const state = findState(event.params?.state.replace('-', ' ') || { abr: 'MD' });
 
 		const city = event.params?.city.replace('-', ' ');

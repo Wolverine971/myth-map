@@ -3,10 +3,8 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
-
-
-	const params = event.params
-	const user = await event.locals.getUser()
+	const params = event.params;
+	const user = await event.locals.getUser();
 	const { data: itinerary, error: fetchError } = await event.locals.supabase
 		.from('itineraries')
 		.select(
@@ -30,4 +28,3 @@ export const load: PageServerLoad = async (event) => {
 		user
 	};
 };
-

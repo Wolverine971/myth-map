@@ -1,10 +1,11 @@
-
 import type { PageServerLoad } from './$types';
 
 /** @type {import('./$types').PageLoad} */
 export const load: PageServerLoad = async (event) => {
-	const user = await event.locals.getUser()
-	const { data: locations, error: locationsError } = await event.locals.supabase.from('locations').select('*');
+	const user = await event.locals.getUser();
+	const { data: locations, error: locationsError } = await event.locals.supabase
+		.from('locations')
+		.select('*');
 	if (locationsError) {
 		console.error(locationsError);
 	}

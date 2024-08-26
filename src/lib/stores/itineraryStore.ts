@@ -17,7 +17,19 @@ function createItineraryStore() {
 	return {
 		subscribe,
 		setItinerary: (itinerary: Itinerary) => set(itinerary),
-		addItem: async ({ location, itineraryId, name, startTime, endTime }: { location: Location, itineraryId?: string, name?: string, startTime?: string, endTime?: string }) => {
+		addItem: async ({
+			location,
+			itineraryId,
+			name,
+			startTime,
+			endTime
+		}: {
+			location: Location;
+			itineraryId?: string;
+			name?: string;
+			startTime?: string;
+			endTime?: string;
+		}) => {
 			let currentItineraryId = itineraryId;
 
 			if (!currentItineraryId) {
@@ -96,7 +108,7 @@ function createItineraryStore() {
 				if (!itinerary) return null;
 				return {
 					...itinerary,
-					items: itinerary.items.map(item =>
+					items: itinerary.items.map((item) =>
 						item.id === itemId ? { ...item, start_time: startTime, end_time: endTime } : item
 					)
 				};
@@ -179,7 +191,7 @@ function createItineraryStore() {
 			}
 
 			// Update the store
-			update(itinerary => {
+			update((itinerary) => {
 				if (!itinerary) return null;
 				return {
 					...itinerary,
@@ -191,11 +203,11 @@ function createItineraryStore() {
 			return updatedItinerary;
 		},
 		update: (updater: (itinerary: Itinerary) => Itinerary) => {
-			update(currentItinerary => {
+			update((currentItinerary) => {
 				if (currentItinerary === null) return null;
 				return updater(currentItinerary);
 			});
-		},
+		}
 	};
 }
 

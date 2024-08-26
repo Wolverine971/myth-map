@@ -14,8 +14,12 @@ interface Notification {
 function createNotificationStore(defaultTimeout: number) {
 	const _notifications = writable<Notification[]>([]);
 
-	function send(message: string, type: NotificationType = 'default', timeout: number = defaultTimeout) {
-		_notifications.update(state => {
+	function send(
+		message: string,
+		type: NotificationType = 'default',
+		timeout: number = defaultTimeout
+	) {
+		_notifications.update((state) => {
 			return [...state, { id: id(), type, message, timeout }];
 		});
 	}
@@ -24,7 +28,7 @@ function createNotificationStore(defaultTimeout: number) {
 		set($_notifications);
 		if ($_notifications.length > 0) {
 			const timer = setTimeout(() => {
-				_notifications.update(state => {
+				_notifications.update((state) => {
 					state.shift();
 					return state;
 				});
@@ -44,7 +48,7 @@ function createNotificationStore(defaultTimeout: number) {
 		danger: (msg: string, timeout?: number) => send(msg, 'danger', timeout),
 		warning: (msg: string, timeout?: number) => send(msg, 'warning', timeout),
 		info: (msg: string, timeout?: number) => send(msg, 'info', timeout),
-		success: (msg: string, timeout?: number) => send(msg, 'success', timeout),
+		success: (msg: string, timeout?: number) => send(msg, 'success', timeout)
 	};
 }
 
