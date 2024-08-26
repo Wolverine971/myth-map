@@ -1,4 +1,3 @@
-<!-- Comments.svelte -->
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Button } from 'flowbite-svelte';
@@ -12,6 +11,7 @@
 	export let displayName: string = 'Comments';
 	export let replyDisplayName: string = 'Reply';
 	export let user;
+
 	export let innerWidth;
 
 	let comments: CommentType[] = [];
@@ -80,9 +80,12 @@
 			likes_count: 0,
 			user_has_liked: false
 		};
-		comments = [event.detail, ...comments];
-		console.log('comments', comments);
+		comments = [newComment, ...comments];
 		totalComments += 1;
+		if (parentType === 'comment') {
+			// Dispatch an event to update the parent comment's reply count
+			dispatchEvent(new CustomEvent('replyAdded', { bubbles: true }));
+		}
 	}
 
 	async function handleDeleteComment(event: CustomEvent<{ commentId: string }>) {
@@ -92,6 +95,10 @@
 		if (response.ok) {
 			comments = comments.filter((c) => c.id !== event.detail.commentId);
 			totalComments -= 1;
+			if (parentType === 'comment') {
+				// Dispatch an event to update the parent comment's reply count
+				dispatchEvent(new CustomEvent('replyDeleted', { bubbles: true }));
+			}
 		}
 	}
 

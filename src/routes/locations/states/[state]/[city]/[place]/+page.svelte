@@ -85,7 +85,12 @@
 		{/if}
 		<hr class="my-8" />
 
-		<Comments parentId={data.blog.id} parentType="location_blog" {innerWidth} user={data?.user} />
+		<Comments
+			parentId={data.blog.id}
+			parentType="content_location"
+			{innerWidth}
+			user={data?.user}
+		/>
 
 		<hr class="my-8" />
 

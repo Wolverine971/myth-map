@@ -70,9 +70,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     const { parentId, parentType, content } = await request.json();
 
+    const parentIdString = parentId.toString();
+
     const { data, error } = await locals.supabase
         .from('comments')
-        .insert({ user_id: user.id, parent_id: parentId, parent_type: parentType, content })
+        .insert({ user_id: user.id, parent_id: parentIdString, parent_type: parentType, content })
         .select()
         .single();
 

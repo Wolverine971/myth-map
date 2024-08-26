@@ -39,5 +39,21 @@ export const load: LayoutLoad = async ({ data, depends, fetch }) => {
         data: { user },
     } = await supabase.auth.getUser()
 
-    return { session, supabase, user }
+    let userProfileData = null;
+    if (user) {
+        const { data: newUserProfileData, error: userProfileError } = await supabase
+            .from('user_profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+
+        if (userProfileError) {
+            console.error(userProfileError);
+        } else {
+            userProfileData = newUserProfileData
+
+        }
+    }
+
+    return { session, supabase, user: userProfileData ? { ...user, ...userProfileData } : user }
 }

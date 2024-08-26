@@ -1,4 +1,3 @@
-<!-- Comment.svelte -->
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { Button, Badge, Textarea } from 'flowbite-svelte';
@@ -8,7 +7,7 @@
 
 	export let comment: CommentType | null = null;
 	export let parentId: string;
-	export let parentType: string;
+	export let parentType: string = 'comment';
 	export let depth = 0;
 	export let displayName: string = 'Reply';
 	export let user;
@@ -20,6 +19,7 @@
 	let isEditing = false;
 	let newCommentContent = '';
 	let editedContent = '';
+	let showReplies = false;
 
 	function toggleExpand() {
 		isExpanded = !isExpanded;
@@ -80,15 +80,24 @@
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					parentId: comment ? comment.id : parentId,
-					parentType: comment ? 'comment' : parentType,
+					parentType: parentType,
 					content: newCommentContent
 				})
 			});
 			if (response.ok) {
 				const result: any = deserialize(await response.text());
-				dispatch('newComment', result);
+				if (parentType === 'comment') {
+					dispatch('replyAdded', result);
+					comment.comment_count += 1;
+					showReplies = true;
+				} else {
+					dispatch('newComment', result);
+				}
 				newCommentContent = '';
 				showReplyForm = false;
+				if (comment) {
+					comment.comment_count += 1;
+				}
 			}
 		}
 	}
@@ -97,6 +106,10 @@
 		if (comment) {
 			dispatch('delete', { commentId: comment.id });
 		}
+	}
+
+	function toggleReplies() {
+		showReplies = !showReplies;
 	}
 </script>
 
@@ -135,10 +148,22 @@
 				<Button size="xs" color="red" on:click={handleDelete}>Delete</Button>
 			{/if}
 			<Button size="xs" color="light" on:click={handleFlag}>Flag</Button>
+			{#if comment.comment_count > 0}
+				<Button size="xs" on:click={toggleReplies}>
+					{showReplies ? 'Hide' : 'Show'} Replies ({comment.comment_count})
+				</Button>
+			{/if}
 		</div>
 
-		{#if comment.hasReplies}
-			<Comments parentId={comment.id} parentType="comment" depth={depth + 1} {displayName} {user} />
+		{#if showReplies}
+			<Comments
+				parentId={comment.id}
+				parentType="comment"
+				depth={depth + 1}
+				{displayName}
+				{user}
+				{innerWidth}
+			/>
 		{/if}
 	{/if}
 
