@@ -7,7 +7,7 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
 
 	const { data, error } = await locals.supabase
 		.from('itineraries')
-		.update({ name, start_date: startDate, end_date: endDate })
+		.update({ name, start_date: new Date(startDate), end_date: new Date(endDate) })
 		.eq('id', slug)
 		.select()
 		.single();

@@ -4,7 +4,6 @@
 	import { flip } from 'svelte/animate';
 	import { dndzone } from 'svelte-dnd-action';
 	import { Input, Button, Modal, Label } from 'flowbite-svelte';
-	import { DateInput } from 'date-picker-svelte';
 	import {
 		formatTime,
 		formatDateTimeRange,
@@ -13,6 +12,7 @@
 	} from '../../../utils/dateUtils';
 	import { notifications } from '$lib/components/shared/notifications';
 	import { derived } from 'svelte/store';
+	import { invalidateAll } from '$app/navigation';
 
 	export let isOpen = false;
 
@@ -26,8 +26,8 @@
 	function initializeItineraryData(currentIt) {
 		if (currentIt) {
 			itineraryName = currentIt.name;
-			startDate = currentIt.start_date ? new Date(currentIt.start_date) : new Date();
-			endDate = currentIt.end_date ? new Date(currentIt.end_date) : new Date();
+			startDate = currentIt.start_date;
+			endDate = currentIt.end_date;
 		}
 	}
 
@@ -62,8 +62,10 @@
 	// }
 
 	$: dateRangeDisplay = formatDateTimeRange(
-		startDate?.toISOString().split('T')[0],
-		endDate?.toISOString().split('T')[0]
+		startDate
+			? new Date(startDate).toISOString().split('T')[0]
+			: new Date().toISOString().split('T')[0],
+		endDate ? new Date(endDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]
 	);
 
 	// Watch for changes in startDate and update endDate
@@ -115,10 +117,23 @@
 	}
 
 	function handleDateChange() {
+		let startDateUpdate = startDate
+			? new Date(startDate).toISOString().split('T')[0]
+			: new Date().toISOString().split('T')[0];
+
+		let endDateUpdate = endDate
+			? new Date(endDate).toISOString().split('T')[0]
+			: new Date().toISOString().split('T')[0];
+
+		if (startDateUpdate > endDateUpdate) {
+			endDateUpdate = new Date(startDate).toISOString().split('T')[0];
+			endDate = new Date(startDate).toISOString().split('T')[0];
+		}
+
 		currentItinerary.update((current) => ({
 			...current,
-			start_date: startDate.toISOString().split('T')[0],
-			end_date: endDate.toISOString().split('T')[0]
+			start_date: startDateUpdate,
+			end_date: endDateUpdate
 		}));
 		hasUnsavedChanges = true;
 	}
@@ -153,6 +168,7 @@
 
 			hasUnsavedChanges = false;
 			notifications.success('Itinerary saved successfully');
+			await invalidateAll();
 		} catch (error) {
 			notifications.danger('Failed to save itinerary');
 		}
@@ -188,21 +204,27 @@
 		<p class="mb-4 text-sm text-gray-600">{dateRangeDisplay}</p>
 		<div class="mb-6 grid gap-4 sm:grid-cols-2">
 			<div>
-				<Label for="start-date">Start Date</Label>
-				<DateInput
+				<Label for="startDate" class="mb-2 block">Start Date</Label>
+				<Input
+					id="startDate"
+					type="date"
 					bind:value={startDate}
 					on:change={handleDateChange}
-					id="start-date"
-					format="yyyy/MM/dd"
+					format="yyyy-MM-dd"
+					required
+					class="w-full"
 				/>
 			</div>
 			<div>
-				<Label for="end-date">End Date</Label>
-				<DateInput
+				<Label for="endDate" class="mb-2 block">End Date</Label>
+				<Input
+					id="endDate"
+					type="date"
 					bind:value={endDate}
 					on:change={handleDateChange}
-					id="end-date"
-					format="yyyy/MM/dd"
+					format="yyyy-MM-dd"
+					required
+					class="w-full"
 				/>
 			</div>
 		</div>

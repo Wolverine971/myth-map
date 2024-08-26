@@ -16,7 +16,7 @@
 	export let coords: { lat: number; lng: number };
 	export let size: SizeType = 'md';
 	export let location: Location;
-	export let user: { email: string } | null;
+	export let user: any;
 	export let innerWidth: number;
 
 	let duration: number;
