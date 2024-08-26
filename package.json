@@ -59,6 +59,7 @@
 		"google-auth-library": "^9.11.0",
 		"googleapis": "^140.0.0",
 		"googleapis-common": "^7.2.0",
+		"lucide-svelte": "^0.436.0",
 		"mapbox-gl": "^3.4.0",
 		"marked": "^13.0.2",
 		"qrcode": "^1.5.4",

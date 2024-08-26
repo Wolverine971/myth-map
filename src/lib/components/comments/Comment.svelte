@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { Button, Badge, Textarea } from 'flowbite-svelte';
+	import { Button, Badge, Textarea, Dropdown, DropdownItem } from 'flowbite-svelte';
+	import { ThumbsUp, MessageCircle, MoreVertical } from 'lucide-svelte';
 	import Comments from './Comments.svelte';
 	import type { CommentType } from '../types';
 	import { deserialize } from '$app/forms';
@@ -30,8 +31,11 @@
 		return new Date(timestamp).toLocaleString();
 	}
 
-	function handleReply() {
-		showReplyForm = true;
+	function handleReplyClick() {
+		if (comment.comment_count > 0) {
+			showReplies = !showReplies;
+		}
+		showReplyForm = !showReplyForm;
 	}
 
 	async function handleLike() {
@@ -107,10 +111,6 @@
 			dispatch('delete', { commentId: comment.id });
 		}
 	}
-
-	function toggleReplies() {
-		showReplies = !showReplies;
-	}
 </script>
 
 <div class="comment">
@@ -137,22 +137,44 @@
 		</div>
 
 		<div class="comment-actions">
-			<Button size="xs" on:click={handleLike}>
-				{comment.userHasLiked ? 'Unlike' : 'Like'} ({comment.likes})
-			</Button>
-			<Button size="xs" on:click={handleReply}>{displayName}</Button>
-			{#if comment.canEdit}
-				<Button size="xs" on:click={handleEdit}>Edit</Button>
-			{/if}
-			{#if comment.canDelete}
-				<Button size="xs" color="red" on:click={handleDelete}>Delete</Button>
-			{/if}
-			<Button size="xs" color="light" on:click={handleFlag}>Flag</Button>
-			{#if comment.comment_count > 0}
-				<Button size="xs" on:click={toggleReplies}>
-					{showReplies ? 'Hide' : 'Show'} Replies ({comment.comment_count})
-				</Button>
-			{/if}
+			<div class="flex items-center space-x-4">
+				<button
+					on:click={handleLike}
+					class="flex items-center space-x-1 text-gray-500 hover:text-blue-500"
+				>
+					<ThumbsUp size={16} class={comment.userHasLiked ? 'text-blue-500' : ''} />
+					<span>{comment.likes}</span>
+				</button>
+
+				<button
+					on:click={handleReplyClick}
+					class="flex items-center space-x-1 text-gray-500 hover:text-blue-500"
+				>
+					<MessageCircle size={16} />
+					<span>
+						{#if comment.comment_count > 0}
+							{showReplies ? 'Hide' : 'Show'} {comment.comment_count} {comment.comment_count === 1 ? 'Reply' : 'Replies'}
+						{:else}
+							Reply
+						{/if}
+					</span>
+				</button>
+			</div>
+
+			<div class="relative">
+				<Dropdown placement="bottom-end">
+					<Button slot="trigger" color="light" class="!p-1">
+						<MoreVertical size={16} />
+					</Button>
+					<DropdownItem on:click={handleFlag}>Flag comment</DropdownItem>
+					{#if comment.canEdit}
+						<DropdownItem on:click={handleEdit}>Edit</DropdownItem>
+					{/if}
+					{#if comment.canDelete}
+						<DropdownItem on:click={handleDelete}>Delete</DropdownItem>
+					{/if}
+				</Dropdown>
+			</div>
 		</div>
 
 		{#if showReplies}
@@ -162,7 +184,6 @@
 				depth={depth + 1}
 				{displayName}
 				{user}
-				{innerWidth}
 			/>
 		{/if}
 	{/if}
@@ -196,7 +217,8 @@
 
 	.comment-actions {
 		display: flex;
-		gap: 0.5rem;
+		justify-content: space-between;
+		align-items: center;
 		margin-bottom: 0.5rem;
 	}
 

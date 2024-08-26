@@ -94,7 +94,6 @@ export const updateSpreadsheet = async (vals) => {
 		const client = await getToken();
 		const sheets = google.sheets({ auth: client, version: 'v4' });
 		const resp = await addRows(vals, sheets);
-		// console.log(resp)
 		console.log('finished adding rows');
 	}
 };
@@ -104,7 +103,6 @@ export const updateSpreadsheetWToken = async (vals, token) => {
 		const client = token;
 		const sheets = google.sheets({ auth: client, version: 'v4' });
 		const resp = await addRows(vals, sheets);
-		// console.log(resp)
 		console.log('finished adding rows');
 	}
 };
@@ -176,7 +174,6 @@ export const getCity = async () => {
 				: '';
 		cities.push(city2);
 	});
-	console.log(cities);
 };
 
 export const ingestAndCreateLocations = async () => {

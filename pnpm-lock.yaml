@@ -38,6 +38,9 @@ dependencies:
   googleapis-common:
     specifier: ^7.2.0
     version: 7.2.0
+  lucide-svelte:
+    specifier: ^0.436.0
+    version: 0.436.0(svelte@4.2.17)
   mapbox-gl:
     specifier: ^3.4.0
     version: 3.4.0
@@ -2655,6 +2658,14 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       yallist: 4.0.0
+    dev: false
+
+  /lucide-svelte@0.436.0(svelte@4.2.17):
+    resolution: {integrity: sha512-oRyTPzqudX01WWcSohl/Ob44GFqV/sw4moKQbsqtQ0EnKPjDPYh/v0wSaQ0wYljwSEaJ7zkBwY2lkgYFMX9PVg==}
+    peerDependencies:
+      svelte: ^3 || ^4 || ^5.0.0-next.42
+    dependencies:
+      svelte: 4.2.17
     dev: false
 
   /magic-string@0.30.10:

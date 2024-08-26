@@ -9,7 +9,7 @@ export const POST: RequestHandler = async ({ params, locals }) => {
         return json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await locals.supabase
         .from('comment_likes')
         .insert({ user_id: user.id, comment_id: params.id })
         .single();
@@ -31,7 +31,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
         return json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { error } = await supabase
+    const { error } = await locals.supabase
         .from('comment_likes')
         .delete()
         .match({ user_id: user.id, comment_id: params.id });
