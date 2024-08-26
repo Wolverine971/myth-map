@@ -4,7 +4,6 @@ import {
 	PUBLIC_GOOGLE_KEY_ID,
 	PUBLIC_GOOGLE_PUBLIC_ID
 } from '$env/static/public';
-import { supabase } from '$lib/supabaseClient';
 import { Impersonated } from 'google-auth-library';
 import { google } from 'googleapis';
 import {
@@ -169,11 +168,11 @@ export const getCity = async () => {
 		const city2 =
 			city1.length >= 2
 				? city1[2]
-						.replace(`${valToExtract}-`, '')
-						.replace('-', ' ')
-						.replace(/[0-9]/g, '')
-						.replace('-', '')
-						.trim()
+					.replace(`${valToExtract}-`, '')
+					.replace('-', ' ')
+					.replace(/[0-9]/g, '')
+					.replace('-', '')
+					.trim()
 				: '';
 		cities.push(city2);
 	});

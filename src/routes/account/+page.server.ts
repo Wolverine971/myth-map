@@ -1,41 +1,74 @@
-// src/routes/account/+page.ts
-import { Actions, redirect, type } from '@sveltejs/kit';
+// src/routes/profile/+page.server.ts
 
-import type { PageLoad } from './$types';
+import { error, fail, redirect } from '@sveltejs/kit';
+import type { PageServerLoad, Actions } from './$types';
 
-import { supabase } from '$lib/supabaseClient';
-import { goto } from '$app/navigation';
 
-export const load: PageLoad = async (event) => {
-	const data = await event.parent();
-
-	const user = await event.locals.getUser()
+export const load: PageServerLoad = async ({ locals }) => {
+	const user = await locals.getUser();
 	if (!user) {
-		throw redirect(303, '/login');
+		throw redirect(302, '/login');
 	}
 
-	// const { data: user, error } = await supabase
-	// 	.from('users')
-	// 	.select('name, email')
-	// 	.eq('id', session.user.id)
-	// 	.single();
+	const { data: profile, error: profileError } = await locals.supabase
+		.from('user_profiles')
+		.select('*')
+		.eq('id', user.id)
+		.single();
 
-	// if (error) {
-	// 	console.error('Error fetching user data:', error);
-	// 	// Handle error as appropriate for your application
-	// }
+	if (profileError && profileError.code !== 'PGRST116') { // PGRST116 is the error code for no rows returned
+		console.error('Error fetching user profile:', profileError);
+		throw error(500, 'Error fetching user profile');
+	}
 
-	return { user };
+	return {
+		user: {
+			...user,
+			...profile
+		}
+	};
 };
 
-
 export const actions: Actions = {
-	logout: async (event) => {
-		const { error } = await event.locals.supabase.auth.signOut();
-		if (error) {
-			console.error('Error logging out:', error);
-			// Handle error as appropriate for your application
+	updateProfile: async ({ request, locals }) => {
+		const user = await locals.getUser();
+		if (!user) {
+			throw error(401, 'Unauthorized');
 		}
 
+		const formData = await request.formData();
+		const username = formData.get('username') as string;
+		const firstName = formData.get('firstName') as string;
+		const lastName = formData.get('lastName') as string;
+
+		const { data, error: upsertError } = await locals.supabase
+			.from('user_profiles')
+			.upsert({
+				id: user.id,
+				username,
+				first_name: firstName,
+				last_name: lastName
+			}, {
+				onConflict: 'id'
+			})
+			.select()
+			.single();
+
+		if (upsertError) {
+			console.error('Error upserting user profile:', upsertError);
+			return fail(500, { message: 'Error updating user profile' });
+		}
+
+		return { success: true, profile: data };
+	},
+
+	logout: async ({ locals }) => {
+		const { error: logoutError } = await locals.supabase.auth.signOut();
+		if (logoutError) {
+			console.error('Logout error:', logoutError);
+			return fail(500, { message: 'Error during logout' });
+		}
+		console.log('Logged out');
+		return { success: true };
 	}
-}
+};

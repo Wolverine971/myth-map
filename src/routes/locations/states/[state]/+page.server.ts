@@ -1,4 +1,4 @@
-import { supabase } from '$lib/supabaseClient';
+
 import { findState } from '../../../../utils/geoDataLoader';
 
 import type { PageServerLoad } from './$types';
@@ -9,7 +9,7 @@ export const load: PageServerLoad = async (event) => {
 		const user = await event.locals.getUser()
 		const state = findState(event.params?.state || { abr: 'MD' });
 
-		const { data: stateLocationData, error: stateLocationDataError } = await supabase
+		const { data: stateLocationData, error: stateLocationDataError } = await event.locals.supabase
 			.from('locations')
 			.select('*')
 			.eq('state', state.abr);

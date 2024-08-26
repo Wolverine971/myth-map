@@ -1,11 +1,11 @@
-import { supabase } from '$lib/supabaseClient';
+
 import type { PageServerLoad } from './$types';
 
 // const MAX_POSTS = 20;
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async (event) => {
 	try {
-		const { data: existingLocationData, error: existingLocationDataError } = await supabase
+		const { data: existingLocationData, error: existingLocationDataError } = await event.locals.supabase
 			.from('content_locations')
 			.select('*');
 

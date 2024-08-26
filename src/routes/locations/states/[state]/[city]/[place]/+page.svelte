@@ -9,6 +9,7 @@
 	import ArticleTitle from '$lib/components/blog/ArticleTitle.svelte';
 	import ArticleSubTitle from '$lib/components/blog/ArticleSubTitle.svelte';
 	import LocationCardSmall from '$lib/components/locations/LocationCardSmall.svelte';
+	import Comments from '$lib/components/comments/Comments.svelte';
 
 	export let data: PageData;
 
@@ -82,6 +83,9 @@
 		{:else}
 			<p class="my-20">Information Needed</p>
 		{/if}
+		<hr class="my-8" />
+
+		<Comments parentId={data.blog.id} parentType="location_blog" {innerWidth} user={data?.user} />
 
 		<hr class="my-8" />
 

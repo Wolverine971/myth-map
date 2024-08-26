@@ -1,21 +1,20 @@
-import { supabase } from '$lib/supabaseClient';
 
 import type { PageServerLoad } from './$types';
 
 /** @type {import('./$types').PageLoad} */
 export const load: PageServerLoad = async (event) => {
 	const user = await event.locals.getUser()
-	const { data: locations, error: locationsError } = await supabase.from('locations').select('*');
+	const { data: locations, error: locationsError } = await event.locals.supabase.from('locations').select('*');
 	if (locationsError) {
 		console.error(locationsError);
 	}
 
-	const { data: tags, error: tagsError } = await supabase.from('tags').select('*');
+	const { data: tags, error: tagsError } = await event.locals.supabase.from('tags').select('*');
 	if (tagsError) {
 		console.error(tagsError);
 	}
 
-	const { data: locationTags, error: locationTagsError } = await supabase
+	const { data: locationTags, error: locationTagsError } = await event.locals.supabase
 		.from('location_tags')
 		.select('*, locations(*), tags(*)');
 	if (locationTagsError) {

@@ -1,9 +1,8 @@
 import type { PageLoad } from './$types';
-import { supabase } from '$lib/supabaseClient';
 import { error, type Actions } from '@sveltejs/kit';
 
-export const load: PageLoad = async ({ params }) => {
-	const { data: existingLocationData, error: existingLocationDataError } = await supabase
+export const load: PageLoad = async ({ params, locals }) => {
+	const { data: existingLocationData, error: existingLocationDataError } = await locals.supabase
 		.from('content_locations')
 		.select('*');
 
@@ -17,7 +16,7 @@ export const load: PageLoad = async ({ params }) => {
 };
 
 export const actions: Actions = {
-	save: async ({ request }) => {
+	save: async ({ request, locals }) => {
 		try {
 			const body = Object.fromEntries(await request.formData());
 
@@ -25,7 +24,7 @@ export const actions: Actions = {
 			const markdown = body.markdown as string;
 			const description = body.description as string;
 
-			const { data: locationData, error: locationDataError } = await supabase
+			const { data: locationData, error: locationDataError } = await locals.supabase
 				.from('content_locations')
 				.select('*')
 				.eq('loc', loc)
@@ -36,7 +35,7 @@ export const actions: Actions = {
 			}
 
 			if (locationData) {
-				const { data: updatedLocationData, error: updatedLocationDataError } = await supabase
+				const { data: updatedLocationData, error: updatedLocationDataError } = await locals.supabase
 					.from('content_locations')
 					.update({
 						content: markdown,

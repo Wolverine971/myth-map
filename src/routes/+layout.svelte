@@ -1,18 +1,13 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { currentItinerary } from '$lib/stores/itineraryStore';
 	import NavBar from '$lib/components/base/NavBar.svelte';
 	import ItineraryModal from '$lib/components/itinerary/ItineraryModal.svelte';
-
 	import Toast from '$lib/components/shared/Toast.svelte';
 	import '../app.css';
 	import { Button } from 'flowbite-svelte';
-	import { supabase } from '$lib/supabaseClient';
 	import type { LayoutData } from './$types';
 
 	export let data: LayoutData;
-
-	$: ({ session } = data);
 
 	let innerWidth = 0;
 	let isItineraryModalOpen = false;
@@ -22,23 +17,10 @@
 	$: hasItinerary = !!$currentItinerary;
 	$: itinerary = $currentItinerary;
 
-	onMount(() => {
-		const {
-			data: { subscription }
-		} = supabase.auth.onAuthStateChange((state, _session) => {
-			if (state === 'SIGNED_IN') {
-				session = _session;
-			} else if (state === 'SIGNED_OUT') {
-				session = null;
-			}
+	let { supabase, session } = data;
+	$: ({ supabase, session } = data);
 
-			if (state === 'PASSWORD_RECOVERY') {
-				window.location.href = '/resetPassword';
-			}
-		});
-
-		return () => subscription.unsubscribe();
-	});
+	console.log(data);
 
 	function shareItinerary() {
 		if (navigator.share) {
@@ -71,7 +53,7 @@
 
 <svelte:window bind:innerWidth />
 
-<NavBar {innerWidth} />
+<NavBar user={session?.user} />
 
 <Toast />
 

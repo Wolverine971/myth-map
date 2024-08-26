@@ -1,4 +1,4 @@
-import { supabase } from '$lib/supabaseClient';
+
 import type { Actions, PageLoad } from './$types';
 
 export const load: PageLoad = async (event) => {
@@ -7,7 +7,7 @@ export const load: PageLoad = async (event) => {
 	}
 
 	const user = await event.locals.getUser()
-	const { data: blogData, error: blogDataError } = await supabase
+	const { data: blogData, error: blogDataError } = await event.locals.supabase
 		.from('content_locations')
 		.select('*')
 		.eq('loc', event.params.place)
@@ -17,7 +17,7 @@ export const load: PageLoad = async (event) => {
 		console.error(blogDataError);
 	}
 
-	const { data: locationData, error: locationDataError } = await supabase
+	const { data: locationData, error: locationDataError } = await event.locals.supabase
 		.from('locations')
 		.select('*')
 		.eq('name', blogData?.title)
@@ -27,7 +27,7 @@ export const load: PageLoad = async (event) => {
 		console.error(locationDataError);
 	}
 
-	const { data: nearByLocations, error: nearByLocationsError } = await supabase.rpc(
+	const { data: nearByLocations, error: nearByLocationsError } = await event.locals.supabase.rpc(
 		'nearby_locations',
 		{
 			lat: locationData.lat,
@@ -47,7 +47,7 @@ export const load: PageLoad = async (event) => {
 			};
 		});
 
-	const { data: locationTags, error: locationTagsError } = await supabase
+	const { data: locationTags, error: locationTagsError } = await event.locals.supabase
 		.from('location_tags')
 		.select('*, locations(*), tags(*)')
 		.in(
@@ -68,13 +68,13 @@ export const load: PageLoad = async (event) => {
 };
 
 export const actions: Actions = {
-	findNearby: async ({ request }) => {
+	findNearby: async ({ request, locals }) => {
 		try {
 			const body = Object.fromEntries(await request.formData());
 			const lat = parseInt(body.lat as string);
 			const lng = parseInt(body.lng as string);
 
-			const { data, error } = await supabase.rpc('nearby_locations', {
+			const { data, error } = await locals.supabase.rpc('nearby_locations', {
 				lat: lat || 40.807313,
 				long: lng || -73.946713,
 				location_limit: 10

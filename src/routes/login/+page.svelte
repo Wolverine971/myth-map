@@ -1,7 +1,9 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import { goto } from '$app/navigation';
+	import { enhance, applyAction } from '$app/forms';
+	import { invalidateAll } from '$app/navigation';
 	import { Button, Input, Label } from 'flowbite-svelte';
+
+	import { getContext } from 'svelte';
 
 	let email = '';
 	let password = '';
@@ -9,11 +11,12 @@
 
 	function handleEnhance() {
 		return async ({ result }) => {
-			if (result.type === 'failure') {
-				errorMessage = result.data?.error || 'An error occurred during login.';
-			} else if (result.type === 'redirect') {
-				goto(result.location);
+			if (result.type === 'success') {
+				// rerun all `load` functions, following the successful update
+				await invalidateAll();
 			}
+
+			applyAction(result);
 		};
 	}
 </script>

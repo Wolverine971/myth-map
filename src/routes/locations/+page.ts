@@ -1,7 +1,7 @@
 import { supabase } from '$lib/supabaseClient';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async (event) => {
 	try {
 		const { data: existingLocationData, error: existingLocationDataError } = await supabase
 			.from('content_locations')
@@ -31,8 +31,8 @@ export const load: PageServerLoad = async () => {
 					...(location.title && addressMap[location.title]
 						? addressMap[location.title]
 						: {
-								address: 'No Address'
-							})
+							address: 'No Address'
+						})
 				};
 			})
 		};

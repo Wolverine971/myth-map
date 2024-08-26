@@ -1,12 +1,11 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { supabase } from '$lib/supabaseClient';
 
-export const PATCH: RequestHandler = async ({ params, request }) => {
+export const PATCH: RequestHandler = async ({ params, request, locals }) => {
 	const { slug } = params;
 	const { name, startDate, endDate, items } = await request.json();
 
-	const { data, error } = await supabase
+	const { data, error } = await locals.supabase
 		.from('itineraries')
 		.update({ name, start_date: startDate, end_date: endDate })
 		.eq('id', slug)
@@ -23,7 +22,7 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
 		order_index: index
 	}));
 
-	const { error: itemsError } = await supabase
+	const { error: itemsError } = await locals.supabase
 		.from('itinerary_items')
 		.upsert(itemUpdates, { onConflict: 'id' });
 

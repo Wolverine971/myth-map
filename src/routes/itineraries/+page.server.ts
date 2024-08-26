@@ -1,7 +1,6 @@
 import { error } from '@sveltejs/kit';
 
 import type { PageServerLoad } from './$types';
-import { supabase } from '$lib/supabaseClient';
 
 export const load: PageServerLoad = async (event) => {
 
@@ -11,7 +10,7 @@ export const load: PageServerLoad = async (event) => {
 		throw error(401, 'Unauthorized');
 	}
 
-	const { data: itineraries, error: fetchError } = await supabase
+	const { data: itineraries, error: fetchError } = await event.locals.supabase
 		.from('itineraries')
 		.select('*')
 		.eq('user_id', user.id)

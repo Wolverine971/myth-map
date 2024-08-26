@@ -1,4 +1,4 @@
-import { supabase } from '$lib/supabaseClient';
+
 import type { PageServerLoad } from './$types';
 
 import { PUBLIC_MAP_KEY } from '$env/static/public';
@@ -16,11 +16,11 @@ const directionsClient = mbxDirections({ accessToken: PUBLIC_MAP_KEY });
 export const load: PageServerLoad = async (event) => {
 
 	const user = await event.locals.getUser()
-	const { data: locations, error: locationsError } = await supabase.from('locations').select('*');
+	const { data: locations, error: locationsError } = await event.locals.supabase.from('locations').select('*');
 	if (locationsError) {
 		console.error(locationsError);
 	}
-	const { data: locationTags, error: locationTagsError } = await supabase
+	const { data: locationTags, error: locationTagsError } = await event.locals.supabase
 		.from('location_tags')
 		.select('*, locations(*), tags(*)');
 	if (locationTagsError) {

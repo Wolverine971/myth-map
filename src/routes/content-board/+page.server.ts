@@ -1,6 +1,5 @@
 // import { getServerSession } from '@supabase/auth-helpers-sveltekit';
 import { redirect, type Actions } from '@sveltejs/kit';
-import { supabase } from '$lib/supabaseClient';
 
 export const load = async (event) => {
 	// const session = await getServerSession(event);
@@ -9,7 +8,7 @@ export const load = async (event) => {
 	// 	throw redirect(302, '/questions');
 	// }
 
-	const { data: locationContent, error: locationContentError } = await supabase
+	const { data: locationContent, error: locationContentError } = await event.locals.supabase
 		.from(`content_locations`)
 		.select('*');
 
@@ -23,7 +22,7 @@ export const load = async (event) => {
 };
 
 export const actions: Actions = {
-	updateStage: async ({ request }) => {
+	updateStage: async ({ request, locals }) => {
 		try {
 			const body = Object.fromEntries(await request.formData());
 
@@ -39,7 +38,7 @@ export const actions: Actions = {
 			const type = body.type as string;
 			const stageName = body.stageName as string;
 
-			const { data: existingRecord, error: existingRecordError } = await supabase
+			const { data: existingRecord, error: existingRecordError } = await locals.supabase
 				.from(`content_${contentType}`)
 				.select('*')
 				.eq('loc', loc);
@@ -49,7 +48,7 @@ export const actions: Actions = {
 			}
 
 			if (existingRecord?.length) {
-				const { data: record, error: recordError } = await supabase
+				const { data: record, error: recordError } = await locals.supabase
 					.from(`content_${contentType}`)
 					.update({
 						title,
@@ -70,7 +69,7 @@ export const actions: Actions = {
 
 				return record;
 			} else {
-				const { data: record, error: recordError } = await supabase
+				const { data: record, error: recordError } = await locals.supabase
 					.from(`content_${contentType}`)
 					.insert({
 						title,

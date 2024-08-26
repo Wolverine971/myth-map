@@ -5,7 +5,6 @@ import type { Actions, RequestHandler } from '@sveltejs/kit';
 // import { supabase } from '$lib/supabase';
 // import { joinEmail2 } from '../../emails';
 import { getLocations, ingestAndCreateLocations, ingestBlogs } from './googleSpreadsheet';
-import { supabase } from '$lib/supabaseClient';
 
 // import { google } from 'googleapis';
 
@@ -43,11 +42,11 @@ export const actions: Actions = {
 			});
 		}
 	},
-	ingestGeographies: async ({ request }) => {
+	ingestGeographies: async ({ request, locals }) => {
 		try {
 			// const body = Object.fromEntries(await request.formData());
 
-			const { data: locationCoords, error: locationCoordsError } = await supabase
+			const { data: locationCoords, error: locationCoordsError } = await locals.supabase
 				.from('locations')
 				.select('*');
 
@@ -63,7 +62,7 @@ export const actions: Actions = {
 				};
 			});
 
-			const { error: insertError } = await supabase.from('location_coordinates').insert(mapData);
+			const { error: insertError } = await locals.supabase.from('location_coordinates').insert(mapData);
 
 			if (insertError) {
 				console.error(insertError);

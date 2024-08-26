@@ -124,21 +124,6 @@
 			{trimmedAddress}
 		</p>
 
-		{#if tags?.length}
-			<details class="mb-3">
-				<summary class="cursor-pointer rounded-md border border-gray-300 p-2 text-center text-sm">
-					Tags
-				</summary>
-				<ul class="mt-2 flex flex-wrap gap-1">
-					{#each tags as tag}
-						<li class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
-							{tag?.tags.name}
-						</li>
-					{/each}
-				</ul>
-			</details>
-		{/if}
-
 		<div class="mt-auto flex flex-col gap-2">
 			<a href={website} target="_blank" rel="noopener noreferrer">
 				<Button outline color="primary" size="sm" class="w-full">Visit Website</Button>
