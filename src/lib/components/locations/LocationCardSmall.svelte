@@ -132,13 +132,22 @@
 
 		<div class="mt-auto flex flex-col gap-2">
 			<a href={website} target="_blank" rel="noopener noreferrer">
-				<Button color="primary" size="sm" class="w-full">Visit Website</Button>
+				<Button
+					color="primary"
+					size="sm"
+					class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
+					>Visit Website</Button
+				>
 			</a>
 			<a
 				href={`/locations/states/${location.state}/${location.city}/${name}`.replace(/\s/g, '-')}
 				class="w-full"
 			>
-				<Button color="secondary" size="sm" class="w-full">Details</Button>
+				<Button
+					color=""
+					size="sm"
+					class="w-full hover:outline hover:outline-2 hover:outline-primary-600">Details</Button
+				>
 			</a>
 			{#if distance}
 				<div class="text-sm text-neutral-600">
@@ -146,12 +155,22 @@
 					<p>Duration: {duration} minutes</p>
 				</div>
 			{:else}
-				<Button color="secondary" size="sm" on:click={getHowFarAwayIsLocation} class="w-full">
+				<Button
+					color=""
+					size="sm"
+					on:click={getHowFarAwayIsLocation}
+					class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
+				>
 					{distanceLoading ? 'Loading...' : 'How far away is it?'}
 				</Button>
 			{/if}
 			{#if user}
-				<Button color="accent" disabled={isInItinerary} on:click={addToItinerary} class="w-full">
+				<Button
+					color=""
+					disabled={isInItinerary}
+					on:click={addToItinerary}
+					class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
+				>
 					{isInItinerary ? 'Added to Itinerary' : 'Add to Itinerary'}
 				</Button>
 			{/if}

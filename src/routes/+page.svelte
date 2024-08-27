@@ -100,7 +100,7 @@
 
 <svelte:window bind:innerWidth />
 
-<div class="min-h-screen bg-secondary-100">
+<div class="min-h-screen bg-secondary-100" style="width: 100%;">
 	<div class="container mx-auto px-4 py-8">
 		{#if isDesktop}
 			<h1 class="mb-4 text-4xl font-extrabold text-primary-500 md:text-5xl">
@@ -130,9 +130,9 @@
 				/>
 			{/if}
 
-			<Tabs style="underline" class="rounded-lg bg-white shadow-md">
-				<TabItem open title="Gallery View" class="p-4" on:click={() => (selectedTab = 'gallery')}>
-					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+			<Tabs tabStyle="underline">
+				<TabItem open title="Gallery View" on:click={() => (selectedTab = 'gallery')}>
+					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3" style="width: 100%;">
 						{#each isLoading ? Array(6) : shownLocations as location (Math.random())}
 							{#if isLoading}
 								<SkeletonCard />
@@ -153,21 +153,15 @@
 						{/each}
 					</div>
 				</TabItem>
-				<TabItem title="Map View" class="p-4" on:click={() => (selectedTab = 'map')}>
-					<div class="h-[500px] min-h-[430px] w-full overflow-hidden rounded-lg">
-						{#if isLoading}
-							<div class="h-full w-full animate-pulse bg-secondary-200"></div>
-						{:else}
-							<div in:fade={{ duration: 300 }}>
-								<Map
-									locations={data.locations}
-									{shownLocations}
-									currentLocation={userLocation}
-									{selectedState}
-									{selectedCity}
-								/>
-							</div>
-						{/if}
+				<TabItem title="Map View" on:click={() => (selectedTab = 'map')}>
+					<div class="h-[500px] min-h-[430px]">
+						<Map
+							locations={data.locations}
+							{shownLocations}
+							currentLocation={userLocation}
+							{selectedState}
+							{selectedCity}
+						/>
 					</div>
 				</TabItem>
 			</Tabs>

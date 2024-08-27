@@ -91,10 +91,10 @@
 	}
 </script>
 
-<div class="mb-4 rounded-lg bg-white p-4 shadow-md">
+<div class="mb-4">
 	<div class="flex flex-wrap gap-2">
 		<div class="flex items-center" transition:fade={{ duration: 800 }}>
-			<Button color="primary">
+			<Button color="alternative" outline>
 				State: {selectedState ? `${selectedState.name}` : 'Any'}
 				<ChevronDownOutline class="ms-2 h-4 w-4" />
 			</Button>
@@ -108,7 +108,7 @@
 		</div>
 
 		<div class="flex items-center" transition:fade={{ duration: 800 }}>
-			<Button color="primary" disabled={!selectedState}>
+			<Button color="alternative" disabled={!selectedState} outline>
 				City: {selectedCity ? `${selectedCity}` : 'Any'}
 				<ChevronDownOutline class="ms-2 h-4 w-4" />
 			</Button>
