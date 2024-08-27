@@ -119,90 +119,66 @@
 		'text-orange-700 dark:text-orange-300 hover:text-orange-900 dark:hover:text-orange-500';
 </script>
 
-<div class="flex flex-wrap items-center gap-1">
-	<div class="flex items-center" transition:fade={{ duration: 600 }}>
-		<Button outline>
-			Location Type: {baseSelect ?? 'Any'}
-			<ChevronDownOutline class="ms-2 h-6 w-6" />
-		</Button>
-		<Dropdown
-			style="z-index: 1232134234"
-			placement="bottom"
-			bind:open={baseDropdownOpen}
-			{activeClass}
-		>
-			<DropdownItem
-				class="hover:bg-gray-100 {baseSelect === 'Activity' && 'active'}"
-				on:click={baseSelection}>Activity</DropdownItem
-			>
-			<DropdownItem
-				class="hover:bg-gray-100 {baseSelect === 'Food' && 'active'}"
-				on:click={baseSelection}>Food</DropdownItem
-			>
-		</Dropdown>
-	</div>
-	<div class="flex items-center" transition:fade={{ duration: 800 }}>
-		<Button outline>
-			Location Type: {indoorOutdoorSelect ?? 'Any'}
-			<ChevronDownOutline class="ms-2 h-6 w-6" />
-		</Button>
-		<Dropdown
-			style="z-index: 1232134234"
-			placement="bottom"
-			bind:open={indoorOutdoorDropdownOpen}
-			{activeClass}
-		>
-			<DropdownItem
-				class="hover:bg-gray-100 {indoorOutdoorSelect === 'Indoor' && 'active'}"
-				on:click={indoorOutdoorSelection}>Indoor</DropdownItem
-			>
-			<DropdownItem
-				class="hover:bg-gray-100 {indoorOutdoorSelect === 'Outdoor' && 'active'}"
-				on:click={indoorOutdoorSelection}>Outdoor</DropdownItem
-			>
-		</Dropdown>
-	</div>
-	<div class="flex items-center" transition:fade={{ duration: 1000 }}>
-		<Button outline>
-			Tags ({checkedItems.length})
-			<ChevronDownOutline class="ms-2 h-6 w-6" />
-		</Button>
-		<Dropdown placement="bottom">
-			{#each displayTags as tag (tag.name)}
-				<li
-					class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600 {!selectableTagsMap[
-						tag.name
-					] && 'disabled'}"
-					transition:fade={{ duration: 100 }}
-				>
-					<Checkbox
-						class={!selectableTagsMap[tag.name] &&
-							'disabled text-gray-400 disabled:cursor-not-allowed dark:text-gray-300'}
-						on:change={(e) => {
-							if (selectableTagsMap[tag.name]) {
-								updateChecked(tag, e);
-							}
-						}}
-						bind:checked={tag.checked}
+<div class="mb-4 rounded-lg bg-white p-4 shadow-md">
+	<div class="flex flex-wrap items-center gap-2">
+		<div class="flex items-center" transition:fade={{ duration: 600 }}>
+			<Button color="primary">
+				Location Type: {baseSelect ?? 'Any'}
+				<ChevronDownOutline class="ms-2 h-4 w-4" />
+			</Button>
+			<Dropdown bind:open={baseDropdownOpen} class="z-50">
+				<DropdownItem on:click={baseSelection}>Activity</DropdownItem>
+				<DropdownItem on:click={baseSelection}>Food</DropdownItem>
+			</Dropdown>
+		</div>
+		<div class="flex items-center" transition:fade={{ duration: 800 }}>
+			<Button color="primary">
+				Environment: {indoorOutdoorSelect ?? 'Any'}
+				<ChevronDownOutline class="ms-2 h-4 w-4" />
+			</Button>
+			<Dropdown bind:open={indoorOutdoorDropdownOpen} class="z-50">
+				<DropdownItem on:click={indoorOutdoorSelection}>Indoor</DropdownItem>
+				<DropdownItem on:click={indoorOutdoorSelection}>Outdoor</DropdownItem>
+			</Dropdown>
+		</div>
+		<div class="flex items-center" transition:fade={{ duration: 1000 }}>
+			<Button color="primary">
+				Tags ({checkedItems.length})
+				<ChevronDownOutline class="ms-2 h-4 w-4" />
+			</Button>
+			<Dropdown class="z-50">
+				{#each displayTags as tag (tag.name)}
+					<li
+						class="p-2 hover:bg-secondary-100 {!selectableTagsMap[tag.name] &&
+							'cursor-not-allowed opacity-50'}"
 					>
-						{tag.name}
-					</Checkbox>
-				</li>
-			{/each}
-		</Dropdown>
+						<Checkbox
+							disabled={!selectableTagsMap[tag.name]}
+							on:change={(e) => updateChecked(tag, e)}
+							bind:checked={tag.checked}
+						>
+							{tag.name}
+						</Checkbox>
+					</li>
+				{/each}
+			</Dropdown>
+		</div>
 	</div>
-	<ul class="flex">
+	<div class="mt-2 flex flex-wrap gap-2">
 		{#each checkedItems as checkedItem (checkedItem.name)}
-			<li class="chip">
+			<span
+				class="inline-flex items-center rounded-full bg-secondary-200 px-2 py-1 text-sm text-primary-700"
+			>
 				{checkedItem.name}
-				<CloseCircleSolid
-					withEvents
+				<button
 					on:click={() => closeBtn(checkedItem.name)}
-					class="text-grey dark:text-grey ms-2 h-6 w-6 cursor-pointer hover:text-red-500"
-				/>
-			</li>
+					class="ml-1 text-primary-500 hover:text-primary-700"
+				>
+					<CloseCircleSolid class="h-4 w-4" />
+				</button>
+			</span>
 		{/each}
-	</ul>
+	</div>
 </div>
 
 <style>

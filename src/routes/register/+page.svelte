@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import { goto } from '$app/navigation';
+	import { applyAction, enhance } from '$app/forms';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { Button, Input, Label } from 'flowbite-svelte';
 
 	let email = '';
@@ -10,11 +10,12 @@
 
 	function handleEnhance() {
 		return async ({ result }) => {
-			if (result.type === 'failure') {
-				errorMessage = result.data?.error || 'An error occurred during registration.';
-			} else if (result.type === 'redirect') {
-				goto(result.location);
+			if (result.type === 'success') {
+				// rerun all `load` functions, following the successful update
+				await invalidateAll();
 			}
+
+			applyAction(result);
 		};
 	}
 

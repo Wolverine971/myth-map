@@ -100,75 +100,77 @@
 
 <svelte:window bind:innerWidth />
 
-<div>
-	{#if isDesktop}
-		<Heading tag="h1" class="mb-4 text-4xl font-extrabold md:text-5xl">
-			Welcome to Tiny Tribe Adventures
-		</Heading>
-	{/if}
-
-	<Heading tag="h5" class="mb-4"
-		>Your one stop shop for planning family friendly activities!</Heading
-	>
-
-	<div class="flex w-full flex-col gap-4">
-		<LocationFilters
-			allTags={data.tags}
-			selectableTagsMap={availableTagsMap}
-			on:baseSelection={({ detail }) => filterLocations(detail)}
-			on:indoorOutdoorSelection={({ detail }) => filterLocations(detail)}
-			on:selected={({ detail }) => filterLocations(detail)}
-		/>
-
-		{#if selectedTab === 'map'}
-			<GeoFilters
-				on:filterChange={handleFilterChange}
-				{shownLocations}
-				{selectedState}
-				{selectedCity}
-			/>
+<div class="min-h-screen bg-secondary-100">
+	<div class="container mx-auto px-4 py-8">
+		{#if isDesktop}
+			<h1 class="mb-4 text-4xl font-extrabold text-primary-500 md:text-5xl">
+				Welcome to Tiny Tribe Adventures
+			</h1>
 		{/if}
 
-		<Tabs contentClass="">
-			<TabItem open title="Gallery View" on:click={() => (selectedTab = 'gallery')}>
-				<div class="grid grid-cols-2 justify-center gap-2 sm:gap-4">
-					{#each isLoading ? Array(6) : shownLocations as location (Math.random())}
+		<h2 class="mb-6 text-2xl font-bold text-neutral-700">
+			Your one stop shop for planning family friendly activities!
+		</h2>
+
+		<div class="flex w-full flex-col gap-6">
+			<LocationFilters
+				allTags={data.tags}
+				selectableTagsMap={availableTagsMap}
+				on:baseSelection={({ detail }) => filterLocations(detail)}
+				on:indoorOutdoorSelection={({ detail }) => filterLocations(detail)}
+				on:selected={({ detail }) => filterLocations(detail)}
+			/>
+
+			{#if selectedTab === 'map'}
+				<GeoFilters
+					on:filterChange={handleFilterChange}
+					{shownLocations}
+					{selectedState}
+					{selectedCity}
+				/>
+			{/if}
+
+			<Tabs style="underline" class="rounded-lg bg-white shadow-md">
+				<TabItem open title="Gallery View" class="p-4" on:click={() => (selectedTab = 'gallery')}>
+					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+						{#each isLoading ? Array(6) : shownLocations as location (Math.random())}
+							{#if isLoading}
+								<SkeletonCard />
+							{:else}
+								<div in:fade={{ duration: 300 }}>
+									<LocationCard
+										name={location.name}
+										coords={{ lat: location.lat, lng: location.lng }}
+										address={`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}, ${location.city}, ${location.state} ${location.zip_code}`}
+										website={location.website}
+										tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
+										{location}
+										user={data?.user}
+										{innerWidth}
+									/>
+								</div>
+							{/if}
+						{/each}
+					</div>
+				</TabItem>
+				<TabItem title="Map View" class="p-4" on:click={() => (selectedTab = 'map')}>
+					<div class="h-[500px] min-h-[430px] w-full overflow-hidden rounded-lg">
 						{#if isLoading}
-							<SkeletonCard />
+							<div class="h-full w-full animate-pulse bg-secondary-200"></div>
 						{:else}
 							<div in:fade={{ duration: 300 }}>
-								<LocationCard
-									name={location.name}
-									coords={{ lat: location.lat, lng: location.lng }}
-									address={`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}, ${location.city}, ${location.state} ${location.zip_code}`}
-									website={location.website}
-									tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
-									{location}
-									user={data?.user}
-									{innerWidth}
+								<Map
+									locations={data.locations}
+									{shownLocations}
+									currentLocation={userLocation}
+									{selectedState}
+									{selectedCity}
 								/>
 							</div>
 						{/if}
-					{/each}
-				</div>
-			</TabItem>
-			<TabItem title="Map View" on:click={() => (selectedTab = 'map')}>
-				<div class="h-[500px] min-h-[430px] w-full">
-					{#if isLoading}
-						<div class="h-full w-full animate-pulse bg-gray-200"></div>
-					{:else}
-						<div in:fade={{ duration: 300 }}>
-							<Map
-								locations={data.locations}
-								{shownLocations}
-								currentLocation={userLocation}
-								{selectedState}
-								{selectedCity}
-							/>
-						</div>
-					{/if}
-				</div>
-			</TabItem>
-		</Tabs>
+					</div>
+				</TabItem>
+			</Tabs>
+		</div>
 	</div>
 </div>

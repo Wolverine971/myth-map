@@ -42,14 +42,14 @@
 
 <svelte:window bind:innerWidth />
 
-<div class="container mx-auto max-w-7xl px-4 py-8">
-	<div class="grid grid-cols-2 gap-4 lg:grid-cols-3">
-		<div class=" lg:col-span-2">
-			<Card class="mb-8 max-w-lg shadow-lg">
+<div class="container mx-auto max-w-7xl bg-secondary-50 px-4 py-8">
+	<div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+		<div class="lg:col-span-2">
+			<Card class="mb-8 max-w-lg bg-white shadow-lg">
 				<div class="mb-6 flex flex-col items-center justify-between md:flex-row">
 					<Heading
 						tag="h1"
-						class="mb-4 text-center text-3xl font-bold md:mb-0 md:text-left md:text-4xl"
+						class="mb-4 text-center text-3xl font-bold text-primary-700 md:mb-0 md:text-left md:text-4xl"
 						style="overflow-wrap: break-word;"
 					>
 						{data.itinerary.name}
@@ -57,20 +57,22 @@
 					<img
 						src={qrCodeUrl}
 						alt="Itinerary QR Code"
-						class="h-24 w-24 rounded-lg border-4 border-gray-200 shadow-md md:h-32 md:w-32"
+						class="h-24 w-24 rounded-lg border-4 border-secondary-200 shadow-md md:h-32 md:w-32"
 					/>
 				</div>
 				<div class="flex flex-wrap items-center justify-between">
-					<P class="mb-2 mr-4 text-lg">From: {formatDate(data.itinerary.start_date)}</P>
-					<P class="mb-2 text-lg">To: {formatDate(data.itinerary.end_date)}</P>
+					<P class="mb-2 mr-4 text-lg text-neutral-700"
+						>From: {formatDate(data.itinerary.start_date)}</P
+					>
+					<P class="mb-2 text-lg text-neutral-700">To: {formatDate(data.itinerary.end_date)}</P>
 				</div>
 			</Card>
 
-			<Card class="mb-8 max-w-lg shadow-lg">
-				<Heading tag="h2" class="mb-6 text-2xl font-semibold">Locations</Heading>
+			<Card class="mb-8 max-w-lg bg-white shadow-lg">
+				<Heading tag="h2" class="mb-6 text-2xl font-semibold text-primary-600">Locations</Heading>
 
 				{#if data.itinerary.items.length === 0}
-					<P class="text-lg text-gray-600">No locations added to this itinerary yet.</P>
+					<P class="text-lg text-neutral-600">No locations added to this itinerary yet.</P>
 				{:else}
 					<div class="space-y-6">
 						{#each data.itinerary.items.sort((a, b) => a.order_index - b.order_index) as item}
@@ -92,21 +94,14 @@
 
 		<div class="lg:col-span-1">
 			<div class="sticky top-8">
-				<Card class="mb-8 shadow-lg">
-					<Heading tag="h2" class="mb-6 text-2xl font-semibold">Quick Actions</Heading>
+				<Card class="mb-8 bg-white shadow-lg">
+					<Heading tag="h2" class="mb-6 text-2xl font-semibold text-primary-600"
+						>Quick Actions</Heading
+					>
 					<div class="space-y-4">
-						<Button href="/itineraries/{data.itinerary.id}/edit" class="w-full"
+						<Button href="/itineraries/{data.itinerary.id}/edit" color="primary" class="w-full"
 							>Edit Itinerary</Button
 						>
-						<!-- <CalendarInviteComponent
-							itineraryId={data.itinerary.id}
-							itineraryName={data.itinerary.name}
-							startDate={data.itinerary.start_date}
-							endDate={data.itinerary.end_date}
-							on:invitesSent={() => {
-								notifications.success('Invites sent successfully', 3000);
-							}}
-						/> -->
 					</div>
 				</Card>
 			</div>

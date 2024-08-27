@@ -2,30 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+	--color-primary-500: #014421;
+	--color-secondary-500: #d2b48c;
+	--color-accent-500: #87ceeb;
+	--color-tertiary-500: #cd5700;
+	--color-neutral-500: #708090;
+}
+
+body {
+	@apply bg-secondary-50 text-neutral-800;
+}
+
 main {
-	max-width: 64rem;
-	margin: 1rem auto;
+	@apply mx-auto my-4 max-w-5xl px-4;
 }
 
 .loader {
-	box-sizing: border-box;
-	display: inline-block;
-	border: 5px solid #fff;
-	border-radius: 50%;
-	border-bottom-color: transparent;
-	animation: rotation 1s linear infinite;
+	@apply inline-block animate-spin rounded-full border-4 border-white border-b-transparent;
 }
 
 .preview {
-	body {
-		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial',
-			sans-serif;
-		line-height: 1.6;
-		color: #333;
-		max-width: 800px;
-		margin: 0 auto;
-		padding: 20px;
-	}
+	@apply mx-auto max-w-3xl p-5 font-sans leading-relaxed text-neutral-800;
 
 	h1,
 	h2,
@@ -33,107 +31,83 @@ main {
 	h4,
 	h5,
 	h6 {
-		margin-top: 1.5em;
-		margin-bottom: 0.5em;
+		@apply mb-2 mt-6 font-bold text-primary-700;
 	}
 
 	h1 {
-		font-size: 2.5em;
+		@apply text-4xl;
 	}
 	h2 {
-		font-size: 2em;
+		@apply text-3xl;
 	}
 	h3 {
-		font-size: 1.75em;
+		@apply text-2xl;
 	}
 	h4 {
-		font-size: 1.5em;
+		@apply text-xl;
 	}
 	h5 {
-		font-size: 1.25em;
+		@apply text-lg;
 	}
 	h6 {
-		font-size: 1em;
+		@apply text-base;
 	}
 
 	p {
-		margin-bottom: 1em;
+		@apply mb-4;
 	}
 
 	a {
-		color: #0066cc;
-		text-decoration: none;
-	}
-
-	a:hover {
-		text-decoration: underline;
+		@apply text-accent-600 no-underline hover:underline;
 	}
 
 	code {
-		font-family: 'Courier New', Courier, monospace;
-		background-color: #f4f4f4;
-		padding: 2px 4px;
-		border-radius: 4px;
+		@apply rounded bg-secondary-100 px-1 py-0.5 font-mono;
 	}
 
 	pre {
-		background-color: #f4f4f4;
-		padding: 1em;
-		border-radius: 4px;
-		overflow-x: auto;
+		@apply overflow-x-auto rounded bg-secondary-100 p-4;
 	}
 
 	blockquote {
-		border-left: 4px solid #ccc;
-		margin: 0;
-		padding-left: 1em;
-		color: #666;
+		@apply m-0 border-l-4 border-secondary-300 pl-4 text-neutral-600;
 	}
 
 	ul,
 	ol {
-		margin-bottom: 1em;
-		padding-left: 2em;
+		@apply mb-4 pl-8;
 	}
 
 	img {
-		max-width: 100%;
-		height: auto;
+		@apply h-auto max-w-full;
 	}
 
 	hr {
-		border: none;
-		border-top: 1px solid #ccc;
-		margin: 2em 0;
+		@apply my-8 border-t border-none border-secondary-300;
 	}
 
 	table {
-		border-collapse: collapse;
-		width: 100%;
-		margin-bottom: 1em;
+		@apply mb-4 w-full border-collapse;
 	}
 
 	th,
 	td {
-		border: 1px solid #ccc;
-		padding: 0.5em;
-		text-align: left;
+		@apply border border-secondary-300 p-2 text-left;
 	}
 
 	th {
-		background-color: #f4f4f4;
-		font-weight: bold;
+		@apply bg-secondary-100 font-bold;
 	}
 }
 
 @media screen and (max-width: 1050px) {
 	main {
-		margin: 1rem;
+		@apply mx-4;
 	}
 }
 
 @media screen and (max-width: 500px) {
 	main {
-		margin: 1rem 0.5rem;
+		@apply mx-2;
 	}
 }

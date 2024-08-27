@@ -18,11 +18,6 @@
 
 	$: activeUrl = $page.url.pathname;
 
-	let hidden = true;
-	const toggle = () => {
-		hidden = !hidden;
-	};
-
 	const handleLogout = async () => {
 		try {
 			const body = new FormData();
@@ -45,10 +40,10 @@
 </script>
 
 <div
-	class="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md transition-all duration-300 dark:bg-gray-900/80"
+	class="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md transition-all duration-300 dark:bg-primary-900/80"
 >
 	<div class="flex w-full justify-center">
-		<Navbar class="relative w-full max-w-[1350px] px-4 py-2 sm:px-6 lg:px-8">
+		<Navbar class="relative w-full max-w-[1350px] px-4 py-2 sm:px-6 lg:px-8" let:hidden let:toggle>
 			<div class="flex w-full items-center justify-between">
 				<NavBrand href="/" class="flex flex-shrink-0 items-center transition-all duration-300">
 					<img
@@ -57,7 +52,7 @@
 						alt="Tiny Tribe Adventures"
 					/>
 					<span
-						class="invisible ml-2 max-w-0 self-center overflow-hidden whitespace-nowrap text-lg font-semibold transition-all duration-300 sm:max-w-xs lg:visible dark:text-white"
+						class="invisible ml-2 max-w-0 self-center overflow-hidden whitespace-nowrap text-lg font-semibold text-primary-700 transition-all duration-300 sm:max-w-xs lg:visible dark:text-white"
 					>
 						Tiny Tribe Adventures
 					</span>
@@ -67,60 +62,54 @@
 					{#if user}
 						<div class="relative">
 							<Button
-								color="light"
-								class="!p-2 transition-transform duration-300 hover:scale-110"
+								color="primary"
+								class="!p-2 transition-all duration-300 hover:bg-primary-600"
 								id="account-menu-button"
 							>
 								<UserSolid class="h-5 w-5" />
 							</Button>
 							<Dropdown triggeredBy="#account-menu-button" class="w-44">
-								<DropdownItem href="/account" class="flex items-center ">
+								<DropdownItem href="/account" class="flex items-center text-primary-700">
 									<UserSolid class="mr-2 h-4 w-4" />
 									Account
 								</DropdownItem>
-								<DropdownItem on:click={handleLogout}>Logout</DropdownItem>
+								<DropdownItem on:click={handleLogout} class="text-primary-700">Logout</DropdownItem>
 							</Dropdown>
 						</div>
 					{:else}
 						<div class="flex space-x-2">
 							<Button
 								href="/login"
-								color="light"
-								class="transition-transform duration-300 hover:scale-105"
+								color="primary"
+								class="transition-all duration-300 hover:bg-primary-600"
 							>
-								Login/ Register
+								Login / Register
 							</Button>
 						</div>
 					{/if}
 					<NavHamburger
 						on:click={toggle}
-						class="transition-transform duration-300 hover:scale-110 md:hidden"
+						class="text-primary-700 transition-all duration-300 hover:text-primary-600 md:hidden"
 					/>
 				</div>
 			</div>
 
-			<div
-				class="mt-4 md:absolute md:left-1/2 md:top-1/2 md:mt-0 md:w-full md:max-w-lg md:-translate-x-1/2 md:-translate-y-1/2 md:transform"
+			<NavUl
+				{activeUrl}
+				{hidden}
+				class="mt-4 flex-col space-y-2 md:absolute md:left-1/2 md:top-1/2 md:mt-0 md:flex md:w-full md:max-w-lg md:-translate-x-1/2 md:-translate-y-1/2 md:transform md:flex-row md:space-x-4 md:space-y-0"
 			>
-				<NavUl
-					{activeUrl}
-					{hidden}
-					class="flex-col justify-center space-y-2 transition-all duration-300 md:flex md:flex-row md:space-x-4 md:space-y-0 {hidden
-						? 'hidden'
-						: 'flex'}"
+				<NavLi href="/" class=" transition-all duration-300 hover:text-primary-600">Home</NavLi>
+				<NavLi href="/locations" class=" transition-all duration-300 hover:text-primary-600"
+					>Locations</NavLi
 				>
-					<NavLi href="/" class="transition-transform duration-300 hover:scale-105">Home</NavLi>
-					<NavLi href="/locations" class="transition-transform duration-300 hover:scale-105"
-						>Locations</NavLi
-					>
-					<NavLi href="/about" class="transition-transform duration-300 hover:scale-105"
-						>About us</NavLi
-					>
-					<NavLi href="/contact" class="transition-transform duration-300 hover:scale-105"
-						>Contact</NavLi
-					>
-				</NavUl>
-			</div>
+				<NavLi href="/about" class=" transition-all duration-300 hover:text-primary-600"
+					>About us</NavLi
+				>
+				<NavLi href="/contact" class=" transition-all duration-300 hover:text-primary-600"
+					>Contact</NavLi
+				>
+			</NavUl>
 		</Navbar>
 	</div>
 </div>

@@ -91,46 +91,35 @@
 	}
 </script>
 
-<div class="flex gap-1">
-	<div class="flex items-center" transition:fade={{ duration: 800 }}>
-		<Button outline color="blue">
-			State: {selectedState ? `${selectedState.name}` : 'Any'}
-			<ChevronDownOutline class="ms-2 h-6 w-6 " />
-		</Button>
-		<Dropdown style="z-index: 1232134234" placement={'bottom'} bind:open={stateOpen}>
-			{#each states as state}
-				<!-- <option value={state}>{state.name}</option> -->
-				<DropdownItem
-					class="hover:bg-gray-100 "
-					activeClass={'active'}
-					value={state}
-					on:click={async () => handleStateChange(state)}>{state.name}</DropdownItem
-				>
-			{/each}
-		</Dropdown>
-	</div>
+<div class="mb-4 rounded-lg bg-white p-4 shadow-md">
+	<div class="flex flex-wrap gap-2">
+		<div class="flex items-center" transition:fade={{ duration: 800 }}>
+			<Button color="primary">
+				State: {selectedState ? `${selectedState.name}` : 'Any'}
+				<ChevronDownOutline class="ms-2 h-4 w-4" />
+			</Button>
+			<Dropdown bind:open={stateOpen} class="z-50">
+				{#each states as state}
+					<DropdownItem on:click={() => handleStateChange(state)}>
+						{state.name}
+					</DropdownItem>
+				{/each}
+			</Dropdown>
+		</div>
 
-	<div class="flex items-center" transition:fade={{ duration: 800 }}>
-		<Button outline color="blue" disabled={!selectedState}>
-			City: {selectedCity ? `${selectedCity}` : 'Any'}
-			<ChevronDownOutline class="ms-2 h-6 w-6 " />
-		</Button>
-		<Dropdown style="z-index: 1232134234" placement={'bottom'} bind:open={cityOpen}>
-			<DropdownItem
-				class="hover:bg-gray-100 "
-				activeClass={'active'}
-				value=""
-				on:click={async () => unselectCity()}>Unselect</DropdownItem
-			>
-			{#each filteredCities as city}
-				<!-- <option value={state}>{state.name}</option> -->
-				<DropdownItem
-					class="hover:bg-gray-100 "
-					activeClass={'active'}
-					value={city}
-					on:click={async () => handleCityChange(city)}>{city}</DropdownItem
-				>
-			{/each}
-		</Dropdown>
+		<div class="flex items-center" transition:fade={{ duration: 800 }}>
+			<Button color="primary" disabled={!selectedState}>
+				City: {selectedCity ? `${selectedCity}` : 'Any'}
+				<ChevronDownOutline class="ms-2 h-4 w-4" />
+			</Button>
+			<Dropdown bind:open={cityOpen} class="z-50">
+				<DropdownItem on:click={unselectCity}>Unselect</DropdownItem>
+				{#each filteredCities as city}
+					<DropdownItem on:click={() => handleCityChange(city)}>
+						{city}
+					</DropdownItem>
+				{/each}
+			</Dropdown>
+		</div>
 	</div>
 </div>

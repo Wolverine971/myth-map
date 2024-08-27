@@ -89,27 +89,33 @@
 <Card
 	horizontal={true}
 	{size}
-	class="mx-auto flex max-w-md flex-col gap-4 p-4 sm:flex-row sm:gap-2 sm:p-2 sm:p-6"
+	class="mx-auto flex max-w-md flex-col gap-4 bg-white p-4 shadow-md transition-shadow duration-300 hover:shadow-lg sm:flex-row sm:gap-2 sm:p-6"
 >
-	<div style={innerWidth > 500 ? 'width: 50%;' : ''}>
-		<img src="/map/{getLocationIcon(name)}.png" alt="" class="w-full object-contain sm:w-48" />
+	<div style={innerWidth > 500 ? 'width: 50%;' : ''} class="flex flex-col items-center">
+		<img src="/map/{getLocationIcon(name)}.png" alt="" class="mb-3 w-full object-contain sm:w-48" />
 
 		{#if tags?.length}
-			<details class="mb-3 sm:hidden">
-				<summary class="cursor-pointer rounded-md border border-gray-300 p-2 text-center">
+			<details class="mb-3 w-full sm:hidden">
+				<summary
+					class="cursor-pointer rounded-md bg-secondary-100 p-2 text-center text-primary-700"
+				>
 					Tags
 				</summary>
 				<ul class="mt-2 flex flex-wrap gap-1">
 					{#each tags as tag}
-						<li class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
+						<li
+							class="rounded-full bg-secondary-200 px-2.5 py-0.5 text-xs font-medium text-primary-700"
+						>
 							{tag?.tags.name}
 						</li>
 					{/each}
 				</ul>
 			</details>
-			<ul class="mb-3 hidden flex-wrap gap-1 sm:flex">
+			<ul class="mb-3 hidden w-full flex-wrap gap-1 sm:flex">
 				{#each tags as tag}
-					<li class="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
+					<li
+						class="rounded-full bg-secondary-200 px-2.5 py-0.5 text-xs font-medium text-primary-700"
+					>
 						{tag?.tags.name}
 					</li>
 				{/each}
@@ -118,41 +124,35 @@
 	</div>
 
 	<div class="flex flex-grow flex-col">
-		<h5 class="mb-2 text-xl font-bold">{name}</h5>
-		<p class="mb-3 text-sm">
+		<h5 class="mb-2 text-xl font-bold text-primary-700">{name}</h5>
+		<p class="mb-3 text-sm text-neutral-600">
 			<span class="hidden sm:inline">{addressPart1},<br /></span>
 			{trimmedAddress}
 		</p>
 
 		<div class="mt-auto flex flex-col gap-2">
 			<a href={website} target="_blank" rel="noopener noreferrer">
-				<Button outline color="primary" size="sm" class="w-full">Visit Website</Button>
+				<Button color="primary" size="sm" class="w-full">Visit Website</Button>
 			</a>
 			<a
 				href={`/locations/states/${location.state}/${location.city}/${name}`.replace(/\s/g, '-')}
 				class="w-full"
 			>
-				<Button outline color="alternative" size="sm" class="w-full">Details</Button>
+				<Button color="secondary" size="sm" class="w-full">Details</Button>
 			</a>
 			{#if distance}
-				<div class="text-sm">
+				<div class="text-sm text-neutral-600">
 					<p>Distance: {distance} miles</p>
 					<p>Duration: {duration} minutes</p>
 				</div>
 			{:else}
-				<Button
-					outline
-					color="alternative"
-					size="sm"
-					on:click={getHowFarAwayIsLocation}
-					class="h-11 w-full"
-				>
+				<Button color="secondary" size="sm" on:click={getHowFarAwayIsLocation} class="w-full">
 					{distanceLoading ? 'Loading...' : 'How far away is it?'}
 				</Button>
 			{/if}
 			{#if user}
-				<Button disabled={isInItinerary} on:click={addToItinerary} class="h-11 w-full">
-					{isInItinerary ? 'Added' : 'Add to Itinerary'}
+				<Button color="accent" disabled={isInItinerary} on:click={addToItinerary} class="w-full">
+					{isInItinerary ? 'Added to Itinerary' : 'Add to Itinerary'}
 				</Button>
 			{/if}
 		</div>

@@ -79,33 +79,35 @@
 	}
 </script>
 
-<div class="container mx-auto px-4 py-8">
-	<Card class="mx-auto mb-4 max-w-3xl">
+<div class="container mx-auto bg-secondary-50 px-4 py-8">
+	<Card class="mx-auto mb-4 max-w-3xl bg-white shadow-lg">
 		<form on:submit|preventDefault={saveChanges} class="space-y-6">
-			<Heading tag="h1" class="mb-6 text-center text-2xl font-bold md:text-3xl"
+			<Heading tag="h1" class="mb-6 text-center text-2xl font-bold text-primary-700 md:text-3xl"
 				>Edit Itinerary</Heading
 			>
 
 			<div>
-				<Label for="name" class="mb-2 block">Itinerary Name</Label>
+				<Label for="name" class="mb-2 block text-neutral-700">Itinerary Name</Label>
 				<Input id="name" bind:value={name} required class="w-full" />
 			</div>
 
 			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 				<div>
-					<Label for="startDate" class="mb-2 block">Start Date</Label>
+					<Label for="startDate" class="mb-2 block text-neutral-700">Start Date</Label>
 					<Input id="startDate" type="date" bind:value={startDate} required class="w-full" />
 				</div>
 				<div>
-					<Label for="endDate" class="mb-2 block">End Date</Label>
+					<Label for="endDate" class="mb-2 block text-neutral-700">End Date</Label>
 					<Input id="endDate" type="date" bind:value={endDate} required class="w-full" />
 				</div>
 			</div>
 
 			<div>
-				<Heading tag="h2" class="mb-4 text-xl font-semibold md:text-2xl">Locations</Heading>
+				<Heading tag="h2" class="mb-4 text-xl font-semibold text-primary-600 md:text-2xl"
+					>Locations</Heading
+				>
 				{#if items.length === 0}
-					<P class="text-center text-gray-500">No locations added to this itinerary yet.</P>
+					<P class="text-center text-neutral-500">No locations added to this itinerary yet.</P>
 				{:else}
 					<section
 						use:dndzone={{ items }}
@@ -115,11 +117,11 @@
 					>
 						{#each items as item (item.id)}
 							<div animate:flip={{ duration: 200 }}>
-								<Card class="w-full max-w-lg p-4">
+								<Card class="w-full max-w-lg bg-secondary-100 p-4">
 									<div
 										class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
 									>
-										<span class="text-lg font-medium">{item.location.name}</span>
+										<span class="text-lg font-medium text-primary-700">{item.location.name}</span>
 										<div
 											class="flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-x-2 sm:space-y-0"
 										>
@@ -131,7 +133,7 @@
 													class="w-24 sm:w-32"
 													step="900"
 												/>
-												<span class="text-gray-500">to</span>
+												<span class="text-neutral-500">to</span>
 												<Input
 													type="time"
 													value={item.end_time}
@@ -158,10 +160,10 @@
 			</div>
 
 			<div class="flex flex-col justify-end space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
-				<Button color="alternative" href="/itineraries/{data.itinerary.id}" class="w-full sm:w-auto"
+				<Button color="secondary" href="/itineraries/{data.itinerary.id}" class="w-full sm:w-auto"
 					>Cancel</Button
 				>
-				<Button type="submit" class="w-full sm:w-auto">Save Changes</Button>
+				<Button type="submit" color="primary" class="w-full sm:w-auto">Save Changes</Button>
 			</div>
 		</form>
 	</Card>
