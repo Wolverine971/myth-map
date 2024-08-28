@@ -7,6 +7,7 @@
 	import QRCode from 'qrcode';
 	import { onMount } from 'svelte';
 	import { notifications } from '$lib/components/shared/notifications';
+	import SendInvites from '$lib/components/itinerary/SendInvites.svelte';
 
 	export let data: PageData;
 
@@ -102,6 +103,13 @@
 						<Button href="/itineraries/{data.itinerary.id}/edit" color="primary" class="w-full"
 							>Edit Itinerary</Button
 						>
+						<SendInvites
+							itineraryName={data.itinerary.name}
+							itineraryId={data.itinerary.id}
+							endDate={data.itinerary.end_date}
+							startDate={data.itinerary.start_date}
+							places={data.itinerary.items}
+						/>
 					</div>
 				</Card>
 			</div>
