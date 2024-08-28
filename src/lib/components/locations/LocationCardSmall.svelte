@@ -91,8 +91,11 @@
 	{size}
 	class="mx-auto flex max-w-md flex-col gap-4 bg-white p-4 shadow-md transition-shadow duration-300 hover:shadow-lg sm:flex-row sm:gap-2 sm:p-6"
 >
-	<div style={innerWidth > 500 ? 'width: 50%;' : ''} class="flex flex-col items-center">
-		<img src="/map/{getLocationIcon(name)}.png" alt="" class="mb-3 w-full object-contain sm:w-48" />
+	<div
+		style={innerWidth >= 640 ? 'width: 50%;' : 'width: 100%;'}
+		class="flex flex-col items-center"
+	>
+		<img src="/map/{getLocationIcon(name)}.png" alt="" class="mb-3 w-full object-contain" />
 
 		{#if tags?.length}
 			<details class="mb-3 w-full sm:hidden">
@@ -123,8 +126,14 @@
 		{/if}
 	</div>
 
-	<div class="flex flex-grow flex-col">
-		<h5 class="mb-2 text-xl font-bold text-primary-700">{name}</h5>
+	<div class="flex min-w-0 flex-grow flex-col">
+		<h5
+			title={name}
+			class="mb-2 overflow-hidden text-ellipsis whitespace-nowrap text-lg font-bold text-primary-700"
+		>
+			{name}
+		</h5>
+
 		<p class="mb-3 text-sm text-neutral-600">
 			<span class="hidden sm:inline">{addressPart1},<br /></span>
 			{trimmedAddress}

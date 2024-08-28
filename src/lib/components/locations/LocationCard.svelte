@@ -89,7 +89,13 @@
 <Card padding="none" class="overflow-hidden transition-shadow duration-300 hover:shadow-lg">
 	<img src="/map/{getLocationIcon(name)}.png" alt="" class="h-48 w-full object-cover" />
 	<div class="p-4">
-		<h3 class="mb-2 text-xl font-bold text-primary-700">{name}</h3>
+		<h3
+			title={name}
+			class="mb-2 overflow-hidden text-ellipsis whitespace-nowrap text-nowrap text-lg font-bold text-primary-700"
+		>
+			{name}
+		</h3>
+
 		<p class="mb-3 text-sm text-neutral-600">
 			{addressPart2Joined}
 		</p>

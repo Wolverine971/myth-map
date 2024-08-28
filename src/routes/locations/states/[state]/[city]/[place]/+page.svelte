@@ -97,44 +97,50 @@
 		{#if data.nearbyLocations}
 			<Heading tag="h2" class="mb-6 text-4xl">Nearby Family Friendly Activities</Heading>
 
-			<div class="flex flex-col gap-4 md:flex-row">
-				<div class="flex-1">
-					<h3 class="mb-4 text-2xl">Places to Eat</h3>
+			<div class="grid grid-cols-2 gap-4 lg:gap-8">
+				<!-- Places to Eat Section -->
+				<div class="flex flex-col">
+					<h3 class="mb-4 text-2xl font-semibold text-gray-800">Places to Eat</h3>
 					{#if placesToEat.length === 0}
-						<p>No places to eat found</p>
+						<p class="text-gray-600">No places to eat found</p>
 					{:else}
-						{#each placesToEat as location}
-							<LocationCardSmall
-								name={location.name}
-								coords={{ lat: location.lat, lng: location.lng }}
-								address={`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}, ${location.city}, ${location.state} ${location.zip_code}`}
-								website={location.website}
-								tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
-								{location}
-								user={data.user}
-								{innerWidth}
-							/>
-						{/each}
+						<div class="space-y-4">
+							{#each placesToEat as location}
+								<LocationCardSmall
+									name={location.name}
+									coords={{ lat: location.lat, lng: location.lng }}
+									address={`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}, ${location.city}, ${location.state} ${location.zip_code}`}
+									website={location.website}
+									tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
+									{location}
+									user={data.user}
+									{innerWidth}
+								/>
+							{/each}
+						</div>
 					{/if}
 				</div>
 
-				<div class="flex-1">
-					<h3 class="mb-4 text-2xl">Activities</h3>
+				<!-- Activities Section -->
+				<div class="flex flex-col">
+					<h3 class="mb-4 text-2xl font-semibold text-gray-800">Activities</h3>
 					{#if activities.length === 0}
-						<p>No activities found</p>
+						<p class="text-gray-600">No activities found</p>
 					{:else}
-						{#each activities as location}
-							<LocationCardSmall
-								name={location.name}
-								coords={{ lat: location.lat, lng: location.lng }}
-								address={`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}, ${location.city}, ${location.state} ${location.zip_code}`}
-								website={location.website}
-								tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
-								{location}
-								user={data.user}
-								{innerWidth}
-							/>
-						{/each}
+						<div class="space-y-4">
+							{#each activities as location}
+								<LocationCardSmall
+									name={location.name}
+									coords={{ lat: location.lat, lng: location.lng }}
+									address={`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}, ${location.city}, ${location.state} ${location.zip_code}`}
+									website={location.website}
+									tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
+									{location}
+									user={data.user}
+									{innerWidth}
+								/>
+							{/each}
+						</div>
 					{/if}
 				</div>
 			</div>
@@ -145,13 +151,13 @@
 <style lang="scss">
 	.preview {
 		:global(h1) {
-			@apply mb-4 text-4xl;
+			@apply mb-4 text-4xl font-bold text-gray-900;
 		}
 		:global(h2) {
-			@apply mb-3 text-3xl;
+			@apply mb-3 text-3xl font-semibold text-gray-800;
 		}
 		:global(p) {
-			@apply mb-4;
+			@apply mb-4 text-gray-600;
 		}
 	}
 </style>

@@ -51,7 +51,7 @@
 {/if}
 <div style="display: flex; flex-direction: column; width: 100%; gap: 0.2rem; margin-top: 1rem;">
 	{#if cityMap}
-		<ul class="ul-wrap">
+		<ul class="grid grid-cols-2 gap-4 lg:gap-8">
 			{#each Object.keys(cityMap) as city, index}
 				{#each data?.locations.filter((l) => l.city === city) as location}
 					<li>
@@ -96,12 +96,12 @@
 		height: 500px;
 		width: 100%;
 	}
-	.ul-wrap {
+	/* .ul-wrap {
 		display: flex;
 		flex-wrap: wrap;
 		width: 100%;
 		align-items: center;
 		justify-content: center;
 		gap: 1rem;
-	}
+	} */
 </style>

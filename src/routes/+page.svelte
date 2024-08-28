@@ -132,7 +132,7 @@
 
 			<Tabs tabStyle="underline">
 				<TabItem open title="Gallery View" on:click={() => (selectedTab = 'gallery')}>
-					<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3" style="width: 100%;">
+					<div class="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4" style="width: 100%;">
 						{#each isLoading ? Array(6) : shownLocations as location (Math.random())}
 							{#if isLoading}
 								<SkeletonCard />
