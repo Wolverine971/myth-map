@@ -180,7 +180,7 @@
 		</div>
 
 		{#if showReplies}
-			<Comments parentId={comment.id} parentType="comment" depth={depth + 1} {displayName} {user} />
+			<Comments parentId={comment.id} parentType="comment" depth={depth + 1} {displayName} {user} {innerWidth} />
 		{/if}
 	{/if}
 
@@ -188,10 +188,11 @@
 		<div class="reply-form">
 			<Textarea
 				bind:value={newCommentContent}
+				disabled={!user}
 				rows={3}
-				placeholder={`Write a ${displayName.toLowerCase()}...`}
+				placeholder={user ? `Write a ${displayName.toLowerCase()}...` : 'Register to write a comment...'}
 			/>
-			<Button on:click={handleSubmitComment}>Submit {displayName}</Button>
+			<Button on:click={handleSubmitComment} disabled={!user}>Submit {displayName}</Button>
 		</div>
 	{/if}
 </div>
