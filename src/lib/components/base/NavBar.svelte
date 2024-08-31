@@ -133,9 +133,9 @@
 							>about</DropdownItem
 						>
 
-						<DropdownItem href="/contact" class="flex items-center text-primary-700"
+						<!-- <DropdownItem href="/contact" class="flex items-center text-primary-700"
 							>contact
-						</DropdownItem>
+						</DropdownItem> -->
 					</Dropdown>
 				</div>
 			</div>
@@ -151,9 +151,9 @@
 				<NavLi href="/about" class="transition-all duration-300 hover:text-primary-600"
 					>About us</NavLi
 				>
-				<NavLi href="/contact" class="transition-all duration-300 hover:text-primary-600"
+				<!-- <NavLi href="/contact" class="transition-all duration-300 hover:text-primary-600"
 					>Contact</NavLi
-				>
+				> -->
 			</NavUl>
 		</Navbar>
 	</div>
