@@ -3,9 +3,13 @@
 	import BlogPageHead from '$lib/components/blog/BlogPageHead.svelte';
 	import type { PageData } from './$types';
 	import ArrowRightIcon from '$lib/components/icons/arrowRightIcon.svelte';
+	import { getLocationIcon } from '../../utils/locationPhotos';
 
 	export let data: PageData;
 	let innerWidth = 0;
+	console.log(data);
+	// const icon = getLocationIcon(data.location?.title);
+	// const iconUrl = `/map/${icon}.png`;
 </script>
 
 <svelte:window bind:innerWidth />
@@ -18,7 +22,7 @@
 	slug={'blog/locations'}
 />
 
-<div class="container mx-auto px-4 py-8">
+<div class="container mx-auto px-2 py-8 md:px-4">
 	<Heading tag="h1" customSize="text-4xl md:text-5xl font-extrabold mb-6">Locations</Heading>
 	<hr class="mb-8" />
 
@@ -27,19 +31,26 @@
 	<div class="location-list">
 		{#each data.locations as location}
 			<div class="location-item">
-				<h3 class="mb-2 text-2xl font-bold text-gray-900 dark:text-white">{location?.title}</h3>
-				{#if location.description}
-					<P class="mb-2 text-gray-700 dark:text-gray-400">{location.description}</P>
-				{/if}
-				<P class="mb-2">{location.city}</P>
+				<div>
+					<h3 class="mb-2 text-2xl font-bold text-gray-900 dark:text-white">{location?.title}</h3>
+					{#if location.description}
+						<P class="mb-2 text-gray-700 dark:text-gray-400">{location.description}</P>
+					{/if}
+					<P class="mb-2">{location.city}</P>
 
-				<a
-					href={`locations/states/${location.state}/${location.city}/${location.loc}`}
-					class="read-more-link"
-				>
-					Read More
-					<ArrowRightIcon className="ml-1 h-4 w-4" />
-				</a>
+					<a
+						href={`locations/states/${location.state}/${location.city}/${location.loc}`}
+						class="read-more-link"
+					>
+						More Details
+						<ArrowRightIcon className="ml-1 h-4 w-4" />
+					</a>
+				</div>
+				<img
+					style="max-width: 150px;"
+					src={`/map/${getLocationIcon(location?.title)}.png`}
+					alt="{location?.title} icon"
+				/>
 			</div>
 		{/each}
 	</div>
@@ -59,6 +70,9 @@
 		padding-left: 1rem;
 		border-left: 3px solid #e2e8f0;
 		transition: border-color 0.3s ease;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 
 		&:hover {
 			border-left-color: #3b82f6;

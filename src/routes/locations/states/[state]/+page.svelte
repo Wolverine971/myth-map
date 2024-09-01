@@ -31,7 +31,7 @@
 
 <svelte:window bind:innerWidth />
 
-<div class="container mx-auto px-4 py-8">
+<div class="container mx-auto px-2 py-8 md:px-4">
 	<Heading tag="h1" customSize="text-4xl md:text-5xl font-extrabold mb-8"
 		>{stateName?.toLocaleUpperCase()}</Heading
 	>

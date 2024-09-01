@@ -90,7 +90,7 @@
 <Card
 	horizontal={true}
 	{size}
-	class="mx-auto flex max-w-md flex-col gap-4 bg-white p-4 shadow-md transition-shadow duration-300 hover:shadow-lg sm:flex-row sm:gap-2 sm:p-6"
+	class="mx-auto flex max-w-md flex-col bg-white p-4 shadow-md transition-shadow duration-300 hover:shadow-lg sm:flex-row sm:gap-2 sm:p-6 md:gap-4"
 >
 	<div
 		style={innerWidth >= 640 ? 'width: 50%;' : 'width: 100%;'}
@@ -128,10 +128,7 @@
 	</div>
 
 	<div class="flex min-w-0 flex-grow flex-col">
-		<h5
-			title={name}
-			class="mb-2 overflow-hidden text-ellipsis whitespace-nowrap text-lg font-bold text-primary-700"
-		>
+		<h5 title={name} class="mb-2 text-wrap text-lg font-bold text-primary-700">
 			{name}
 		</h5>
 
@@ -141,24 +138,25 @@
 		</p>
 
 		<div class="mt-auto flex flex-col gap-2">
-			<a href={website} target="_blank" rel="noopener noreferrer">
-				<Button
-					color="primary"
-					size="sm"
-					class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
-					>Visit Website</Button
-				>
-			</a>
 			<a
 				href={`/locations/states/${location.state}/${location.city}/${name}`.replace(/\s/g, '-')}
 				class="w-full"
 			>
 				<Button
-					color=""
+					color="primary"
 					size="sm"
 					class="w-full hover:outline hover:outline-2 hover:outline-primary-600">Details</Button
 				>
 			</a>
+			<a href={website} target="_blank" rel="noopener noreferrer">
+				<Button
+					color="alternative"
+					size="sm"
+					class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
+					>Visit Website</Button
+				>
+			</a>
+
 			{#if distance}
 				<div class="text-sm text-neutral-600">
 					<p>Distance: {distance} miles</p>
@@ -166,7 +164,7 @@
 				</div>
 			{:else}
 				<Button
-					color=""
+					color="alternative"
 					size="sm"
 					on:click={getHowFarAwayIsLocation}
 					class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
@@ -176,7 +174,7 @@
 			{/if}
 			{#if user}
 				<Button
-					color=""
+					color="alternative"
 					disabled={isInItinerary}
 					on:click={addToItinerary}
 					class="w-full hover:outline hover:outline-2 hover:outline-primary-600"

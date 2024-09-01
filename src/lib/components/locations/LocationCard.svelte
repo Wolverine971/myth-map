@@ -89,11 +89,8 @@
 
 <Card padding="none" class="overflow-hidden transition-shadow duration-300 hover:shadow-lg">
 	<img src="/map/{getLocationIcon(name)}.png" alt="" class="h-48 w-full object-cover" />
-	<div class="p-4">
-		<h3
-			title={name}
-			class="mb-2 overflow-hidden text-ellipsis whitespace-nowrap text-nowrap text-lg font-bold text-primary-700"
-		>
+	<div class="px-4 md:p-4">
+		<h3 title={name} class="mb-2 whitespace-nowrap text-wrap text-lg font-bold text-primary-700">
 			{name}
 		</h3>
 
@@ -116,24 +113,25 @@
 		{/if}
 
 		<div class="mt-4 flex flex-col gap-2">
-			<a href={website} target="_blank" rel="noopener noreferrer">
-				<Button
-					color="primary"
-					size="sm"
-					class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
-					>Visit Website</Button
-				>
-			</a>
 			<a
 				href={`/locations/states/${location.state}/${location.city}/${name}`.replace(/\s/g, '-')}
 				class="w-full"
 			>
 				<Button
-					color="alternative"
+					color="primary"
 					size="sm"
 					class="w-full hover:outline hover:outline-2 hover:outline-primary-600">Details</Button
 				>
 			</a>
+			<a href={website} target="_blank" rel="noopener noreferrer">
+				<Button
+					color="alternative"
+					size="sm"
+					class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
+					>Visit Website</Button
+				>
+			</a>
+
 			{#if distance}
 				<div class="text-sm text-neutral-600">
 					<p>Distance: {distance} miles</p>

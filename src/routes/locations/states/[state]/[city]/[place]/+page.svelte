@@ -5,11 +5,11 @@
 	import { Heading, A } from 'flowbite-svelte';
 	import { notifications } from '$lib/components/shared/notifications';
 	import { getLocationIcon } from '../../../../../../utils/locationPhotos';
-	import BlogPageHead from '$lib/components/blog/BlogPageHead.svelte';
 	import ArticleTitle from '$lib/components/blog/ArticleTitle.svelte';
 	import ArticleSubTitle from '$lib/components/blog/ArticleSubTitle.svelte';
 	import LocationCardSmall from '$lib/components/locations/LocationCardSmall.svelte';
 	import Comments from '$lib/components/comments/Comments.svelte';
+	import LocationPageHead from '$lib/components/blog/LocationPageHead.svelte';
 
 	export let data: PageData;
 
@@ -61,7 +61,11 @@
 
 {#if data.blog}
 	<article itemscope itemtype="https://schema.org/BlogPosting" class="blog">
-		<BlogPageHead data={data.blog} slug={`blog/locations/${data?.blog?.loc}`} />
+		<LocationPageHead
+			blogContent={data.blog}
+			slug={`blog/locations/${data?.blog?.loc}`}
+			locationData={data.locationData}
+		/>
 
 		<div class="mb-6 flex items-center gap-8">
 			<img

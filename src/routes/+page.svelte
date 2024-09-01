@@ -101,7 +101,7 @@
 <svelte:window bind:innerWidth />
 
 <div class="min-h-screen bg-secondary-100" style="width: 100%;">
-	<div class="container mx-auto px-4 py-8">
+	<div class="container mx-auto px-2 py-8 md:px-4">
 		{#if isDesktop}
 			<h1 class="mb-4 text-4xl font-extrabold text-primary-500 md:text-5xl">
 				Welcome to Tiny Tribe Adventures
@@ -130,41 +130,59 @@
 				/>
 			{/if}
 
-			<Tabs tabStyle="underline">
-				<TabItem open title="Gallery View" on:click={() => (selectedTab = 'gallery')}>
-					<div class="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4" style="width: 100%;">
-						{#each isLoading ? Array(6) : shownLocations as location (Math.random())}
-							{#if isLoading}
-								<SkeletonCard />
-							{:else}
-								<div in:fade={{ duration: 300 }}>
-									<LocationCard
-										name={location.name}
-										coords={{ lat: location.lat, lng: location.lng }}
-										address={`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}, ${location.city}, ${location.state} ${location.zip_code}`}
-										website={location.website}
-										tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
-										{location}
-										user={data?.user}
-										{innerWidth}
-									/>
-								</div>
-							{/if}
-						{/each}
-					</div>
-				</TabItem>
-				<TabItem title="Map View" on:click={() => (selectedTab = 'map')}>
-					<div class="h-[500px] min-h-[430px]">
-						<Map
-							locations={data.locations}
-							{shownLocations}
-							currentLocation={userLocation}
-							{selectedState}
-							{selectedCity}
-						/>
-					</div>
-				</TabItem>
-			</Tabs>
+			<div class="tab-sections">
+				<Tabs tabStyle="underline">
+					<TabItem open title="Gallery View" on:click={() => (selectedTab = 'gallery')}>
+						<div class="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4" style="width: 100%;">
+							{#each isLoading ? Array(6) : shownLocations as location (Math.random())}
+								{#if isLoading}
+									<SkeletonCard />
+								{:else}
+									<div in:fade={{ duration: 300 }}>
+										<LocationCard
+											name={location.name}
+											coords={{ lat: location.lat, lng: location.lng }}
+											address={`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}, ${location.city}, ${location.state} ${location.zip_code}`}
+											website={location.website}
+											tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
+											{location}
+											user={data?.user}
+											{innerWidth}
+										/>
+									</div>
+								{/if}
+							{/each}
+						</div>
+					</TabItem>
+					<TabItem title="Map View" on:click={() => (selectedTab = 'map')}>
+						<div class="h-[500px] min-h-[430px]">
+							<Map
+								locations={data.locations}
+								{shownLocations}
+								currentLocation={userLocation}
+								{selectedState}
+								{selectedCity}
+							/>
+						</div>
+					</TabItem>
+				</Tabs>
+			</div>
 		</div>
 	</div>
 </div>
+
+<style lang="scss">
+	.tab-sections > div {
+		// background-color: transparent !important;
+		// padding: 0 !important;
+	}
+	// .tab-sections < div {
+	// 	background-color: transparent !important;
+	// }
+
+	.tab-sections,
+	div {
+		background-color: transparent !important;
+		padding: 0;
+	}
+</style>
