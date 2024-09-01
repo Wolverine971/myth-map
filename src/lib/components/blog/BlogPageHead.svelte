@@ -56,8 +56,6 @@
 	<meta property="og:url" content={`https://tinytribeadventures.com/${slug}`} />
 	<meta property="og:image" content={`https://tinytribeadventures.com/map/${icon}.png`} />
 
-	<!-- <meta name="twitter:site" content="@9takesdotcom" /> -->
-
 	<meta name="twitter:description" content={description || title} />
 	<meta name="twitter:card" content="summary" />
 	<meta name="twitter:creator" content="@djwayne3" />

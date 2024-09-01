@@ -83,7 +83,7 @@
 			name: 'Tiny Tribe Adventures',
 			logo: {
 				'@type': 'ImageObject',
-				url: 'https://tinytribeadventures.com/brand/darkRubix.png'
+				url: 'https://tinytribeadventures.com/map/mythmap.png'
 			}
 		},
 		datePublished: blogContent.created_at,

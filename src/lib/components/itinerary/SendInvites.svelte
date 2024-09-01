@@ -8,11 +8,13 @@
 	export let startDate: string;
 	export let endDate: string;
 	export let places: any;
+	export let user: any;
 
 	let emails: string[] = [''];
 	let isModalOpen = false;
 	let isLoading = false;
 	let result: { success: boolean; message: string } | null = null;
+	const allowedEmails = ['djwayne35@gmail.com', 'djwayne3@gmail.com', 'zachary.diehl@gmail.com '];
 
 	const dispatch = createEventDispatcher();
 
@@ -201,7 +203,7 @@
 
 		<div class="flex justify-end space-x-2">
 			<Button color="alternative" on:click={closeModal}>Cancel</Button>
-			<Button type="submit" disabled={isLoading}>
+			<Button type="submit" disabled={isLoading || !allowedEmails.includes(user.email)}>
 				{#if isLoading}
 					Sending...
 				{:else}

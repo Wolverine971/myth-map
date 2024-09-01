@@ -141,6 +141,7 @@
 							endDate={data.itinerary.end_date}
 							startDate={data.itinerary.start_date}
 							places={data.itinerary.items}
+							user={data.user}
 						/>
 						<Button color="primary" on:click={shareItinerary}>Share</Button>
 					</div>
