@@ -108,7 +108,7 @@
 			</h1>
 		{/if}
 
-		<h2 class="mb-6 text-2xl font-bold text-neutral-700">
+		<h2 class="mb-6 p-1 text-2xl font-bold text-neutral-700">
 			Your one stop shop for planning family friendly activities!
 		</h2>
 
@@ -131,7 +131,7 @@
 			{/if}
 
 			<div class="tab-sections">
-				<Tabs tabStyle="underline">
+				<Tabs tabStyle="underline" contentClass="py-4 bg-transparent">
 					<TabItem open title="Gallery View" on:click={() => (selectedTab = 'gallery')}>
 						<div class="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4" style="width: 100%;">
 							{#each isLoading ? Array(6) : shownLocations as location (Math.random())}
@@ -172,17 +172,16 @@
 </div>
 
 <style lang="scss">
-	.tab-sections > div {
-		// background-color: transparent !important;
-		// padding: 0 !important;
-	}
-	// .tab-sections < div {
-	// 	background-color: transparent !important;
-	// }
-
 	.tab-sections,
 	div {
-		background-color: transparent !important;
-		padding: 0;
+		border-radius: 5px;
+	}
+	@media screen and (max-width: 500px) {
+		.tab-sections,
+		div {
+			background-color: transparent !important;
+			padding: 0;
+			border-radius: 5px;
+		}
 	}
 </style>

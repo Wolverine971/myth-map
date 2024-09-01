@@ -109,5 +109,6 @@ main {
 @media screen and (max-width: 500px) {
 	main {
 		@apply mx-1;
+		@apply px-1;
 	}
 }
