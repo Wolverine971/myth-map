@@ -39,6 +39,35 @@
 			day: 'numeric'
 		});
 	}
+
+	function shareItinerary() {
+		if (navigator.share) {
+			navigator
+				.share({
+					title: 'Check out my itinerary!',
+					text: 'I created this awesome itinerary. Take a look!',
+					url: window.location.href
+				})
+				.then(() => {
+					console.log('Itinerary shared successfully');
+				})
+				.catch((error) => {
+					console.log('Error sharing itinerary:', error);
+				});
+		} else {
+			// Fallback for browsers that don't support the Web Share API
+			const shareUrl = window.location.href;
+			navigator.clipboard
+				.writeText(shareUrl)
+				.then(() => {
+					alert('Itinerary link copied to clipboard!');
+				})
+				.catch((err) => {
+					console.error('Failed to copy: ', err);
+				});
+		}
+	}
+	console.log(data);
 </script>
 
 <svelte:window bind:innerWidth />
@@ -46,7 +75,7 @@
 <div class="container mx-auto max-w-7xl bg-secondary-50 px-4 py-8">
 	<div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
 		<div class="lg:col-span-2">
-			<Card class="mb-8 max-w-lg bg-white shadow-lg">
+			<Card class="mb-8 max-w-xl bg-white shadow-lg">
 				<div class="mb-6 flex flex-col items-center justify-between md:flex-row">
 					<Heading
 						tag="h1"
@@ -69,7 +98,7 @@
 				</div>
 			</Card>
 
-			<Card class="mb-8 max-w-lg bg-white shadow-lg">
+			<Card class="mb-8 max-w-xl bg-white shadow-lg">
 				<Heading tag="h2" class="mb-6 text-2xl font-semibold text-primary-600">Locations</Heading>
 
 				{#if data.itinerary.items.length === 0}
@@ -100,8 +129,11 @@
 						>Quick Actions</Heading
 					>
 					<div class="space-y-4">
-						<Button href="/itineraries/{data.itinerary.id}/edit" color="primary" class="w-full"
-							>Edit Itinerary</Button
+						<Button
+							href="/itineraries/{data.itinerary.id}/edit"
+							color="primary"
+							class="w-full"
+							disabled={data.itinerary.user_id !== data.user?.id}>Edit Itinerary</Button
 						>
 						<SendInvites
 							itineraryName={data.itinerary.name}
@@ -110,6 +142,7 @@
 							startDate={data.itinerary.start_date}
 							places={data.itinerary.items}
 						/>
+						<Button color="primary" on:click={shareItinerary}>Share</Button>
 					</div>
 				</Card>
 			</div>

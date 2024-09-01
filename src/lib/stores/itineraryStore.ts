@@ -22,13 +22,15 @@ function createItineraryStore() {
 			itineraryId,
 			name,
 			startTime,
-			endTime
+			endTime,
+			userId
 		}: {
 			location: Location;
 			itineraryId?: string;
 			name?: string;
 			startTime?: string;
 			endTime?: string;
+			userId?: string;
 		}) => {
 			let currentItineraryId = itineraryId;
 
@@ -40,7 +42,7 @@ function createItineraryStore() {
 						name: `${name} Itinerary`,
 						start_date: today,
 						end_date: today,
-						user_id: (await supabase.auth.getUser()).data?.user?.id,
+						user_id: userId,
 						tracking_link: `https://tinytribeadventures.com/itineraries/${crypto.randomUUID()}`
 					})
 					.select();
@@ -151,6 +153,7 @@ function createItineraryStore() {
 			startDate?: string;
 			endDate?: string;
 			items?: ItineraryItem[];
+			// user
 		}) => {
 			const { id, name, startDate, endDate, items } = updates;
 

@@ -24,8 +24,6 @@
 		emails = emails.filter((_, i) => i !== index);
 	}
 
-	console.log(places);
-
 	async function sendInvites() {
 		isLoading = true;
 		result = null;
@@ -207,7 +205,7 @@
 				{#if isLoading}
 					Sending...
 				{:else}
-					Send Invites
+					Send
 				{/if}
 			</Button>
 		</div>

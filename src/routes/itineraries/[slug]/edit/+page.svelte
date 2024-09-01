@@ -98,7 +98,14 @@
 				</div>
 				<div>
 					<Label for="endDate" class="mb-2 block text-neutral-700">End Date</Label>
-					<Input id="endDate" type="date" bind:value={endDate} required class="w-full" />
+					<Input
+						id="endDate"
+						type="date"
+						bind:value={endDate}
+						required
+						class="w-full"
+						min={startDate}
+					/>
 				</div>
 			</div>
 

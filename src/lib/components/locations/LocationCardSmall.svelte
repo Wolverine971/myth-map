@@ -81,7 +81,8 @@
 		currentItinerary.addItem({
 			location: newLocation,
 			itineraryId: $currentItinerary?.id,
-			name: user?.email ?? ''
+			name: user?.email ?? '',
+			userId: user?.id
 		});
 	}
 </script>

@@ -6,6 +6,7 @@
 	import '../app.css';
 	import { Button } from 'flowbite-svelte';
 	import type { LayoutData } from './$types';
+	import { page } from '$app/stores';
 
 	export let data: LayoutData;
 
@@ -19,34 +20,6 @@
 
 	let { supabase, session } = data;
 	$: ({ supabase, session } = data);
-
-	function shareItinerary() {
-		if (navigator.share) {
-			navigator
-				.share({
-					title: 'Check out my itinerary!',
-					text: 'I created this awesome itinerary. Take a look!',
-					url: window.location.href
-				})
-				.then(() => {
-					console.log('Itinerary shared successfully');
-				})
-				.catch((error) => {
-					console.log('Error sharing itinerary:', error);
-				});
-		} else {
-			// Fallback for browsers that don't support the Web Share API
-			const shareUrl = window.location.href;
-			navigator.clipboard
-				.writeText(shareUrl)
-				.then(() => {
-					alert('Itinerary link copied to clipboard!');
-				})
-				.catch((err) => {
-					console.error('Failed to copy: ', err);
-				});
-		}
-	}
 </script>
 
 <svelte:window bind:innerWidth />
@@ -61,7 +34,7 @@
 	<slot></slot>
 </main>
 
-{#if hasItinerary}
+{#if hasItinerary && !$page.route.id?.includes('itineraries')}
 	<div
 		class="fixed bottom-0 left-0 right-0 flex h-20 items-center justify-center gap-2 bg-gray-100 p-2 shadow-md"
 	>
@@ -75,10 +48,7 @@
 			class="w-1/4"
 			on:click={() => (isItineraryModalOpen = true)}
 		>
-			Edit Itinerary
-		</Button>
-		<Button outline color="primary" size="sm" class="w-1/4" on:click={shareItinerary}>
-			Share Itinerary
+			Edit Current Itinerary
 		</Button>
 	</div>
 {/if}

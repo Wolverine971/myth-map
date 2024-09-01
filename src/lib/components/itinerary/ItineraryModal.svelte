@@ -223,6 +223,7 @@
 					bind:value={endDate}
 					on:change={handleDateChange}
 					format="yyyy-MM-dd"
+					min={startDate ? startDate : ''}
 					required
 					class="w-full"
 				/>
@@ -254,6 +255,7 @@
 								value={item.displayStartTime}
 								on:input={(e) => handleTimeInput(item, 'start', e.target.value)}
 								label="Start"
+								min={ensureTimeNotBeforeCurrent(item.displayStartTime)}
 								step="900"
 							/>
 							<Input
