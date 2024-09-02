@@ -7,6 +7,7 @@
 	import { getCurrentLocation } from '../../../utils/userLocation';
 	import { loadCityGeoJSON } from '../../../utils/geoDataLoader';
 	import type { Map, Popup, Marker, LngLatBounds } from 'mapbox-gl';
+	import { notifications } from '../shared/notifications';
 
 	export let locations: any[] = [];
 	export let shownLocations: any[] = [];
@@ -19,6 +20,7 @@
 	let popup: Popup;
 	let currentLocationMarker: Marker;
 	let mapboxgl: typeof import('mapbox-gl');
+	const audio = new Audio('/sounds/tic-toc-click.wav');
 
 	const key = Symbol();
 
@@ -447,6 +449,8 @@
 
 		document.getElementById(copyId).addEventListener('click', () => {
 			navigator.clipboard.writeText(address);
+			notifications.info('Address copied to clipboard');
+			audio.play();
 		});
 	}
 
