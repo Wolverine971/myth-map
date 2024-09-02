@@ -8,10 +8,12 @@ const getAllLocations = async () => {
 	if (error) {
 		console.log(error);
 	}
+	// go through approval process
+	// join locations and content_locations
 
-	return locations.map((location) => {
+	return locations.filter(l => l.published).map((location) => {
 		return {
-			loc: escapeXmlUrl(`https://tinytribeadventures.com/blog/locations/${location.loc}`),
+			loc: escapeXmlUrl(`https://tinytribeadventures.com/locations/states/locations/${location.loc}`),
 			lastmod: location.lastmod,
 			changefreq: 'weekly'
 		};

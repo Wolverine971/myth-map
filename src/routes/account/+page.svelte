@@ -33,6 +33,13 @@
 	};
 </script>
 
+{#if user.admin}
+	<div class="mx-auto flex w-full max-w-3xl p-4">
+		<A href="/admin/users" outline>
+			<Button outline>Manage Users</Button></A
+		>
+	</div>
+{/if}
 <div class="container mx-auto max-w-3xl p-4">
 	<h1 class="mb-6 text-center text-3xl font-bold md:text-left">My Account</h1>
 
@@ -57,11 +64,11 @@
 					</div>
 					<div class="mb-4">
 						<Label for="firstName" class="mb-2">First Name</Label>
-						<Input id="firstName" name="firstName" bind:value={firstName} required />
+						<Input id="firstName" name="firstName" bind:value={firstName} />
 					</div>
 					<div class="mb-4">
 						<Label for="lastName" class="mb-2">Last Name</Label>
-						<Input id="lastName" name="lastName" bind:value={lastName} required />
+						<Input id="lastName" name="lastName" bind:value={lastName} />
 					</div>
 					<div class="flex flex-col space-y-2 sm:flex-row sm:justify-end sm:space-x-4 sm:space-y-0">
 						<Button type="submit">Save Changes</Button>

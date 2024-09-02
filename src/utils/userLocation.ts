@@ -11,17 +11,10 @@ export const getCurrentLocation = async () => {
         console.log('Geolocation is not supported by your browser');
         return;
     }
-    // navigator.geolocation.getCurrentPosition(currentLocationSuccess, currentLocationError, options);
 
-
-    // var options = {
-    //     frequency: 3000, //<--- possible to add this parameter or similar?
-    //     enableHighAccuracy: true
-    // };
 
     navigator.geolocation.getCurrentPosition(currentLocationSuccess, currentLocationError, options);
 
-    // this.watchLocation = this.geolocation.watchPosition(options)
 };
 
 const currentLocationSuccess = async (pos) => {
