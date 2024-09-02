@@ -3,10 +3,13 @@
 	import NavBar from '$lib/components/base/NavBar.svelte';
 	import ItineraryModal from '$lib/components/itinerary/ItineraryModal.svelte';
 	import Toast from '$lib/components/shared/Toast.svelte';
+	import { currentLocation } from '$lib/stores/locationStore';
 	import '../app.css';
 	import { Button } from 'flowbite-svelte';
 	import type { LayoutData } from './$types';
 	import { page } from '$app/stores';
+	import { debounce } from '../utils/debounce';
+	import { onMount } from 'svelte';
 
 	export let data: LayoutData;
 
@@ -20,6 +23,34 @@
 
 	let { supabase, session } = data;
 	$: ({ supabase, session } = data);
+
+	onMount(() => {
+		setupLocationSubscription();
+	});
+
+	function setupLocationSubscription() {
+		const debouncedUpdate = debounce(async (value) => {
+			if (!value || !session?.user.id) return;
+			console.log('Updating location in database', value);
+
+			const { error: upsertError } = await supabase.from('user_last_known_locations').upsert({
+				updated_at: new Date(),
+				latitude: value.latitude,
+				longitude: value.longitude,
+				accuracy: value.accuracy,
+				heading: value.heading,
+				zip_code: null,
+				tracking_activated: true,
+				user_id: session.user.id
+			});
+
+			if (upsertError) {
+				console.error('Error updating location:', upsertError);
+			}
+		}, 5000); // 5000 ms debounce time
+
+		return currentLocation.subscribe(debouncedUpdate);
+	}
 </script>
 
 <svelte:window bind:innerWidth />

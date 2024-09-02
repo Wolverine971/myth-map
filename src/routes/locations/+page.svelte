@@ -7,9 +7,6 @@
 
 	export let data: PageData;
 	let innerWidth = 0;
-	console.log(data);
-	// const icon = getLocationIcon(data.location?.title);
-	// const iconUrl = `/map/${icon}.png`;
 </script>
 
 <svelte:window bind:innerWidth />

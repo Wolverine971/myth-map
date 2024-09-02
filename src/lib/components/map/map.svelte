@@ -15,6 +15,9 @@
 	export let selectedState: { name: string; abr: string } | null = null;
 	export let selectedCity: string | null = null;
 
+	let _selectedState;
+	let _selectedCity;
+
 	let mapContainer: HTMLElement;
 	let map: Map;
 	let popup: Popup;
@@ -216,6 +219,8 @@
 		const { abr: stateAbbr, name: stateName } = stateObj;
 		if (!stateAbbr || !map) return;
 
+		if (_selectedState && _selectedState.abr === stateAbbr) return;
+
 		try {
 			const stateGeoJSON = await fetch(
 				`https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/0/query?where=&text=${stateName}&objectIds=&time=&geometry=&geometryType=esriGeometryPolygon&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentsOnly=false&datumTransformation=&parameterValues=&rangeValues=&f=geojson`
@@ -227,6 +232,7 @@
 			if (selectedCity) return;
 
 			fitMapToBounds(stateGeoJSON);
+			_selectedState = stateObj;
 		} catch (error) {
 			console.error('Error loading state boundary:', error);
 		}
@@ -275,6 +281,8 @@
 	async function updateCityFilter(stateName: { abr: string; name: string }, cityName: string) {
 		if (!map) return;
 
+		if (_selectedCity && _selectedCity === cityName) return;
+
 		try {
 			const cityGeoJSON = await loadCityGeoJSON(
 				stateName.abr,
@@ -285,6 +293,7 @@
 
 			updateCityLayer(cityFeature);
 			zoomToLocation(cityFeature);
+			_selectedCity = cityName;
 		} catch (error) {
 			console.error('Error loading city GeoJSON:', error);
 		}

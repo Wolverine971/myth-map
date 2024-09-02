@@ -120,7 +120,9 @@
 	/>
 
 	{#each comments as comment (comment.id)}
+		<!-- parentId might not be good -->
 		<Comment
+			{parentId}
 			{comment}
 			depth={depth + 1}
 			displayName={replyDisplayName}

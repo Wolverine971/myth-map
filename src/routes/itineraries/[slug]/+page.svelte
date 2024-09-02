@@ -67,7 +67,6 @@
 				});
 		}
 	}
-	console.log(data);
 </script>
 
 <svelte:window bind:innerWidth />

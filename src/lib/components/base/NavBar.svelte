@@ -28,7 +28,6 @@
 		try {
 			const body = new FormData();
 			const response = await fetch('/account?/logout', { method: 'POST', body });
-			console.log('Logout response:', response);
 
 			/** @type {import('@sveltejs/kit').ActionResult} */
 			const result = deserialize(await response.text());
