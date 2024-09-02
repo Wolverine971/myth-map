@@ -1,13 +1,11 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { Select, Label, Button, Input } from 'flowbite-svelte';
-	import { marked } from 'marked';
+	import { Select, Label } from 'flowbite-svelte';
+	import EditBlogModal from '$lib/components/blog/EditBlogModal.svelte';
 
 	export let data: PageData;
-	let markdown = '';
-	let description = '';
-	let selected = null;
-	// const blogs = [];
+	let showModal = false;
+	let selectedBlog = null;
 	const blogs: any[] = data?.locationBlogs
 		? data?.locationBlogs.map((blog) => {
 				if (blog) {
@@ -18,71 +16,24 @@
 			})
 		: [];
 
-	const save = async () => {
-		// console.log(markdown);
-		// console.log(selected);
-
-		let body = new FormData();
-		body.append('markdown', markdown);
-		body.append('loc', selected.loc);
-		body.append('description', description);
-
-		const res = await fetch('?/save', {
-			method: 'POST',
-			body
-		});
-
-		if (res.ok) {
-			alert('Saved');
-		} else {
-			alert('Error');
+	const itemChanged = () => {
+		if (selectedBlog) {
+			showModal = true;
 		}
-	};
-	const itemChanged = (e) => {
-		markdown = selected?.content || '';
-		description = selected?.description || '';
 	};
 </script>
 
-{#if blogs.length}
-	<Label>
-		Select an option
-		<Select class="mt-2" items={blogs} bind:value={selected} on:change={itemChanged} />
-	</Label>
-{/if}
+<div class="container mx-auto p-4">
+	<h1 class="mb-4 text-2xl font-bold">Edit Blogs</h1>
 
-{#if selected}
-	<div>{selected?.title}</div>
+	{#if blogs.length}
+		<Label class="mb-4">
+			Select a blog to edit
+			<Select class="mt-2" items={blogs} bind:value={selectedBlog} on:change={itemChanged} />
+		</Label>
+	{:else}
+		<p>No blogs available.</p>
+	{/if}
 
-	<!-- <input type="text" bind:value={description} placeholder="Description" class=""/> -->
-	<Input type="text" id="description" bind:value={description} placeholder="Description" />
-
-	<textarea bind:value={markdown} placeholder="Enter markdown here" />
-
-	<!-- Convert the markdown to HTML and display it -->
-	<div class="preview">{@html marked(markdown)}</div>
-	<Button type="button" on:click={save}>Save</Button>
-{/if}
-
-<style lang="scss">
-	textarea,
-	.preview {
-		box-sizing: border-box;
-		display: block;
-		width: 100%;
-	}
-
-	textarea {
-		font-family: monospace, Roboto;
-		height: 500px;
-		border: none;
-		margin: 0;
-		padding: 1rem;
-	}
-
-	.preview {
-		height: 75%;
-		padding: 2rem;
-		border-top: solid 2px #888;
-	}
-</style>
+	<EditBlogModal bind:show={showModal} blog={selectedBlog} />
+</div>

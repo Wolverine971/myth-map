@@ -25,7 +25,7 @@
 
 	<p><strong>Last Modified</strong>: {blogContent.lastmod}</p>
 
-	<A href={`/blog/locations/${blogContent.loc}`}>Link</A>
+	<A href={`/locations/${blogContent.loc}`}>Link</A>
 
 	<details>
 		<summary class="accordion">More</summary>

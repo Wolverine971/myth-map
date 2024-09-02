@@ -45,7 +45,7 @@
 				<img src="/map/{icon.img || 'myth-map'}.png" alt={icon.name} width="50" />
 				<P>{icon.name}</P>
 				<div style="margin-top: auto;">
-					<A href="/blog/locations/{icon.name.split(' ').join('-')}">link</A>
+					<A href="/locations/{icon.name.split(' ').join('-')}">link</A>
 				</div>
 			</div>
 		{/each}
