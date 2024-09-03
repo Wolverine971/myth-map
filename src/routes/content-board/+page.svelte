@@ -21,6 +21,12 @@
 		'Needs Work'
 	];
 
+	// things to add
+
+	// open and closing times
+
+	// offerings
+
 	$: {
 		contentTypes.forEach((type) => {
 			data[type].forEach((blog) => {
@@ -37,6 +43,7 @@
 	}
 
 	function dragStart(event: DragEvent, blogTitle: string) {
+		console;
 		event.dataTransfer?.setData('text/plain', blogTitle);
 	}
 
@@ -45,6 +52,7 @@
 	}
 
 	async function drop(event: DragEvent, stageIndex: number, blogType: string) {
+		console.log('dropped');
 		event.preventDefault();
 		const blogTitle = event.dataTransfer?.getData('text/plain');
 		if (!blogTitle || !data[blogType]) return;
@@ -103,8 +111,8 @@
 				{#if activeSelection && data[activeSelection]}
 					{#each data[activeSelection].filter((blog) => blog.stage === stageIndex) as blog, index}
 						{#if blog.title}
-							<Card
-								class="mb-4 cursor-move"
+							<div
+								class="mb-4 flex w-full max-w-sm cursor-move flex-col divide-gray-200 rounded-lg border border-gray-200 bg-white p-4 text-gray-500 shadow-md sm:p-6 dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
 								draggable={expandedBlogTitle !== blog.title}
 								on:dragstart={(event) => dragStart(event, blog.title)}
 								role="listitem"
@@ -121,7 +129,7 @@
 										<ContentCard blogContent={blog} />
 									</Accordion>
 								{/if}
-							</Card>
+							</div>
 						{/if}
 					{/each}
 				{/if}

@@ -34,9 +34,12 @@
 </script>
 
 {#if user.admin}
-	<div class="mx-auto flex w-full max-w-3xl p-4">
+	<div class="mx-auto flex w-full max-w-3xl gap-1 p-4">
 		<A href="/admin/users" outline>
 			<Button outline>Manage Users</Button></A
+		>
+		<A href="/content-board" outline>
+			<Button outline>Manage Content</Button></A
 		>
 	</div>
 {/if}
