@@ -1,66 +1,57 @@
 <script lang="ts">
-	import { A, Button } from 'flowbite-svelte';
+	import { Button, Card, Badge, A } from 'flowbite-svelte';
 	import EditBlogModal from '../blog/EditBlogModal.svelte';
+	import { notifications } from '$lib/components/shared/notifications';
 
-	export let blogContent = null;
-	export let stage = null;
+	export let blogContent: App.BlogPost;
+	export let stage: string | null = null;
 
-	const stages = [
-		'Not written',
-		'Written',
-		'Sent out for review',
-		'Reviewed',
-		'Socialized',
-		'Growing'
-	];
-	const stagesContentRetrievaL = ['Sent out for review', 'Reviewed', 'Socialized', 'Growing'];
-	const getInfo = () => {
-		console.log('Get Update');
-	};
-	let showModal = false;
-	console.log(blogContent);
-	console.log(location);
+	const stagesContentRetrieval = ['Sent out for review', 'Reviewed', 'Socialized', 'Growing'];
+	let showEditModal = false;
+
 	const url = `/locations/states/${blogContent.location.state}/${blogContent.location.city}/${blogContent.loc}`;
-</script>
 
-<div class="panel">
-	<p><strong>Description</strong>: {blogContent.description}</p>
-
-	<p><strong>Date</strong>: {blogContent.date}</p>
-
-	<p><strong>Last Modified</strong>: {blogContent.lastmod}</p>
-
-	<Button type="button" on:click={() => (showModal = true)}>Edit Blog</Button>
-	<EditBlogModal bind:show={showModal} blog={blogContent} />
-	<A href={url}>Link</A>
-
-	<details>
-		<summary class="accordion">More</summary>
-		<div class="panel">
-			{#each Object.entries(blogContent) as [key, value]}
-				{#if key !== 'title'}
-					<p>
-						<strong>{key.toLocaleUpperCase()}</strong>: {value}
-					</p>
-				{/if}
-			{/each}
-		</div>
-	</details>
-
-	{#if stage && stagesContentRetrievaL.includes(stage)}
-		<button class="btn btn-primary" type="button" on:click={getInfo}>Get Update</button>
-	{/if}
-</div>
-
-<style lang="scss">
-	p {
-		align-items: inherit;
-		margin: 0;
-		margin-bottom: calc(var(--spacing-unit) * 2);
-	}
-	@media (max-width: 500px) {
-		p {
-			margin: calc(var(--spacing-unit));
+	async function getInfo() {
+		try {
+			// Implement the update logic here
+			console.log('Getting update for', blogContent.title);
+			notifications.info('Content update requested', 3000);
+		} catch (error) {
+			console.error('Error getting update:', error);
+			notifications.danger('Error getting update', 3000);
 		}
 	}
-</style>
+
+	function formatDate(dateString: string): string {
+		return new Date(dateString).toLocaleDateString();
+	}
+</script>
+
+<div>
+	<!-- <h3 class="mb-2 text-xl font-semibold">{blogContent.title}</h3> -->
+	<p class="mb-4 text-gray-600">{blogContent.description}</p>
+
+	<div class="mb-4 flex flex-wrap gap-2">
+		<Badge color="blue">Date: {formatDate(blogContent.date)}</Badge>
+		<Badge color="green">Last Modified: {formatDate(blogContent.lastmod)}</Badge>
+
+		<br />
+
+		<A href={url} target="_blank">View Blog</A>
+	</div>
+
+	<div class="mb-4 flex flex-wrap gap-2">
+		<Button size="xs" on:click={() => (showEditModal = true)}>Edit Blog</Button>
+		{#if stage && stagesContentRetrieval.includes(stage)}
+			<Button size="xs" on:click={getInfo}>Get Update</Button>
+		{/if}
+	</div>
+
+	<div class="text-sm text-gray-600">
+		<p><strong>Author:</strong> {blogContent.author}</p>
+		<p><strong>Location:</strong> {blogContent.location.city}, {blogContent.location.state}</p>
+		<p><strong>Type:</strong> {blogContent.type || 'N/A'}</p>
+	</div>
+</div>
+
+<EditBlogModal bind:show={showEditModal} blog={blogContent} />
