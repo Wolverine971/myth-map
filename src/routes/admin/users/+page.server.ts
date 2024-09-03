@@ -9,7 +9,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         throw redirect(303, '/login');
     }
 
-    const { data: profile, error: profileError } = await supabase
+    const { data: profile, error: profileError } = await locals.supabase
         .from('user_profiles')
         .select('admin')
         .eq('id', user.id)
@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         throw redirect(303, '/');
     }
 
-    const { data: users, error: usersError } = await supabase.rpc('get_all_users');
+    const { data: users, error: usersError } = await locals.supabase.rpc('get_all_users');
 
 
     if (usersError) {

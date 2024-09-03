@@ -13,8 +13,8 @@
 
 	export let data: PageData;
 
-	$: content = data.blog?.content ? marked(data.blog.content) : '';
-	$: icon = getLocationIcon(data?.blog?.title);
+	$: content = data.locationData?.content ? marked(data.locationData.content) : '';
+	$: icon = getLocationIcon(data?.locationData?.title);
 	$: placesToEat = [];
 	$: activities = [];
 
@@ -55,27 +55,24 @@
 		}
 	}
 	let innerWidth = 0;
+	const url = `locations/states/${data?.locationData?.location.state}/${data?.locationData?.location.city}/${data?.locationData?.loc}`;
 </script>
 
 <svelte:window bind:innerWidth />
 
-{#if data.blog}
+{#if data.locationData}
 	<article itemscope itemtype="https://schema.org/BlogPosting" class="blog">
-		<LocationPageHead
-			blogContent={data.blog}
-			slug={`blog/locations/${data?.blog?.loc}`}
-			locationData={data.locationData}
-		/>
+		<LocationPageHead blogContent={data.locationData} slug={url} />
 
 		<div class="mb-6 flex items-center gap-8">
 			<img
 				src={`/map/${icon}.png`}
-				alt={data.blog?.title}
+				alt={data.locationData?.title}
 				class="h-auto w-1/3 max-w-[30%] rounded-lg object-cover"
 			/>
 			<div>
-				<ArticleTitle title={data.blog?.title} />
-				<ArticleSubTitle metaData={data.blog} />
+				<ArticleTitle title={data.locationData?.title} />
+				<ArticleSubTitle metaData={data.locationData} />
 				{#if data.locationData.website}
 					<A href={data.locationData.website} target="_blank" rel="noopener noreferrer">Webpage</A>
 				{/if}
@@ -90,7 +87,7 @@
 		<hr class="my-8" />
 
 		<Comments
-			parentId={data.blog.id}
+			parentId={data.locationData.id}
 			parentType="content_location"
 			{innerWidth}
 			user={data?.user}

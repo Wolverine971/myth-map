@@ -1,6 +1,6 @@
 import type { Actions, PageLoad } from './$types';
 
-export const load: PageLoad = async (event) => {
+export const load: PageLoad = async (event: any) => {
 	if (event.params.place.includes('.')) {
 		return;
 	}
@@ -25,7 +25,7 @@ export const load: PageLoad = async (event) => {
 
 	const { data: blogData, error: blogDataError } = await event.locals.supabase
 		.from('content_locations')
-		.select('*')
+		.select(`*, location:locations(*)`)
 		.eq('loc', event.params.place)
 		.single();
 
@@ -33,21 +33,13 @@ export const load: PageLoad = async (event) => {
 		console.error(blogDataError);
 	}
 
-	const { data: locationData, error: locationDataError } = await event.locals.supabase
-		.from('locations')
-		.select('*')
-		.eq('name', blogData?.title)
-		.single();
 
-	if (locationDataError || !locationData) {
-		console.error(locationDataError);
-	}
 
 	const { data: nearByLocations, error: nearByLocationsError } = await event.locals.supabase.rpc(
 		'nearby_locations',
 		{
-			lat: locationData.lat,
-			long: locationData.lng,
+			lat: blogData.location.lat,
+			long: blogData.location.lng,
 			location_limit: 11
 		}
 	);
@@ -75,8 +67,7 @@ export const load: PageLoad = async (event) => {
 	}
 
 	return {
-		blog: blogData,
-		locationData,
+		locationData: blogData,
 		locationTags,
 		nearbyLocations: filteredNearByLocations,
 		user

@@ -2,28 +2,31 @@
 	import { Modal, Button, Input, Label } from 'flowbite-svelte';
 	import { marked } from 'marked';
 	import { notifications } from '../shared/notifications';
+	import { onMount } from 'svelte';
 
 	export let show = false;
 	export let blog: any = null;
 
 	let markdown = '';
 	let description = '';
-	let initialLoad = false;
+	let previousBlogId: string | null = null;
 
-	console.log('fix this blog edit modal');
 	$: if (blog) {
-		console.log(blog);
-		if (!initialLoad) {
+		if (previousBlogId !== blog.id) {
 			markdown = blog.content || '';
 			description = blog.description || '';
-			initialLoad = true;
+			previousBlogId = blog.id;
 		}
 	}
 
-	// onMount(() => {
-	//     markdown = blog.content || '';
-	// 	description = blog.description || '';
-	// });
+	onMount(() => {
+		if (blog) {
+			markdown = blog.content || '';
+			description = blog.description || '';
+			previousBlogId = blog.id;
+		}
+	});
+
 	const save = async () => {
 		let body = new FormData();
 		body.append('markdown', markdown);
@@ -38,7 +41,6 @@
 		if (res.ok) {
 			notifications.info('Blog saved', 3000);
 			show = false;
-			initialLoad = false;
 		} else {
 			notifications.danger('Error saving blog', 3000);
 		}

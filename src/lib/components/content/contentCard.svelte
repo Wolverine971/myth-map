@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { A } from 'flowbite-svelte';
+	import { A, Button } from 'flowbite-svelte';
+	import EditBlogModal from '../blog/EditBlogModal.svelte';
 
 	export let blogContent = null;
 	export let stage = null;
@@ -16,6 +17,10 @@
 	const getInfo = () => {
 		console.log('Get Update');
 	};
+	let showModal = false;
+	console.log(blogContent);
+	console.log(location);
+	const url = `/locations/states/${blogContent.location.state}/${blogContent.location.city}/${blogContent.loc}`;
 </script>
 
 <div class="panel">
@@ -25,7 +30,9 @@
 
 	<p><strong>Last Modified</strong>: {blogContent.lastmod}</p>
 
-	<A href={`/locations/${blogContent.loc}`}>Link</A>
+	<Button type="button" on:click={() => (showModal = true)}>Edit Blog</Button>
+	<EditBlogModal bind:show={showModal} blog={blogContent} />
+	<A href={url}>Link</A>
 
 	<details>
 		<summary class="accordion">More</summary>

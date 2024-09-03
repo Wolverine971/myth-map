@@ -2,15 +2,26 @@
 import { redirect, type Actions } from '@sveltejs/kit';
 
 export const load = async (event) => {
-	// const session = await getServerSession(event);
+	const user = await event.locals.getUser();
 
-	// if (!session?.user?.id) {
-	// 	throw redirect(302, '/questions');
-	// }
+	if (!user) {
+		throw redirect(303, '/login');
+	}
+
+	const { data: profile, error: profileError } = await event.locals.supabase
+		.from('user_profiles')
+		.select('admin')
+		.eq('id', user.id)
+		.single();
+
+	if (profileError || !profile || !profile.admin) {
+		throw redirect(303, '/');
+	}
+
 
 	const { data: locationContent, error: locationContentError } = await event.locals.supabase
 		.from(`content_locations`)
-		.select('*');
+		.select(`*, location:locations(*)`);
 
 	if (locationContentError) {
 		console.log(locationContentError);

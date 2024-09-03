@@ -13,10 +13,10 @@
 
 <BlogPageHead
 	data={{
-		title: 'Tiny Tribe Adventures Blogs',
+		title: 'Tiny Tribe Adventures Locations',
 		description: 'Topics related to family friendly locations'
 	}}
-	slug={'blog/locations'}
+	slug={'locations'}
 />
 
 <div class="container mx-auto px-2 py-8 md:px-4">
@@ -26,17 +26,19 @@
 	<Heading tag="h2" customSize="text-2xl md:text-3xl font-bold mb-6">Maryland</Heading>
 
 	<div class="location-list">
-		{#each data.locations as location}
+		{#each data.contentLocations as contentLocation}
 			<div class="location-item">
 				<div>
-					<h3 class="mb-2 text-2xl font-bold text-gray-900 dark:text-white">{location?.title}</h3>
-					{#if location.description}
-						<P class="mb-2 text-gray-700 dark:text-gray-400">{location.description}</P>
+					<h3 class="mb-2 text-2xl font-bold text-gray-900 dark:text-white">
+						{contentLocation?.title}
+					</h3>
+					{#if contentLocation.description}
+						<P class="mb-2 text-gray-700 dark:text-gray-400">{contentLocation.description}</P>
 					{/if}
-					<P class="mb-2">{location.city}</P>
+					<P class="mb-2">{contentLocation.location.city}</P>
 
 					<a
-						href={`locations/states/${location.state}/${location.city}/${location.loc}`}
+						href={`locations/states/${contentLocation.location.state}/${contentLocation.location.city.split(' ').join('-')}/${contentLocation.loc}`}
 						class="read-more-link"
 					>
 						More Details
@@ -45,8 +47,8 @@
 				</div>
 				<img
 					style="max-width: 150px;"
-					src={`/map/${getLocationIcon(location?.title)}.png`}
-					alt="{location?.title} icon"
+					src={`/map/${getLocationIcon(contentLocation?.title)}.png`}
+					alt="{contentLocation?.title} icon"
 				/>
 			</div>
 		{/each}
