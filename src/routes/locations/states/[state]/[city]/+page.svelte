@@ -53,16 +53,16 @@
 	{#if cityMap}
 		<ul class="grid grid-cols-2 gap-4 lg:gap-8">
 			{#each Object.keys(cityMap) as city, index}
-				{#each data?.locations.filter((l) => l.city === city) as location}
+				{#each data?.locations.filter((l) => l.city === city) as contentLocation}
 					<li>
 						<div class="panel">
 							<LocationCardSmall
-								name={location.name}
-								coords={{ lat: location.lat, lng: location.lng }}
-								address={`${`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}`}, ${location.city}, ${location.state} ${location.zip_code}`}
-								website={location.website}
+								name={contentLocation.location.name}
+								coords={{ lat: contentLocation.location.lat, lng: contentLocation.location.lng }}
+								address={`${`${contentLocation.location.address_line_1}${contentLocation.location.address_line_2 ? ` ${contentLocation.location.address_line_2}` : ''}`}, ${contentLocation.location.city}, ${contentLocation.location.state} ${contentLocation.location.zip_code}`}
+								website={contentLocation.website}
 								tags={[]}
-								{location}
+								{contentLocation}
 								user={data.user}
 								{innerWidth}
 							/>

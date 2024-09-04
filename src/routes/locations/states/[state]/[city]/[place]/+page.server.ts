@@ -1,9 +1,6 @@
 import type { Actions, PageLoad } from './$types';
 
 export const load: PageLoad = async (event: any) => {
-	if (event.params.place.includes('.')) {
-		return;
-	}
 
 	let user = await event.locals.getUser();
 
@@ -60,7 +57,7 @@ export const load: PageLoad = async (event: any) => {
 		.select('*, location:locations(*), tags(*)')
 		.in(
 			'location_id',
-			filteredNearByLocations.map((location) => location.id)
+			filteredNearByLocations.map((location) => location?.id)
 		);
 	if (locationTagsError) {
 		console.error(locationTagsError);

@@ -21,7 +21,7 @@
 	onMount(() => {
 		console.log('data', data);
 		const placesToEatMap = new Set(
-			data.locationTags.filter((tag) => tag.tags.name === 'Food').map((tag) => tag.location.name)
+			data.locationTags?.filter((tag) => tag.tags.name === 'Food').map((tag) => tag.location.name)
 		);
 
 		[placesToEat, activities] = data.nearbyLocations.reduce(
