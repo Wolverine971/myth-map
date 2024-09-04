@@ -166,11 +166,11 @@ export const getCity = async () => {
 		const city2 =
 			city1.length >= 2
 				? city1[2]
-						.replace(`${valToExtract}-`, '')
-						.replace('-', ' ')
-						.replace(/[0-9]/g, '')
-						.replace('-', '')
-						.trim()
+					.replace(`${valToExtract}-`, '')
+					.replace('-', ' ')
+					.replace(/[0-9]/g, '')
+					.replace('-', '')
+					.trim()
 				: '';
 		cities.push(city2);
 	});
@@ -220,8 +220,15 @@ export const ingestAndCreateLocations = async () => {
 			console.error(existingLocationDataError);
 		}
 		if (existingLocationData?.[0]) {
+			await updateLocationContent(existingLocationData?.[0].id, link, name);
 			if (!existingLocationData[0].lat) {
-				await getAndUpdateLatLng(existingLocationData[0].id, address_line_1, city, state, zip);
+				await getAndUpdateLatLng({
+					locationId: existingLocationData[0].id,
+					address: address_line_1,
+					city: city,
+					state: state,
+					zip: zip
+				});
 			}
 			await tagLocation(existingLocationData?.[0].id, tags);
 			console.log('existing location data', existingLocationData);
@@ -234,19 +241,68 @@ export const ingestAndCreateLocations = async () => {
 					state,
 					zip_code: zip,
 					name,
-					website: link
 				})
 				.select();
 			if (locationDataError) {
 				console.error(locationDataError);
 			}
+
+
 			if (locationData?.[0]) {
-				await getAndUpdateLatLng(locationData?.[0].id, address_line_1, city, state, zip);
+				await updateLocationContent(locationData?.[0].id, link, name);
+				await getAndUpdateLatLng({
+					locationId: locationData[0].id,
+					address: address_line_1,
+					city: city,
+					state: state,
+					zip: zip
+				});
 				await tagLocation(locationData?.[0].id, tags);
 			}
 		}
 	}
 };
+
+const updateLocationContent = async (locationId: string, link: string, name: string) => {
+
+	const { data: contentExists, error: contentExistsError } = await supabase
+		.from('content_locations')
+		.select({
+			title: name
+		})
+		.select();
+	if (contentExistsError) {
+		console.error(contentExistsError);
+	}
+	if (contentExists?.[0]) {
+		const { data: content_locationData, error: content_locationDataError } = await supabase
+			.from('content_locations')
+			.update({
+				website: link,
+				location_id: locationId,
+			})
+			.eq('title', name)
+			.select();
+		if (content_locationDataError) {
+			console.error(content_locationDataError);
+		}
+	} else {
+
+
+		const { data: content_locationData, error: content_locationDataError } = await supabase
+			.from('content_locations')
+			.insert({
+				location_id: locationId,
+				website: link
+			})
+			.select();
+
+		if (content_locationDataError) {
+			console.error(content_locationDataError);
+		}
+	}
+
+}
 
 export const ingestBlogs = async () => {
 	const client = await getToken();

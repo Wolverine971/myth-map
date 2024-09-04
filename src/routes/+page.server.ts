@@ -4,8 +4,8 @@ import type { PageServerLoad } from './$types';
 export const load: PageServerLoad = async (event) => {
 	const user = await event.locals.getUser();
 	const { data: locations, error: locationsError } = await event.locals.supabase
-		.from('locations')
-		.select('*');
+		.from('content_locations')
+		.select(`*, location:locations(*)`)
 	if (locationsError) {
 		console.error(locationsError);
 	}
@@ -17,7 +17,7 @@ export const load: PageServerLoad = async (event) => {
 
 	const { data: locationTags, error: locationTagsError } = await event.locals.supabase
 		.from('location_tags')
-		.select('*, locations(*), tags(*)');
+		.select('*, location:locations(*), tags(*)');
 	if (locationTagsError) {
 		console.error(locationTagsError);
 	}

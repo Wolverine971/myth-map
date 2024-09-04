@@ -15,10 +15,11 @@
 	export let tags: Array<{ tags: { name: string } }>;
 	export let coords: { lat: number; lng: number };
 	export let size: SizeType = 'md';
-	export let location: Location;
+	export let contentLocation: any;
 	export let user: any;
 	export let innerWidth: number;
 
+	let location: Location = contentLocation.location;
 	let duration: number;
 	let distance: number;
 	let distanceLoading = false;
@@ -123,14 +124,16 @@
 					class="w-full hover:outline hover:outline-2 hover:outline-primary-600">Details</Button
 				>
 			</a>
-			<a href={website} target="_blank" rel="noopener noreferrer">
-				<Button
-					color="alternative"
-					size="sm"
-					class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
-					>Visit Website</Button
-				>
-			</a>
+			{#if website}
+				<a href={website} target="_blank" rel="noopener noreferrer">
+					<Button
+						color="alternative"
+						size="sm"
+						class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
+						>Visit Website</Button
+					>
+				</a>
+			{/if}
 
 			{#if distance}
 				<div class="text-sm text-neutral-600">

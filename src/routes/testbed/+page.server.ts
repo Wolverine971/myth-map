@@ -44,7 +44,13 @@ export const actions: Actions = {
 		const state = body.state as string;
 		const zip = body.zip as string;
 
-		return await getAndUpdateLatLng(locationId, address, city, state, zip);
+		return await getAndUpdateLatLng({
+			locationId: locationId,
+			address: address,
+			city: city,
+			state: state,
+			zip: zip
+		});
 	},
 
 	getHowFarAwayIsLocation: async ({ request }) => {

@@ -19,8 +19,9 @@
 	$: activities = [];
 
 	onMount(() => {
+		console.log('data', data);
 		const placesToEatMap = new Set(
-			data.locationTags.filter((tag) => tag.tags.name === 'Food').map((tag) => tag.locations.name)
+			data.locationTags.filter((tag) => tag.tags.name === 'Food').map((tag) => tag.location.name)
 		);
 
 		[placesToEat, activities] = data.nearbyLocations.reduce(
@@ -51,12 +52,22 @@
 				notifications.warning('Locations not found', 3000);
 			}
 		} catch (error) {
-			notifications.error('Error finding nearby locations', 3000);
+			notifications.danger('Error finding nearby locations', 3000);
 		}
 	}
 	let innerWidth = 0;
 	const url = `locations/states/${data?.locationData?.location.state}/${data?.locationData?.location.city}/${data?.locationData?.loc}`;
 </script>
+
+<!-- Local Business jsonld 
+ https://seotesting.com/google-search-console/enhancements/
+
+The business name.
+The opening hours of the business.
+A telephone number for the business.
+Ratings from Google reviews.
+Links to websites.
+-->
 
 <svelte:window bind:innerWidth />
 
@@ -112,8 +123,8 @@
 									coords={{ lat: location.lat, lng: location.lng }}
 									address={`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}, ${location.city}, ${location.state} ${location.zip_code}`}
 									website={location.website}
-									tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
-									{location}
+									tags={data.locationTags.filter((tag) => tag.location.name === location.name)}
+									contentLocation={{ location: location }}
 									user={data.user}
 									{innerWidth}
 								/>
@@ -135,8 +146,8 @@
 									coords={{ lat: location.lat, lng: location.lng }}
 									address={`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}, ${location.city}, ${location.state} ${location.zip_code}`}
 									website={location.website}
-									tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
-									{location}
+									tags={data.locationTags.filter((tag) => tag.location.name === location.name)}
+									contentLocation={{ location: location }}
 									user={data.user}
 									{innerWidth}
 								/>

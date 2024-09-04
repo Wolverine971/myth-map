@@ -41,6 +41,9 @@
 		<A href="/content-board" outline>
 			<Button outline>Manage Content</Button></A
 		>
+		<A href="/locations/add" outline>
+			<Button outline>Add Location</Button></A
+		>
 	</div>
 {/if}
 <div class="container mx-auto max-w-3xl p-4">

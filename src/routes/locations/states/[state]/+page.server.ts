@@ -8,8 +8,8 @@ export const load: PageServerLoad = async (event) => {
 		const state = findState(event.params?.state || { abr: 'MD' });
 
 		const { data: stateLocationData, error: stateLocationDataError } = await event.locals.supabase
-			.from('locations')
-			.select('*')
+			.from('content_locations')
+			.select(`*, location:locations(*)`)
 			.eq('state', state.abr);
 
 		if (stateLocationDataError) {
@@ -17,7 +17,7 @@ export const load: PageServerLoad = async (event) => {
 		}
 
 		return {
-			locations: stateLocationData,
+			contentLocations: stateLocationData,
 			user
 		};
 	} catch (error) {

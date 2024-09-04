@@ -13,7 +13,7 @@
 	export let data: PageData;
 
 	$: state = $page.params.state;
-	$: cities = data.locations?.sort((a, b) => a.city.localeCompare(b.city));
+	$: cities = data.contentLocations?.sort((a, b) => a.city.localeCompare(b.city));
 	$: cityMap = new Map(cities?.map((location) => [location.city, location.id]));
 
 	let stateName: string;
@@ -39,8 +39,8 @@
 	{#if browser}
 		<div class="map-container mb-8">
 			<CityMap
-				locations={data.locations || []}
-				shownLocations={data.locations || []}
+				locations={data.contentLocations || []}
+				shownLocations={data.contentLocations || []}
 				currentLocation={userLocation}
 				selectedState={{ name: stateName, abr: state }}
 				selectedCity={null}
@@ -62,14 +62,14 @@
 						</A>
 					</summary>
 					<div class="location-grid">
-						{#each data.locations.filter((l) => l.city === city) as location}
+						{#each data.contentLocations.filter((l) => l.location.city === city) as contentLocation}
 							<LocationCardSmall
-								name={location.name}
-								coords={{ lat: location.lat, lng: location.lng }}
-								address={`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}, ${location.city}, ${location.state} ${location.zip_code}`}
-								website={location.website}
+								name={contentLocation.location.name}
+								coords={{ lat: contentLocation.location.lat, lng: contentLocation.location.lng }}
+								address={`${contentLocation.location.address_line_1}${contentLocation.location.address_line_2 ? ` ${contentLocation.location.address_line_2}` : ''}, ${contentLocation.location.city}, ${contentLocation.location.state} ${contentLocation.location.zip_code}`}
+								website={contentLocation.website}
 								tags={[]}
-								{location}
+								{contentLocation}
 								user={data.user}
 								{innerWidth}
 							/>

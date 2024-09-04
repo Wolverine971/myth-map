@@ -27,6 +27,7 @@
 	let innerWidth = 0;
 
 	onMount(() => {
+		console.log('data', data);
 		QRCode.toDataURL(`https://tinytribeadventures.com/itineraries/${data.itinerary.id}`, QR_OPTS)
 			.then((url) => (qrCodeUrl = url))
 			.catch((err) => console.error('QR Code generation failed:', err));
@@ -111,7 +112,7 @@
 								address={`${item.location.address_line_1}${item.location.address_line_2 ? ` ${item.location.address_line_2}` : ''}, ${item.location.city}, ${item.location.state} ${item.location.zip_code}`}
 								website={item.location.website}
 								tags={[]}
-								location={item.location}
+								contentLocation={{ location: item.location }}
 								user={data.user}
 								{innerWidth}
 							/>

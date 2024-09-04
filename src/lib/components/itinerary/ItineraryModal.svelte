@@ -167,10 +167,10 @@
 			});
 
 			hasUnsavedChanges = false;
-			notifications.success('Itinerary saved successfully');
+			notifications.success('Itinerary saved successfully', 3000);
 			await invalidateAll();
 		} catch (error) {
-			notifications.danger('Failed to save itinerary');
+			notifications.danger('Failed to save itinerary', 3000);
 		}
 	}
 </script>

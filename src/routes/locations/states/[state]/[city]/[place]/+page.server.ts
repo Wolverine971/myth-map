@@ -57,7 +57,7 @@ export const load: PageLoad = async (event: any) => {
 
 	const { data: locationTags, error: locationTagsError } = await event.locals.supabase
 		.from('location_tags')
-		.select('*, locations(*), tags(*)')
+		.select('*, location:locations(*), tags(*)')
 		.in(
 			'location_id',
 			filteredNearByLocations.map((location) => location.id)

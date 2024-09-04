@@ -369,22 +369,25 @@
 	function getFeatureCollection(locations: any[]) {
 		return {
 			type: 'FeatureCollection',
-			features: locations.map((location, i) => ({
+			features: locations.map((contentLocation, i) => ({
 				type: 'Feature',
 				properties: {
-					latitude: location.lat,
-					longitude: location.lng,
-					address_line_1: location.address_line_1,
-					city: location.city,
-					state: location.state,
-					zip_code: location.zip_code,
-					website: location.website,
-					name: location.name,
-					location: location.location,
+					latitude: contentLocation.location.lat,
+					longitude: contentLocation.location.lng,
+					address_line_1: contentLocation.location.address_line_1,
+					city: contentLocation.location.city,
+					state: contentLocation.location.state,
+					zip_code: contentLocation.location.zip_code,
+					website: contentLocation.location.website,
+					name: contentLocation.location.name,
+					location: contentLocation.location.location,
 					id: i,
-					icon: `${getLocationIcon(location.name)}1`
+					icon: `${getLocationIcon(contentLocation.location.name)}1`
 				},
-				geometry: { type: 'Point', coordinates: [location.lng, location.lat] }
+				geometry: {
+					type: 'Point',
+					coordinates: [contentLocation.location.lng, contentLocation.location.lat]
+				}
 			}))
 		};
 	}

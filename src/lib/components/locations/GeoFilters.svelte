@@ -29,7 +29,7 @@
 	let flatCityMap = {};
 	let filteredCities: string[] = [];
 	export let allCities: string[] = [];
-	export let shownLocations: string[] = [];
+	export let shownLocations: any[] = [];
 
 	$: shownLocations, allCities, filterCities();
 
@@ -40,7 +40,9 @@
 	});
 
 	const filterCities = () => {
-		shownLocations.forEach((location) => (flatCityMap[location.city.toLowerCase()] = 1));
+		shownLocations.forEach(
+			(contentLocation) => (flatCityMap[contentLocation.location.city.toLowerCase()] = 1)
+		);
 		filteredCities = allCities.filter((city) => flatCityMap[city.toLowerCase()]);
 	};
 

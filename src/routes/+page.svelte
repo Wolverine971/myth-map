@@ -42,10 +42,10 @@
 			if (tags.length === 0) {
 				shownLocations = data.locations;
 			} else {
-				shownLocations = data.locations.filter((location) =>
+				shownLocations = data.locations.filter((contentLocation) =>
 					tags.every((tag) =>
 						data.locationTags.some(
-							(lt) => lt.locations.name === location.name && lt.tags.name === tag
+							(lt) => lt.location.name === contentLocation.location.name && lt.tags.name === tag
 						)
 					)
 				);
@@ -61,12 +61,12 @@
 			return;
 		}
 
-		const locationMap = new Set(shownLocations.map((l) => l.name));
+		const locationMap = new Set(shownLocations.map((l) => l.location.name));
 		const newAvailableTags = {};
 
-		data.locationTags.forEach((location) => {
-			if (locationMap.has(location.locations.name)) {
-				newAvailableTags[location.tags.name] = 1;
+		data.locationTags.forEach((locationTag) => {
+			if (locationMap.has(locationTag.location.name)) {
+				newAvailableTags[locationTag.tags.name] = 1;
 			}
 		});
 
@@ -134,18 +134,23 @@
 				<Tabs tabStyle="underline" contentClass="py-4 bg-transparent">
 					<TabItem open title="Gallery View" on:click={() => (selectedTab = 'gallery')}>
 						<div class="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4" style="width: 100%;">
-							{#each isLoading ? Array(6) : shownLocations as location (Math.random())}
+							{#each isLoading ? Array(6) : shownLocations as content_location (Math.random())}
 								{#if isLoading}
 									<SkeletonCard />
 								{:else}
 									<div in:fade={{ duration: 300 }}>
 										<LocationCard
-											name={location.name}
-											coords={{ lat: location.lat, lng: location.lng }}
-											address={`${location.address_line_1}${location.address_line_2 ? ` ${location.address_line_2}` : ''}, ${location.city}, ${location.state} ${location.zip_code}`}
-											website={location.website}
-											tags={data.locationTags.filter((tag) => tag.locations.name === location.name)}
-											{location}
+											name={content_location.location.name}
+											coords={{
+												lat: content_location.location.lat,
+												lng: content_location.location.lng
+											}}
+											address={`${content_location.location.address_line_1}${content_location.location.address_line_2 ? ` ${content_location.location.address_line_2}` : ''}, ${content_location.location.city}, ${content_location.location.state} ${content_location.location.zip_code}`}
+											website={content_location.website}
+											tags={data.locationTags.filter(
+												(tag) => tag.location.name === content_location.location.name
+											)}
+											contentLocation={content_location}
 											user={data?.user}
 											{innerWidth}
 										/>
