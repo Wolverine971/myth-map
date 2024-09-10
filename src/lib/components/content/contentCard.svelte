@@ -37,7 +37,7 @@
 
 		<br />
 
-		<A href={url} target="_blank">View Blog</A>
+		<A href={url} target="_blank">View Blog &#8594;</A>
 	</div>
 
 	<div class="mb-4 flex flex-wrap gap-2">
@@ -51,6 +51,11 @@
 		<p><strong>Author:</strong> {blogContent.author}</p>
 		<p><strong>Location:</strong> {blogContent.location.city}, {blogContent.location.state}</p>
 		<p><strong>Type:</strong> {blogContent.type || 'N/A'}</p>
+		<p style="color:{!blogContent.opening_times ? 'red' : ''}"><strong>Opening Times</strong> {blogContent.opening_times}</p>
+		<p style="color:{!blogContent.phone_number ? 'red' : ''}"><strong>Phone Number:</strong> {blogContent.phone_number}</p>
+		<p style="color:{!blogContent.email ? 'red' : ''}"><strong>Email:</strong> {blogContent.email}</p>
+		<p><strong>Comment Count:</strong>{blogContent.comment_count}</p>
+
 	</div>
 </div>
 

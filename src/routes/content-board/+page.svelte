@@ -5,12 +5,14 @@
 	import ContentCard from '$lib/components/content/contentCard.svelte';
 
 	export let data: PageData;
+	console.log(data);
 
 	let expandedBlogTitle: string | null = null;
 	let activeSelection = 'locations';
 
 	const contentTypes = ['locations'];
 	const stages = [
+		'Needs Info',
 		'Not written',
 		'Prioritized',
 		'Written',
@@ -43,7 +45,6 @@
 	}
 
 	function dragStart(event: DragEvent, blogTitle: string) {
-		console;
 		event.dataTransfer?.setData('text/plain', blogTitle);
 	}
 
@@ -52,7 +53,6 @@
 	}
 
 	async function drop(event: DragEvent, stageIndex: number, blogType: string) {
-		console.log('dropped');
 		event.preventDefault();
 		const blogTitle = event.dataTransfer?.getData('text/plain');
 		if (!blogTitle || !data[blogType]) return;
