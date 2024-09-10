@@ -3,7 +3,8 @@ import { supabase } from '$lib/supabaseClient';
 // const SITE_URL = 'tinytribeadventures.com';
 
 const getAllLocations = async () => {
-	const { data: locations, error } = await supabase.from('content_locations').select('*');
+	const { data: locations, error } = await supabase.from(`content_locations`)
+		.select(`*, location:locations(*)`);
 
 	if (error) {
 		console.log(error);
@@ -11,13 +12,25 @@ const getAllLocations = async () => {
 	// go through approval process
 	// join locations and content_locations
 
-	return locations.filter(l => l.published).map((location) => {
+	const citiesMap = {}
+
+	const goodLocations = locations.map((location) => {
+		citiesMap[location.location.city] = true;
 		return {
-			loc: escapeXmlUrl(`https://tinytribeadventures.com/locations/states/locations/${location.loc}`),
-			lastmod: location.lastmod,
+			loc: escapeXmlUrl(`https://tinytribeadventures.com/locations/states/${location.location.state}/${location.location.city.replace(/ /g, '-')}/${location.loc}`),
+			lastmod: location.updated_at,
 			changefreq: 'weekly'
 		};
 	});
+	const cities = Object.keys(citiesMap).map((city) => {
+		return {
+			loc: escapeXmlUrl(`https://tinytribeadventures.com/locations/states/MD/${city.replace(/ /g, '-')}`),
+			lastmod: '2024-08-05',
+			changefreq: 'weekly'
+		};
+	});
+	return [...cities, ...goodLocations];
+
 };
 
 export async function GET() {
@@ -54,11 +67,24 @@ export async function GET() {
 	    <priority>0.7</priority>
 	</url>
 	<url>
-	    <loc>https://tinytribeadventures.com/contact</loc>
-	    <lastmod>2024-07-14</lastmod>
+	    <loc>https://tinytribeadventures.com/locations/states/MD</loc>
+	    <lastmod>2024-09-10</lastmod>
 	    <changefreq>monthly</changefreq>
 	    <priority>0.7</priority>
 	</url>
+
+	
+
+	${locations
+				.map((post) => {
+					return `<url>
+			<loc>${post.loc}</loc>
+			<lastmod>${post?.lastmod ? new Date(post?.lastmod).toISOString() : new Date().toISOString()}</lastmod>
+			<changefreq>monthly</changefreq>
+			<priority>0.7</priority>
+			</url>`
+				})
+				.join('')}
 	
 
 	  

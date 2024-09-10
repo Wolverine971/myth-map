@@ -66,28 +66,7 @@
 			latitude: blogContent.location.lat,
 			longitude: blogContent.location.lng
 		},
-		image: iconUrl,
-		suitableForChildren: true,
-		author: {
-			'@type': 'Person',
-			name: 'DJ Wayne',
-			sameAs: [
-				'https://www.instagram.com/djwayne3/',
-				'https://www.youtube.com/@djwayne3',
-				'https://www.linkedin.com/in/davidtwayne/',
-				'https://twitter.com/djwayne3'
-			]
-		},
-		publisher: {
-			'@type': 'Organization',
-			name: 'Tiny Tribe Adventures',
-			logo: {
-				'@type': 'ImageObject',
-				url: 'https://tinytribeadventures.com/map/mythmap.png'
-			}
-		},
-		datePublished: blogContent.created_at,
-		dateModified: blogContent.lastmod || blogContent.created_at
+		image: iconUrl
 	};
 
 	if (blogContent.location.website) {
@@ -95,6 +74,77 @@
 	}
 
 	const jsonld = JSON.stringify(jsonldString);
+
+// goalz
+// 	{
+//   "@context": "http://schema.org",
+//   "@type": ["TouristAttraction", "Park", "PlayAction"],
+//   "name": "Cedar Lane Park East Playground",
+//   "description": "Explore Cedar Lane Park East Playground, a family-friendly location in Columbia, MD. This playground offers fun activities for children and is part of the larger Cedar Lane Park. Find nearby activities, places to eat, and more with Tiny Tribe Adventures.",
+//   "url": "https://tinytribeadventures.com/locations/states/MD/Columbia/Cedar-Lane-Park-East-Playground",
+//   "address": {
+//     "@type": "PostalAddress",
+//     "streetAddress": "Cedar Lane Path",
+//     "addressLocality": "Columbia",
+//     "addressRegion": "MD",
+//     "postalCode": "21044",
+//     "addressCountry": "US"
+//   },
+//   "geo": {
+//     "@type": "GeoCoordinates",
+//     "latitude": 39.215411,
+//     "longitude": -76.8577
+//   },
+//   "image": {
+//     "@type": "ImageObject",
+//     "url": "https://tinytribeadventures.com/map/playground.png",
+//     "height": "512",
+//     "width": "512"
+//   },
+//   "isAccessibleForFree": true,
+//   "publicAccess": true,
+//   "amenityFeature": [
+//     {
+//       "@type": "LocationFeatureSpecification",
+//       "name": "Playground Equipment",
+//       "value": true
+//     },
+//     {
+//       "@type": "LocationFeatureSpecification",
+//       "name": "Picnic Area",
+//       "value": true
+//     }
+//   ],
+//   "tourBookingPage": "https://tinytribeadventures.com/book-tour",
+//   "suitableForChildren": true,
+//   "openingHoursSpecification": {
+//     "@type": "OpeningHoursSpecification",
+//     "dayOfWeek": [
+//       "Monday",
+//       "Tuesday",
+//       "Wednesday",
+//       "Thursday",
+//       "Friday",
+//       "Saturday",
+//       "Sunday"
+//     ],
+//     "opens": "06:00",
+//     "closes": "22:00"
+//   },
+//   "review": {
+//     "@type": "Review",
+//     "reviewRating": {
+//       "@type": "Rating",
+//       "ratingValue": "4.5",
+//       "bestRating": "5"
+//     },
+//     "author": {
+//       "@type": "Person",
+//       "name": "John Doe"
+//     },
+//     "reviewBody": "Great playground for kids! The equipment is well-maintained and there's plenty of space for running around."
+//   }
+// }
 </script>
 
 <svelte:head>
