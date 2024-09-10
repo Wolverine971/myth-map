@@ -3,9 +3,8 @@
 
 	// import twitter from '$lib/images/twitter.svg';
 
-	const formattedDate = metaData?.date
-		? new Date(metaData?.date).toDateString()
-		: new Date().toDateString();
+	const formattedDate = new Date(metaData?.updated_at || metaData?.created_at || metaData?.date || new Date()).toDateString()
+		
 </script>
 
 <p>

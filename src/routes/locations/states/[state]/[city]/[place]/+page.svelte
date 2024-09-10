@@ -83,11 +83,31 @@ Links to websites.
 			/>
 			<div>
 				<ArticleTitle title={data.locationData?.title} />
-				<ArticleSubTitle metaData={data.locationData} />
-				{#if data.locationData.website}
-					<A href={data.locationData.website} target="_blank" rel="noopener noreferrer">Webpage</A>
-				{/if}
-			</div>
+				<div style="display: flex; gap: 2rem;">
+					<div>
+					
+						<ArticleSubTitle metaData={data.locationData} />
+						{#if data.locationData.website}
+							<A href={data.locationData.website} target="_blank" rel="noopener noreferrer">Website &#8594;</A>
+						{/if}
+						{#if data.locationData.phone_number}
+							<p>Phone: {data.locationData.phone_number}</p>
+
+						{/if}
+					</div>
+					{#if data.locationData.opening_times}
+					<div>
+						<p>Opening Times:</p>
+								<ul class="list-inside list-disc">
+									{#each data.locationData.opening_times.split(',') as time}
+										<li>{time}</li>
+									{/each}
+								</ul>
+
+					</div>
+					{/if}
+				</div>
+		</div>
 		</div>
 
 		{#if content}
