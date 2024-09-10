@@ -42,7 +42,7 @@
 			<Button outline>Manage Content</Button></A
 		>
 		<A href="/locations/add" outline>
-			<Button outline>Add Location</Button></A
+			<Button outline>Add/ Update Locations</Button></A
 		>
 	</div>
 {/if}

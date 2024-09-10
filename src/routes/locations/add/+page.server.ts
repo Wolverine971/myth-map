@@ -110,6 +110,6 @@ function getContentLocationDataFromFormData(formData: FormData, locationId: numb
 		title: formData.get('name') as string,
 		loc: (formData.get('name') as string).split(' ').join('-'),
 		website: formData.get('website') as string,
-		email: formData.get('email') as string
+		email: formData.get('email') as string || null, // Set to null if empty
 	};
 }

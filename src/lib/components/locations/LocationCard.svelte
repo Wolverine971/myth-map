@@ -121,7 +121,7 @@
 				<Button
 					color="primary"
 					size="sm"
-					class="w-full hover:outline hover:outline-2 hover:outline-primary-600">Details</Button
+					class="w-full hover:outline hover:outline-2 hover:outline-primary-600">Details &#8594;</Button
 				>
 			</a>
 			{#if website}
