@@ -83,7 +83,10 @@
 			style: 'mapbox://styles/mapbox/streets-v12',
 			center: [-76.7818, 39.2141],
 			zoom: 7,
-			accessToken: PUBLIC_MAP_KEY
+			minZoom: 3, // Set minimum zoom level
+			maxZoom: 18, // Set maximum zoom level
+			accessToken: PUBLIC_MAP_KEY,
+			renderWorldCopies: false // Prevent rendering multiple worlds when zoomed out
 		});
 
 		map.on('load', async () => {
@@ -93,6 +96,7 @@
 				updateMapState();
 				addMapControls();
 				addMapEventListeners();
+				optimizeForMobile();
 			} catch (error) {
 				console.error('Error initializing map:', error);
 			}
@@ -396,6 +400,7 @@
 
 	function addMapControls() {
 		map.addControl(new FullscreenControl(), 'top-right');
+		map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
 	}
 
 	function addMapEventListeners() {
@@ -413,13 +418,16 @@
 		const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
 		const clusterId = features[0].properties.cluster_id;
 
-		map.getSource('shownLocations').getClusterExpansionZoom(clusterId, (err, zoom) => {
-			if (err) return;
-			map.easeTo({
-				center: features[0].geometry.coordinates,
-				zoom: zoom
-			});
-		});
+		(map.getSource('shownLocations') as mapboxgl.GeoJSONSource).getClusterExpansionZoom(
+			clusterId,
+			(err, zoom) => {
+				if (err) return;
+				map.easeTo({
+					center: features[0].geometry.coordinates,
+					zoom: zoom
+				});
+			}
+		);
 	}
 
 	function handleUnclusteredPointClick(e) {
@@ -565,6 +573,14 @@
 		private _updateButtonIcon() {
 			this._icon.classList.toggle('fullscreen-icon', !this._fullscreen);
 			this._icon.classList.toggle('exit-fullscreen-icon', this._fullscreen);
+		}
+	}
+
+	function optimizeForMobile() {
+		if (window.innerWidth < 768) { // Adjust this value as needed for your mobile breakpoint
+			map.scrollZoom.disable(); // Disable scroll zooming on mobile
+			map.dragRotate.disable(); // Disable map rotation on mobile
+			map.touchZoomRotate.disableRotation(); // Disable rotation with touch gestures
 		}
 	}
 
