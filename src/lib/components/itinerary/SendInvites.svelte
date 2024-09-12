@@ -160,7 +160,7 @@
         ${endDate ? ` | <strong>End:</strong> ${new Date(endDate).toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}` : ''}
     </div>
 
-    <a href="https://www.tinytribeadventures.com/itineraries/${itineraryId}" class="cta-button" target="_blank">
+    <a href="https://tinytribeadventures.com/itineraries/${itineraryId}" class="cta-button" target="_blank">
         View Full Itinerary Details 👉
     </a>
     

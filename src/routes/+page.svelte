@@ -104,12 +104,12 @@
 	<div class="container mx-auto px-2 py-8 md:px-4">
 		{#if isDesktop}
 			<h1 class="mb-4 text-4xl font-extrabold text-primary-500 md:text-5xl">
-				Welcome to Tiny Tribe Adventures
+				Family Friendly Activity Finder
 			</h1>
 		{/if}
 
 		<h2 class="mb-6 p-1 text-2xl font-bold text-neutral-700">
-			Your one stop shop for planning family friendly activities!
+			Your one stop shop for planning the next family adventure!
 		</h2>
 
 		<div class="flex w-full flex-col gap-6">

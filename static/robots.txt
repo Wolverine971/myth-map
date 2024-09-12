@@ -1,0 +1,7 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Disallow: /register/
+Disallow: /login/
+Allow: /
+
+Sitemap: https://www.tinytribeadventures.com/sitemap.xml

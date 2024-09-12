@@ -9,7 +9,7 @@
 	const stagesContentRetrieval = ['Sent out for review', 'Reviewed', 'Socialized', 'Growing'];
 	let showEditModal = false;
 
-	const url = `/locations/states/${blogContent.location.state}/${blogContent.location.city}/${blogContent.loc}`;
+	const url = `/locations/states/${blogContent.location.state}/${blogContent.location.city.split(' ').join('-')}/${blogContent.loc}`;
 
 	async function getInfo() {
 		try {
@@ -51,11 +51,19 @@
 		<p><strong>Author:</strong> {blogContent.author}</p>
 		<p><strong>Location:</strong> {blogContent.location.city}, {blogContent.location.state}</p>
 		<p><strong>Type:</strong> {blogContent.type || 'N/A'}</p>
-		<p style="color:{!blogContent.opening_times ? 'red' : ''}"><strong>Opening Times</strong> {blogContent.opening_times}</p>
-		<p style="color:{!blogContent.phone_number ? 'red' : ''}"><strong>Phone Number:</strong> {blogContent.phone_number}</p>
-		<p style="color:{!blogContent.email ? 'red' : ''}"><strong>Email:</strong> {blogContent.email}</p>
+		<p style="color:{!blogContent.opening_times ? 'red' : ''}">
+			<strong>Opening Times</strong>
+			{blogContent.opening_times}
+		</p>
+		<p style="color:{!blogContent.phone_number ? 'red' : ''}">
+			<strong>Phone Number:</strong>
+			{blogContent.phone_number}
+		</p>
+		<p style="color:{!blogContent.email ? 'red' : ''}">
+			<strong>Email:</strong>
+			{blogContent.email}
+		</p>
 		<p><strong>Comment Count:</strong>{blogContent.comment_count}</p>
-
 	</div>
 </div>
 
