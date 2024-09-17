@@ -29,7 +29,6 @@
 
 	$: if (map && mapboxgl) {
 		if (shownLocations) updateLocations(shownLocations);
-		if (currentLocation) updateCurrentLocation(currentLocation);
 		if (selectedState) updateStateFilter(selectedState);
 		if (selectedState && selectedCity) updateCityFilter(selectedState, selectedCity);
 	}
@@ -71,6 +70,8 @@
 	onMount(async () => {
 		mapboxgl = await import('mapbox-gl');
 		await initMap();
+
+		updateCurrentLocation(currentLocation);
 	});
 
 	onDestroy(() => {
@@ -375,26 +376,28 @@
 	function getFeatureCollection(locations: any[]) {
 		return {
 			type: 'FeatureCollection',
-			features: locations.map((contentLocation, i) => ({
-				type: 'Feature',
-				properties: {
-					latitude: contentLocation.location.lat,
-					longitude: contentLocation.location.lng,
-					address_line_1: contentLocation.location.address_line_1,
-					city: contentLocation.location.city,
-					state: contentLocation.location.state,
-					zip_code: contentLocation.location.zip_code,
-					website: contentLocation.location.website,
-					name: contentLocation.location.name,
-					location: contentLocation.location.location,
-					id: i,
-					icon: `${getLocationIcon(contentLocation.location.name)}1`
-				},
-				geometry: {
-					type: 'Point',
-					coordinates: [contentLocation.location.lng, contentLocation.location.lat]
-				}
-			}))
+			features: locations
+				.filter((l) => l.location)
+				.map((contentLocation, i) => ({
+					type: 'Feature',
+					properties: {
+						latitude: contentLocation.location.lat,
+						longitude: contentLocation.location.lng,
+						address_line_1: contentLocation.location.address_line_1,
+						city: contentLocation.location.city,
+						state: contentLocation.location.state,
+						zip_code: contentLocation.location.zip_code,
+						website: contentLocation.location.website,
+						name: contentLocation.location.name,
+						location: contentLocation.location.location,
+						id: i,
+						icon: `${getLocationIcon(contentLocation.location.name)}1`
+					},
+					geometry: {
+						type: 'Point',
+						coordinates: [contentLocation.location.lng, contentLocation.location.lat]
+					}
+				}))
 		};
 	}
 
@@ -577,7 +580,8 @@
 	}
 
 	function optimizeForMobile() {
-		if (window.innerWidth < 768) { // Adjust this value as needed for your mobile breakpoint
+		if (window.innerWidth < 768) {
+			// Adjust this value as needed for your mobile breakpoint
 			map.scrollZoom.disable(); // Disable scroll zooming on mobile
 			map.dragRotate.disable(); // Disable map rotation on mobile
 			map.touchZoomRotate.disableRotation(); // Disable rotation with touch gestures

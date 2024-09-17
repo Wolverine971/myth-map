@@ -13,8 +13,10 @@
 	export let data: PageData;
 
 	$: state = $page.params.state;
-	$: cities = data.contentLocations?.sort((a, b) => a.city.localeCompare(b.city));
-	$: cityMap = new Map(cities?.map((location) => [location.city, location.id]));
+	$: cities = data.contentLocations?.sort((a, b) =>
+		a.location?.city.localeCompare(b.location?.city)
+	);
+	$: cityMap = new Map(cities?.map((l) => [l.location?.city, l.location?.id]));
 
 	let stateName: string;
 	let userLocation: { lat: number; lng: number } | null;
@@ -62,7 +64,7 @@
 						</A>
 					</summary>
 					<div class="location-grid">
-						{#each data.contentLocations.filter((l) => l.location.city === city) as contentLocation}
+						{#each data.contentLocations.filter((l) => l?.location && l?.location?.city === city) as contentLocation}
 							<LocationCardSmall
 								name={contentLocation.location.name}
 								coords={{ lat: contentLocation.location.lat, lng: contentLocation.location.lng }}

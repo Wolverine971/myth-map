@@ -14,7 +14,6 @@
 		activeTab = tab;
 	}
 	export let data;
-	console.log(data);
 </script>
 
 <main class="container mx-auto mt-4 p-4">

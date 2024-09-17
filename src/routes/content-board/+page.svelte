@@ -5,7 +5,6 @@
 	import ContentCard from '$lib/components/content/contentCard.svelte';
 
 	export let data: PageData;
-	console.log(data);
 
 	let expandedBlogTitle: string | null = null;
 	let activeSelection = 'locations';

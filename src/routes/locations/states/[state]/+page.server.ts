@@ -10,7 +10,7 @@ export const load: PageServerLoad = async (event) => {
 		const { data: stateLocationData, error: stateLocationDataError } = await event.locals.supabase
 			.from('content_locations')
 			.select(`*, location:locations(*)`)
-			.eq('state', state.abr);
+			.eq('location.state', state.abr);
 
 		if (stateLocationDataError) {
 			console.log('stateLocationDataError', stateLocationDataError);

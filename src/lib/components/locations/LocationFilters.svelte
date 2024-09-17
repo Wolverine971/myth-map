@@ -137,7 +137,7 @@
 			>
 			<DropdownItem
 				class="hover:bg-gray-100 {baseSelect === 'Food' && 'active'}"
-				on:click={baseSelection}>Food</DropdownItem
+				on:click={baseSelection}>Eats</DropdownItem
 			>
 		</Dropdown>
 	</div>

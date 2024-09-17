@@ -23,7 +23,7 @@
 		}
 		return 0;
 	});
-	cities?.forEach((location) => (cityMap[location.city] = location.id));
+	cities?.forEach((l) => (cityMap[l.location.city] = l.location.id));
 	let userLocation: { lat: number; lng: number } | null;
 
 	currentLocation.subscribe((value) => {
@@ -53,7 +53,7 @@
 	{#if cityMap}
 		<ul class="grid grid-cols-2 gap-4 lg:gap-8">
 			{#each Object.keys(cityMap) as city, index}
-				{#each data?.locations.filter((l) => l.city === city) as contentLocation}
+				{#each data?.locations as contentLocation}
 					<li>
 						<div class="panel">
 							<LocationCardSmall
