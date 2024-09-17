@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Card, Button, A, Input, Label, Avatar } from 'flowbite-svelte';
-	import { UserCircleSolid } from 'flowbite-svelte-icons';
 	import type { PageData } from './$types';
 	import { goto } from '$app/navigation';
 	import { enhance } from '$app/forms';
@@ -43,6 +42,9 @@
 		>
 		<A href="/locations/add" outline>
 			<Button outline>Add/ Update Locations</Button></A
+		>
+		<A href="/marketing" outline>
+			<Button outline>Marketing Dashboard</Button></A
 		>
 	</div>
 {/if}
