@@ -66,13 +66,24 @@
 	}
 
 	function handleContentUpdate(event: CustomEvent) {
-		const updatedContent = event.detail;
-		const index = contentItems.findIndex((item) => item.id === updatedContent.id);
-		if (index !== -1) {
-			contentItems[index] = updatedContent;
-			contentItems = [...contentItems]; // Trigger reactivity
+		const updatedContents = event.detail;
+		if (Array.isArray(updatedContents)) {
+			// Handle multiple content updates (from campaign date change)
+			updatedContents.forEach((updatedContent) => {
+				const index = contentItems.findIndex((item) => item.id === updatedContent.id);
+				if (index !== -1) {
+					contentItems[index] = updatedContent;
+				}
+			});
+		} else {
+			// Handle single content update
+			const updatedContent = event.detail;
+			const index = contentItems.findIndex((item) => item.id === updatedContent.id);
+			if (index !== -1) {
+				contentItems[index] = updatedContent;
+			}
 		}
-		selectedContent = null; // Reset selectedContent to trigger re-render
+		contentItems = [...contentItems]; // Trigger reactivity
 		closeEditModal();
 		dispatch('calendarUpdated');
 	}
@@ -109,6 +120,8 @@
 		return new Date(a.scheduled_date).getTime() - new Date(b.scheduled_date).getTime();
 	}
 </script>
+
+<svelte:window on:contentUpdated={handleContentUpdate} />
 
 <div class="mb-4 flex items-center justify-between">
 	<div>

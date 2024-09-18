@@ -99,6 +99,61 @@ export const actions: Actions = {
         return { success: true, campaign: data[0] };
     },
 
+    updateCampaignContent: async (event) => {
+        const { request } = event;
+        const formData = await request.formData();
+
+        const campaignId = formData.get('campaignId') as string
+        const oldStartDate = formData.get('oldStartDate') as string
+        const newStartDate = formData.get('newStartDate') as string
+
+
+        console.log('Updating content for campaign:', campaignId);
+        const oldDate = new Date(oldStartDate);
+        const newDate = new Date(newStartDate);
+        const timeDiff = newDate.getTime() - oldDate.getTime();
+
+        // Fetch all content for the campaign
+        const { data: contentItems, error: fetchError } = await event.locals.supabase
+            .from('content')
+            .select('*')
+            .eq('campaign_id', campaignId);
+
+        if (fetchError) {
+            console.error('Error fetching campaign content:', fetchError);
+            return fail(500, { success: false, message: 'Failed to fetch campaign content' });
+        }
+
+        // Update each content item's scheduled_date
+        const updatePromises = contentItems.map(async (item) => {
+            const oldItemDate = new Date(item.scheduled_date);
+            const newItemDate = new Date(oldItemDate.getTime() + timeDiff);
+
+            const { data, error: updateError } = await event.locals.supabase
+                .from('content')
+                .update({ scheduled_date: newItemDate.toISOString() })
+                .eq('id', item.id)
+                .select();
+
+            if (updateError) {
+                console.error(`Error updating content item ${item.id}:`, updateError);
+                return null;
+            }
+
+            return data[0];
+        });
+
+        const updatedContent = await Promise.all(updatePromises);
+        const successfulUpdates = updatedContent.filter(item => item !== null);
+
+        if (successfulUpdates.length !== contentItems.length) {
+            console.error('Some content items failed to update');
+            return fail(500, { success: false, message: 'Some content items failed to update' });
+        }
+
+        return { success: true, updatedContent: successfulUpdates };
+    },
+
     createContent: async (event) => {
         const { request } = event;
         const formData = await request.formData();

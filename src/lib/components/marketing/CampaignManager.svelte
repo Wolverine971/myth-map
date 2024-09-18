@@ -1,23 +1,130 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import { Button, Card, Input, Label, Textarea } from 'flowbite-svelte';
-	import type { Campaign } from '$lib/types';
+	import { deserialize, enhance } from '$app/forms';
+	import { Button, Card, Input, Label, Textarea, Select } from 'flowbite-svelte';
+	import type { Campaign } from '$lib/types/marketing';
+	import { createEventDispatcher } from 'svelte';
 
 	export let campaigns: Campaign[];
 
-	let editingCampaign: Campaign | null = null;
+	const dispatch = createEventDispatcher();
+
+	let editingCampaign: Partial<Campaign> | null = null;
+	let originalStartDate: string | null = null;
 
 	function startEditing(campaign: Campaign) {
 		editingCampaign = { ...campaign };
+		originalStartDate = campaign.start_date;
 	}
 
 	function cancelEditing() {
 		editingCampaign = null;
+		originalStartDate = null;
 	}
 
 	function updateEditingCampaign(field: keyof Campaign, value: string) {
 		if (editingCampaign) {
 			editingCampaign = { ...editingCampaign, [field]: value };
+		}
+	}
+
+	async function handleCampaignCreate(event: SubmitEvent) {
+		event.preventDefault();
+		const form = event.target as HTMLFormElement;
+		const formData = new FormData(form);
+
+		const response = await fetch('?/createCampaign', {
+			method: 'POST',
+			body: formData
+		});
+
+		const result = deserialize(await response.text());
+
+		if (result.type === 'success') {
+			campaigns = [...campaigns, result?.data?.campaign];
+			createPrimerContent(result?.data.campaign);
+			form.reset();
+		}
+	}
+
+	async function handleCampaignUpdate(event: SubmitEvent) {
+		event.preventDefault();
+		const form = event.target as HTMLFormElement;
+		const formData = new FormData(form);
+
+		const response = await fetch('?/updateCampaign', {
+			method: 'POST',
+			body: formData
+		});
+
+		const result = deserialize(await response.text());
+
+		console.log(result);
+
+		if (result.type === 'success') {
+			const updatedCampaign = result?.data?.campaign;
+			const index = campaigns.findIndex((c) => c.id === updatedCampaign.id);
+			if (index !== -1) {
+				campaigns[index] = updatedCampaign;
+				campaigns = [...campaigns];
+			}
+
+			if (originalStartDate && updatedCampaign.start_date !== originalStartDate) {
+				await updateAssociatedContent(
+					updatedCampaign.id,
+					originalStartDate,
+					updatedCampaign.start_date
+				);
+			}
+
+			cancelEditing();
+		}
+	}
+
+	async function createPrimerContent(campaign: Campaign) {
+		const form = new FormData();
+		form.append('campaign_id', campaign.id);
+		form.append(
+			'content_text',
+			`PRIME the audience! What do they need to do? We're launching our ${campaign.name} campaign. Be on the lookout over the next few weeks. #${campaign.name.replace(/\s+/g, '')}`
+		);
+		form.append('scheduled_date', campaign.start_date);
+		form.append('platform', 'twitter'); // You can adjust this or make it selectable);
+		form.append('status', 'scheduled');
+		form.append('content_promotion_accounts', '');
+		form.append('content_hashtags', `#${campaign.name.replace(/\s+/g, '')}`);
+		form.append('content_themes', campaign.themes_and_topics);
+
+		const response = await fetch('?/createContent', {
+			method: 'POST',
+
+			body: form
+		});
+
+		const result = deserialize(await response.text());
+
+		if (result.type === 'success') {
+			dispatch('contentCreated', result?.data?.content);
+		}
+	}
+
+	async function updateAssociatedContent(
+		campaignId: string,
+		oldStartDate: string,
+		newStartDate: string
+	) {
+		const form = new FormData();
+		form.append('campaignId', campaignId);
+		form.append('oldStartDate', oldStartDate);
+		form.append('newStartDate', newStartDate);
+		const response = await fetch('?/updateCampaignContent', {
+			method: 'POST',
+			body: form
+		});
+
+		const result = deserialize(await response.text());
+
+		if (result.type === 'success') {
+			dispatch('contentUpdated', result?.data?.updatedContent);
 		}
 	}
 </script>
@@ -27,7 +134,7 @@
 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 	<div>
 		<h3 class="mb-2 text-xl font-bold">Create New Campaign</h3>
-		<form action="?/createCampaign" method="POST" use:enhance class="space-y-4">
+		<form on:submit={handleCampaignCreate} class="space-y-4">
 			<Label>
 				Name
 				<Input type="text" name="name" required />
@@ -62,7 +169,7 @@
 			</Label>
 			<Label>
 				Campaign Hashtags
-				<Input type="text" name="campaign_hashtags" placeholder="" />
+				<Input type="text" name="campaign_hashtags" />
 			</Label>
 			<Label>
 				Campaign Promotion Accounts
@@ -77,79 +184,68 @@
 		{#each campaigns as campaign}
 			<Card class="mb-2">
 				{#if editingCampaign && editingCampaign.id === campaign.id}
-					<form action="?/updateCampaign" method="POST" use:enhance class="space-y-2">
-						<input type="hidden" name="id" value={editingCampaign.id} />
+					<form on:submit={handleCampaignUpdate} class="space-y-2">
+						<input type="hidden" name="id" value={campaign.id} />
 						<Input
 							type="text"
 							placeholder="Name"
 							name="name"
-							value={editingCampaign.name}
-							on:input={(e) => updateEditingCampaign('name', e.currentTarget.value)}
+							bind:value={editingCampaign.name}
 							required
 						/>
 						<Textarea
 							name="description"
 							placeholder="Description"
-							value={editingCampaign.description}
-							on:input={(e) => updateEditingCampaign('description', e.currentTarget.value)}
+							bind:value={editingCampaign.description}
 						/>
 						<Input
 							type="date"
 							placeholder="Start Date"
 							name="start_date"
-							value={editingCampaign.start_date}
-							on:input={(e) => updateEditingCampaign('start_date', e.currentTarget.value)}
+							bind:value={editingCampaign.start_date}
 							required
 						/>
 						<Input
 							type="date"
 							placeholder="End Date"
 							name="end_date"
-							value={editingCampaign.end_date}
-							on:input={(e) => updateEditingCampaign('end_date', e.currentTarget.value)}
+							bind:value={editingCampaign.end_date}
 							required
 						/>
 						<Input
 							type="color"
 							placeholder="Color"
 							name="color"
-							value={editingCampaign.color}
-							on:input={(e) => updateEditingCampaign('color', e.currentTarget.value)}
+							bind:value={editingCampaign.color}
 							required
 						/>
 						<Textarea
 							name="target_audience"
 							placeholder="Target Audience"
-							value={editingCampaign.target_audience}
-							on:input={(e) => updateEditingCampaign('target_audience', e.currentTarget.value)}
+							bind:value={editingCampaign.target_audience}
 						/>
 						<Textarea
 							name="themes_and_topics"
 							placeholder="Themes and Topics"
-							value={editingCampaign.themes_and_topics}
-							on:input={(e) => updateEditingCampaign('themes_and_topics', e.currentTarget.value)}
+							bind:value={editingCampaign.themes_and_topics}
 						/>
 						<Input
 							type="text"
 							placeholder="Target Hashtags"
 							name="target_hashtags"
-							value={editingCampaign.target_hashtags}
-							on:input={(e) => updateEditingCampaign('target_hashtags', e.currentTarget.value)}
+							bind:value={editingCampaign.target_hashtags}
 						/>
 						<Input
 							type="text"
 							placeholder="Campaign Hashtags"
 							name="campaign_hashtags"
-							value={editingCampaign.campaign_hashtags}
-							on:input={(e) => updateEditingCampaign('campaign_hashtags', e.currentTarget.value)}
+							bind:value={editingCampaign.campaign_hashtags}
 						/>
 						<Input
 							type="text"
 							placeholder="Campaign Promotion Accounts"
 							name="campaign_promotion_accounts"
-							value={editingCampaign.campaign_promotion_accounts}
-							on:input={(e) =>
-								updateEditingCampaign('campaign_promotion_accounts', e.currentTarget.value)}
+							bind:value={editingCampaign.campaign_promotion_accounts}
 						/>
 						<Button type="submit">Save</Button>
 						<Button on:click={cancelEditing}>Cancel</Button>
