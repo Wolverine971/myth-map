@@ -60,8 +60,9 @@
 
 	const baseSelection = (e) => {
 		// dispatch('baseSelection', [e.target.innerText]);
-		baseSelect = e.target.innerText;
-		const selectedItem = displayTags.find((tag) => tag.name === e.target.innerText);
+		baseSelect = e.target.innerText === 'Activity' ? 'Activity' : 'Eats';
+
+		const selectedItem = displayTags.find((tag) => tag.name === baseSelect);
 		selectedItem.checked = true;
 
 		checkedItems = [...displayTags.filter((tag) => tag.checked)];
@@ -95,7 +96,7 @@
 		if (name === baseSelect) {
 			baseSelect = null;
 		}
-		if (name === 'Activity' || name === 'Food') {
+		if (name === 'Activity' || name === 'Eats') {
 			baseSelect = null;
 			dispatch(
 				'baseSelection',
@@ -122,7 +123,7 @@
 <div class="flex flex-wrap items-center gap-1">
 	<div class="flex items-center" transition:fade={{ duration: 600 }}>
 		<Button outline>
-			Location Type: {baseSelect ?? 'Any'}
+			{baseSelect ? baseSelect : 'Activity/ Eats: Any'}
 			<ChevronDownOutline class="ms-2 h-6 w-6" />
 		</Button>
 		<Dropdown
@@ -136,14 +137,14 @@
 				on:click={baseSelection}>Activity</DropdownItem
 			>
 			<DropdownItem
-				class="hover:bg-gray-100 {baseSelect === 'Food' && 'active'}"
+				class="hover:bg-gray-100 {baseSelect === 'Eats' && 'active'}"
 				on:click={baseSelection}>Eats</DropdownItem
 			>
 		</Dropdown>
 	</div>
 	<div class="flex items-center" transition:fade={{ duration: 800 }}>
 		<Button outline>
-			Location Type: {indoorOutdoorSelect ?? 'Any'}
+			{indoorOutdoorSelect ? indoorOutdoorSelect : 'Indoor/ Outdoor: Any'}
 			<ChevronDownOutline class="ms-2 h-6 w-6" />
 		</Button>
 		<Dropdown

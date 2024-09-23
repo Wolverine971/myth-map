@@ -8,7 +8,6 @@
 	import { loadCityGeoJSON } from '../../../utils/geoDataLoader';
 	import type { Map, Popup, Marker, LngLatBounds } from 'mapbox-gl';
 	import { notifications } from '../shared/notifications';
-	import pingSound from '../../../sounds/tic-toc-click.wav';
 
 	export let locations: any[] = [];
 	export let shownLocations: any[] = [];
@@ -24,7 +23,7 @@
 	let popup: Popup;
 	let currentLocationMarker: Marker;
 	let mapboxgl: typeof import('mapbox-gl');
-	const audio = new Audio(pingSound);
+	const audio = new Audio('/sounds/tic-toc-click.wav');
 
 	const key = Symbol();
 

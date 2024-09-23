@@ -59,10 +59,10 @@
 					<h4 class="font-bold">{template.type}</h4>
 					<p>{template.content_text}</p>
 					<p>Purpose: {template.purpose_description}</p>
-					<Button on:click={() => startEditing(template)}>Edit</Button>
-					<form action="?/deleteTemplate" method="POST" use:enhance>
+					<Button outline on:click={() => startEditing(template)}>Edit</Button>
+					<form action="?/deleteTemplate" method="POST" use:enhance style="margin-top: .5rem;">
 						<input type="hidden" name="id" value={template.id} />
-						<Button type="submit" color="red">Delete</Button>
+						<Button outline type="submit" color="red">Delete</Button>
 					</form>
 				{/if}
 			</Card>
