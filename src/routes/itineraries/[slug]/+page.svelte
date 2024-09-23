@@ -67,6 +67,7 @@
 				});
 		}
 	}
+	console.log(data);
 </script>
 
 <svelte:window bind:innerWidth />
@@ -97,28 +98,26 @@
 				</div>
 			</Card>
 
-			<Card class="mb-8 max-w-xl bg-white shadow-lg">
-				<Heading tag="h2" class="mb-6 text-2xl font-semibold text-primary-600">Locations</Heading>
+			<Heading tag="h2" class="mb-6 text-2xl font-semibold text-primary-600">Locations</Heading>
 
-				{#if data.itinerary.items.length === 0}
-					<P class="text-lg text-neutral-600">No locations added to this itinerary yet.</P>
-				{:else}
-					<div class="space-y-6">
-						{#each data.itinerary.items.sort((a, b) => a.order_index - b.order_index) as item}
-							<LocationCardSmall
-								name={item.location.name}
-								coords={{ lat: item.location.lat, lng: item.location.lng }}
-								address={`${item.location.address_line_1}${item.location.address_line_2 ? ` ${item.location.address_line_2}` : ''}, ${item.location.city}, ${item.location.state} ${item.location.zip_code}`}
-								website={item.location.website}
-								tags={[]}
-								contentLocation={{ location: item.location }}
-								user={data.user}
-								{innerWidth}
-							/>
-						{/each}
-					</div>
-				{/if}
-			</Card>
+			{#if data.itinerary.items.length === 0}
+				<P class="text-lg text-neutral-600">No locations added to this itinerary yet.</P>
+			{:else}
+				<div class="space-y-6">
+					{#each data.itinerary?.items.sort((a, b) => a.order_index - b.order_index) as item}
+						<LocationCardSmall
+							name={item.location.name}
+							coords={{ lat: item.location.lat, lng: item.location.lng }}
+							address={`${item.location.address_line_1}${item.location.address_line_2 ? ` ${item.location.address_line_2}` : ''}, ${item.location.city}, ${item.location.state} ${item.location.zip_code}`}
+							website={item.location.website}
+							tags={[]}
+							contentLocation={{ location: item.location }}
+							user={data.user}
+							{innerWidth}
+						/>
+					{/each}
+				</div>
+			{/if}
 		</div>
 
 		<div class="lg:col-span-1">

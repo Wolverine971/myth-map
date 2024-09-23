@@ -91,7 +91,7 @@
 <Card
 	horizontal={true}
 	{size}
-	class="mx-auto flex max-w-md flex-col bg-white p-4 shadow-md transition-shadow duration-300 hover:shadow-lg sm:flex-row sm:gap-2 sm:p-6 md:gap-4"
+	class="flex max-w-md flex-col bg-white p-4 shadow-md transition-shadow duration-300 hover:shadow-lg sm:flex-row sm:gap-2 sm:p-6 md:gap-4"
 >
 	<div
 		style={innerWidth >= 640 ? 'width: 50%;' : 'width: 100%;'}
@@ -146,7 +146,8 @@
 				<Button
 					color="primary"
 					size="sm"
-					class="w-full hover:outline hover:outline-2 hover:outline-primary-600">Details &#8594;</Button
+					class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
+					>Details &#8594;</Button
 				>
 			</a>
 			{#if website}

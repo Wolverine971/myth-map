@@ -11,6 +11,7 @@
 	import Comments from '$lib/components/comments/Comments.svelte';
 	import LocationPageHead from '$lib/components/blog/LocationPageHead.svelte';
 	import { FileCopyOutline, ArrowRightOutline } from 'flowbite-svelte-icons';
+	import { currentItinerary } from '$lib/stores/itineraryStore';
 
 	export let data: PageData;
 	let audio: any;
@@ -26,7 +27,7 @@
 
 	onMount(() => {
 		const placesToEatMap = new Set(
-			data.locationTags?.filter((tag) => tag.tags.name === 'Food').map((tag) => tag.location.name)
+			data.locationTags?.filter((tag) => tag.tags.name === 'Eats').map((tag) => tag.location.name)
 		);
 
 		[placesToEat, activities] = data.nearbyLocations.reduce(
@@ -41,6 +42,13 @@
 			[[], []]
 		);
 	});
+
+	let isInItinerary = false;
+
+	currentItinerary.subscribe((value) => {
+		isInItinerary = value?.items?.some((item) => item.location.id === location.id) ?? false;
+	});
+
 	const copy = () => {
 		audio?.play();
 		navigator.clipboard.writeText(
@@ -48,6 +56,24 @@
 		);
 		notifications.info('Address copied to clipboard', 3000);
 	};
+
+	function addToItinerary() {
+		const newLocation: Location = {
+			id: data.locationData.location.id,
+			name: data.locationData.location.name,
+			latitude: data.locationData.location.lat,
+			longitude: data.locationData.location.lng,
+			address: data.locationData.location.address,
+			description: data.locationData.location.description
+		};
+		// console.log(newLocation);
+		currentItinerary.addItem({
+			location: newLocation,
+			itineraryId: $currentItinerary?.id,
+			name: data.user?.email ?? '',
+			userId: data.user?.id
+		});
+	}
 
 	async function findNearby() {
 		const body = new FormData();
@@ -139,11 +165,22 @@ Links to websites.
 								href={data.locationData.website}
 								target="_blank"
 								rel="noopener noreferrer"
-								class="my-2">Website Site <ArrowRightOutline class=" h-8 w-8" /></A
+								class="my-2">Website <ArrowRightOutline class=" h-8 w-8" /></A
 							>
 						{/if}
 						{#if data.locationData.phone_number}
 							<p>Phone: {data.locationData.phone_number}</p>
+						{/if}
+
+						{#if data.user}
+							<Button
+								color="alternative"
+								disabled={isInItinerary}
+								on:click={addToItinerary}
+								class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
+							>
+								{isInItinerary ? 'Added to Itinerary' : 'Add to Itinerary'}
+							</Button>
 						{/if}
 					</div>
 					{#if data.locationData.opening_times}

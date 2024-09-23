@@ -19,6 +19,9 @@ export const load: PageServerLoad = async (event) => {
 		.eq('id', params.slug)
 		.single();
 
+
+
+
 	if (fetchError) {
 		throw error(404, 'Itinerary not found');
 	}

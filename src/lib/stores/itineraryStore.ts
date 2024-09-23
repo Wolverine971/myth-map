@@ -183,6 +183,17 @@ function createItineraryStore() {
 					end_time: formatTime(item.end_time)
 				}));
 
+				const { error: removeItemsError } = await supabase
+					.from('itinerary_items')
+					.delete()
+					.eq('itinerary_id', id);
+
+				if (removeItemsError) {
+					console.error('Error removing itinerary items:', removeItemsError);
+					throw removeItemsError;
+				}
+
+
 				const { error: itemsError } = await supabase
 					.from('itinerary_items')
 					.upsert(itemUpdates, { onConflict: 'id' });

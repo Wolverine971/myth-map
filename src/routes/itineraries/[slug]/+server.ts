@@ -16,9 +16,23 @@ export const PATCH: RequestHandler = async ({ params, request, locals }) => {
 		return json({ error: error.message }, { status: 400 });
 	}
 
+	const { error: removeItemsError } = await locals.supabase
+		.from('itinerary_items')
+		.delete()
+		.eq('itinerary_id', slug);
+
+	if (removeItemsError) {
+		return json({ error: removeItemsError.message }, { status: 400 });
+	}
+
 	// Update itinerary items
 	const itemUpdates = items.map((item, index) => ({
 		id: item.id,
+		itinerary_id: slug,
+		location_id: item.location_id,
+		notes: item.notes,
+		start_time: item.start_time || null,
+		end_time: item.end_time || null,
 		order_index: index
 	}));
 

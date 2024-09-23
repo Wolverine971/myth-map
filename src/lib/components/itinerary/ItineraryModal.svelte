@@ -158,6 +158,7 @@
 
 	async function saveItinerary() {
 		try {
+			// console.log('doesnt work');
 			await currentItinerary.updateItinerary({
 				id: $currentItinerary.id,
 				name: $currentItinerary.name,
