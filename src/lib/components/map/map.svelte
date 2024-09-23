@@ -33,6 +33,7 @@
 		if (shownLocations) updateLocations(shownLocations);
 		if (selectedState) updateStateFilter(selectedState);
 		if (selectedState && selectedCity) updateCityFilter(selectedState, selectedCity);
+		if (selectedState && !selectedCity) unselectCityFilter();
 	}
 
 	$: if (currentLocation && mapInitialized) showCurrentLocation();
@@ -131,6 +132,7 @@
 			{ url: '/map/nature-preserve.png', id: 'nature-preserve1' },
 			{ url: '/map/community-center.png', id: 'community-center1' },
 			{ url: '/map/art-studio.png', id: 'art-studio1' },
+			{ url: '/map/aquarium.png', id: 'aquarium1' },
 			{ url: '/map/splash-pad.png', id: 'splash-pad1' },
 			{ url: '/map/train.png', id: 'train1' },
 			{ url: '/map/park-with-trails.png', id: 'park-with-trails1' },
@@ -296,6 +298,18 @@
 			_selectedCity = cityName;
 		} catch (error) {
 			console.error('Error loading city GeoJSON:', error);
+		}
+	}
+
+	async function unselectCityFilter() {
+		if (!map) return;
+
+		_selectedCity = null;
+
+		try {
+			removeSelectedCityLayers();
+		} catch (error) {
+			console.error('Error removing selected city GeoJSON:', error);
 		}
 	}
 
