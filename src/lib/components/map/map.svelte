@@ -27,51 +27,40 @@
 
 	const key = Symbol();
 
-	$: if (map && mapboxgl) {
+	let mapInitialized = false;
+
+	$: if (map && mapboxgl && mapInitialized) {
 		if (shownLocations) updateLocations(shownLocations);
 		if (selectedState) updateStateFilter(selectedState);
 		if (selectedState && selectedCity) updateCityFilter(selectedState, selectedCity);
 	}
 
-	$: currentLocation, showCurrentLocation();
+	$: if (currentLocation && mapInitialized) showCurrentLocation();
 
 	const showCurrentLocation = async () => {
 		if (!currentLocation?.lat && browser) {
 			await getCurrentLocation();
 		}
 
-		if (!map || !mapboxgl?.Marker) {
-			setTimeout(() => {
-				showCurrentLocation();
-			}, 1000);
-		}
+		if (!map || !mapboxgl?.Marker) return;
 
-		const el = document.createElement('div');
-		const width = 30;
-		const height = 30;
-		if (el && mapboxgl) {
-			el.className = 'marker';
-
-			el.style.backgroundImage = `url(/map/location-arrow.svg)`;
-
-			el.style.width = `${width}px`;
-			el.style.height = `${height}px`;
-			el.style.backgroundSize = '100%';
-
-			const marker = new mapboxgl.Marker(el).setLngLat(currentLocation).setPopup(
-				new mapboxgl.Popup({ offset: 25 }) // add popups
-					.setHTML(`<h3>Current Location</h3>`)
-			);
-
-			marker.addTo(map);
+		if (!currentLocationMarker) {
+			const el = createMarkerElement();
+			currentLocationMarker = new mapboxgl.Marker(el)
+				.setLngLat(currentLocation)
+				.setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`<h3>Current Location</h3>`))
+				.addTo(map);
+		} else {
+			currentLocationMarker.setLngLat(currentLocation);
 		}
 	};
 
 	onMount(async () => {
-		mapboxgl = await import('mapbox-gl');
-		await initMap();
-
-		updateCurrentLocation(currentLocation);
+		if (browser) {
+			mapboxgl = await import('mapbox-gl');
+			await initMap();
+			mapInitialized = true;
+		}
 	});
 
 	onDestroy(() => {
@@ -79,15 +68,19 @@
 	});
 
 	async function initMap() {
+		if (!mapContainer) return;
+
 		map = new mapboxgl.Map({
 			container: mapContainer,
 			style: 'mapbox://styles/mapbox/streets-v12',
 			center: [-76.7818, 39.2141],
 			zoom: 7,
-			minZoom: 3, // Set minimum zoom level
-			maxZoom: 18, // Set maximum zoom level
+			minZoom: 3,
+			maxZoom: 18,
 			accessToken: PUBLIC_MAP_KEY,
-			renderWorldCopies: false // Prevent rendering multiple worlds when zoomed out
+			renderWorldCopies: false,
+			preserveDrawingBuffer: false,
+			antialias: false
 		});
 
 		map.on('load', async () => {
@@ -338,6 +331,8 @@
 	}
 
 	function updateLocations(locations: any[]) {
+		if (!map || !map.getSource('shownLocations')) return;
+
 		const source = map.getSource('shownLocations') as mapboxgl.GeoJSONSource;
 		if (source) {
 			source.setData(getFeatureCollection(locations));
@@ -400,7 +395,6 @@
 				}))
 		};
 	}
-
 	function addMapControls() {
 		map.addControl(new FullscreenControl(), 'top-right');
 		map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
@@ -581,10 +575,11 @@
 
 	function optimizeForMobile() {
 		if (window.innerWidth < 768) {
-			// Adjust this value as needed for your mobile breakpoint
-			map.scrollZoom.disable(); // Disable scroll zooming on mobile
-			map.dragRotate.disable(); // Disable map rotation on mobile
-			map.touchZoomRotate.disableRotation(); // Disable rotation with touch gestures
+			map.scrollZoom.disable();
+			map.dragRotate.disable();
+			map.touchZoomRotate.disableRotation();
+			map.dragPan.disable();
+			map.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
 		}
 	}
 
@@ -595,7 +590,7 @@
 	<div class="map" id="map" bind:this={mapContainer}></div>
 </div>
 
-<style lang="">
+<style>
 	.map-wrap {
 		position: relative;
 		z-index: 2;

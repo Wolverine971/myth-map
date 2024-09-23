@@ -1,14 +1,19 @@
 <script lang="ts">
 	import { Heading, P, TabItem, Tabs } from 'flowbite-svelte';
-	import Map from '$lib/components/map/map.svelte';
+	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
+	import { lazy } from '../utils/lazy';
+	import { get } from 'svelte/store';
+
+	const { componentStore: mapComponentStore, load: loadMap } = lazy(
+		() => import('$lib/components/map/map.svelte')
+	);
 	import LocationCard from '$lib/components/locations/LocationCard.svelte';
 	import LocationFilters from '$lib/components/locations/LocationFilters.svelte';
 	import GeoFilters from '$lib/components/locations/GeoFilters.svelte';
 	import SkeletonCard from '$lib/components/shared/SkeletonCard.svelte';
 	import type { PageData } from './$types';
 	import { currentLocation } from '$lib/stores/locationStore';
-	import { onMount } from 'svelte';
-	import { fade } from 'svelte/transition';
 
 	export let data: PageData;
 
@@ -30,7 +35,6 @@
 		const baseTagMap = Object.fromEntries(data.tags.map((tag) => [tag.name, 1]));
 		availableTagsMap = { ...baseTagMap };
 
-		// Simulate loading delay
 		await new Promise((resolve) => setTimeout(resolve, 1000));
 		shownLocations = data.locations;
 		isLoading = false;
@@ -76,6 +80,13 @@
 	function handleFilterChange(event: CustomEvent): void {
 		selectedState = event.detail.state;
 		selectedCity = event.detail.city;
+	}
+
+	async function handleTabChange(tabName: string) {
+		selectedTab = tabName;
+		if (tabName === 'map') {
+			await loadMap();
+		}
 	}
 </script>
 
@@ -132,7 +143,7 @@
 
 			<div class="tab-sections">
 				<Tabs tabStyle="underline" contentClass="py-4 bg-transparent">
-					<TabItem open title="Gallery View" on:click={() => (selectedTab = 'gallery')}>
+					<TabItem open title="Gallery View" on:click={() => handleTabChange('gallery')}>
 						<div class="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4" style="width: 100%;">
 							{#each isLoading ? Array(6) : shownLocations as content_location (Math.random())}
 								{#if isLoading}
@@ -159,15 +170,18 @@
 							{/each}
 						</div>
 					</TabItem>
-					<TabItem title="Map View" on:click={() => (selectedTab = 'map')}>
+					<TabItem title="Map View" on:click={() => handleTabChange('map')}>
 						<div class="h-[500px] min-h-[430px]">
-							<Map
-								locations={data.locations}
-								{shownLocations}
-								currentLocation={userLocation}
-								{selectedState}
-								{selectedCity}
-							/>
+							{#if $mapComponentStore}
+								<svelte:component
+									this={$mapComponentStore}
+									locations={data.locations}
+									{shownLocations}
+									currentLocation={userLocation}
+									{selectedState}
+									{selectedCity}
+								/>
+							{/if}
 						</div>
 					</TabItem>
 				</Tabs>
