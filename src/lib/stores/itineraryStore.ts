@@ -179,6 +179,9 @@ function createItineraryStore() {
 				const itemUpdates = items.map((item, index) => ({
 					id: item.id,
 					order_index: index,
+					itinerary_id: item.itinerary_id,
+					location_id: item.location_id,
+					notes: item.notes,
 					start_time: formatTime(item.start_time),
 					end_time: formatTime(item.end_time)
 				}));
