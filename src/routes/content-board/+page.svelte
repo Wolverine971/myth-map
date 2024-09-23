@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { Select, Button, Card, Accordion } from 'flowbite-svelte';
+	import { A, Select, Button, Accordion } from 'flowbite-svelte';
 	import { notifications } from '$lib/components/shared/notifications';
 	import ContentCard from '$lib/components/content/contentCard.svelte';
 
@@ -89,6 +89,23 @@
 		}
 	}
 </script>
+
+{#if data.user.admin}
+	<div class="mx-auto flex w-full max-w-3xl gap-1 p-4">
+		<A href="/admin/users" outline>
+			<Button outline>Manage Users</Button></A
+		>
+		<A href="/content-board" outline>
+			<Button outline>Manage Content</Button></A
+		>
+		<A href="/locations/add" outline>
+			<Button outline>Add/ Update Locations</Button></A
+		>
+		<A href="/marketing" outline>
+			<Button outline>Marketing Dashboard</Button></A
+		>
+	</div>
+{/if}
 
 <div class="container mx-auto p-4">
 	<Select class="mb-4" bind:value={activeSelection}>

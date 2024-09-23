@@ -1,14 +1,22 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+
 	import {
+		A,
+		Button,
 		Table,
 		TableBody,
 		TableBodyCell,
 		TableBodyRow,
 		TableHead,
-		TableHeadCell
+		TableHeadCell,
+		Modal,
+		Label,
+		Input,
+		Checkbox,
+		Accordion,
+		AccordionItem
 	} from 'flowbite-svelte';
-	import { Button, Modal, Label, Input, Checkbox, Accordion, AccordionItem } from 'flowbite-svelte';
 
 	export let data;
 	let users = data.users;
@@ -30,6 +38,23 @@
 		return date ? new Date(date).toLocaleString() : 'N/A';
 	}
 </script>
+
+{#if data.user.admin}
+	<div class="mx-auto flex w-full max-w-3xl gap-1 p-4">
+		<A href="/admin/users" outline>
+			<Button outline>Manage Users</Button></A
+		>
+		<A href="/content-board" outline>
+			<Button outline>Manage Content</Button></A
+		>
+		<A href="/locations/add" outline>
+			<Button outline>Add/ Update Locations</Button></A
+		>
+		<A href="/marketing" outline>
+			<Button outline>Marketing Dashboard</Button></A
+		>
+	</div>
+{/if}
 
 <div class="container mx-auto px-4 py-8">
 	<h1 class="mb-6 text-3xl font-bold">User Management</h1>

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { applyAction, enhance } from '$app/forms';
-	import { Button, Label, Input, Textarea, Modal } from 'flowbite-svelte';
+	import { A, Button, Label, Input, Modal } from 'flowbite-svelte';
 	import type { PageData } from './$types';
 	import { getAndUpdateLatLng } from '../../../utils/locations';
 	import { notifications } from '$lib/components/shared/notifications';
@@ -39,7 +39,7 @@
 	function parseOpeningTimes(times: string) {
 		const parsedTimes = Array(7).fill('');
 		const timeParts = times.split(', ');
-		timeParts.forEach(part => {
+		timeParts.forEach((part) => {
 			const [day, hours] = part.split(': ');
 			const index = days.indexOf(day);
 			if (index !== -1) {
@@ -61,8 +61,6 @@
 		lat = coordinates.lat;
 		lng = coordinates.lng;
 	};
-
-	
 
 	function resetForm() {
 		name = '';
@@ -95,49 +93,82 @@
 		phoneNumber = location.content_locations[0]?.phone_number || '';
 		website = location.content_locations[0]?.website || '';
 		email = location.content_locations[0]?.email || '';
-		openingTimes = location.content_locations[0]?.opening_times 
+		openingTimes = location.content_locations[0]?.opening_times
 			? parseOpeningTimes(location.content_locations[0].opening_times)
 			: Array(7).fill('');
 		modalStore.set(true);
 	}
 </script>
 
+{#if data.user.admin}
+	<div class="mx-auto flex w-full max-w-3xl gap-1 p-4">
+		<A href="/admin/users" outline>
+			<Button outline>Manage Users</Button></A
+		>
+		<A href="/content-board" outline>
+			<Button outline>Manage Content</Button></A
+		>
+		<A href="/locations/add" outline>
+			<Button outline>Add/ Update Locations</Button></A
+		>
+		<A href="/marketing" outline>
+			<Button outline>Marketing Dashboard</Button></A
+		>
+	</div>
+{/if}
+
 <div class="container mx-auto p-4">
 	<h1 class="mb-6 text-3xl font-bold">Manage Locations</h1>
 
-	<Button on:click={() => { resetForm(); modalStore.set(true); }}>Add New Location</Button>
+	<Button
+		on:click={() => {
+			resetForm();
+			modalStore.set(true);
+		}}>Add New Location</Button
+	>
 
 	<Modal bind:open={$modalStore} size="xl">
 		<form
 			method="POST"
-			action={isEditing ? `?/updateLocation&id=${editingLocationId}` : "?/addLocation"}
-			
+			action={isEditing ? `?/updateLocation&id=${editingLocationId}` : '?/addLocation'}
 			use:enhance={({ formElement, formData, action, cancel, submitter }) => {
 				const formattedOpeningTimes = formatOpeningTimes();
 				formData.append('openingTimes', formattedOpeningTimes);
-				
-				return async ({ result }) => {
-				if (result.type === 'success') {
-					notifications.success(isEditing ? 'Location updated successfully' : 'Location added successfully', 3000);
-					resetForm();
-					modalStore.set(false);
-				} else {
-					notifications.danger(isEditing ? 'Error updating location' : 'Error adding location', 3000);
-				}
 
-				await applyAction(result);
-			};
+				return async ({ result }) => {
+					if (result.type === 'success') {
+						notifications.success(
+							isEditing ? 'Location updated successfully' : 'Location added successfully',
+							3000
+						);
+						resetForm();
+						modalStore.set(false);
+					} else {
+						notifications.danger(
+							isEditing ? 'Error updating location' : 'Error adding location',
+							3000
+						);
+					}
+
+					await applyAction(result);
+				};
 			}}
 			class="space-y-4"
 		>
-			<h2 class="text-2xl font-bold mb-4">{isEditing ? 'Edit Location' : 'Add Location'}</h2>
+			<h2 class="mb-4 text-2xl font-bold">{isEditing ? 'Edit Location' : 'Add Location'}</h2>
 			<div>
 				<Label for="name" class="mb-2">Name</Label>
 				<Input type="text" id="name" name="name" bind:value={name} required />
 			</div>
 			<div>
 				<Label for="addressLine1" class="mb-2">Address Line 1</Label>
-				<Input type="text" id="addressLine1" name="addressLine1" bind:value={addressLine1} required />
+				<Input
+					type="text"
+					id="addressLine1"
+					name="addressLine1"
+					bind:value={addressLine1}
+					required
+				/>
 			</div>
 			<div>
 				<Label for="addressLine2" class="mb-2">Address Line 2</Label>
@@ -191,7 +222,11 @@
 				{#each days as day, index}
 					<div class="mb-2 flex items-center space-x-2">
 						<span class="w-10">{day}:</span>
-						<Input type="text" bind:value={openingTimes[index]} placeholder="e.g. 12:00 pm - 8:00 pm or leave empty for closed" />
+						<Input
+							type="text"
+							bind:value={openingTimes[index]}
+							placeholder="e.g. 12:00 pm - 8:00 pm or leave empty for closed"
+						/>
 					</div>
 				{/each}
 			</div>

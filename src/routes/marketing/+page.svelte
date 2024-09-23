@@ -6,7 +6,7 @@
 	import CampaignManager from '$lib/components/marketing/CampaignManager.svelte';
 	import ContentManager from '$lib/components/marketing/ContentManager.svelte';
 	import TemplateManager from '$lib/components/marketing/TemplateManager.svelte';
-	import { Tabs, TabItem } from 'flowbite-svelte';
+	import { Tabs, TabItem, A, Button, Heading } from 'flowbite-svelte';
 
 	let activeTab: 'calendar' | 'campaigns' | 'content' | 'templates' = 'calendar';
 
@@ -16,8 +16,27 @@
 	export let data;
 </script>
 
+{#if data.user.admin}
+	<div class="mx-auto flex w-full max-w-3xl gap-1 p-4">
+		<A href="/admin/users" outline>
+			<Button outline>Manage Users</Button></A
+		>
+		<A href="/content-board" outline>
+			<Button outline>Manage Content</Button></A
+		>
+		<A href="/locations/add" outline>
+			<Button outline>Add/ Update Locations</Button></A
+		>
+		<A href="/marketing" outline>
+			<Button outline>Marketing Dashboard</Button></A
+		>
+	</div>
+{/if}
+
 <main class="container mx-auto mt-4 p-4">
-	<h1>Social Media Scheduler</h1>
+	<Heading tag="h1" customSize="text-3xl md:text-4xl font-extrabold mb-4"
+		>Social Media Scheduler</Heading
+	>
 
 	<Tabs tabStyle="underline" contentClass="py-4 bg-transparent">
 		<TabItem open title="Calendar" on:click={() => setActiveTab('calendar')}>
