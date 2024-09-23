@@ -138,20 +138,18 @@
 
 		<div class="comment-actions">
 			<div class="flex items-center space-x-4">
-				<button
-					on:click={handleLike}
-					class="flex items-center space-x-1 text-gray-500 hover:text-blue-500"
-				>
+				<Button outline on:click={handleLike} class="flex items-center space-x-1 text-gray-500 ">
 					<ThumbsUp size={16} class={comment.userHasLiked ? 'text-blue-500' : ''} />
-					<span>{comment.likes}</span>
-				</button>
+					<span style="min-height: 20px">{comment.likes}</span>
+				</Button>
 
-				<button
+				<Button
+					outline
 					on:click={handleReplyClick}
-					class="flex items-center space-x-1 text-gray-500 hover:text-blue-500"
+					class="flex items-center space-x-1 text-gray-500 "
 				>
 					<MessageCircle size={16} />
-					<span>
+					<span style="min-height: 20px">
 						{#if comment.comment_count > 0}
 							{showReplies ? 'Hide' : 'Show'}
 							{comment.comment_count}
@@ -160,7 +158,7 @@
 							Reply
 						{/if}
 					</span>
-				</button>
+				</Button>
 			</div>
 
 			<div class="relative">
@@ -180,7 +178,14 @@
 		</div>
 
 		{#if showReplies}
-			<Comments parentId={comment.id} parentType="comment" depth={depth + 1} {displayName} {user} {innerWidth} />
+			<Comments
+				parentId={comment.id}
+				parentType="comment"
+				depth={depth + 1}
+				{displayName}
+				{user}
+				{innerWidth}
+			/>
 		{/if}
 	{/if}
 
@@ -190,7 +195,9 @@
 				bind:value={newCommentContent}
 				disabled={!user}
 				rows={3}
-				placeholder={user ? `Write a ${displayName.toLowerCase()}...` : 'Register to write a comment...'}
+				placeholder={user
+					? `Write a ${displayName.toLowerCase()}...`
+					: 'Register to write a comment...'}
 			/>
 			<Button on:click={handleSubmitComment} disabled={!user}>Submit {displayName}</Button>
 		</div>

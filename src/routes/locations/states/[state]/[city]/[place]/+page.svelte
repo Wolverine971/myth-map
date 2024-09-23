@@ -2,7 +2,7 @@
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
 	import { marked } from 'marked';
-	import { Heading, A } from 'flowbite-svelte';
+	import { Heading, A, Button } from 'flowbite-svelte';
 	import { notifications } from '$lib/components/shared/notifications';
 	import { getLocationIcon } from '../../../../../../utils/locationPhotos';
 	import ArticleTitle from '$lib/components/blog/ArticleTitle.svelte';
@@ -10,8 +10,14 @@
 	import LocationCardSmall from '$lib/components/locations/LocationCardSmall.svelte';
 	import Comments from '$lib/components/comments/Comments.svelte';
 	import LocationPageHead from '$lib/components/blog/LocationPageHead.svelte';
+	import { FileCopyOutline, ArrowRightOutline } from 'flowbite-svelte-icons';
 
 	export let data: PageData;
+	let audio: any;
+
+	onMount(() => {
+		audio = new Audio('/sounds/tic-toc-click.wav');
+	});
 
 	$: content = data.locationData?.content ? marked(data.locationData.content) : '';
 	$: icon = getLocationIcon(data?.locationData?.title);
@@ -35,6 +41,13 @@
 			[[], []]
 		);
 	});
+	const copy = () => {
+		audio?.play();
+		navigator.clipboard.writeText(
+			`${data.locationData.location?.address_line_1}${data.locationData.location?.address_line_2 ? ` ${data.locationData.location?.address_line_2}` : ''}, ${data.locationData.location?.city}, ${data.locationData.location?.state} ${data.locationData.location?.zip_code}`
+		);
+		notifications.info('Address copied to clipboard', 3000);
+	};
 
 	async function findNearby() {
 		const body = new FormData();
@@ -56,6 +69,7 @@
 	}
 	let innerWidth = 0;
 	const url = `locations/states/${data?.locationData?.location.state}/${data?.locationData?.location?.city.split(' ').join('-')}/${data?.locationData?.loc}`;
+	console.log(data);
 </script>
 
 <!-- Local Business jsonld 
@@ -85,9 +99,47 @@ Links to websites.
 				<div style="display: flex; gap: 2rem;">
 					<div>
 						<ArticleSubTitle metaData={data.locationData} />
+
+						{#if data.locationData.location?.address_line_1}
+							<Button
+								outline
+								color="alternative"
+								size="sm"
+								class=" px-3 hover:outline hover:outline-2 hover:outline-primary-400"
+								style="display: block; text-align: start;"
+								on:click={() => {
+									copy();
+								}}
+							>
+								<div style="display: flex; align-items: center; gap: .5rem">
+									<p
+										itemprop="address"
+										itemscope
+										itemtype="https://schema.org/PostalAddress"
+										style="text-align: start;"
+									>
+										<span itemprop="streetAddress"
+											>{data.locationData.location?.address_line_1}</span
+										>
+										{#if data.locationData.location?.address_line_2}
+											<span>, {data.locationData.location?.address_line_2}</span>
+										{/if}
+										<br />
+										<span itemprop="addressLocality">{data.locationData.location?.city}</span>,{' '}
+										<span itemprop="addressRegion">{data.locationData.location?.state}</span>{' '}
+										<span itemprop="postalCode">{data.locationData.location?.zip_code}</span>
+									</p>
+									<FileCopyOutline class=" h-8 w-8" />
+								</div>
+							</Button>
+						{/if}
+
 						{#if data.locationData.website}
-							<A href={data.locationData.website} target="_blank" rel="noopener noreferrer"
-								>Website &#8594;</A
+							<A
+								href={data.locationData.website}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="my-2">Website Site <ArrowRightOutline class=" h-8 w-8" /></A
 							>
 						{/if}
 						{#if data.locationData.phone_number}
