@@ -28,3 +28,9 @@ A tool for chronically curious families looking for their next adventure!
 
 - Lego map theme- cool dad mode- black colors
 - icon is a backpack exploding with activities
+
+
+## ingest these places here
+
+- https://bwiairport.com/at-bwi/places-to-go/childrens-play-areas/
+- https://annapolis.macaronikid.com/articles/582656b724d8f4da3ab37624/25-indoor-play-places-in-and-around-annapolis

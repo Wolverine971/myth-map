@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Card, Button } from 'flowbite-svelte';
+	import { Card, Button, DropdownItem, Dropdown } from 'flowbite-svelte';
 	import { browser } from '$app/environment';
 	import { getLocationIcon } from '../../../utils/locationPhotos';
 	import { currentLocation } from '$lib/stores/locationStore';
@@ -8,6 +8,7 @@
 	import { currentItinerary } from '$lib/stores/itineraryStore';
 	import type { SizeType } from 'flowbite-svelte/dist/types';
 	import type { Location } from '$lib/types';
+	import { ChevronDownOutline, ChevronRightOutline } from 'flowbite-svelte-icons';
 
 	export let name: string;
 	export let address: string;
@@ -130,7 +131,7 @@
 
 	<div class="flex min-w-0 flex-grow flex-col">
 		<h5 title={name} class="mb-2 text-wrap text-lg font-bold text-primary-700">
-			{name}
+			{name.length > 40 ? name.slice(0, 40) + '...' : name}
 		</h5>
 
 		<p class="mb-3 text-sm text-neutral-600">
@@ -146,46 +147,65 @@
 				<Button
 					color="primary"
 					size="sm"
+					style="display: flex; justify-content: space-between;"
 					class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
-					>Details &#8594;</Button
+					>Details <ChevronRightOutline class="w-6 h-6 ms-2 text-white dark:text-white" /></Button
 				>
 			</a>
-			{#if website}
-				<a href={website} target="_blank" rel="noopener noreferrer">
-					<Button
-						color="alternative"
-						size="sm"
-						class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
-						>Visit Website</Button
-					>
-				</a>
-			{/if}
 
-			{#if distance}
-				<div class="text-sm text-neutral-600">
-					<p>Distance: {distance} miles</p>
-					<p>Duration: {duration} minutes</p>
-				</div>
-			{:else}
-				<Button
-					color="alternative"
-					size="sm"
-					on:click={getHowFarAwayIsLocation}
-					class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
-				>
-					{distanceLoading ? 'Loading...' : 'How far away is it?'}
-				</Button>
-			{/if}
-			{#if user}
-				<Button
-					color="alternative"
-					disabled={isInItinerary}
-					on:click={addToItinerary}
-					class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
-				>
-					{isInItinerary ? 'Added to Itinerary' : 'Add to Itinerary'}
-				</Button>
-			{/if}
+			<Button
+				color="alternative"
+				size="sm"
+				style="display: flex; justify-content: space-between;"
+				class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
+				><span>More options</span><ChevronDownOutline
+					class="w-6 h-6 ms-2 text-black dark:text-white"
+				/></Button
+			>
+			<Dropdown>
+				<DropdownItem>
+					{#if website}
+						<a href={website} target="_blank" rel="noopener noreferrer">
+							<Button
+								color="alternative"
+								size="sm"
+								class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
+								>Visit Website</Button
+							>
+						</a>
+					{/if}
+				</DropdownItem>
+				<DropdownItem>
+					{#if distance}
+						<div class="text-sm text-neutral-600">
+							<p>Distance: {distance} miles</p>
+							<p>Duration: {duration} minutes</p>
+						</div>
+					{:else}
+						<Button
+							color="alternative"
+							size="sm"
+							on:click={getHowFarAwayIsLocation}
+							class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
+						>
+							{distanceLoading ? 'Loading...' : 'How far away is it?'}
+						</Button>
+					{/if}
+				</DropdownItem>
+
+				<DropdownItem>
+					{#if user}
+						<Button
+							color="alternative"
+							disabled={isInItinerary}
+							on:click={addToItinerary}
+							class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
+						>
+							{isInItinerary ? 'Added to Itinerary' : 'Add to Itinerary'}
+						</Button>
+					{/if}
+				</DropdownItem>
+			</Dropdown>
 		</div>
 	</div>
 </Card>
