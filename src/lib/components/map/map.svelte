@@ -225,9 +225,19 @@
 		_selectedState = stateObj;
 
 		try {
-			const stateGeoJSON = await fetch(
-				`https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/0/query?where=&text=${stateName}&objectIds=&time=&geometry=&geometryType=esriGeometryPolygon&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentsOnly=false&datumTransformation=&parameterValues=&rangeValues=&f=geojson`
-			).then((res) => res.json());
+			const response = await fetch(
+				`https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/0/query?where=&text=${encodeURIComponent(stateName)}&objectIds=&time=&geometry=&geometryType=esriGeometryPolygon&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=&queryByDistance=&returnExtentsOnly=false&datumTransformation=&parameterValues=&rangeValues=&f=geojson`
+			);
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const stateGeoJSON = await response.json();
+
+			if (!stateGeoJSON.features || stateGeoJSON.features.length === 0) {
+				throw new Error('No features found for state');
+			}
 
 			updateStateLayer(stateGeoJSON);
 			if (!selectedCity) removeSelectedCityLayers();
@@ -238,6 +248,7 @@
 			_selectedState = stateObj;
 		} catch (error) {
 			console.error('Error loading state boundary:', error);
+			notifications.warning(`Failed to load boundary for ${stateName}`);
 		}
 	}
 
@@ -282,23 +293,34 @@
 	}
 
 	async function updateCityFilter(stateName: { abr: string; name: string }, cityName: string) {
-		if (!map) return;
+		if (!map || !cityName) return;
 
 		if (_selectedCity && _selectedCity === cityName) return;
 
 		try {
 			const cityGeoJSON = await loadCityGeoJSON(
 				stateName.abr,
-				cityName.toLowerCase().replace(' ', '-')
+				cityName.toLowerCase().replace(/\s+/g, '-')
 			);
+
+			if (!cityGeoJSON) {
+				throw new Error('No GeoJSON data found for city');
+			}
+
 			const cityFeature =
 				cityGeoJSON.type === 'FeatureCollection' ? cityGeoJSON.features[0] : cityGeoJSON;
+
+			if (!cityFeature) {
+				throw new Error('No valid city feature found');
+			}
 
 			updateCityLayer(cityFeature);
 			zoomToLocation(cityFeature);
 			_selectedCity = cityName;
 		} catch (error) {
 			console.error('Error loading city GeoJSON:', error);
+			notifications.warning(`Failed to load boundary for ${cityName}`);
+			// Don't set _selectedCity if there was an error
 		}
 	}
 
@@ -355,23 +377,31 @@
 	}
 
 	async function updateCurrentLocation(location: { lat: number; lng: number }) {
-		if (!location || !map || !mapboxgl) {
-			if (!location && browser) {
-				await getCurrentLocation();
-			}
-			return;
+	if (!location || !map || !mapboxgl) {
+		if (!location && browser) {
+			await getCurrentLocation();
 		}
-
-		if (!currentLocationMarker) {
-			const el = createMarkerElement();
-			currentLocationMarker = new mapboxgl.Marker(el)
-				.setLngLat(location)
-				.setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML('<h3>Current Location</h3>'))
-				.addTo(map);
-		} else {
-			currentLocationMarker.setLngLat(location);
-		}
+		return;
 	}
+
+	// Validate coordinates
+	if (!location.lat || !location.lng || 
+		isNaN(location.lat) || isNaN(location.lng) ||
+		Math.abs(location.lat) > 90 || Math.abs(location.lng) > 180) {
+		console.error('Invalid coordinates:', location);
+		return;
+	}
+
+	if (!currentLocationMarker) {
+		const el = createMarkerElement();
+		currentLocationMarker = new mapboxgl.Marker(el)
+			.setLngLat([location.lng, location.lat])
+			.setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML('<h3>Current Location</h3>'))
+			.addTo(map);
+	} else {
+		currentLocationMarker.setLngLat([location.lng, location.lat]);
+	}
+}
 
 	function createMarkerElement() {
 		const el = document.createElement('div');
@@ -387,29 +417,32 @@
 		return {
 			type: 'FeatureCollection',
 			features: locations
-				.filter((l) => l.location)
+				.filter((l) => l?.location?.lat && l?.location?.lng) // Only include valid coordinates
 				.map((contentLocation, i) => ({
 					type: 'Feature',
 					properties: {
 						latitude: contentLocation.location.lat,
 						longitude: contentLocation.location.lng,
-						address_line_1: contentLocation.location.address_line_1,
-						city: contentLocation.location.city,
-						state: contentLocation.location.state,
-						zip_code: contentLocation.location.zip_code,
-						website: contentLocation.location.website,
-						name: contentLocation.location.name,
-						location: contentLocation.location.location,
-						id: i,
-						icon: `${getLocationIcon(contentLocation.location.name)}1`
+						address_line_1: contentLocation.location.address_line_1 || '',
+						city: contentLocation.location.city || '',
+						state: contentLocation.location.state || '',
+						zip_code: contentLocation.location.zip_code || '',
+						website: contentLocation.website || '',
+						name: contentLocation.location.name || 'Unknown Location',
+						id: contentLocation.location.id || i,
+						icon: `${getLocationIcon(contentLocation.location.name || 'default')}1`
 					},
 					geometry: {
 						type: 'Point',
-						coordinates: [contentLocation.location.lng, contentLocation.location.lat]
+						coordinates: [
+							Number(contentLocation.location.lng),
+							Number(contentLocation.location.lat)
+						]
 					}
 				}))
 		};
 	}
+
 	function addMapControls() {
 		map.addControl(new FullscreenControl(), 'top-right');
 		map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
@@ -443,49 +476,77 @@
 	}
 
 	function handleUnclusteredPointClick(e) {
+		if (!e.features || !e.features[0]) return;
+
 		const { properties, geometry } = e.features[0];
 		const { name, address_line_1, city, state, zip_code, website } = properties;
+
+		if (!geometry || !geometry.coordinates) return;
+
 		const coordinates = geometry.coordinates.slice();
 
+		// Handle coordinate wrapping
 		while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
 			coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
 		}
 
-		const address = `${address_line_1}, ${city}, ${state} ${zip_code}`;
-		const copyId = `copy-${name.split(' ').join('-')}`;
+		const address =
+			`${address_line_1 || ''}, ${city || ''}, ${state || ''} ${zip_code || ''}`.trim();
+		const copyId = `copy-${(name || 'location').replace(/\s+/g, '-')}`;
 		const detailsLink =
-			`/locations/states/${properties.state}/${properties.city}/${properties.name}`.replace(
-				/\s/g,
-				'-'
-			);
+			properties.state && properties.city && properties.name
+				? `/locations/states/${properties.state}/${properties.city.replace(/\s+/g, '-')}/${properties.name.replace(/\s+/g, '-')}`
+				: '#';
+
+		const websiteButton = website
+			? `<a style="border-radius: 5px; border: 1px solid #201f1f; padding: 2px 5px; margin: 3px 0; color: white; background: #00000070; font-weight: bold; float: right;" href="${website}" target="_blank">Website</a>`
+			: '';
 
 		popup
 			.setLngLat(coordinates)
 			.setHTML(
 				`
-				<div style="font-family: system-ui;">
-					<h1 style="font-size:2rem; line-height: 2rem; font-weight: bold;">${name}</h1>
-					<br>
-					<p id="${copyId}-address">
-						<b>Address</b>: 
-						<button type="button" id="${copyId}" style="border-radius: 5px; border: 1px solid #201f1f;  padding: 2px 5px; margin: 3px 0; color: white; background: #00000070; font-weight: bold;">
-							Copy Address
-						</button>
-						<br>${address_line_1},<br> ${city}, ${state} ${zip_code}
-					</p>
-					<br>
-					<a style="border-radius: 5px; border: 1px solid #201f1f; padding: 2px 5px; margin: 3px 0; color: white; background: #00000070; font-weight: bold; float: right;" href="${website}" target="_blank">Website</a>
+			<div style="font-family: system-ui; min-width: 200px;">
+				<h1 style="font-size:1.5rem; line-height: 1.5rem; font-weight: bold; margin-bottom: 0.5rem;">${name || 'Unknown Location'}</h1>
+				<p id="${copyId}-address">
+					<b>Address</b>: 
+					<button type="button" id="${copyId}" style="border-radius: 5px; border: 1px solid #201f1f; padding: 2px 5px; margin: 3px 0; color: white; background: #00000070; font-weight: bold;">
+						Copy Address
+					</button>
+					<br>${address}
+				</p>
+				<div style="margin-top: 1rem;">
+					${websiteButton}
 					<a style="border-radius: 5px; border: 1px solid #201f1f; padding: 2px 5px; margin: 3px 0; color: white; background: #00000070; font-weight: bold; float: right; margin-right: 0.2rem;" href="${detailsLink}">Details</a>
 				</div>
-			`
+			</div>
+		`
 			)
 			.addTo(map);
 
-		document.getElementById(copyId).addEventListener('click', () => {
-			navigator.clipboard.writeText(address);
-			notifications.info('Address copied to clipboard');
-			audio.play();
-		});
+		// Add event listener with error handling
+		setTimeout(() => {
+			const copyButton = document.getElementById(copyId);
+			if (copyButton) {
+				copyButton.addEventListener('click', () => {
+					if (navigator.clipboard) {
+						navigator.clipboard
+							.writeText(address)
+							.then(() => {
+								notifications.info('Address copied to clipboard');
+								if (audio) audio.play();
+							})
+							.catch((err) => {
+								console.error('Failed to copy address:', err);
+								notifications.warning('Failed to copy address');
+							});
+					} else {
+						// Fallback for older browsers
+						notifications.warning('Clipboard not supported');
+					}
+				});
+			}
+		}, 100);
 	}
 
 	class FullscreenControl {

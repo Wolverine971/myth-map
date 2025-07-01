@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import { lazy } from '../utils/lazy';
-	import { get } from 'svelte/store';
+	import { derived, writable } from 'svelte/store';
 
 	const { componentStore: mapComponentStore, load: loadMap } = lazy(
 		() => import('$lib/components/map/map.svelte')
@@ -19,11 +19,13 @@
 	export let data: PageData;
 
 	const url = 'https://tinytribeadventures.com';
-	let shownLocations = [];
-	let availableTagsMap: Record<string, number> = {};
+	
+	// Filter state management
+	const selectedTags = writable<string[]>([]);
+	const selectedState = writable<{ name: string; abr: string } | null>({ name: 'Maryland', abr: 'MD' });
+	const selectedCity = writable<string | null>(null);
+	
 	let userLocation: { lat: number; lng: number } | null = null;
-	let selectedState = { name: 'Maryland', abr: 'MD' };
-	let selectedCity: string | null = null;
 	let selectedTab = 'gallery';
 	let innerWidth = 0;
 	let isLoading = true;
@@ -32,55 +34,115 @@
 
 	currentLocation.subscribe((value) => (userLocation = value));
 
-	onMount(async () => {
-		const baseTagMap = Object.fromEntries(data.tags.map((tag) => [tag.name, 1]));
-		availableTagsMap = { ...baseTagMap };
+	// Derived store for filtered locations
+	const filteredLocations = derived(
+		[selectedTags, selectedState, selectedCity],
+		([$selectedTags, $selectedState, $selectedCity]) => {
+			let filtered = [...data.locations];
 
-		await new Promise((resolve) => setTimeout(resolve, 1000));
-		shownLocations = data.locations;
-		isLoading = false;
-	});
+			// Apply geographic filters first
+			if ($selectedState) {
+				filtered = filtered.filter(loc => 
+					loc.location.state === $selectedState.abr
+				);
+			}
 
-	function filterLocations(tags: string[]): void {
-		isLoading = true;
-		setTimeout(() => {
-			if (tags.length === 0) {
-				shownLocations = data.locations;
-			} else {
-				shownLocations = data.locations.filter((contentLocation) =>
-					tags.every((tag) =>
+			if ($selectedCity) {
+				filtered = filtered.filter(loc => 
+					loc.location.city.toLowerCase() === $selectedCity.toLowerCase()
+				);
+			}
+
+			// Apply tag filters
+			if ($selectedTags.length > 0) {
+				filtered = filtered.filter((contentLocation) =>
+					$selectedTags.every((tag) =>
 						data.locationTags.some(
-							(lt) => lt.location.name === contentLocation.location.name && lt.tags.name === tag
+							(lt) => 
+								lt.location.name === contentLocation.location.name && 
+								lt.tags.name === tag
 						)
 					)
 				);
 			}
-			updateAvailableTags(tags);
-			isLoading = false;
-		}, 300);
-	}
 
-	function updateAvailableTags(selectedTags: string[]): void {
-		if (selectedTags.length === 0) {
-			availableTagsMap = Object.fromEntries(data.tags.map((tag) => [tag.name, 1]));
-			return;
+			return filtered;
 		}
+	);
 
-		const locationMap = new Set(shownLocations.map((l) => l.location.name));
-		const newAvailableTags = {};
+	// Derived store for available tags based on current geographic filters
+	const availableTags = derived(
+		[selectedState, selectedCity],
+		([$selectedState, $selectedCity]) => {
+			let locationsInScope = [...data.locations];
 
-		data.locationTags.forEach((locationTag) => {
-			if (locationMap.has(locationTag.location.name)) {
-				newAvailableTags[locationTag.tags.name] = 1;
+			// Filter by geographic selections first
+			if ($selectedState) {
+				locationsInScope = locationsInScope.filter(loc => 
+					loc.location.state === $selectedState.abr
+				);
 			}
-		});
 
-		availableTagsMap = newAvailableTags;
+			if ($selectedCity) {
+				locationsInScope = locationsInScope.filter(loc => 
+					loc.location.city.toLowerCase() === $selectedCity.toLowerCase()
+				);
+			}
+
+			// Get location names in scope
+			const locationNamesInScope = new Set(
+				locationsInScope.map(l => l.location.name)
+			);
+
+			// Find tags available for these locations
+			const availableTagsMap = {};
+			data.locationTags.forEach((locationTag) => {
+				if (locationNamesInScope.has(locationTag.location.name)) {
+					availableTagsMap[locationTag.tags.name] = 1;
+				}
+			});
+
+			return availableTagsMap;
+		}
+	);
+
+	// Reactive variables for template
+	let shownLocations = [];
+	let availableTagsMap = {};
+
+	// Subscribe to derived stores
+	filteredLocations.subscribe(value => {
+		shownLocations = value;
+	});
+
+	availableTags.subscribe(value => {
+		availableTagsMap = value;
+	});
+
+	onMount(async () => {
+		// Initialize available tags
+		const baseTagMap = Object.fromEntries(data.tags.map((tag) => [tag.name, 1]));
+		availableTagsMap = { ...baseTagMap };
+
+		// Remove artificial delay - it's unnecessary
+		shownLocations = data.locations;
+		isLoading = false;
+	});
+
+	function handleTagFilterChange(event: CustomEvent) {
+		selectedTags.set(event.detail);
 	}
 
-	function handleFilterChange(event: CustomEvent): void {
-		selectedState = event.detail.state;
-		selectedCity = event.detail.city;
+	function handleGeoFilterChange(event: CustomEvent) {
+		const { state, city } = event.detail;
+		selectedState.set(state);
+		selectedCity.set(city);
+		
+		// Clear conflicting tags when geography changes
+		// This ensures tags are still valid for the new geographic scope
+		selectedTags.update(currentTags => {
+			return currentTags.filter(tag => availableTagsMap[tag]);
+		});
 	}
 
 	async function handleTabChange(tabName: string) {
@@ -88,6 +150,13 @@
 		if (tabName === 'map') {
 			await loadMap();
 		}
+	}
+
+	// Helper to clear all filters
+	function clearAllFilters() {
+		selectedTags.set([]);
+		selectedState.set(null);
+		selectedCity.set(null);
 	}
 </script>
 
@@ -125,20 +194,31 @@
 		</h2>
 
 		<div class="flex w-full flex-col gap-6">
+			<!-- Clear filters button -->
+			{#if $selectedTags.length > 0 || $selectedState || $selectedCity}
+				<div class="flex justify-end">
+					<button 
+						on:click={clearAllFilters}
+						class="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors"
+					>
+						Clear All Filters ({shownLocations.length} of {data.locations.length} shown)
+					</button>
+				</div>
+			{/if}
+
 			<LocationFilters
 				allTags={data.tags}
 				selectableTagsMap={availableTagsMap}
-				on:baseSelection={({ detail }) => filterLocations(detail)}
-				on:indoorOutdoorSelection={({ detail }) => filterLocations(detail)}
-				on:selected={({ detail }) => filterLocations(detail)}
+				selectedTags={$selectedTags}
+				on:filterChange={handleTagFilterChange}
 			/>
 
 			{#if selectedTab === 'map'}
 				<GeoFilters
-					on:filterChange={handleFilterChange}
+					on:filterChange={handleGeoFilterChange}
 					{shownLocations}
-					{selectedState}
-					{selectedCity}
+					selectedState={$selectedState}
+					selectedCity={$selectedCity}
 				/>
 			{/if}
 
@@ -146,7 +226,7 @@
 				<Tabs tabStyle="underline" contentClass="py-4 bg-transparent">
 					<TabItem open title="Gallery View" on:click={() => handleTabChange('gallery')}>
 						<div class="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4" style="width: 100%;">
-							{#each isLoading ? Array(6) : shownLocations as content_location (Math.random())}
+							{#each isLoading ? Array(6) : shownLocations as content_location (content_location?.location?.id || Math.random())}
 								{#if isLoading}
 									<SkeletonCard />
 								{:else}
@@ -170,6 +250,18 @@
 								{/if}
 							{/each}
 						</div>
+						
+						{#if !isLoading && shownLocations.length === 0}
+							<div class="text-center py-12">
+								<p class="text-lg text-gray-600 mb-4">No locations found matching your filters.</p>
+								<button 
+									on:click={clearAllFilters}
+									class="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+								>
+									Clear Filters
+								</button>
+							</div>
+						{/if}
 					</TabItem>
 					<TabItem title="Map View" on:click={() => handleTabChange('map')}>
 						<div class="h-[500px] min-h-[430px]">
@@ -179,8 +271,8 @@
 									locations={data.locations}
 									{shownLocations}
 									currentLocation={userLocation}
-									{selectedState}
-									{selectedCity}
+									selectedState={$selectedState}
+									selectedCity={$selectedCity}
 								/>
 							{/if}
 						</div>

@@ -1,22 +1,56 @@
 // svelte.config.js
-import adapter from '@sveltejs/adapter-auto';
-import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-import mdsvexConfig from './mdsvex.config.js';
-import { mdsvex } from 'mdsvex';
 
-/** @type {import('@sveltejs/kit').Config} */
-const config = {
-	// Consult https://kit.svelte.dev/docs/integrations#preprocessors
-	// for more information about preprocessors
-	preprocess: [vitePreprocess(), mdsvex(mdsvexConfig)],
-	extensions: ['.svelte', ...mdsvexConfig.extensions],
+import { mdsvex } from 'mdsvex';
+import adapter from '@sveltejs/adapter-vercel';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+
+export default {
+	extensions: ['.svelte', '.svx', '.md'],
+
+	preprocess: [
+		vitePreprocess({
+			postcss: true
+		}),
+		mdsvex({
+			extensions: ['.svx', '.md']
+		})
+	],
 
 	kit: {
-		// adapter-auto only supports some environments, see https://kit.svelte.dev/docs/adapter-auto for a list.
-		// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
-		// See https://kit.svelte.dev/docs/adapters for more information about adapters.
-		adapter: adapter()
+		// Use Vercel adapter with explicit runtime configuration
+		adapter: adapter({
+			runtime: 'nodejs20.x', // Explicitly specify Node 20 runtime
+			regions: ['iad1'], // Optional: specify region (iad1 is US East)
+			memory: 1024, // Optional: specify memory limit in MB
+			maxDuration: 10, // Optional: max execution time in seconds
+		}),
+
+		alias: {
+			$components: 'src/lib/components',
+			$ui: 'src/lib/ui',
+			$utils: 'src/lib/utils'
+		},
+
+		prerender: {
+			handleHttpError: ({ path, referrer, message }) => {
+				if (path.startsWith('/api/')) {
+					return;
+				}
+				// Only fail builds in production
+				if (process.env.VERCEL) {
+					throw new Error(message);
+				}
+				console.warn(`Prerender error on ${path}: ${message}`);
+			},
+			entries: [
+				'*',
+				'/blog',
+				'/locations'
+			]
+		},
+
+		env: {
+			publicPrefix: 'PUBLIC_'
+		}
 	}
 };
-
-export default config;

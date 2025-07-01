@@ -229,9 +229,9 @@ Please organize your research findings using the above categories, providing spe
 
 ## CUSTOMIZATION VARIABLES
 
-**[LOCATION NAME]:** Carlson's donuts
-**[ADDRESS/AREA]:** Severn, MD 21144
-**[TAGS]:** Treat Indoor Eats
+**[LOCATION NAME]:** Clarks Elioak Farm
+**[ADDRESS/AREA]:** Ellicott City, MD 21042
+**[TAGS]:** Physical Activity Eats Activity Animals Playground Outdoor
 
 
 ---
