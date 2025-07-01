@@ -44,6 +44,15 @@ export const load: PageLoad = async (event: any) => {
 	if (nearByLocationsError) {
 		console.error(nearByLocationsError);
 	}
+
+	const { data: selectedLocationTags, error: selectedLocationTagsError } = await event.locals.supabase
+		.from('location_tags')
+		.select('*, location:locations(*), tags(*)');
+	if (selectedLocationTagsError) {
+		console.error(selectedLocationTagsError);
+	}
+
+
 	const filteredNearByLocations = nearByLocations
 		.filter((location) => location.name !== blogData?.title)
 		.map((location) => {
@@ -52,6 +61,10 @@ export const load: PageLoad = async (event: any) => {
 				lng: location.long
 			};
 		});
+
+		
+
+
 
 	const { data: locationTags, error: locationTagsError } = await event.locals.supabase
 		.from('location_tags')
@@ -67,6 +80,7 @@ export const load: PageLoad = async (event: any) => {
 	return {
 		locationData: blogData,
 		locationTags,
+		selectedLocationTags,
 		nearbyLocations: filteredNearByLocations,
 		user
 	};

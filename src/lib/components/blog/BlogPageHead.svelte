@@ -25,15 +25,6 @@
 			]
 		},
 		description: description
-		// publisher: {
-		// 	'@type': 'Organization',
-		// 	sameAs: ['https://www.instagram.com/9takesdotcom/', 'https://twitter.com/9takesdotcom'],
-		// 	logo: {
-		// 		'@type': 'ImageObject',
-		// 		url: 'https://tinytribeadventures.com/brand/darkRubix.png'
-		// 	},
-		// 	name: '9takes'
-		// }
 	};
 
 	let icon = data?.pic ? data?.pic : 'myth-map';
