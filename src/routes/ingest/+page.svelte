@@ -1,3 +1,4 @@
+<!-- src/routes/ingest/+page.svelte -->
 <script lang="ts">
 	// import { joinEmail, joinEmail2, signupEmail, forgotPass } from '../../emails';
 	import type { PageData } from './$types';

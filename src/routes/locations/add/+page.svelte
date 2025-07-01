@@ -1,3 +1,4 @@
+<!-- src/routes/locations/add/+page.svelte -->
 <script lang="ts">
 	import { applyAction, enhance } from '$app/forms';
 	import { A, Button, Label, Input, Modal } from 'flowbite-svelte';

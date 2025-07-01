@@ -1,3 +1,4 @@
+// src/routes/locations/states/[state]/[city]/[place]/+page.server.ts
 import type { Actions, PageLoad } from './$types';
 
 export const load: PageLoad = async (event: any) => {

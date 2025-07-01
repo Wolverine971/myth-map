@@ -1,3 +1,4 @@
+<!-- src/routes/itineraries/+page.svelte -->
 <script lang="ts">
 	import { Button, Card, Heading, Li, List, P } from 'flowbite-svelte';
 	import type { PageData } from './$types';

@@ -1,3 +1,4 @@
+<!-- src/routes/account/+page.svelte -->
 <script lang="ts">
 	import { Card, Button, A, Input, Label, Avatar } from 'flowbite-svelte';
 	import type { PageData } from './$types';

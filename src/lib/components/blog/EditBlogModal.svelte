@@ -1,3 +1,4 @@
+<!-- src/lib/components/blog/EditBlogModal.svelte -->
 <script lang="ts">
 	import { Modal, Button, Input, Label } from 'flowbite-svelte';
 	import { marked } from 'marked';

@@ -1,3 +1,4 @@
+// src/routes/api/send-invites/+server.ts
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from '../$types';
 import { google } from 'googleapis';

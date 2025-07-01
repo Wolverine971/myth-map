@@ -1,3 +1,4 @@
+<!-- src/lib/components/icons/location-arrow.svelte -->
 <script>
 	export let className = '';
 

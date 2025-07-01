@@ -1,3 +1,4 @@
+// src/utils/locationPhotos.ts
 export const allPlaceIcons = {
 	'Science Center': '',
 	'Port Discovery': '',

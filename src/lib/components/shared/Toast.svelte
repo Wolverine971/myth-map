@@ -1,3 +1,4 @@
+<!-- src/lib/components/shared/Toast.svelte -->
 <script>
 	import { flip } from 'svelte/animate';
 	import { fly } from 'svelte/transition';

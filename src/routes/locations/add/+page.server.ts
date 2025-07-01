@@ -1,3 +1,4 @@
+// src/routes/locations/add/+page.server.ts
 import type { Actions, PageServerLoad } from './$types';
 import { fail } from '@sveltejs/kit';
 import { supabase } from '$lib/supabaseClient';

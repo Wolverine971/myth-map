@@ -1,3 +1,4 @@
+<!-- src/lib/components/itinerary/GoogleCalendarInvites.svelte -->
 <script lang="ts">
 	import { Button, Input, Label, Modal } from 'flowbite-svelte';
 	import { createEventDispatcher } from 'svelte';

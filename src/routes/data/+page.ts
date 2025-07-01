@@ -1,3 +1,4 @@
+// src/routes/data/+page.ts
 import { censusService } from '$lib/services/census';
 import type { PageLoad } from './$types';
 

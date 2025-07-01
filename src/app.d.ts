@@ -1,4 +1,4 @@
-// See https://kit.svelte.dev/docs/types#app
+// src/app.d.ts
 // for information about these interfaces
 
 import { Session, SupabaseClient, User } from '@supabase/supabase-js';

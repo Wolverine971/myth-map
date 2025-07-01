@@ -1,3 +1,4 @@
+<!-- src/lib/components/marketing/CampaignManager.svelte -->
 <script lang="ts">
 	import { deserialize, enhance } from '$app/forms';
 	import { Button, Card, Input, Label, Textarea, Select } from 'flowbite-svelte';

@@ -1,3 +1,4 @@
+<!-- src/routes/locations/states/[state]/[city]/[place]/+page.svelte -->
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';

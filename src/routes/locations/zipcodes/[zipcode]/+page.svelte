@@ -1,3 +1,4 @@
+<!-- src/routes/locations/zipcodes/[zipcode]/+page.svelte -->
 <script>
 	import { page } from '$app/stores';
 

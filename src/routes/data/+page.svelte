@@ -1,4 +1,4 @@
-<!-- src/routes/+page.svelte -->
+<!-- src/routes/data/+page.svelte -->
 <script lang="ts">
 	import { writable } from 'svelte/store';
 	import SearchHeader from '$lib/components/SearchHeader.svelte';

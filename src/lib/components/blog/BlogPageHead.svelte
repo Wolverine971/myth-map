@@ -1,3 +1,4 @@
+<!-- src/lib/components/blog/BlogPageHead.svelte -->
 <script lang="ts">
 	import { getLocationIcon } from '../../../utils/locationPhotos';
 

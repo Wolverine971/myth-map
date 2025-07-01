@@ -1,3 +1,4 @@
+<!-- src/routes/content-board/+page.svelte -->
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { A, Select, Button, Accordion } from 'flowbite-svelte';

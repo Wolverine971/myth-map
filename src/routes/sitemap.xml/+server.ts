@@ -1,3 +1,4 @@
+// src/routes/sitemap.xml/+server.ts
 import { supabase } from '$lib/supabaseClient';
 
 // const SITE_URL = 'tinytribeadventures.com';

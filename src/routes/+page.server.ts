@@ -1,3 +1,4 @@
+// src/routes/+page.server.ts
 import type { PageServerLoad } from './$types';
 
 /** @type {import('./$types').PageLoad} */

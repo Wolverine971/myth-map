@@ -1,3 +1,4 @@
+<!-- src/routes/locations/states/[state]/[city]/+page.svelte -->
 <script lang="ts">
 	import { Heading, P, A } from 'flowbite-svelte';
 	import { browser } from '$app/environment';

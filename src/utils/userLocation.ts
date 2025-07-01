@@ -1,3 +1,4 @@
+// src/utils/userLocation.ts
 import { currentLocation } from '$lib/stores/locationStore';
 
 export const getCurrentLocation = async () => {

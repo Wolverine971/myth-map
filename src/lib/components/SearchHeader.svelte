@@ -1,3 +1,4 @@
+<!-- src/lib/components/SearchHeader.svelte -->
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 

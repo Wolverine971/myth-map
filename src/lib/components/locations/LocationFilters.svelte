@@ -1,3 +1,4 @@
+<!-- src/lib/components/locations/LocationFilters.svelte -->
 <script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { Button, Checkbox, Dropdown, DropdownItem } from 'flowbite-svelte';

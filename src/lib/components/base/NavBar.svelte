@@ -1,3 +1,4 @@
+<!-- src/lib/components/base/NavBar.svelte -->
 <script lang="ts">
 	import { page } from '$app/stores';
 	import {

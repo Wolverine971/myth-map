@@ -1,3 +1,4 @@
+// src/utils/coordinates.ts
 export function metersToMiles(i) {
     return i * 0.000621371192
 }

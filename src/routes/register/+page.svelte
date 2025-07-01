@@ -1,3 +1,4 @@
+<!-- src/routes/register/+page.svelte -->
 <script lang="ts">
 	import { applyAction, enhance } from '$app/forms';
 	import { goto, invalidateAll } from '$app/navigation';

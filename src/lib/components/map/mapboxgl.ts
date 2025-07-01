@@ -1,4 +1,4 @@
-// import { PUBLIC_MAP_KEY } from '$env/static/public';
+// src/lib/components/map/mapboxgl.ts
 // import mapboxgl from 'mapbox-gl';
 
 // // https://docs.mapbox.com/help/glossary/access-token/

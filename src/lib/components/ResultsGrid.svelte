@@ -1,3 +1,4 @@
+<!-- src/lib/components/ResultsGrid.svelte -->
 <script lang="ts">
 	import { fade, slide } from 'svelte/transition';
 

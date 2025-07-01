@@ -1,3 +1,4 @@
+// src/routes/locations/+page.ts
 import { supabase } from '$lib/supabaseClient';
 import type { PageServerLoad } from './$types';
 

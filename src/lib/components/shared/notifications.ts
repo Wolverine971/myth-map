@@ -1,3 +1,4 @@
+// src/lib/components/shared/notifications.ts
 import { writable, derived } from 'svelte/store';
 
 const DEFAULT_TIMEOUT = 3000;

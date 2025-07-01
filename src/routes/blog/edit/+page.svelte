@@ -1,3 +1,4 @@
+<!-- src/routes/blog/edit/+page.svelte -->
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { Select, Label } from 'flowbite-svelte';

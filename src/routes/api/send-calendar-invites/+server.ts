@@ -1,3 +1,4 @@
+// src/routes/api/send-calendar-invites/+server.ts
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '../$types';
 import { google } from 'googleapis';

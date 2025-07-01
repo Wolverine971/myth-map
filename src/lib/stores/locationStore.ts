@@ -1,3 +1,4 @@
+// src/lib/stores/locationStore.ts
 import { writable } from 'svelte/store';
 
 type Location = {

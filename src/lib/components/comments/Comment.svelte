@@ -1,3 +1,4 @@
+<!-- src/lib/components/comments/Comment.svelte -->
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { Button, Badge, Textarea, Dropdown, DropdownItem } from 'flowbite-svelte';

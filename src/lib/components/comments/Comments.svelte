@@ -1,3 +1,4 @@
+<!-- src/lib/components/comments/Comments.svelte -->
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Button } from 'flowbite-svelte';

@@ -1,3 +1,4 @@
+<!-- src/lib/components/content/contentCard.svelte -->
 <script lang="ts">
 	import { Button, Card, Badge, A } from 'flowbite-svelte';
 	import EditBlogModal from '../blog/EditBlogModal.svelte';

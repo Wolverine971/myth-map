@@ -1,3 +1,4 @@
+// src/routes/register/+page.server.ts
 import { AuthApiError } from '@supabase/supabase-js';
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';

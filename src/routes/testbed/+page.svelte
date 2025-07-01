@@ -1,3 +1,4 @@
+<!-- src/routes/testbed/+page.svelte -->
 <script lang="ts">
 	import { Heading, P, A } from 'flowbite-svelte';
 	import type { PageData } from './$types';

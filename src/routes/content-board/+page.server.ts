@@ -1,4 +1,4 @@
-// import { getServerSession } from '@supabase/auth-helpers-sveltekit';
+// src/routes/content-board/+page.server.ts
 import { redirect, type Actions } from '@sveltejs/kit';
 
 export const load = async (event) => {

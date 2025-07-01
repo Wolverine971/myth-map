@@ -1,3 +1,4 @@
+<!-- src/lib/components/locations/LocationCardSmall.svelte -->
 <script lang="ts">
 	import { Card, Button, DropdownItem, Dropdown } from 'flowbite-svelte';
 	import { browser } from '$app/environment';

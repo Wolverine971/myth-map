@@ -1,3 +1,4 @@
+// src/utils/locationLookup.ts
 import { PUBLIC_BING_KEY } from '$env/static/public';
 
 interface Suggestion {

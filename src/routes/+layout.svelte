@@ -1,3 +1,4 @@
+<!-- src/routes/+layout.svelte -->
 <script lang="ts">
 	import { currentItinerary } from '$lib/stores/itineraryStore';
 	import NavBar from '$lib/components/base/NavBar.svelte';

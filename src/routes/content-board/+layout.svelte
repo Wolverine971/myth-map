@@ -1,3 +1,4 @@
+<!-- src/routes/content-board/+layout.svelte -->
 <script lang="ts">
 </script>
 

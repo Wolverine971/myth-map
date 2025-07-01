@@ -1,3 +1,4 @@
+// src/lib/census-api-client.ts
 interface CensusApiConfig {
     baseUrl: string;
     defaultHeaders: Record<string, string>;

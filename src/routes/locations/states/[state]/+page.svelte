@@ -1,3 +1,4 @@
+<!-- src/routes/locations/states/[state]/+page.svelte -->
 <script lang="ts">
 	import { Heading, A } from 'flowbite-svelte';
 	import CityMap from '$lib/components/map/map.svelte';

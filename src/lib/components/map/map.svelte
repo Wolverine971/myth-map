@@ -1,3 +1,4 @@
+<!-- src/lib/components/map/map.svelte -->
 <script lang="ts">
 	import { setContext, onMount, onDestroy } from 'svelte';
 	import { PUBLIC_MAP_KEY } from '$env/static/public';

@@ -1,3 +1,4 @@
+<!-- src/routes/locations/states/[state]/counties/[county]/[place]/+page.svelte -->
 <script>
 	import { page } from '$app/stores';
 

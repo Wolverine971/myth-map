@@ -1,3 +1,4 @@
+// src/utils/lazy.ts
 import type { ComponentType } from 'svelte';
 import { writable, get } from 'svelte/store';
 

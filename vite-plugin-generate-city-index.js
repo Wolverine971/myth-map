@@ -1,3 +1,4 @@
+// vite-plugin-generate-city-index.js
 import { exec } from 'child_process';
 import path from 'path';
 

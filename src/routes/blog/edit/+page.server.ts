@@ -1,3 +1,4 @@
+// src/routes/blog/edit/+page.server.ts
 import type { PageLoad } from './$types';
 import { error, type Actions } from '@sveltejs/kit';
 

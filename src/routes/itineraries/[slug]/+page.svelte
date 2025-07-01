@@ -1,3 +1,4 @@
+<!-- src/routes/itineraries/[slug]/+page.svelte -->
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { currentItinerary } from '$lib/stores/itineraryStore';

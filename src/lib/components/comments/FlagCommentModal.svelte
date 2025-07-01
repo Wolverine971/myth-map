@@ -1,4 +1,4 @@
-<!-- FlagCommentModal.svelte -->
+<!-- src/lib/components/comments/FlagCommentModal.svelte -->
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { Modal, Button, Label, Textarea, Select } from 'flowbite-svelte';

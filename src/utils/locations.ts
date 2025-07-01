@@ -1,3 +1,4 @@
+// src/utils/locations.ts
 import { PUBLIC_MAP_KEY } from '$env/static/public';
 import { supabase } from '$lib/supabaseClient';
 

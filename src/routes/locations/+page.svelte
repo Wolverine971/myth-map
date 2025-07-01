@@ -1,3 +1,4 @@
+<!-- src/routes/locations/+page.svelte -->
 <script lang="ts">
 	import { Heading, P } from 'flowbite-svelte';
 	import BlogPageHead from '$lib/components/blog/BlogPageHead.svelte';

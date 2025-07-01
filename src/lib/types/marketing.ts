@@ -1,3 +1,4 @@
+// src/lib/types/marketing.ts
 export interface Campaign {
     id: string;
     name: string;

@@ -1,3 +1,4 @@
+<!-- src/lib/components/itinerary/ItineraryModal.svelte -->
 <script lang="ts">
 	import { currentItinerary } from '$lib/stores/itineraryStore';
 	import type { ItineraryItem } from '$lib/types/itinerary';

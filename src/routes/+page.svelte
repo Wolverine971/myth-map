@@ -1,3 +1,4 @@
+<!-- src/routes/+page.svelte -->
 <script lang="ts">
 	import { Heading, P, TabItem, Tabs } from 'flowbite-svelte';
 	import { onMount } from 'svelte';

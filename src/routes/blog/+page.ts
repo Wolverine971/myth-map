@@ -1,3 +1,4 @@
+// src/routes/blog/+page.ts
 import type { PageServerLoad } from './$types';
 
 // const MAX_POSTS = 20;

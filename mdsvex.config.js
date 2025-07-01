@@ -1,4 +1,4 @@
-// import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+// mdsvex.config.js
 import { defineMDSveXConfig as defineConfig } from 'mdsvex';
 import path from 'path';
 import { join } from 'path';

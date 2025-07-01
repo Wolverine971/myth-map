@@ -22,7 +22,7 @@ A tool for chronically curious families looking for their next adventure!
 
 <https://supabase.com/docs/guides/api/generating-types>
 
-`npx supabase gen types typescript --project-id "" --schema public > src/schema.ts`
+`npx supabase gen types typescript --project-id "ivskdkbujlthefzqdkdl" --schema public > src/schema.ts`
 
 ## Design
 

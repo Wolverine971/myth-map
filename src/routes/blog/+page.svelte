@@ -1,3 +1,4 @@
+<!-- src/routes/blog/+page.svelte -->
 <script lang="ts">
 	import { Heading, Card } from 'flowbite-svelte';
 

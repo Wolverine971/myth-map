@@ -1,3 +1,4 @@
+<!-- src/lib/components/shared/SkeletonCard.svelte -->
 <script lang="ts">
 	import { Card } from 'flowbite-svelte';
 

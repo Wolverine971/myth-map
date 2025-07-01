@@ -1,3 +1,4 @@
+<!-- src/lib/components/locations/LocationCard.svelte -->
 <script lang="ts">
 	import { Card, Button, Dropdown, DropdownItem } from 'flowbite-svelte';
 	import { ChevronDownOutline, ChevronRightOutline } from 'flowbite-svelte-icons';

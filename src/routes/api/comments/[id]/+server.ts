@@ -1,4 +1,4 @@
-// /src/api/comments/[id]/+server.ts
+// src/routes/api/comments/[id]/+server.ts
 
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';

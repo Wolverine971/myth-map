@@ -1,4 +1,4 @@
-<!-- src/lib/components/Modal.svelte -->
+<!-- src/lib/components/shared/BModal.svelte -->
 <script lang="ts">
 	import { fade, scale } from 'svelte/transition';
 	import { createEventDispatcher } from 'svelte';

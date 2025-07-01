@@ -1,3 +1,4 @@
+<!-- src/lib/components/locations/GeoFilters.svelte -->
 <script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { states } from '../../../utils/geoDataLoader';

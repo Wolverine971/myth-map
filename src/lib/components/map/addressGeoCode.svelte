@@ -1,3 +1,4 @@
+<!-- src/lib/components/map/addressGeoCode.svelte -->
 <script lang="ts">
 	import { Button, Card } from 'flowbite-svelte';
 	import LocationCard from '$lib/components/locations/LocationCard.svelte';
