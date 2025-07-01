@@ -210,15 +210,7 @@
 				</Button>
 			</a>
 
-			<Button
-				color="alternative"
-				size="sm"
-				style="display: flex; justify-content: space-between;"
-				class="w-full hover:outline hover:outline-2 hover:outline-primary-600"
-			>
-				<span>More options</span>
-				<ChevronDownOutline class="ml-2 h-4 w-4 text-black dark:text-white" />
-			</Button>
+			
 
 			<a href={website} target="_blank" rel="noopener noreferrer" class="w-full">
 				<Button
