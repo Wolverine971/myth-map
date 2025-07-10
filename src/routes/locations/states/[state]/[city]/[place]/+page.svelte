@@ -290,7 +290,7 @@
 				<!-- Description Section -->
 				{#if content}
 					<section>
-						<Card class="p-6 lg:p-8">
+						<Card class="p-6 lg:p-8" size="xl">
 							<h2 class="mb-6 text-2xl font-bold text-gray-900 lg:text-3xl">About This Location</h2>
 							<div class="prose prose-lg prose-gray max-w-none">
 								{#if content.length > 800 && !showFullDescription}
