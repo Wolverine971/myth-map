@@ -50,7 +50,12 @@
 			const el = createMarkerElement();
 			currentLocationMarker = new mapboxgl.Marker(el)
 				.setLngLat(currentLocation)
-				.setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`<h3>Current Location</h3>`))
+				.setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`
+					<div class="popup-content">
+						<h3 class="popup-title">📍 Your Location</h3>
+						<p class="popup-address">You are here</p>
+					</div>
+				`))
 				.addTo(map);
 		} else {
 			currentLocationMarker.setLngLat(currentLocation);
@@ -181,13 +186,18 @@
 					'circle-color': [
 						'step',
 						['get', 'point_count'],
-						'#51bbd6',
+						'#3b82f6', // primary-600
+						10,
+						'#2563eb', // primary-700
+						50,
+						'#1d4ed8', // primary-800
 						100,
-						'#f1f075',
-						750,
-						'#f28cb1'
+						'#1e40af'  // primary-900
 					],
-					'circle-radius': ['step', ['get', 'point_count'], 20, 100, 30, 750, 40]
+					'circle-radius': ['step', ['get', 'point_count'], 20, 10, 25, 50, 30, 100, 35],
+					'circle-stroke-width': 3,
+					'circle-stroke-color': '#ffffff',
+					'circle-stroke-opacity': 0.8
 				}
 			},
 			{
@@ -197,8 +207,13 @@
 				layout: {
 					'text-field': '{point_count_abbreviated}',
 					'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-					'text-size': 12,
+					'text-size': 14,
 					'text-allow-overlap': true
+				},
+				paint: {
+					'text-color': '#ffffff',
+					'text-halo-color': '#1e40af',
+					'text-halo-width': 1
 				}
 			},
 			{
@@ -259,7 +274,12 @@
 				id: 'state-boundary-layer',
 				type: 'line',
 				source: 'state-boundary',
-				paint: { 'line-color': '#627BC1', 'line-width': 2 }
+				paint: { 
+					'line-color': '#3b82f6',
+					'line-width': 2,
+					'line-dasharray': [2, 2],
+					'line-opacity': 0.8
+				}
 			});
 		} else {
 			(map.getSource('state-boundary') as mapboxgl.GeoJSONSource).setData(stateGeoJSON);
@@ -350,14 +370,21 @@
 			id: 'selected-city-layer',
 			type: 'fill',
 			source: 'selected-city',
-			paint: { 'fill-color': '#627BC1', 'fill-opacity': 0.2 }
+			paint: { 
+				'fill-color': '#3b82f6',
+				'fill-opacity': 0.1
+			}
 		});
 
 		map.addLayer({
 			id: 'selected-city-outline',
 			type: 'line',
 			source: 'selected-city',
-			paint: { 'line-color': '#627BC1', 'line-width': 2 }
+			paint: { 
+				'line-color': '#2563eb',
+				'line-width': 2,
+				'line-opacity': 0.9
+			}
 		});
 	}
 
@@ -396,7 +423,12 @@
 		const el = createMarkerElement();
 		currentLocationMarker = new mapboxgl.Marker(el)
 			.setLngLat([location.lng, location.lat])
-			.setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML('<h3>Current Location</h3>'))
+			.setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`
+				<div class="popup-content">
+					<h3 class="popup-title">📍 Your Location</h3>
+					<p class="popup-address">You are here</p>
+				</div>
+			`))
 			.addTo(map);
 	} else {
 		currentLocationMarker.setLngLat([location.lng, location.lat]);
@@ -499,25 +531,50 @@
 				: '#';
 
 		const websiteButton = website
-			? `<a style="border-radius: 5px; border: 1px solid #201f1f; padding: 2px 5px; margin: 3px 0; color: white; background: #00000070; font-weight: bold; float: right;" href="${website}" target="_blank">Website</a>`
+			? `<a class="popup-btn popup-btn-secondary" href="${website}" target="_blank" rel="noopener noreferrer">
+				<svg class="popup-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<circle cx="12" cy="12" r="10"></circle>
+					<path d="M2 12h20"></path>
+					<path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+				</svg>
+				Website
+			</a>`
 			: '';
 
 		popup
 			.setLngLat(coordinates)
 			.setHTML(
 				`
-			<div style="font-family: system-ui; min-width: 200px;">
-				<h1 style="font-size:1.5rem; line-height: 1.5rem; font-weight: bold; margin-bottom: 0.5rem;">${name || 'Unknown Location'}</h1>
-				<p id="${copyId}-address">
-					<b>Address</b>: 
-					<button type="button" id="${copyId}" style="border-radius: 5px; border: 1px solid #201f1f; padding: 2px 5px; margin: 3px 0; color: white; background: #00000070; font-weight: bold;">
-						Copy Address
+			<div class="popup-content">
+				<h3 class="popup-title">${name || 'Unknown Location'}</h3>
+				
+				<div class="popup-address-section">
+					<div class="popup-address-header">
+						<svg class="popup-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+							<circle cx="12" cy="10" r="3"></circle>
+						</svg>
+						<span class="popup-label">Address</span>
+					</div>
+					<p class="popup-address">${address}</p>
+					<button type="button" id="${copyId}" class="popup-btn popup-btn-copy">
+						<svg class="popup-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+							<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+						</svg>
+						Copy
 					</button>
-					<br>${address}
-				</p>
-				<div style="margin-top: 1rem;">
+				</div>
+				
+				<div class="popup-actions">
+					<a class="popup-btn popup-btn-primary" href="${detailsLink}">
+						<svg class="popup-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M9 11l3 3L22 4"></path>
+							<path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path>
+						</svg>
+						View Details
+					</a>
 					${websiteButton}
-					<a style="border-radius: 5px; border: 1px solid #201f1f; padding: 2px 5px; margin: 3px 0; color: white; background: #00000070; font-weight: bold; float: right; margin-right: 0.2rem;" href="${detailsLink}">Details</a>
 				</div>
 			</div>
 		`
@@ -677,32 +734,257 @@
 		height: 100%;
 		visibility: visible !important;
 	}
-	.popups {
-		background-color: #000;
-		color: #fff;
-		border-radius: 5px;
+	/* Mapbox popup styling */
+	:global(.mapboxgl-popup) {
+		font-family: system-ui, -apple-system, sans-serif;
+		z-index: 10;
 	}
 
-	.popup h1 {
-		font-size: 2rem;
-		color: aqua;
+	:global(.mapboxgl-popup-content) {
+		background: white;
+		border-radius: 0.75rem;
+		box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+		padding: 0;
+		min-width: 280px;
+		max-width: 320px;
 	}
-	.fullscreen-button {
-		background: none;
+
+	:global(.mapboxgl-popup-close-button) {
+		font-size: 20px;
+		padding: 0.5rem;
+		color: #6b7280;
+		right: 0;
+		top: 0;
+	}
+
+	:global(.mapboxgl-popup-close-button:hover) {
+		color: #374151;
+		background-color: #f3f4f6;
+		border-radius: 0 0.75rem 0 0.75rem;
+	}
+
+	:global(.mapboxgl-popup-tip) {
+		border-top-color: white;
+	}
+
+	/* Popup content styling */
+	:global(.popup-content) {
+		padding: 1.25rem;
+	}
+
+	:global(.popup-title) {
+		font-size: 1.25rem;
+		font-weight: 700;
+		color: #111827;
+		margin: 0 0 1rem 0;
+		line-height: 1.4;
+	}
+
+	:global(.popup-address-section) {
+		margin-bottom: 1rem;
+	}
+
+	:global(.popup-address-header) {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-bottom: 0.5rem;
+	}
+
+	:global(.popup-label) {
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: #6b7280;
+		text-transform: uppercase;
+		letter-spacing: 0.025em;
+	}
+
+	:global(.popup-address) {
+		font-size: 0.875rem;
+		color: #374151;
+		margin: 0 0 0.75rem 0;
+		line-height: 1.5;
+	}
+
+	:global(.popup-icon) {
+		flex-shrink: 0;
+		color: #9ca3af;
+	}
+
+	:global(.popup-actions) {
+		display: flex;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+	}
+
+	/* Popup button styles */
+	:global(.popup-btn) {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+		padding: 0.5rem 0.875rem;
+		font-size: 0.875rem;
+		font-weight: 500;
+		border-radius: 0.5rem;
+		text-decoration: none;
+		transition: all 0.2s;
+		cursor: pointer;
+		border: 1px solid transparent;
+		line-height: 1;
+	}
+
+	:global(.popup-btn-primary) {
+		background-color: #3b82f6;
+		color: white;
+		border-color: #3b82f6;
+	}
+
+	:global(.popup-btn-primary:hover) {
+		background-color: #2563eb;
+		border-color: #2563eb;
+		transform: translateY(-1px);
+		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	}
+
+	:global(.popup-btn-secondary) {
+		background-color: #f3f4f6;
+		color: #374151;
+		border-color: #e5e7eb;
+	}
+
+	:global(.popup-btn-secondary:hover) {
+		background-color: #e5e7eb;
+		border-color: #d1d5db;
+		transform: translateY(-1px);
+	}
+
+	:global(.popup-btn-copy) {
+		background-color: white;
+		color: #6b7280;
+		border: 1px solid #e5e7eb;
+		padding: 0.375rem 0.75rem;
+		font-size: 0.75rem;
+	}
+
+	:global(.popup-btn-copy:hover) {
+		background-color: #f9fafb;
+		color: #374151;
+		border-color: #d1d5db;
+	}
+
+	:global(.popup-btn .popup-icon) {
+		color: currentColor;
+	}
+	/* Fullscreen control styling */
+	:global(.mapboxgl-ctrl-group) {
+		background: white;
+		border-radius: 0.5rem;
+		box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+	}
+
+	:global(.mapboxgl-ctrl button) {
+		width: 36px;
+		height: 36px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		border: none;
 		cursor: pointer;
-		padding: 6px;
+		transition: all 0.2s;
+	}
+
+	:global(.mapboxgl-ctrl button:hover) {
+		background-color: #f3f4f6;
+	}
+
+	:global(.mapboxgl-ctrl button:first-child) {
+		border-radius: 0.5rem 0.5rem 0 0;
+	}
+
+	:global(.mapboxgl-ctrl button:last-child) {
+		border-radius: 0 0 0.5rem 0.5rem;
+	}
+
+	:global(.mapboxgl-ctrl button:only-child) {
+		border-radius: 0.5rem;
+	}
+
+	.fullscreen-button {
+		background: white;
+		border: none;
+		cursor: pointer;
+		padding: 0;
+		width: 36px;
+		height: 36px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.2s;
+		border-radius: 0.5rem;
+	}
+
+	.fullscreen-button:hover {
+		background-color: #f3f4f6;
 	}
 
 	.fullscreen-icon {
-		background-image: url('path-to-your-fullscreen-icon.svg');
-		display: inline-block;
-		width: 20px;
-		height: 20px;
-		background-size: contain;
+		width: 18px;
+		height: 18px;
+		position: relative;
 	}
 
-	.exit-fullscreen-icon {
-		background-image: url('path-to-your-exit-fullscreen-icon.svg');
+	/* Create fullscreen icon with CSS */
+	.fullscreen-icon::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		border: 2px solid #374151;
+		border-radius: 2px;
+	}
+
+	.fullscreen-icon::after {
+		content: '';
+		position: absolute;
+		top: -2px;
+		left: -2px;
+		width: 6px;
+		height: 6px;
+		border-top: 2px solid #374151;
+		border-left: 2px solid #374151;
+		border-radius: 2px 0 0 0;
+		box-shadow: 
+			16px 0 0 0 #374151,
+			0 16px 0 0 #374151,
+			16px 16px 0 0 #374151;
+	}
+
+	.exit-fullscreen-icon::before {
+		content: '';
+		position: absolute;
+		top: 4px;
+		left: 4px;
+		width: 10px;
+		height: 10px;
+		border: 2px solid #374151;
+		border-radius: 2px;
+	}
+
+	.exit-fullscreen-icon::after {
+		content: '';
+		position: absolute;
+		top: 2px;
+		left: 2px;
+		width: 6px;
+		height: 6px;
+		border-bottom: 2px solid #374151;
+		border-right: 2px solid #374151;
+		border-radius: 0 0 2px 0;
+		box-shadow: 
+			8px 0 0 0 #374151,
+			0 8px 0 0 #374151,
+			8px 8px 0 0 #374151;
 	}
 </style>

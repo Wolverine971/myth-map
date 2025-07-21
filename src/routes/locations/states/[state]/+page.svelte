@@ -5,6 +5,7 @@
 	import { ArrowRightAltSolid } from 'flowbite-svelte-icons';
 	import { page } from '$app/stores';
 	import type { PageData } from './$types';
+	import Breadcrumbs from '$lib/components/shared/Breadcrumbs.svelte';
 	import LocationCardSmall from '$lib/components/locations/LocationCardSmall.svelte';
 	import { browser } from '$app/environment';
 	import { currentLocation } from '$lib/stores/locationStore';
@@ -30,9 +31,28 @@
 	currentLocation.subscribe((value) => {
 		userLocation = value;
 	});
+
+	// Breadcrumb data
+	$: breadcrumbItems = [
+		{
+			label: 'Locations',
+			href: '/locations'
+		},
+		{
+			label: stateName || state,
+			current: true
+		}
+	];
 </script>
 
 <svelte:window bind:innerWidth />
+
+<!-- Breadcrumbs -->
+<div class="border-b bg-white">
+	<div class="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
+		<Breadcrumbs items={breadcrumbItems} />
+	</div>
+</div>
 
 <div class="container mx-auto px-2 py-8 md:px-4">
 	<Heading tag="h1" customSize="text-4xl md:text-5xl font-extrabold mb-8"

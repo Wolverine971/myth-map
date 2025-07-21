@@ -21,7 +21,7 @@
 	let tagsToRemove = ['both']
 
 	onMount(() => {
-		displayTags = allTags.filter(t => tagsToRemove.includes(t) ).map((tag) => ({
+		displayTags = allTags.filter(t => !tagsToRemove.includes(t.name) ).map((tag) => ({
 			...tag,
 			checked: selectedTags.includes(tag.name),
 			disabled: !selectableTagsMap[tag.name]
@@ -149,28 +149,28 @@
 	let activeClass = 'text-orange-700 dark:text-orange-300 hover:text-orange-900 dark:hover:text-orange-500';
 </script>
 
-<div class="flex flex-wrap items-center gap-1">
+<div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
 	<!-- Base Activity/Eats Filter -->
-	<div class="flex items-center" transition:fade={{ duration: 600 }}>
-		<Button outline class={baseSelect ? 'ring-2 ring-primary-500' : ''}>
-			{baseSelect ? baseSelect : 'Activity/Eats: Any'}
-			<ChevronDownOutline class="ms-2 h-6 w-6" />
+	<div class="relative" transition:fade={{ duration: 600 }}>
+		<Button outline size="sm" class="w-full sm:w-auto {baseSelect ? 'ring-2 ring-primary-600' : ''}">
+			<span class="text-xs sm:text-sm">{baseSelect ? baseSelect : 'Activity/Eats'}</span>
+			<ChevronDownOutline class="ms-2 h-4 w-4" />
 		</Button>
 		<Dropdown
-			style="z-index: 1232134234"
+			style="z-index: 50"
 			placement="bottom"
 			bind:open={baseDropdownOpen}
 			{activeClass}
 		>
 			<DropdownItem
-				class="hover:bg-gray-100 {baseSelect === 'Activity' ? 'bg-blue-50 font-semibold' : ''}"
+				class="hover:bg-gray-100 {baseSelect === 'Activity' ? 'bg-primary-50 font-semibold text-primary-700' : ''}"
 				on:click={baseSelection}
 				disabled={!selectableTagsMap['Activity']}
 			>
 				Activity {!selectableTagsMap['Activity'] ? '(unavailable)' : ''}
 			</DropdownItem>
 			<DropdownItem
-				class="hover:bg-gray-100 {baseSelect === 'Eats' ? 'bg-blue-50 font-semibold' : ''}"
+				class="hover:bg-gray-100 {baseSelect === 'Eats' ? 'bg-primary-50 font-semibold text-primary-700' : ''}"
 				on:click={baseSelection}
 				disabled={!selectableTagsMap['Eats']}
 			>
@@ -180,26 +180,26 @@
 	</div>
 
 	<!-- Indoor/Outdoor Filter -->
-	<div class="flex items-center" transition:fade={{ duration: 800 }}>
-		<Button outline class={indoorOutdoorSelect ? 'ring-2 ring-primary-500' : ''}>
-			{indoorOutdoorSelect ? indoorOutdoorSelect : 'Indoor/Outdoor: Any'}
-			<ChevronDownOutline class="ms-2 h-6 w-6" />
+	<div class="relative" transition:fade={{ duration: 800 }}>
+		<Button outline size="sm" class="w-full sm:w-auto {indoorOutdoorSelect ? 'ring-2 ring-primary-600' : ''}">
+			<span class="text-xs sm:text-sm">{indoorOutdoorSelect ? indoorOutdoorSelect : 'Indoor/Outdoor'}</span>
+			<ChevronDownOutline class="ms-2 h-4 w-4" />
 		</Button>
 		<Dropdown
-			style="z-index: 1232134234"
+			style="z-index: 50"
 			placement="bottom"
 			bind:open={indoorOutdoorDropdownOpen}
 			{activeClass}
 		>
 			<DropdownItem
-				class="hover:bg-gray-100 {indoorOutdoorSelect === 'Indoor' ? 'bg-blue-50 font-semibold' : ''}"
+				class="hover:bg-gray-100 {indoorOutdoorSelect === 'Indoor' ? 'bg-primary-50 font-semibold text-primary-700' : ''}"
 				on:click={indoorOutdoorSelection}
 				disabled={!selectableTagsMap['Indoor']}
 			>
 				Indoor {!selectableTagsMap['Indoor'] ? '(unavailable)' : ''}
 			</DropdownItem>
 			<DropdownItem
-				class="hover:bg-gray-100 {indoorOutdoorSelect === 'Outdoor' ? 'bg-blue-50 font-semibold' : ''}"
+				class="hover:bg-gray-100 {indoorOutdoorSelect === 'Outdoor' ? 'bg-primary-50 font-semibold text-primary-700' : ''}"
 				on:click={indoorOutdoorSelection}
 				disabled={!selectableTagsMap['Outdoor']}
 			>
@@ -209,10 +209,10 @@
 	</div>
 
 	<!-- Other Tags Filter -->
-	<div class="flex items-center" transition:fade={{ duration: 1000 }}>
-		<Button outline class={checkedItems.length > 0 ? 'ring-2 ring-primary-500' : ''}>
-			Tags ({checkedItems.length})
-			<ChevronDownOutline class="ms-2 h-6 w-6" />
+	<div class="relative" transition:fade={{ duration: 1000 }}>
+		<Button outline size="sm" class="w-full sm:w-auto {checkedItems.length > 0 ? 'ring-2 ring-primary-600' : ''}">
+			<span class="text-xs sm:text-sm">Tags ({checkedItems.length})</span>
+			<ChevronDownOutline class="ms-2 h-4 w-4" />
 		</Button>
 		<Dropdown placement="bottom" bind:open={tagsDropdownOpen}>
 			<div class="max-h-60 overflow-y-auto">
@@ -246,7 +246,7 @@
 
 	<!-- Selected Tags Display -->
 	{#if checkedItems.length > 0}
-		<div class="flex flex-wrap gap-1 ml-4">
+		<div class="flex flex-wrap gap-1 sm:ml-4">
 			{#each checkedItems as checkedItem (checkedItem.name)}
 				<div class="chip" transition:fade={{ duration: 200 }}>
 					<span class="text-sm">{checkedItem.name}</span>
@@ -263,18 +263,6 @@
 
 <style>
 	.chip {
-		background-color: #f1f5f9;
-		border: 1px solid #e2e8f0;
-		border-radius: 12px;
-		padding: 0.25rem 0.75rem;
-		display: flex;
-		align-items: center;
-		gap: 0.25rem;
-		transition: all 0.2s ease;
-	}
-	
-	.chip:hover {
-		background-color: #e2e8f0;
-		border-color: #cbd5e1;
+		@apply flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-xs transition-all hover:bg-gray-200 sm:text-sm;
 	}
 </style>

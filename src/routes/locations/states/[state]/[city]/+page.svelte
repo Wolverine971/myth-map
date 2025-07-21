@@ -2,9 +2,10 @@
 <script lang="ts">
 	import { Heading, P, A } from 'flowbite-svelte';
 	import { browser } from '$app/environment';
-	// import { ArrowRightAltSolid } from 'flowbite-svelte-icons';
+	import { MapPinSolid } from 'flowbite-svelte-icons';
 	import { page } from '$app/stores';
 	import type { PageData } from './$types';
+	import Breadcrumbs from '$lib/components/shared/Breadcrumbs.svelte';
 
 	import CityMap from '$lib/components/map/map.svelte';
 
@@ -31,13 +32,38 @@
 		userLocation = value;
 	});
 	let innerWidth = 0;
+
+	// Breadcrumb data
+	$: breadcrumbItems = [
+		{
+			label: 'Locations',
+			href: '/locations'
+		},
+		{
+			label: state,
+			href: `/locations/states/${state}`,
+			icon: MapPinSolid
+		},
+		{
+			label: city,
+			current: true
+		}
+	];
 </script>
 
 <svelte:window bind:innerWidth />
 
-<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl"
-	>{city.toLocaleUpperCase()}, {state.toLocaleUpperCase()}</Heading
->
+<!-- Breadcrumbs -->
+<div class="border-b bg-white px-4 py-3 sm:px-6 lg:px-8">
+	<div class="mx-auto max-w-7xl">
+		<Breadcrumbs items={breadcrumbItems} />
+	</div>
+</div>
+
+<div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+	<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl"
+		>{city.toLocaleUpperCase()}, {state.toLocaleUpperCase()}</Heading
+	>
 
 {#if browser}
 	<div class="map-div">
@@ -75,6 +101,7 @@
 	{:else}
 		<p>No cities found for {city}</p>
 	{/if}
+</div>
 </div>
 
 <!-- Display list of cities and counties, or allow user to choose -->

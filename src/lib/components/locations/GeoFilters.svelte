@@ -3,8 +3,9 @@
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { states } from '../../../utils/geoDataLoader';
 	import { Dropdown, DropdownItem, Button } from 'flowbite-svelte';
-	import { ChevronDownOutline, CloseCircleSolid } from 'flowbite-svelte-icons';
+	import { ChevronDownOutline, CloseCircleSolid, GlobeOutline } from 'flowbite-svelte-icons';
 	import { fade } from 'svelte/transition';
+	import { cityDataCache } from '$lib/stores/dataManager';
 
 	const dispatch = createEventDispatcher();
 
@@ -16,21 +17,7 @@
 	let cityOpen = false;
 	let allCities: string[] = [];
 	let availableCities: string[] = [];
-
-	async function loadCitiesForState(stateAbbr: string) {
-		try {
-			const indexModule = await import(
-				`../../../geographies/cities/${stateAbbr.toLowerCase()}/index.json`
-			);
-			return indexModule.default.map((city: string) =>
-				city.charAt(0).toUpperCase() + 
-				city.slice(1).replace('-', ' ')
-			);
-		} catch (error) {
-			console.error(`Failed to load cities for state ${stateAbbr}:`, error);
-			return [];
-		}
-	}
+	let citiesLoading = false;
 
 	// Update available cities based on current locations
 	$: if (shownLocations && allCities.length > 0) {
@@ -55,18 +42,16 @@
 			return;
 		}
 
-		const cities = await loadCitiesForState(selectedState.abr);
-		
-		// Normalize city names to match your data format
-		allCities = cities.map((city: string) => {
-			return city
-				.split(' ')
-				.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-				.join(' ')
-				.split('-')
-				.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-				.join(' ');
-		});
+		citiesLoading = true;
+		try {
+			// Use cached city data
+			allCities = await cityDataCache.getCityData(selectedState.abr);
+		} catch (error) {
+			console.error('Failed to load cities:', error);
+			allCities = [];
+		} finally {
+			citiesLoading = false;
+		}
 	}
 
 	async function handleStateChange(state: { name: string; abr: string }) {
@@ -164,19 +149,30 @@
 		<div class="flex items-center" transition:fade={{ duration: 800 }}>
 			<Button 
 				color="alternative" 
-				disabled={!selectedState} 
+				disabled={!selectedState || citiesLoading} 
 				outline
 				class={selectedCity ? 'ring-2 ring-primary-500' : ''}
 			>
-				City: {selectedCity || 'Any'}
-				<ChevronDownOutline class="ms-2 h-4 w-4" />
+				{#if citiesLoading}
+					<GlobeOutline class="me-2 h-4 w-4 animate-spin" />
+					Loading cities...
+				{:else}
+					City: {selectedCity || 'Any'}
+					<ChevronDownOutline class="ms-2 h-4 w-4" />
+				{/if}
 			</Button>
 			<Dropdown bind:open={cityOpen} class="z-50 max-h-60 overflow-y-auto">
-				<DropdownItem on:click={clearCity} class="font-medium text-gray-600">
-					Clear City Filter
-				</DropdownItem>
-				<div class="border-t border-gray-200 my-1"></div>
-				{#each availableCities as city}
+				{#if citiesLoading}
+					<DropdownItem disabled>
+						<GlobeOutline class="me-2 h-4 w-4 animate-spin inline" />
+						Loading cities...
+					</DropdownItem>
+				{:else}
+					<DropdownItem on:click={clearCity} class="font-medium text-gray-600">
+						Clear City Filter
+					</DropdownItem>
+					<div class="border-t border-gray-200 my-1"></div>
+					{#each availableCities as city}
 					{@const cityLocationCount = shownLocations.filter(loc => 
 						loc.location.city === city
 					).length}
@@ -193,10 +189,11 @@
 						</div>
 					</DropdownItem>
 				{/each}
-				{#if availableCities.length === 0 && selectedState}
-					<DropdownItem disabled>
-						No cities available with current filters
-					</DropdownItem>
+					{#if availableCities.length === 0 && selectedState}
+						<DropdownItem disabled>
+							No cities available with current filters
+						</DropdownItem>
+					{/if}
 				{/if}
 			</Dropdown>
 		</div>
