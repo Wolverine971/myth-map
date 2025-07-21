@@ -87,7 +87,8 @@
 			accessToken: PUBLIC_MAP_KEY,
 			renderWorldCopies: false,
 			preserveDrawingBuffer: false,
-			antialias: false
+			antialias: false,
+			fadeDuration: 300 // Smooth fade-in for tiles
 		});
 
 		map.on('load', async () => {
@@ -107,8 +108,12 @@
 	function updateMapState() {
 		if (shownLocations) updateLocations(shownLocations);
 		if (currentLocation) updateCurrentLocation(currentLocation);
-		if (selectedState) updateStateFilter(selectedState);
-		if (selectedState && selectedCity) updateCityFilter(selectedState, selectedCity);
+		
+		// Use setTimeout to ensure map is fully loaded before applying filters
+		setTimeout(() => {
+			if (selectedState) updateStateFilter(selectedState);
+			if (selectedState && selectedCity) updateCityFilter(selectedState, selectedCity);
+		}, 100);
 	}
 
 	async function initLayers() {
@@ -170,8 +175,12 @@
 				type: 'geojson',
 				data: getFeatureCollection(locations),
 				cluster: true,
-				clusterMaxZoom: 14,
-				clusterRadius: 50
+				clusterMaxZoom: 16, // Increased from 14 to allow more zoom before unclustering
+				clusterRadius: 40, // Reduced from 50 for tighter clusters
+				clusterProperties: {
+					// Add cluster properties for better control
+					point_count_abbreviated: ["+", ["get", "point_count"]]
+				}
 			});
 		}
 	}
@@ -186,15 +195,29 @@
 					'circle-color': [
 						'step',
 						['get', 'point_count'],
-						'#3b82f6', // primary-600
+						'#60a5fa', // primary-400 for small clusters
+						5,
+						'#3b82f6', // primary-500
 						10,
-						'#2563eb', // primary-700
+						'#2563eb', // primary-600
+						25,
+						'#1d4ed8', // primary-700
 						50,
-						'#1d4ed8', // primary-800
-						100,
-						'#1e40af'  // primary-900
+						'#1e40af'  // primary-800 for large clusters
 					],
-					'circle-radius': ['step', ['get', 'point_count'], 20, 10, 25, 50, 30, 100, 35],
+					'circle-radius': [
+						'step',
+						['get', 'point_count'],
+						18, // smaller initial size
+						5,
+						22,
+						10,
+						26,
+						25,
+						30,
+						50,
+						35
+					],
 					'circle-stroke-width': 3,
 					'circle-stroke-color': '#ffffff',
 					'circle-stroke-opacity': 0.8
@@ -299,7 +322,11 @@
 			geoJSON.type === 'Feature' ? geoJSON.geometry : geoJSON.features[0].geometry,
 			bounds
 		);
-		map.fitBounds(bounds, { padding: 20 });
+		map.fitBounds(bounds, { 
+			padding: 40,
+			duration: 1200,
+			curve: 1.42
+		});
 	}
 
 	function fitBoundsForGeometry(geometry: GeoJSON.Geometry, bounds: LngLatBounds) {
@@ -391,7 +418,12 @@
 	function zoomToLocation(feature: GeoJSON.Feature) {
 		const bounds = new mapboxgl.LngLatBounds();
 		fitBoundsForGeometry(feature.geometry, bounds);
-		map.fitBounds(bounds, { padding: 20, maxZoom: 15 });
+		map.fitBounds(bounds, { 
+			padding: 40,
+			maxZoom: 14,
+			duration: 1000,
+			curve: 1.2
+		});
 	}
 
 	function updateLocations(locations: any[]) {
@@ -483,10 +515,17 @@
 	function addMapEventListeners() {
 		map.on('click', 'clusters', handleClusterClick);
 		map.on('click', 'unclustered-point', handleUnclusteredPointClick);
+		// Add hover effects for better interactivity
 		map.on('mouseenter', 'clusters', () => {
 			map.getCanvas().style.cursor = 'pointer';
 		});
 		map.on('mouseleave', 'clusters', () => {
+			map.getCanvas().style.cursor = '';
+		});
+		map.on('mouseenter', 'unclustered-point', () => {
+			map.getCanvas().style.cursor = 'pointer';
+		});
+		map.on('mouseleave', 'unclustered-point', () => {
 			map.getCanvas().style.cursor = '';
 		});
 	}
@@ -494,17 +533,40 @@
 	function handleClusterClick(e) {
 		const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
 		const clusterId = features[0].properties.cluster_id;
+		const pointCount = features[0].properties.point_count;
+		const clusterSource = map.getSource('shownLocations') as mapboxgl.GeoJSONSource;
 
-		(map.getSource('shownLocations') as mapboxgl.GeoJSONSource).getClusterExpansionZoom(
-			clusterId,
-			(err, zoom) => {
-				if (err) return;
-				map.easeTo({
-					center: features[0].geometry.coordinates,
-					zoom: zoom
-				});
+		// Get the cluster's children to determine optimal zoom
+		clusterSource.getClusterChildren(clusterId, (err, children) => {
+			if (err) {
+				console.error('Error getting cluster children:', err);
+				return;
 			}
-		);
+
+			// If cluster has many points, zoom in more aggressively
+			clusterSource.getClusterExpansionZoom(clusterId, (err, zoom) => {
+				if (err) return;
+				
+				// Calculate zoom based on point count for better UX
+				let targetZoom = zoom;
+				if (pointCount > 50) {
+					targetZoom = Math.min(zoom + 2, 16); // Zoom in more for large clusters
+				} else if (pointCount > 20) {
+					targetZoom = Math.min(zoom + 1.5, 16);
+				} else if (pointCount > 10) {
+					targetZoom = Math.min(zoom + 1, 16);
+				}
+
+				// Smooth animation to cluster center
+				map.flyTo({
+					center: features[0].geometry.coordinates,
+					zoom: targetZoom,
+					duration: 500, // Smooth 1.2 second transition
+					curve: 1, // Easing curve for smooth acceleration/deceleration
+					essential: true // This animation is essential with respect to prefers-reduced-motion
+				});
+			});
+		});
 	}
 
 	function handleUnclusteredPointClick(e) {
@@ -520,6 +582,25 @@
 		// Handle coordinate wrapping
 		while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
 			coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+		}
+
+		// Smoothly zoom and center on the clicked location
+		const currentZoom = map.getZoom();
+		if (currentZoom < 15) {
+			map.flyTo({
+				center: coordinates,
+				zoom: 15,
+				duration: 500,
+				curve: 1.2,
+				offset: [0, -100], // Offset to account for popup
+				essential: true
+			});
+		} else {
+			// If already zoomed in, just pan to center
+			map.panTo(coordinates, {
+				duration: 300,
+				offset: [0, -100]
+			});
 		}
 
 		const address =

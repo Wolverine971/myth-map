@@ -1,6 +1,7 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
+
 // import generateCityIndex from './vite-plugin-generate-city-index.js';
 // import { geoJsonPlugin } from 'vite-plugin-tailwind-purgecss';
 import { geoJsonPlugin } from './geoJsonPlugin';
@@ -16,10 +17,6 @@ export default defineConfig({
 				manualChunks: {
 					// Vendor chunks
 					'vendor-ui': ['flowbite-svelte', 'flowbite-svelte-icons'],
-					'vendor-map': ['mapbox-gl', '@mapbox/mapbox-sdk'],
-					'vendor-utils': ['marked', 'date-picker-svelte'],
-					'vendor-supabase': ['@supabase/supabase-js', '@supabase/ssr', '@supabase/auth-helpers-sveltekit'],
-					'geography-data': ['./src/geographies']
 				},
 				// Ensure static assets are properly handled
 				assetFileNames: (assetInfo) => {
