@@ -1,16 +1,25 @@
 <!-- src/lib/components/map/map.svelte -->
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+	import { get } from 'svelte/store';
 	import { PUBLIC_MAP_KEY } from '$env/static/public';
 	import { browser } from '$app/environment';
 	import './mapbox.css';
 	import { loadCityGeoJSON, loadStateBoundary } from '../../../utils/geoDataLoader';
-	import type { Map, Popup, Marker, LngLatBounds, MapMouseEvent, GeoJSONSource } from 'mapbox-gl';
+	import type {
+		Map,
+		Popup,
+		LngLatBounds,
+		MapMouseEvent,
+		GeoJSONSource,
+		GeolocateControl
+	} from 'mapbox-gl';
 	import { notifications } from '../shared/notifications';
 	import { attachLazyIconLoader } from './map-icons';
 	import {
 		clusterLayer,
 		clusterCountLayer,
+		focusRingLayer,
 		unclusteredPointLayer,
 		stateBoundaryLayer,
 		selectedCityFillLayer,
@@ -20,12 +29,34 @@
 	import { buildFeatureCollection } from './map-features';
 	import { buildAddress, buildPopupHTML } from './map-popup';
 	import { FullscreenControl } from './FullscreenControl';
+	import { currentLocation } from '$lib/stores/locationStore';
+	import { locationFocus, type LocationFocusKey } from '$lib/stores/locationFocusStore';
+	import { effectiveTheme, type EffectiveTheme } from '$lib/stores/themeStore';
 
 	export let locations: any[] = [];
 	export let shownLocations: any[] = [];
-	export let currentLocation: { lat: number; lng: number } | null = null;
 	export let selectedState: { name: string; abr: string } | null = null;
 	export let selectedCity: string | null = null;
+
+	const dispatch = createEventDispatcher<{ pinclick: { id: LocationFocusKey } }>();
+
+	// Mapbox base styles per theme.
+	// Using `outdoors-v12` for light because it leans topographic — fits the brand.
+	// `dark-v11` for dark mode.
+	const STYLE_FOR_THEME: Record<EffectiveTheme, string> = {
+		light: 'mapbox://styles/mapbox/outdoors-v12',
+		dark: 'mapbox://styles/mapbox/dark-v11'
+	};
+
+	let currentStyleUrl: string | null = null;
+
+	let focusedId: LocationFocusKey | null = null;
+	const unsubscribeFocus = locationFocus.subscribe(({ hovered, selected }) => {
+		const next = hovered ?? selected;
+		if (next === focusedId) return;
+		focusedId = next;
+		if (mapReady) syncFocusRing(next);
+	});
 
 	let prevStateAbr: string | null = null;
 	let prevCity: string | null = null;
@@ -33,34 +64,50 @@
 	let mapContainer: HTMLElement;
 	let map: Map;
 	let popup: Popup;
-	let currentLocationMarker: Marker;
+	let geolocateControl: GeolocateControl;
 	let mapboxgl: typeof import('mapbox-gl');
 	let audio: HTMLAudioElement;
 
 	let mapReady = false;
+	let unsubscribeTheme: (() => void) | null = null;
 
 	$: if (mapReady) syncShownLocations(shownLocations);
 	$: if (mapReady) syncStateFilter(selectedState);
 	$: if (mapReady) syncCityFilter(selectedState, selectedCity);
-	$: if (mapReady && currentLocation) updateCurrentLocation(currentLocation);
 
 	onMount(async () => {
 		if (!browser) return;
 		mapboxgl = await import('mapbox-gl');
 		audio = new Audio('/sounds/tic-toc-click.wav');
 		await initMap();
+
+		// After the map is initialized, subscribe to theme changes and swap the
+		// base style on the fly. We skip the first emission (already used at init).
+		let isFirstEmit = true;
+		unsubscribeTheme = effectiveTheme.subscribe(($theme) => {
+			if (isFirstEmit) {
+				isFirstEmit = false;
+				return;
+			}
+			swapMapStyle($theme);
+		});
 	});
 
 	onDestroy(() => {
+		unsubscribeFocus();
+		unsubscribeTheme?.();
 		if (map) map.remove();
 	});
 
 	async function initMap() {
 		if (!mapContainer) return;
 
+		const initialTheme = get(effectiveTheme);
+		currentStyleUrl = STYLE_FOR_THEME[initialTheme];
+
 		map = new mapboxgl.Map({
 			container: mapContainer,
-			style: 'mapbox://styles/mapbox/streets-v12',
+			style: currentStyleUrl,
 			center: [-76.7818, 39.2141],
 			zoom: 7,
 			minZoom: 3,
@@ -83,10 +130,45 @@
 				optimizeForMobile();
 				if (selectedState) await syncStateFilter(selectedState);
 				if (selectedState && selectedCity) await syncCityFilter(selectedState, selectedCity);
-				if (currentLocation) updateCurrentLocation(currentLocation);
+				autoActivateGeolocate();
 				mapReady = true;
+				syncFocusRing(focusedId);
 			} catch (error) {
 				console.error('Error initializing map:', error);
+			}
+		});
+	}
+
+	/**
+	 * Swap the Mapbox base style (light/dark) and restore all custom layers
+	 * after the new style finishes loading. setStyle() removes our sources +
+	 * layers, so we rebuild them on `style.load`.
+	 */
+	function swapMapStyle(theme: EffectiveTheme) {
+		if (!map) return;
+		const desired = STYLE_FOR_THEME[theme];
+		if (desired === currentStyleUrl) return;
+		currentStyleUrl = desired;
+
+		// Capture state we need to restore — the existing prev* trackers prevent
+		// reload-on-no-change, so reset them.
+		const stateToRestore = selectedState;
+		const cityToRestore = selectedCity;
+		prevStateAbr = null;
+		prevCity = null;
+
+		map.setStyle(desired);
+
+		map.once('style.load', async () => {
+			try {
+				addInitialSourceAndLayers();
+				if (stateToRestore) await syncStateFilter(stateToRestore);
+				if (stateToRestore && cityToRestore) {
+					await syncCityFilter(stateToRestore, cityToRestore);
+				}
+				syncFocusRing(focusedId);
+			} catch (error) {
+				console.error('Error restoring layers after style swap:', error);
 			}
 		});
 	}
@@ -105,9 +187,16 @@
 				}
 			});
 		}
-		map.addLayer(clusterLayer);
-		map.addLayer(clusterCountLayer);
-		map.addLayer(unclusteredPointLayer);
+		if (!map.getLayer(clusterLayer.id)) map.addLayer(clusterLayer);
+		if (!map.getLayer(clusterCountLayer.id)) map.addLayer(clusterCountLayer);
+		if (!map.getLayer(focusRingLayer.id)) map.addLayer(focusRingLayer);
+		if (!map.getLayer(unclusteredPointLayer.id)) map.addLayer(unclusteredPointLayer);
+	}
+
+	function syncFocusRing(id: LocationFocusKey | null) {
+		if (!map?.getLayer('focus-ring')) return;
+		const sentinel = id == null ? '__none__' : id;
+		map.setFilter('focus-ring', ['==', ['get', 'id'], sentinel]);
 	}
 
 	function syncShownLocations(list: any[]) {
@@ -251,52 +340,44 @@
 		map.fitBounds(bounds, { padding: 40, maxZoom: 14, duration: 1000, curve: 1.2 });
 	}
 
-	function updateCurrentLocation(location: { lat: number; lng: number } | null) {
-		if (!location || !map || !mapboxgl) return;
-
-		const { lat, lng } = location;
-		if (
-			lat == null ||
-			lng == null ||
-			isNaN(lat) ||
-			isNaN(lng) ||
-			Math.abs(lat) > 90 ||
-			Math.abs(lng) > 180
-		) {
-			console.warn('Invalid current-location coordinates:', location);
-			return;
-		}
-
-		if (!currentLocationMarker) {
-			currentLocationMarker = new mapboxgl.Marker(createMarkerElement())
-				.setLngLat([lng, lat])
-				.setPopup(
-					new mapboxgl.Popup({ offset: 25 }).setHTML(`
-						<div class="popup-content">
-							<h3 class="popup-title">📍 Your Location</h3>
-							<p class="popup-address">You are here</p>
-						</div>
-					`)
-				)
-				.addTo(map);
-		} else {
-			currentLocationMarker.setLngLat([lng, lat]);
-		}
-	}
-
-	function createMarkerElement() {
-		const el = document.createElement('div');
-		el.className = 'marker';
-		el.style.backgroundImage = `url(/map/location-arrow.svg)`;
-		el.style.width = '30px';
-		el.style.height = '30px';
-		el.style.backgroundSize = '100%';
-		return el;
-	}
-
 	function addMapControls() {
 		map.addControl(new FullscreenControl(), 'top-right');
 		map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
+
+		geolocateControl = new mapboxgl.GeolocateControl({
+			positionOptions: { enableHighAccuracy: true, timeout: 7000 },
+			trackUserLocation: true,
+			showUserHeading: true,
+			showAccuracyCircle: true,
+			fitBoundsOptions: { maxZoom: 13 }
+		});
+		map.addControl(geolocateControl, 'top-right');
+
+		geolocateControl.on('geolocate', (event: any) => {
+			const coords = event?.coords ?? event?.data?.coords;
+			if (!coords) return;
+			const { latitude, longitude, accuracy, heading } = coords;
+			if (latitude == null || longitude == null) return;
+			currentLocation.set({
+				latitude,
+				longitude,
+				accuracy: accuracy ?? 0,
+				heading: heading ?? 0,
+				lat: latitude,
+				lng: longitude,
+				zip_code: ''
+			});
+		});
+	}
+
+	async function autoActivateGeolocate() {
+		if (!geolocateControl || !navigator?.permissions?.query) return;
+		try {
+			const status = await navigator.permissions.query({ name: 'geolocation' });
+			if (status.state === 'granted') geolocateControl.trigger();
+		} catch {
+			// Permissions API unavailable or rejected the query — leave the button for the user.
+		}
 	}
 
 	function addMapEventListeners() {
@@ -336,6 +417,13 @@
 
 		const props = (feature.properties || {}) as Record<string, string>;
 		const coordinates = (feature.geometry.coordinates as number[]).slice() as [number, number];
+
+		const rawId = (feature.properties as Record<string, unknown>)?.id;
+		if (rawId != null) {
+			const id = rawId as LocationFocusKey;
+			locationFocus.select(id);
+			dispatch('pinclick', { id });
+		}
 
 		while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
 			coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
@@ -410,30 +498,30 @@
 	}
 
 	/* ============================================================
-	   Map popup — Tiny Tribe Adventures brand palette
-	   Forest Green primary, Sandstone surface, Slate Gray text
+	   Map popup — theme-aware via CSS variables (see app.css :root + .dark)
+	   Field-manual style: stamped 2px corners, mono labels, kraft surface in
+	   light mode, dusk-brown in dark mode.
 	   ============================================================ */
 
 	:global(.mapboxgl-popup) {
-		font-family:
-			system-ui,
-			-apple-system,
-			'Segoe UI',
-			sans-serif;
+		font-family: theme('fontFamily.sans');
 		z-index: 10;
 	}
 
 	:global(.mapboxgl-popup-content) {
-		background: #ffffff;
-		border: 1px solid #eee0cc; /* secondary-200 */
-		border-radius: 14px;
-		box-shadow:
-			0 12px 24px -8px rgba(1, 68, 33, 0.18),
-			0 4px 12px -4px rgba(1, 68, 33, 0.08);
+		background: var(--surface-surface);
+		color: var(--text-default);
+		border: 1px solid var(--border-subtle);
+		border-radius: 2px;
+		box-shadow: 0 12px 28px rgba(1, 68, 33, 0.1);
 		padding: 0;
 		min-width: 264px;
 		max-width: 300px;
 		overflow: hidden;
+	}
+
+	:global(.dark .mapboxgl-popup-content) {
+		box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
 	}
 
 	:global(.mapboxgl-popup-close-button) {
@@ -444,22 +532,41 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		color: #708090; /* neutral-500 */
+		color: var(--text-subtle);
 		right: 8px;
 		top: 8px;
-		border-radius: 999px;
+		border-radius: 2px;
+		background: transparent;
 		transition:
-			background-color 0.15s ease,
-			color 0.15s ease;
+			background-color 100ms cubic-bezier(0.22, 1, 0.36, 1),
+			color 100ms cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
 	:global(.mapboxgl-popup-close-button:hover) {
-		color: #014421;
-		background-color: #f7f0e6; /* secondary-100 */
+		color: theme('colors.primary.700');
+		background-color: var(--surface-sunken);
 	}
 
-	:global(.mapboxgl-popup-tip) {
-		border-top-color: #ffffff;
+	:global(.dark .mapboxgl-popup-close-button:hover) {
+		color: theme('colors.primary.300');
+	}
+
+	/* Tip color follows surface — covers all anchor orientations */
+	:global(.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip),
+	:global(.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip),
+	:global(.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip) {
+		border-top-color: var(--surface-surface);
+	}
+	:global(.mapboxgl-popup-anchor-top .mapboxgl-popup-tip),
+	:global(.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip),
+	:global(.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip) {
+		border-bottom-color: var(--surface-surface);
+	}
+	:global(.mapboxgl-popup-anchor-left .mapboxgl-popup-tip) {
+		border-right-color: var(--surface-surface);
+	}
+	:global(.mapboxgl-popup-anchor-right .mapboxgl-popup-tip) {
+		border-left-color: var(--surface-surface);
 	}
 
 	/* Popup content */
@@ -468,13 +575,18 @@
 	}
 
 	:global(.popup-title) {
-		font-size: 1.0625rem;
+		font-family: theme('fontFamily.display');
+		font-size: 1rem;
 		font-weight: 700;
-		color: #014421; /* primary-500, Forest Green */
+		color: theme('colors.primary.700');
 		margin: 0 0 0.625rem 0;
-		line-height: 1.3;
+		line-height: 1.25;
 		letter-spacing: -0.01em;
-		padding-right: 1.5rem; /* leave room for close button */
+		padding-right: 1.5rem; /* room for close button */
+	}
+
+	:global(.dark .popup-title) {
+		color: theme('colors.primary.300');
 	}
 
 	:global(.popup-address-row) {
@@ -487,7 +599,7 @@
 	:global(.popup-address) {
 		flex: 1;
 		font-size: 0.8125rem;
-		color: #4e5964; /* neutral-800 */
+		color: var(--text-default);
 		margin: 0;
 		line-height: 1.5;
 	}
@@ -500,21 +612,25 @@
 		width: 28px;
 		height: 28px;
 		padding: 0;
-		border: 1px solid #eee0cc; /* secondary-200 */
-		border-radius: 8px;
-		background: #fcf9f5; /* secondary-50 */
-		color: #708090; /* neutral-500 */
+		border: 1px solid var(--border-subtle);
+		border-radius: 2px;
+		background: var(--surface-sunken);
+		color: var(--text-subtle);
 		cursor: pointer;
 		transition:
-			background-color 0.15s ease,
-			color 0.15s ease,
-			border-color 0.15s ease;
+			background-color 100ms cubic-bezier(0.22, 1, 0.36, 1),
+			color 100ms cubic-bezier(0.22, 1, 0.36, 1),
+			border-color 100ms cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
 	:global(.popup-copy-btn:hover) {
-		background: #f7f0e6; /* secondary-100 */
-		border-color: #e5d0b3; /* secondary-300 */
-		color: #014421; /* primary-500 */
+		background: var(--surface-elevated);
+		border-color: var(--border-strong);
+		color: theme('colors.primary.700');
+	}
+
+	:global(.dark .popup-copy-btn:hover) {
+		color: theme('colors.primary.300');
 	}
 
 	:global(.popup-actions) {
@@ -523,21 +639,24 @@
 		flex-wrap: wrap;
 	}
 
+	/* Field-manual buttons — stamped 2px, mono uppercase */
 	:global(.popup-btn) {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
 		gap: 0.375rem;
 		padding: 0.5rem 0.875rem;
-		font-size: 0.8125rem;
+		font-family: theme('fontFamily.mono');
+		font-size: 0.6875rem;
 		font-weight: 600;
-		border-radius: 9px;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		border-radius: 2px;
 		text-decoration: none;
 		transition:
-			background-color 0.15s ease,
-			color 0.15s ease,
-			border-color 0.15s ease,
-			transform 0.15s ease;
+			background-color 100ms cubic-bezier(0.22, 1, 0.36, 1),
+			color 100ms cubic-bezier(0.22, 1, 0.36, 1),
+			border-color 100ms cubic-bezier(0.22, 1, 0.36, 1);
 		cursor: pointer;
 		border: 1px solid transparent;
 		line-height: 1;
@@ -545,27 +664,40 @@
 	}
 
 	:global(.popup-btn-primary) {
-		background-color: #014421; /* primary-500, Forest Green */
+		background-color: theme('colors.primary.700');
 		color: #ffffff;
-		border-color: #014421;
+		border-color: theme('colors.primary.700');
 		flex: 1;
 	}
 
 	:global(.popup-btn-primary:hover) {
-		background-color: #013d1e; /* primary-600 */
-		border-color: #013d1e;
-		transform: translateY(-1px);
+		background-color: theme('colors.primary.600');
+		border-color: theme('colors.primary.600');
+	}
+
+	:global(.dark .popup-btn-primary) {
+		background-color: theme('colors.primary.500');
+		border-color: theme('colors.primary.500');
+	}
+
+	:global(.dark .popup-btn-primary:hover) {
+		background-color: theme('colors.primary.400');
+		border-color: theme('colors.primary.400');
 	}
 
 	:global(.popup-btn-secondary) {
-		background-color: #ffffff;
-		color: #014421; /* primary-500 */
-		border-color: #c2dac9; /* primary-100 */
+		background-color: var(--surface-surface);
+		color: theme('colors.primary.700');
+		border-color: var(--border-subtle);
 	}
 
 	:global(.popup-btn-secondary:hover) {
-		background-color: #e6f0ea; /* primary-50 */
-		border-color: #9bc2a7; /* primary-200 */
+		background-color: var(--surface-sunken);
+		border-color: var(--border-strong);
+	}
+
+	:global(.dark .popup-btn-secondary) {
+		color: theme('colors.primary.300');
 	}
 
 	:global(.popup-btn .popup-icon) {
@@ -573,13 +705,20 @@
 		flex-shrink: 0;
 	}
 
-	/* Mapbox control group buttons */
+	/* Mapbox control buttons — stamped, theme-aware */
 	:global(.mapboxgl-ctrl-group) {
-		background: white;
-		border-radius: 0.5rem;
-		box-shadow:
-			0 1px 3px 0 rgba(0, 0, 0, 0.1),
-			0 1px 2px 0 rgba(0, 0, 0, 0.06);
+		background: var(--surface-surface);
+		border: 1px solid var(--border-subtle);
+		border-radius: 2px;
+		box-shadow: 0 1px 2px rgba(1, 68, 33, 0.04);
+	}
+
+	:global(.dark .mapboxgl-ctrl-group) {
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+	}
+
+	:global(.mapboxgl-ctrl-group:not(:empty)) {
+		box-shadow: 0 1px 2px rgba(1, 68, 33, 0.04);
 	}
 
 	:global(.mapboxgl-ctrl button) {
@@ -590,28 +729,34 @@
 		justify-content: center;
 		border: none;
 		cursor: pointer;
-		transition: all 0.2s;
+		background: var(--surface-surface);
+		transition: background-color 100ms cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
 	:global(.mapboxgl-ctrl button:hover) {
-		background-color: #f3f4f6;
+		background-color: var(--surface-sunken);
 	}
 
 	:global(.mapboxgl-ctrl button:first-child) {
-		border-radius: 0.5rem 0.5rem 0 0;
+		border-radius: 2px 2px 0 0;
 	}
 
 	:global(.mapboxgl-ctrl button:last-child) {
-		border-radius: 0 0 0.5rem 0.5rem;
+		border-radius: 0 0 2px 2px;
 	}
 
 	:global(.mapboxgl-ctrl button:only-child) {
-		border-radius: 0.5rem;
+		border-radius: 2px;
 	}
 
-	/* Custom fullscreen control (created in JS so styles must be global) */
+	/* Invert mapbox control icons in dark mode so they remain visible */
+	:global(.dark .mapboxgl-ctrl-group button .mapboxgl-ctrl-icon) {
+		filter: invert(1) hue-rotate(180deg);
+	}
+
+	/* Custom fullscreen control */
 	:global(.fullscreen-button) {
-		background: white;
+		background: var(--surface-surface);
 		border: none;
 		cursor: pointer;
 		padding: 0;
@@ -620,12 +765,12 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		transition: all 0.2s;
-		border-radius: 0.5rem;
+		transition: background-color 100ms cubic-bezier(0.22, 1, 0.36, 1);
+		border-radius: 2px;
 	}
 
 	:global(.fullscreen-button:hover) {
-		background-color: #f3f4f6;
+		background-color: var(--surface-sunken);
 	}
 
 	:global(.fullscreen-icon) {
@@ -641,7 +786,7 @@
 		left: 0;
 		width: 100%;
 		height: 100%;
-		border: 2px solid #374151;
+		border: 2px solid var(--text-default);
 		border-radius: 2px;
 	}
 
@@ -652,13 +797,13 @@
 		left: -2px;
 		width: 6px;
 		height: 6px;
-		border-top: 2px solid #374151;
-		border-left: 2px solid #374151;
+		border-top: 2px solid var(--text-default);
+		border-left: 2px solid var(--text-default);
 		border-radius: 2px 0 0 0;
 		box-shadow:
-			16px 0 0 0 #374151,
-			0 16px 0 0 #374151,
-			16px 16px 0 0 #374151;
+			16px 0 0 0 var(--text-default),
+			0 16px 0 0 var(--text-default),
+			16px 16px 0 0 var(--text-default);
 	}
 
 	:global(.exit-fullscreen-icon::before) {
@@ -668,7 +813,7 @@
 		left: 4px;
 		width: 10px;
 		height: 10px;
-		border: 2px solid #374151;
+		border: 2px solid var(--text-default);
 		border-radius: 2px;
 	}
 
@@ -679,12 +824,12 @@
 		left: 2px;
 		width: 6px;
 		height: 6px;
-		border-bottom: 2px solid #374151;
-		border-right: 2px solid #374151;
+		border-bottom: 2px solid var(--text-default);
+		border-right: 2px solid var(--text-default);
 		border-radius: 0 0 2px 0;
 		box-shadow:
-			8px 0 0 0 #374151,
-			0 8px 0 0 #374151,
-			8px 8px 0 0 #374151;
+			8px 0 0 0 var(--text-default),
+			0 8px 0 0 var(--text-default),
+			8px 8px 0 0 var(--text-default);
 	}
 </style>

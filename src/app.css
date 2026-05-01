@@ -120,21 +120,17 @@
 
 /* ============================================================
  * Layout — main content container.
+ *
+ * The global <main> is structural only (just `flex-1` from the
+ * layout). Each page sets its own max-width via `.page-container`
+ * (reading-width pages) or `.page-container--wide` (homepage).
  * ============================================================ */
-main {
-	@apply mx-auto my-4 max-w-5xl px-4;
+.page-container {
+	@apply mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 md:py-8 lg:px-8;
 }
 
-@media screen and (max-width: 1050px) {
-	main {
-		@apply mx-4;
-	}
-}
-
-@media screen and (max-width: 500px) {
-	main {
-		@apply mx-1 px-1;
-	}
+.page-container--wide {
+	@apply mx-auto w-full max-w-screen-2xl px-4 py-6 sm:px-6 md:py-8 lg:px-8;
 }
 
 /* ============================================================

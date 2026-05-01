@@ -10,7 +10,7 @@
 	canonical="/about"
 />
 
-<div class="space-y-12 py-2">
+<div class="page-container space-y-12">
 	<!-- Field-manual style header -->
 	<header class="border-b border-subtle pb-6">
 		<div class="mb-2 flex items-center gap-2 font-mono text-xs uppercase tracking-wide text-muted">

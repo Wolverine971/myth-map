@@ -12,7 +12,8 @@ export interface UserPreferences {
 	itemsPerPage: number;
 
 	// UI preferences
-	defaultView: 'gallery' | 'map';
+	// 'gallery' (legacy alias for 'list'), 'list', 'split', 'map'
+	defaultView: 'gallery' | 'list' | 'split' | 'map';
 	theme: 'light' | 'dark' | 'auto';
 
 	// Accessibility preferences

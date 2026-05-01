@@ -99,10 +99,7 @@
 			</h1>
 
 			<!-- Error Description -->
-			<p
-				class="mb-2 text-lg text-default sm:text-xl"
-				in:fly={{ y: 30, duration: 800, delay: 600 }}
-			>
+			<p class="mb-2 text-lg text-default sm:text-xl" in:fly={{ y: 30, duration: 800, delay: 600 }}>
 				{errorContent.description}
 			</p>
 

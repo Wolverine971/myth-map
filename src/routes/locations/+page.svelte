@@ -62,7 +62,7 @@
 	canonical="/locations"
 />
 
-<div id="top" class="pb-16 pt-2">
+<div id="top" class="page-container pb-16">
 	<!-- Header / field-manual title block -->
 	<header class="mb-10 border-b border-subtle pb-8">
 		<div class="data-label mb-3 flex flex-wrap items-center gap-x-3 gap-y-1">

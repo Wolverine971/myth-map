@@ -1,7 +1,6 @@
 <!-- src/routes/+page.svelte -->
 <script lang="ts">
-	import { TabItem, Tabs } from 'flowbite-svelte';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import { derived, writable } from 'svelte/store';
 
@@ -22,10 +21,19 @@
 	import { currentLocation } from '$lib/stores/locationStore';
 	import { dataManager } from '$lib/stores/dataManager';
 	import { userPreferences } from '$lib/stores/userPreferencesStore';
+	import { locationFocus } from '$lib/stores/locationFocusStore';
 
 	export let data: PageData;
 
 	const prefs = userPreferences.getPreferences();
+
+	type ViewMode = 'list' | 'split' | 'map';
+
+	function normalizeView(raw: string | undefined): ViewMode {
+		if (raw === 'split' || raw === 'map' || raw === 'list') return raw;
+		// Legacy 'gallery' → 'list'.
+		return 'list';
+	}
 
 	let showFilterRestoreNotice = false;
 
@@ -52,7 +60,6 @@
 	const searchQuery = writable<string>(initialFilterState.searchQuery);
 
 	let userLocation: { lat: number; lng: number } | null = null;
-	let selectedTab = 'gallery';
 	let innerWidth = 0;
 	let isLoading = true;
 	let hasError = false;
@@ -61,7 +68,11 @@
 	let currentPage = 1;
 	let itemsPerPage = prefs.itemsPerPage;
 
-	$: isDesktop = innerWidth >= 768;
+	// Resolved view mode. Mobile/tablet collapse 'split' to 'list' so the card
+	// column stays usable; the user's preference is preserved verbatim.
+	let storedView: ViewMode = normalizeView(prefs.defaultView);
+	$: isDesktop = innerWidth >= 1024;
+	$: viewMode = !isDesktop && storedView === 'split' ? 'list' : storedView;
 
 	const unsubscribeLocation = currentLocation.subscribe((value) => (userLocation = value));
 
@@ -96,6 +107,18 @@
 		currentPage * itemsPerPage
 	);
 
+	$: stateAbbrs = (() => {
+		const set = new Set<string>();
+		for (const l of data.locations as Array<{ location?: { state?: string | null } }>) {
+			const abr = l?.location?.state;
+			if (abr) set.add(abr);
+		}
+		return [...set].sort();
+	})();
+
+	$: hasActiveFilters =
+		$selectedTags.length > 0 || !!$selectedState || !!$selectedCity || !!$searchQuery;
+
 	let filterPersistenceCleanup: (() => void) | null = null;
 
 	onMount(() => {
@@ -112,8 +135,12 @@
 
 			isLoading = false;
 
-			selectedTab = prefs.defaultView;
-			if (selectedTab === 'map') loadMap();
+			// First-visit defaults: split on desktop, list on smaller screens.
+			if (!prefs.defaultView || prefs.defaultView === 'gallery') {
+				storedView = window.matchMedia('(min-width: 1024px)').matches ? 'split' : 'list';
+			}
+
+			if (storedView === 'map' || storedView === 'split') loadMap();
 
 			userPreferences.updateActivityTime();
 			filterPersistenceCleanup = setupFilterPersistence();
@@ -128,6 +155,7 @@
 		return () => {
 			filterPersistenceCleanup?.();
 			unsubscribeLocation();
+			locationFocus.clear();
 		};
 	});
 
@@ -146,10 +174,10 @@
 		selectedTags.update((currentTags) => currentTags.filter((tag) => availableTagsMap[tag]));
 	}
 
-	async function handleTabChange(tabName: string) {
-		selectedTab = tabName;
-		userPreferences.updatePreference('defaultView', tabName as 'gallery' | 'map');
-		if (tabName === 'map') {
+	async function setView(next: ViewMode) {
+		storedView = next;
+		userPreferences.updatePreference('defaultView', next);
+		if (next === 'map' || next === 'split') {
 			await loadMap();
 		}
 	}
@@ -204,6 +232,39 @@
 		});
 		userPreferences.updateActivityTime();
 	}
+
+	// --- Cross-highlight: when a pin is clicked, scroll the matching card
+	// into view (paginating to its page if needed). The card's `.is-selected`
+	// CSS handles the visual flash.
+	let cardListEl: HTMLElement;
+
+	async function focusCardById(id: string | number) {
+		const idx = shownLocations.findIndex((l) => {
+			const lid = l?.location?.id ?? l?.id;
+			return lid != null && lid === id;
+		});
+		if (idx === -1) return;
+		const targetPage = Math.floor(idx / itemsPerPage) + 1;
+		if (targetPage !== currentPage) currentPage = targetPage;
+		await tick();
+		const el = cardListEl?.querySelector<HTMLElement>(`[data-location-id="${id}"]`);
+		el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+	}
+
+	function handlePinClick(event: CustomEvent<{ id: string | number }>) {
+		focusCardById(event.detail.id);
+	}
+
+	// Subscribe so a programmatic select (from anywhere) also scrolls.
+	let lastSelected: string | number | null = null;
+	$: if (
+		$locationFocus.selected != null &&
+		$locationFocus.selected !== lastSelected &&
+		!isLoading
+	) {
+		lastSelected = $locationFocus.selected;
+		focusCardById($locationFocus.selected);
+	}
 </script>
 
 <SEOHead
@@ -222,181 +283,414 @@
 
 <svelte:window bind:innerWidth />
 
-<main id="main-content" class="min-h-screen">
-	<div class="container mx-auto px-4 py-6 sm:px-6 md:py-8 lg:px-8">
-		<!-- Field-manual style header block -->
-		<div class="mb-6 flex flex-col gap-2 border-b border-subtle pb-6">
-			<div class="flex items-center gap-2 font-mono text-xs uppercase tracking-wide text-muted">
+<div class="page-container--wide pb-12">
+	<!-- ─── Field-manual header ──────────────────────────────────── -->
+	<header class="mb-6 border-b border-subtle pb-6 md:mb-8 md:pb-8">
+		<div class="data-label mb-3 flex flex-wrap items-center gap-x-3 gap-y-1">
+			<span class="inline-flex items-center gap-1.5">
 				<MapPinAltSolid class="h-3.5 w-3.5 text-tertiary-500" />
-				<span>Field guide · DC · MD · VA · DE</span>
-			</div>
-			<h1 class="font-display text-3xl text-primary-700 dark:text-primary-300 sm:text-4xl">
-				Family Activity Finder
-			</h1>
-			<p class="text-base text-muted sm:text-lg">Family-tested places for when you need ideas.</p>
+				Field guide
+			</span>
+			<span aria-hidden="true" class="text-subtle">·</span>
+			<span>{stateAbbrs.join(' / ') || 'DC / MD / VA / DE'}</span>
+			<span aria-hidden="true" class="text-subtle">·</span>
+			<span>{data.locations.length} entries</span>
 		</div>
 
-		<div class="flex w-full flex-col gap-6">
-			<div class="w-full">
-				<SearchBar
-					placeholder="Search by name, city, or activity type…"
-					value={$searchQuery}
-					on:search={handleSearch}
-					size="md"
-				/>
-			</div>
+		<h1
+			class="font-display text-3xl font-extrabold tracking-tight text-primary-700 dark:text-primary-300 sm:text-4xl md:text-5xl"
+		>
+			Family-tested places for when you need ideas.
+		</h1>
 
-			{#if showFilterRestoreNotice}
-				<div
-					class="flex items-center justify-between rounded-sm border border-accent-200 bg-accent-50 px-4 py-3 text-accent-800 dark:border-accent-800 dark:bg-accent-900/20 dark:text-accent-300"
-					transition:fade={{ duration: 150 }}
+		<p class="mt-3 max-w-2xl text-base text-default sm:text-lg">
+			A curated, parent-to-parent guide to weekend adventures across DC, Maryland, Virginia, and
+			Delaware. Filter the list, pan the map, find your next Saturday.
+		</p>
+
+		<!-- Stat strip — same hairline-grid pattern as /locations -->
+		<dl
+			class="mt-6 grid grid-cols-3 gap-px overflow-hidden rounded-md border border-subtle bg-[var(--border-subtle)]"
+		>
+			<div class="bg-surface px-3 py-3 sm:px-4">
+				<dt class="data-label">Locations</dt>
+				<dd
+					class="mt-1 font-display text-xl font-bold text-primary-700 dark:text-primary-300 sm:text-2xl"
 				>
-					<div class="flex items-center gap-2">
-						<InfoCircleSolid class="h-4 w-4" />
-						<span class="text-sm">Your previous filters have been restored</span>
+					{data.locations.length}
+				</dd>
+			</div>
+			<div class="bg-surface px-3 py-3 sm:px-4">
+				<dt class="data-label">States</dt>
+				<dd
+					class="mt-1 font-display text-xl font-bold text-primary-700 dark:text-primary-300 sm:text-2xl"
+				>
+					{stateAbbrs.length}
+				</dd>
+			</div>
+			<div class="bg-surface px-3 py-3 sm:px-4">
+				<dt class="data-label">Showing</dt>
+				<dd
+					class="mt-1 font-display text-xl font-bold text-primary-700 dark:text-primary-300 sm:text-2xl"
+				>
+					{totalFilteredItems}
+				</dd>
+			</div>
+		</dl>
+	</header>
+
+	<!-- ─── Search ─────────────────────────────────────────────── -->
+	<div class="mb-4">
+		<SearchBar
+			placeholder="Search by name, city, or activity type…"
+			value={$searchQuery}
+			on:search={handleSearch}
+			size="md"
+		/>
+	</div>
+
+	{#if showFilterRestoreNotice}
+		<div
+			class="mb-4 flex items-center justify-between rounded-sm border border-accent-200 bg-accent-50 px-4 py-3 text-accent-800 dark:border-accent-800 dark:bg-accent-900/20 dark:text-accent-300"
+			transition:fade={{ duration: 150 }}
+		>
+			<div class="flex items-center gap-2">
+				<InfoCircleSolid class="h-4 w-4" />
+				<span class="text-sm">Your previous filters have been restored</span>
+			</div>
+			<button
+				on:click={() => (showFilterRestoreNotice = false)}
+				class="text-sm font-medium underline-offset-2 hover:underline"
+			>
+				Dismiss
+			</button>
+		</div>
+	{/if}
+
+	<!-- ─── Filter rail (always visible, regardless of view mode) ─── -->
+	<div class="mb-4 space-y-3">
+		<LocationFilters
+			allTags={data.tags}
+			selectableTagsMap={availableTagsMap}
+			selectedTags={$selectedTags}
+			on:filterChange={handleTagFilterChange}
+		/>
+		<GeoFilters
+			on:filterChange={handleGeoFilterChange}
+			{shownLocations}
+			selectedState={$selectedState}
+			selectedCity={$selectedCity}
+		/>
+	</div>
+
+	<!-- ─── Status row + view toggle ────────────────────────────── -->
+	<div
+		class="mb-4 flex flex-col-reverse gap-3 border-y border-subtle py-3 sm:flex-row sm:items-center sm:justify-between"
+	>
+		<div class="data-label flex flex-wrap items-center gap-x-3 gap-y-1">
+			{#if hasActiveFilters}
+				<span>{totalFilteredItems} / {data.locations.length} locations</span>
+				{#if totalPages > 1 && (viewMode === 'list' || viewMode === 'split')}
+					<span aria-hidden="true" class="text-subtle">·</span>
+					<span>Page {currentPage} of {totalPages}</span>
+				{/if}
+				<button
+					on:click={clearAllFilters}
+					class="ml-1 rounded-sm border border-subtle bg-surface px-2 py-0.5 text-default hover:border-strong hover:text-tertiary-700 dark:hover:text-tertiary-300"
+				>
+					Clear filters
+				</button>
+			{:else}
+				<span>{totalFilteredItems} entries</span>
+				{#if totalPages > 1 && (viewMode === 'list' || viewMode === 'split')}
+					<span aria-hidden="true" class="text-subtle">·</span>
+					<span>Page {currentPage} of {totalPages}</span>
+				{/if}
+			{/if}
+		</div>
+
+		<!-- Stamped segmented control -->
+		<div
+			class="view-toggle inline-flex self-start rounded-sm border border-subtle bg-surface p-0.5 sm:self-auto"
+			role="tablist"
+			aria-label="View mode"
+		>
+			<button
+				type="button"
+				role="tab"
+				aria-selected={viewMode === 'list'}
+				class:active={viewMode === 'list'}
+				on:click={() => setView('list')}
+			>
+				List
+			</button>
+			{#if isDesktop}
+				<button
+					type="button"
+					role="tab"
+					aria-selected={viewMode === 'split'}
+					class:active={viewMode === 'split'}
+					on:click={() => setView('split')}
+				>
+					Split
+				</button>
+			{/if}
+			<button
+				type="button"
+				role="tab"
+				aria-selected={viewMode === 'map'}
+				class:active={viewMode === 'map'}
+				on:click={() => setView('map')}
+			>
+				Map
+			</button>
+		</div>
+	</div>
+
+	<!-- ─── Main content ────────────────────────────────────────── -->
+	{#if hasError}
+		<ErrorState
+			error={errorMessage}
+			title="Unable to load locations"
+			onRetry={retryLoadData}
+			variant="card"
+		/>
+	{:else if viewMode === 'map'}
+		<section class="map-pane">
+			{#if $mapComponentStore}
+				<svelte:component
+					this={$mapComponentStore}
+					locations={data.locations}
+					{shownLocations}
+					currentLocation={userLocation}
+					selectedState={$selectedState}
+					selectedCity={$selectedCity}
+					on:pinclick={handlePinClick}
+				/>
+			{:else}
+				<div
+					class="flex h-full w-full animate-pulse items-center justify-center rounded-sm border border-subtle bg-sunken"
+				>
+					<div class="text-center">
+						<div class="mx-auto mb-3 h-10 w-10 rounded-sm bg-secondary-200"></div>
+						<div class="mx-auto h-3 w-24 rounded-sm bg-secondary-200"></div>
 					</div>
-					<button
-						on:click={() => (showFilterRestoreNotice = false)}
-						class="text-sm font-medium underline-offset-2 hover:underline"
-					>
-						Dismiss
-					</button>
 				</div>
 			{/if}
+		</section>
+	{:else if viewMode === 'split'}
+		<!-- Two-column field-guide spread: scrollable card column + sticky map -->
+		<section class="split-pane">
+			<div class="card-column" id="results-section" bind:this={cardListEl}>
+				<div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
+					{#if isLoading}
+						{#each Array(6) as _, i (i)}
+							<SkeletonCard variant="card" />
+						{/each}
+					{:else}
+						{#each paginatedLocations as content_location (content_location.location.id ?? content_location.location.name)}
+							<LocationCard
+								name={content_location.location.name}
+								coords={{
+									lat: Number(content_location.location.lat),
+									lng: Number(content_location.location.lng)
+								}}
+								address={`${content_location.location.address_line_1 ?? ''}${content_location.location.address_line_2 ? ` ${content_location.location.address_line_2}` : ''}, ${content_location.location.city}, ${content_location.location.state} ${content_location.location.zip_code ?? ''}`}
+								website={content_location.website ?? ''}
+								tags={data.locationTags.filter(
+									(tag) => tag.location.name === content_location.location.name
+								)}
+								contentLocation={content_location}
+								{innerWidth}
+							/>
+						{/each}
+					{/if}
+				</div>
 
-			{#if $selectedTags.length > 0 || $selectedState || $selectedCity || $searchQuery}
-				<div class="flex items-center justify-between" transition:fade={{ duration: 100 }}>
-					<div class="font-mono text-xs uppercase tracking-wide text-muted">
-						{#key totalFilteredItems}
-							<span>{totalFilteredItems} / {data.locations.length} locations</span>
-						{/key}
-						{#if totalPages > 1}
-							<span class="ml-2">· Page {currentPage} of {totalPages}</span>
-						{/if}
+				{#if !isLoading && totalFilteredItems === 0}
+					<div class="mt-6 border border-dashed border-strong bg-sunken px-6 py-12 text-center">
+						<div class="data-label mb-2">No locations in this grid square</div>
+						<p class="mb-4 text-base text-default">Adjust your filters to find more places.</p>
+						<button
+							on:click={clearAllFilters}
+							class="rounded-sm bg-primary-700 px-4 py-2 font-mono text-xs uppercase tracking-wide text-white transition-colors duration-fast hover:bg-primary-600 dark:bg-primary-500 dark:text-primary-50 dark:hover:bg-primary-400"
+						>
+							Clear filters
+						</button>
 					</div>
+				{:else if !isLoading && totalPages > 1}
+					<div class="mt-6">
+						<Pagination
+							{currentPage}
+							{totalPages}
+							totalItems={totalFilteredItems}
+							{itemsPerPage}
+							on:pageChange={handlePageChange}
+						/>
+					</div>
+				{/if}
+			</div>
+
+			<aside class="map-column">
+				<div class="map-sticky">
+					{#if $mapComponentStore}
+						<svelte:component
+							this={$mapComponentStore}
+							locations={data.locations}
+							{shownLocations}
+							currentLocation={userLocation}
+							selectedState={$selectedState}
+							selectedCity={$selectedCity}
+							on:pinclick={handlePinClick}
+						/>
+					{:else}
+						<div
+							class="flex h-full w-full animate-pulse items-center justify-center rounded-sm border border-subtle bg-sunken"
+						>
+							<div class="text-center">
+								<div class="mx-auto mb-3 h-10 w-10 rounded-sm bg-secondary-200"></div>
+								<div class="mx-auto h-3 w-24 rounded-sm bg-secondary-200"></div>
+							</div>
+						</div>
+					{/if}
+				</div>
+			</aside>
+		</section>
+	{:else}
+		<!-- viewMode === 'list' -->
+		<section id="results-section" class="space-y-6" bind:this={cardListEl}>
+			<div
+				class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+			>
+				{#if isLoading}
+					{#each Array(8) as _, i (i)}
+						<SkeletonCard variant="card" />
+					{/each}
+				{:else}
+					{#each paginatedLocations as content_location (content_location.location.id ?? content_location.location.name)}
+						<LocationCard
+							name={content_location.location.name}
+							coords={{
+								lat: Number(content_location.location.lat),
+								lng: Number(content_location.location.lng)
+							}}
+							address={`${content_location.location.address_line_1 ?? ''}${content_location.location.address_line_2 ? ` ${content_location.location.address_line_2}` : ''}, ${content_location.location.city}, ${content_location.location.state} ${content_location.location.zip_code ?? ''}`}
+							website={content_location.website ?? ''}
+							tags={data.locationTags.filter(
+								(tag) => tag.location.name === content_location.location.name
+							)}
+							contentLocation={content_location}
+							{innerWidth}
+						/>
+					{/each}
+				{/if}
+			</div>
+
+			{#if !isLoading && totalFilteredItems === 0}
+				<div class="border border-dashed border-strong bg-sunken px-6 py-12 text-center">
+					<div class="data-label mb-2">No locations in this grid square</div>
+					<p class="mb-4 text-base text-default">Adjust your filters to find more places.</p>
 					<button
 						on:click={clearAllFilters}
-						class="rounded-sm border border-subtle bg-surface px-3 py-1.5 font-mono text-xs uppercase tracking-wide text-default transition-colors duration-fast hover:border-strong hover:text-tertiary-700 dark:hover:text-tertiary-300"
+						class="rounded-sm bg-primary-700 px-4 py-2 font-mono text-xs uppercase tracking-wide text-white transition-colors duration-fast hover:bg-primary-600 dark:bg-primary-500 dark:text-primary-50 dark:hover:bg-primary-400"
 					>
 						Clear filters
 					</button>
 				</div>
-			{/if}
-
-			<LocationFilters
-				allTags={data.tags}
-				selectableTagsMap={availableTagsMap}
-				selectedTags={$selectedTags}
-				on:filterChange={handleTagFilterChange}
-			/>
-
-			{#if selectedTab === 'map'}
-				<GeoFilters
-					on:filterChange={handleGeoFilterChange}
-					{shownLocations}
-					selectedState={$selectedState}
-					selectedCity={$selectedCity}
+			{:else if !isLoading && totalPages > 1}
+				<Pagination
+					{currentPage}
+					{totalPages}
+					totalItems={totalFilteredItems}
+					{itemsPerPage}
+					on:pageChange={handlePageChange}
 				/>
 			{/if}
-
-			<div class="tab-sections">
-				<Tabs tabStyle="underline" contentClass="p-2 sm:p-4 bg-transparent">
-					<TabItem open title="Gallery View" on:click={() => handleTabChange('gallery')}>
-						{#if hasError}
-							<ErrorState
-								error={errorMessage}
-								title="Unable to load locations"
-								onRetry={retryLoadData}
-								variant="card"
-							/>
-						{:else}
-							<div id="results-section" class="space-y-6">
-								<div
-									class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
-								>
-									{#if isLoading}
-										{#each Array(8) as _, i (i)}
-											<SkeletonCard variant="card" />
-										{/each}
-									{:else}
-										{#each paginatedLocations as content_location (content_location.location.id ?? content_location.location.name)}
-											<LocationCard
-												name={content_location.location.name}
-												coords={{
-													lat: Number(content_location.location.lat),
-													lng: Number(content_location.location.lng)
-												}}
-												address={`${content_location.location.address_line_1 ?? ''}${content_location.location.address_line_2 ? ` ${content_location.location.address_line_2}` : ''}, ${content_location.location.city}, ${content_location.location.state} ${content_location.location.zip_code ?? ''}`}
-												website={content_location.website ?? ''}
-												tags={data.locationTags.filter(
-													(tag) => tag.location.name === content_location.location.name
-												)}
-												contentLocation={content_location}
-												{innerWidth}
-											/>
-										{/each}
-									{/if}
-								</div>
-
-								{#if !isLoading && totalFilteredItems === 0}
-									<!-- Empty state — coordinate-style label -->
-									<div class="border border-dashed border-strong bg-sunken px-6 py-12 text-center">
-										<div class="mb-2 font-mono text-xs uppercase tracking-wide text-muted">
-											No locations in this grid square
-										</div>
-										<p class="mb-4 text-base text-default">
-											Adjust your filters to find more places.
-										</p>
-										<button
-											on:click={clearAllFilters}
-											class="rounded-sm bg-primary-700 px-4 py-2 font-mono text-xs uppercase tracking-wide text-white transition-colors duration-fast hover:bg-primary-600 dark:bg-primary-500 dark:text-primary-50 dark:hover:bg-primary-400"
-										>
-											Clear filters
-										</button>
-									</div>
-								{:else if !isLoading && totalPages > 1}
-									<Pagination
-										{currentPage}
-										{totalPages}
-										totalItems={totalFilteredItems}
-										{itemsPerPage}
-										on:pageChange={handlePageChange}
-									/>
-								{/if}
-							</div>
-						{/if}
-					</TabItem>
-					<TabItem title="Map View" on:click={() => handleTabChange('map')}>
-						<div class="h-[400px] sm:h-[500px] md:h-[600px]">
-							{#if $mapComponentStore}
-								<svelte:component
-									this={$mapComponentStore}
-									locations={data.locations}
-									{shownLocations}
-									currentLocation={userLocation}
-									selectedState={$selectedState}
-									selectedCity={$selectedCity}
-								/>
-							{:else}
-								<div
-									class="flex h-full w-full animate-pulse items-center justify-center rounded-sm border border-subtle bg-sunken"
-								>
-									<div class="text-center">
-										<div class="mx-auto mb-3 h-10 w-10 rounded-sm bg-secondary-200"></div>
-										<div class="mx-auto h-3 w-24 rounded-sm bg-secondary-200"></div>
-									</div>
-								</div>
-							{/if}
-						</div>
-					</TabItem>
-				</Tabs>
-			</div>
-		</div>
-	</div>
-</main>
+		</section>
+	{/if}
+</div>
 
 <style>
-	.tab-sections {
+	/* ─── Stamped segmented view-mode toggle ─────────────────── */
+	.view-toggle button {
+		font-family: theme('fontFamily.mono');
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--text-muted);
+		padding: 0.375rem 0.75rem;
 		border-radius: 2px;
+		background: transparent;
+		transition:
+			background-color 100ms cubic-bezier(0.22, 1, 0.36, 1),
+			color 100ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.view-toggle button:hover {
+		color: var(--text-default);
+		background: var(--surface-sunken);
+	}
+
+	.view-toggle button.active {
+		color: #fff;
+		background: theme('colors.primary.700');
+	}
+
+	:global(.dark) .view-toggle button.active {
+		background: theme('colors.primary.500');
+		color: theme('colors.primary.50');
+	}
+
+	/* ─── Map-only pane ─────────────────────────────────────── */
+	.map-pane {
+		height: 60vh;
+		min-height: 420px;
+		max-height: 760px;
+		border: 1px solid var(--border-subtle);
+		border-radius: 4px;
+		overflow: hidden;
+	}
+
+	@media (min-width: 768px) {
+		.map-pane {
+			height: 70vh;
+		}
+	}
+
+	/* ─── Split layout (desktop only — sticky map, scrollable cards) ─ */
+	.split-pane {
+		display: grid;
+		grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+		gap: 1.25rem;
+		align-items: start;
+	}
+
+	@media (min-width: 1280px) {
+		.split-pane {
+			grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+			gap: 1.5rem;
+		}
+	}
+
+	.card-column {
+		min-width: 0;
+	}
+
+	.map-column {
+		position: sticky;
+		top: 1rem;
+		min-width: 0;
+		/* Fills remaining viewport height so the map feels like a full pane. */
+		height: calc(100vh - 7rem);
+		min-height: 480px;
+		max-height: 880px;
+	}
+
+	.map-sticky {
+		height: 100%;
+		border: 1px solid var(--border-subtle);
+		border-radius: 4px;
+		overflow: hidden;
 	}
 </style>

@@ -108,6 +108,7 @@ have. No content work, no Markdown publishing.
 ### 6. Wire breadcrumbs through `<Breadcrumbs />` component
 
 **Files:**
+
 - `src/routes/locations/[state]/+page.svelte`
 - `src/routes/locations/[state]/[city]/+page.svelte`
 - `src/routes/locations/[state]/[city]/[slug]/+page.svelte`

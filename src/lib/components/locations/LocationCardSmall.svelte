@@ -102,7 +102,12 @@
 						</a>
 					{/if}
 					{#if website}
-						<a href={website} target="_blank" rel="noopener noreferrer" class={detailsHref ? '' : 'flex-1'}>
+						<a
+							href={website}
+							target="_blank"
+							rel="noopener noreferrer"
+							class={detailsHref ? '' : 'flex-1'}
+						>
 							<button
 								class="flex w-full items-center justify-between rounded-sm border border-primary-700 bg-surface px-3 py-1.5 font-mono text-xs uppercase tracking-wide text-primary-700 transition-colors duration-fast hover:bg-primary-50 dark:border-primary-300 dark:text-primary-300 dark:hover:bg-primary-900"
 							>

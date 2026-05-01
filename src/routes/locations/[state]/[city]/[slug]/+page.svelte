@@ -68,30 +68,9 @@
 />
 
 <div class="container mx-auto max-w-3xl px-4 py-8">
-	<nav class="mb-4 text-sm text-muted" aria-label="Breadcrumb">
-		<a
-			href="/locations"
-			class="transition-colors duration-fast hover:text-primary-700 dark:hover:text-primary-300"
-		>
-			Locations
-		</a>
-		<span aria-hidden="true" class="text-subtle"> / </span>
-		<a
-			href={stateHref}
-			class="transition-colors duration-fast hover:text-primary-700 dark:hover:text-primary-300"
-		>
-			{fm.state}
-		</a>
-		<span aria-hidden="true" class="text-subtle"> / </span>
-		<a
-			href={cityHref}
-			class="transition-colors duration-fast hover:text-primary-700 dark:hover:text-primary-300"
-		>
-			{fm.city}
-		</a>
-		<span aria-hidden="true" class="text-subtle"> / </span>
-		<span class="text-default">{loc.name}</span>
-	</nav>
+	<div class="mb-4">
+		<Breadcrumbs items={breadcrumbItems} />
+	</div>
 
 	<header class="mb-6">
 		<h1

@@ -47,6 +47,20 @@ export const clusterCountLayer: AnyLayer = {
 	}
 };
 
+export const focusRingLayer: AnyLayer = {
+	id: 'focus-ring',
+	type: 'circle',
+	source: SHOWN_LOCATIONS_SOURCE_ID,
+	filter: ['==', ['get', 'id'], '__none__'],
+	paint: {
+		'circle-radius': 22,
+		'circle-color': 'rgba(205, 87, 0, 0.15)',
+		'circle-stroke-color': '#CD5700',
+		'circle-stroke-width': 2,
+		'circle-stroke-opacity': 0.95
+	}
+};
+
 export const unclusteredPointLayer: AnyLayer = {
 	id: 'unclustered-point',
 	type: 'symbol',
