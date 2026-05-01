@@ -64,16 +64,18 @@
 
 <div id="top" class="pb-16 pt-2">
 	<!-- Header / field-manual title block -->
-	<header class="mb-10 border-b border-secondary-200 pb-8">
+	<header class="mb-10 border-b border-subtle pb-8">
 		<div class="data-label mb-3 flex flex-wrap items-center gap-x-3 gap-y-1">
 			<span>Field directory</span>
-			<span aria-hidden="true" class="text-secondary-400">·</span>
+			<span aria-hidden="true" class="text-subtle">·</span>
 			<span>{stateAbbrs.join(' / ')}</span>
-			<span aria-hidden="true" class="text-secondary-400">·</span>
+			<span aria-hidden="true" class="text-subtle">·</span>
 			<span>{data.entries.length} entries</span>
 		</div>
 
-		<h1 class="text-4xl font-extrabold tracking-tight text-primary-700 md:text-5xl">
+		<h1
+			class="text-4xl font-extrabold tracking-tight text-primary-700 dark:text-primary-300 md:text-5xl"
+		>
 			All Locations
 		</h1>
 
@@ -84,21 +86,25 @@
 
 		<!-- Stat strip -->
 		<dl
-			class="mt-6 grid grid-cols-3 gap-px overflow-hidden rounded-md border border-secondary-200 bg-secondary-200"
+			class="mt-6 grid grid-cols-3 gap-px overflow-hidden rounded-md border border-subtle bg-[var(--border-subtle)]"
 		>
 			<div class="bg-surface px-4 py-3">
 				<dt class="data-label">Locations</dt>
-				<dd class="mt-1 font-display text-2xl font-bold text-primary-700">
+				<dd class="mt-1 font-display text-2xl font-bold text-primary-700 dark:text-primary-300">
 					{data.entries.length}
 				</dd>
 			</div>
 			<div class="bg-surface px-4 py-3">
 				<dt class="data-label">Cities</dt>
-				<dd class="mt-1 font-display text-2xl font-bold text-primary-700">{byCity.length}</dd>
+				<dd class="mt-1 font-display text-2xl font-bold text-primary-700 dark:text-primary-300">
+					{byCity.length}
+				</dd>
 			</div>
 			<div class="bg-surface px-4 py-3">
 				<dt class="data-label">Guides</dt>
-				<dd class="mt-1 font-display text-2xl font-bold text-primary-700">{publishedCount}</dd>
+				<dd class="mt-1 font-display text-2xl font-bold text-primary-700 dark:text-primary-300">
+					{publishedCount}
+				</dd>
 			</div>
 		</dl>
 
@@ -110,7 +116,7 @@
 					<li>
 						<a
 							href={`#${group.citySlug}`}
-							class="stamped-tag duration-fast hover:border-primary-300 hover:bg-secondary-100 hover:text-primary-700"
+							class="stamped-tag transition duration-fast hover:border-strong hover:bg-surface hover:text-primary-700 hover:shadow-sm dark:hover:bg-elevated dark:hover:text-primary-300"
 						>
 							<span>{group.city}</span>
 							<span class="ml-1.5 text-subtle">{group.entries.length}</span>
@@ -125,12 +131,12 @@
 	{#each byCity as group (group.stateSlug + '/' + group.citySlug)}
 		<section id={group.citySlug} class="mb-12 scroll-mt-6">
 			<div
-				class="mb-4 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-secondary-200 pb-2"
+				class="mb-4 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-subtle pb-2"
 			>
 				<h2 class="font-display text-2xl font-bold tracking-tight text-default md:text-3xl">
 					<a
 						href={`/locations/${group.stateSlug}/${group.citySlug}`}
-						class="transition-colors duration-fast hover:text-primary-700"
+						class="transition-colors duration-fast hover:text-primary-700 dark:hover:text-primary-300"
 					>
 						{group.city}
 					</a>
@@ -142,7 +148,7 @@
 					</span>
 					<a
 						href="#top"
-						class="data-label text-subtle hover:text-primary-700"
+						class="data-label transition-colors duration-fast hover:text-primary-700 dark:hover:text-primary-300"
 						aria-label="Back to top"
 					>
 						↑ Top
@@ -164,7 +170,7 @@
 							href={cardHref ?? undefined}
 							target={externalLink ? '_blank' : undefined}
 							rel={externalLink ? 'noopener noreferrer' : undefined}
-							class="group relative flex h-full items-start gap-3 rounded-md border border-secondary-200 bg-surface p-3 transition-colors duration-fast hover:border-primary-300"
+							class="group relative flex h-full items-start gap-3 rounded-md border border-subtle bg-surface p-3 transition duration-fast hover:border-strong hover:shadow-md dark:hover:bg-elevated"
 						>
 							<img
 								class="h-14 w-14 flex-shrink-0 object-contain"
@@ -175,13 +181,13 @@
 							<div class="min-w-0 flex-1">
 								<div class="flex items-start justify-between gap-2">
 									<h3
-										class="font-display text-lg font-bold leading-tight text-default group-hover:text-primary-700"
+										class="font-display text-lg font-bold leading-tight text-default transition-colors duration-fast group-hover:text-primary-700 dark:group-hover:text-primary-300"
 									>
 										{entry.frontmatter.name}
 									</h3>
 									{#if linkable}
 										<span
-											class="mt-0.5 flex-shrink-0 rounded-sm border border-primary-200 bg-primary-50 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide text-primary-700"
+											class="mt-0.5 flex-shrink-0 rounded-sm border border-primary-200 bg-primary-50 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide text-primary-700 dark:border-primary-700 dark:bg-primary-900 dark:text-primary-300"
 										>
 											Guide
 										</span>
@@ -200,16 +206,16 @@
 										</span>
 									{/if}
 									{#if linkable}
-										<span aria-hidden="true" class="text-secondary-400">·</span>
+										<span aria-hidden="true" class="text-subtle">·</span>
 										<span
-											class="font-mono text-xs uppercase tracking-wide text-tertiary-500 group-hover:text-tertiary-600"
+											class="font-mono text-xs uppercase tracking-wide text-tertiary-600 transition-colors duration-fast group-hover:text-tertiary-700 dark:text-tertiary-400 dark:group-hover:text-tertiary-300"
 										>
 											Read guide →
 										</span>
 									{:else if entry.location.website}
-										<span aria-hidden="true" class="text-secondary-400">·</span>
+										<span aria-hidden="true" class="text-subtle">·</span>
 										<span
-											class="font-mono text-xs uppercase tracking-wide text-tertiary-500 group-hover:text-tertiary-600"
+											class="font-mono text-xs uppercase tracking-wide text-tertiary-600 transition-colors duration-fast group-hover:text-tertiary-700 dark:text-tertiary-400 dark:group-hover:text-tertiary-300"
 										>
 											Visit site →
 										</span>
@@ -223,7 +229,12 @@
 		</section>
 	{/each}
 
-	<div class="border-t border-secondary-200 pt-6 text-center">
-		<a href="#top" class="data-label text-subtle hover:text-primary-700">↑ Back to top</a>
+	<div class="border-t border-subtle pt-6 text-center">
+		<a
+			href="#top"
+			class="data-label transition-colors duration-fast hover:text-primary-700 dark:hover:text-primary-300"
+		>
+			↑ Back to top
+		</a>
 	</div>
 </div>

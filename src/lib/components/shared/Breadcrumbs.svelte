@@ -30,30 +30,33 @@
 	};
 
 	$: itemClasses = {
-		default: 'flex items-center gap-1 transition-colors hover:text-primary-700',
-		minimal: 'flex items-center gap-0.5 transition-colors hover:text-primary-600',
-		compact: 'flex items-center transition-colors hover:text-primary-600'
+		default:
+			'flex items-center gap-1 transition-colors duration-fast hover:text-primary-700 dark:hover:text-primary-300',
+		minimal:
+			'flex items-center gap-0.5 transition-colors duration-fast hover:text-primary-700 dark:hover:text-primary-300',
+		compact:
+			'flex items-center transition-colors duration-fast hover:text-primary-700 dark:hover:text-primary-300'
 	};
 
 	$: linkClasses = {
 		default:
-			'font-medium text-primary-600 hover:text-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded px-1 py-0.5',
+			'font-medium text-primary-700 dark:text-primary-300 hover:text-primary-800 dark:hover:text-primary-200 focus:outline-none focus:ring-2 focus:ring-focus focus:ring-offset-2 rounded-sm px-1 py-0.5',
 		minimal:
-			'text-primary-600 hover:text-primary-800 focus:outline-none focus:ring-1 focus:ring-primary-500 rounded px-0.5',
+			'text-primary-700 dark:text-primary-300 hover:text-primary-800 dark:hover:text-primary-200 focus:outline-none focus:ring-1 focus:ring-focus rounded-sm px-0.5',
 		compact:
-			'text-primary-600 hover:text-primary-800 focus:outline-none focus:ring-1 focus:ring-primary-500 rounded'
+			'text-primary-700 dark:text-primary-300 hover:text-primary-800 dark:hover:text-primary-200 focus:outline-none focus:ring-1 focus:ring-focus rounded-sm'
 	};
 
 	$: currentClasses = {
-		default: 'font-semibold text-gray-900 cursor-default',
-		minimal: 'font-medium text-gray-800 cursor-default',
-		compact: 'font-medium text-gray-700 cursor-default'
+		default: 'font-semibold text-default cursor-default',
+		minimal: 'font-medium text-default cursor-default',
+		compact: 'font-medium text-muted cursor-default'
 	};
 
 	$: separatorClasses = {
-		default: 'h-4 w-4 text-gray-400 sm:h-5 sm:w-5',
-		minimal: 'h-3 w-3 text-gray-400',
-		compact: 'h-3 w-3 text-gray-300'
+		default: 'h-4 w-4 text-subtle sm:h-5 sm:w-5',
+		minimal: 'h-3 w-3 text-subtle',
+		compact: 'h-3 w-3 text-subtle'
 	};
 
 	// Helper to truncate long labels

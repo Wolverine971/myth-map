@@ -1,6 +1,7 @@
 <!-- src/routes/locations/[state]/[city]/[slug]/+page.svelte -->
 <script lang="ts">
 	import SEOHead from '$lib/components/shared/SEOHead.svelte';
+	import Breadcrumbs from '$lib/components/shared/Breadcrumbs.svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -12,6 +13,12 @@
 	$: canonical = `/locations/${entry.stateSlug}/${entry.citySlug}/${entry.slug}`;
 	$: cityHref = `/locations/${entry.stateSlug}/${entry.citySlug}`;
 	$: stateHref = `/locations/${entry.stateSlug}`;
+	$: breadcrumbItems = [
+		{ label: 'Locations', href: '/locations' },
+		{ label: fm.state, href: stateHref },
+		{ label: fm.city, href: cityHref },
+		{ label: loc.name, current: true }
+	];
 	$: addressLine = [loc.address_line_1, loc.address_line_2].filter(Boolean).join(', ');
 	$: fullAddressOneLine = [
 		addressLine,
@@ -57,37 +64,67 @@
 	publishedTime={fm.published_at ?? ''}
 	modifiedTime={fm.last_modified}
 	{structuredData}
+	noIndex={!fm.published}
 />
 
 <div class="container mx-auto max-w-3xl px-4 py-8">
-	<nav class="mb-4 text-sm text-gray-500" aria-label="Breadcrumb">
-		<a href="/locations" class="hover:underline">Locations</a>
-		<span aria-hidden="true"> / </span>
-		<a href={stateHref} class="hover:underline">{fm.state}</a>
-		<span aria-hidden="true"> / </span>
-		<a href={cityHref} class="hover:underline">{fm.city}</a>
-		<span aria-hidden="true"> / </span>
-		<span class="text-gray-700">{loc.name}</span>
+	<nav class="mb-4 text-sm text-muted" aria-label="Breadcrumb">
+		<a
+			href="/locations"
+			class="transition-colors duration-fast hover:text-primary-700 dark:hover:text-primary-300"
+		>
+			Locations
+		</a>
+		<span aria-hidden="true" class="text-subtle"> / </span>
+		<a
+			href={stateHref}
+			class="transition-colors duration-fast hover:text-primary-700 dark:hover:text-primary-300"
+		>
+			{fm.state}
+		</a>
+		<span aria-hidden="true" class="text-subtle"> / </span>
+		<a
+			href={cityHref}
+			class="transition-colors duration-fast hover:text-primary-700 dark:hover:text-primary-300"
+		>
+			{fm.city}
+		</a>
+		<span aria-hidden="true" class="text-subtle"> / </span>
+		<span class="text-default">{loc.name}</span>
 	</nav>
 
 	<header class="mb-6">
-		<h1 class="mb-2 text-3xl font-extrabold text-gray-900 md:text-4xl">{loc.name}</h1>
-		<p class="text-gray-600">{fullAddressOneLine}</p>
-		<div class="mt-3 flex flex-wrap gap-2 text-xs">
+		<h1
+			class="mb-2 text-3xl font-extrabold tracking-tight text-primary-700 dark:text-primary-300 md:text-4xl"
+		>
+			{loc.name}
+		</h1>
+		<p class="text-muted">{fullAddressOneLine}</p>
+		<div class="mt-3 flex flex-wrap gap-2">
 			{#if loc.type}
-				<span class="rounded-full bg-primary-50 px-2 py-1 text-primary-800">{loc.type}</span>
+				<span
+					class="rounded-sm border border-primary-200 bg-primary-50 px-2 py-0.5 font-mono text-xs uppercase tracking-wide text-primary-700 dark:border-primary-700 dark:bg-primary-900 dark:text-primary-300"
+				>
+					{loc.type}
+				</span>
 			{/if}
 			{#if loc.indoor_outdoor}
-				<span class="rounded-full bg-secondary-100 px-2 py-1 text-secondary-900"
-					>{loc.indoor_outdoor}</span
+				<span
+					class="rounded-sm border border-secondary-300 bg-secondary-100 px-2 py-0.5 font-mono text-xs uppercase tracking-wide text-secondary-900 dark:border-secondary-700 dark:bg-secondary-900 dark:text-secondary-200"
 				>
+					{loc.indoor_outdoor}
+				</span>
 			{/if}
 			{#if loc.price}
-				<span class="rounded-full bg-gray-100 px-2 py-1 text-gray-700">{loc.price}</span>
+				<span
+					class="rounded-sm border border-subtle bg-sunken px-2 py-0.5 font-mono text-xs uppercase tracking-wide text-default"
+				>
+					{loc.price}
+				</span>
 			{/if}
 			{#if !fm.published}
 				<span
-					class="rounded-full bg-yellow-50 px-2 py-1 text-yellow-800"
+					class="rounded-sm border border-tertiary-300 bg-tertiary-50 px-2 py-0.5 font-mono text-xs uppercase tracking-wide text-tertiary-700 dark:border-tertiary-700 dark:bg-tertiary-900 dark:text-tertiary-300"
 					title="Editorial guide not yet written"
 				>
 					Basic listing
@@ -96,22 +133,22 @@
 		</div>
 	</header>
 
-	<section class="mb-8 rounded-lg border border-gray-200 bg-white p-5">
-		<h2 class="mb-3 text-lg font-bold text-gray-900">The basics</h2>
+	<section class="mb-8 rounded-md border border-subtle bg-surface p-5">
+		<h2 class="mb-3 font-display text-lg font-bold text-default">The basics</h2>
 		<dl class="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
 			<div>
-				<dt class="font-semibold text-gray-700">Address</dt>
-				<dd class="text-gray-600">{fullAddressOneLine || '—'}</dd>
+				<dt class="font-mono text-xs uppercase tracking-wide text-muted">Address</dt>
+				<dd class="mt-0.5 text-default">{fullAddressOneLine || '—'}</dd>
 			</div>
 			{#if entry.location.website}
 				<div>
-					<dt class="font-semibold text-gray-700">Website</dt>
-					<dd>
+					<dt class="font-mono text-xs uppercase tracking-wide text-muted">Website</dt>
+					<dd class="mt-0.5">
 						<a
 							href={entry.location.website}
 							target="_blank"
 							rel="noopener noreferrer"
-							class="text-primary-700 hover:underline"
+							class="font-mono uppercase tracking-wide text-tertiary-600 transition-colors duration-fast hover:text-tertiary-700 dark:text-tertiary-400 dark:hover:text-tertiary-300"
 						>
 							Visit site →
 						</a>
@@ -120,34 +157,36 @@
 			{/if}
 			{#if loc.type}
 				<div>
-					<dt class="font-semibold text-gray-700">Type</dt>
-					<dd class="text-gray-600">{loc.type}</dd>
+					<dt class="font-mono text-xs uppercase tracking-wide text-muted">Type</dt>
+					<dd class="mt-0.5 text-default">{loc.type}</dd>
 				</div>
 			{/if}
 			{#if loc.indoor_outdoor}
 				<div>
-					<dt class="font-semibold text-gray-700">Setting</dt>
-					<dd class="text-gray-600">{loc.indoor_outdoor}</dd>
+					<dt class="font-mono text-xs uppercase tracking-wide text-muted">Setting</dt>
+					<dd class="mt-0.5 text-default">{loc.indoor_outdoor}</dd>
 				</div>
 			{/if}
 			{#if loc.price}
 				<div>
-					<dt class="font-semibold text-gray-700">Price</dt>
-					<dd class="text-gray-600">{loc.price}</dd>
+					<dt class="font-mono text-xs uppercase tracking-wide text-muted">Price</dt>
+					<dd class="mt-0.5 text-default">{loc.price}</dd>
 				</div>
 			{/if}
 		</dl>
 	</section>
 
 	{#if fm.published && entry.bodyHtml}
-		<article class="prose prose-lg mb-10 max-w-none">
+		<article class="prose prose-lg mb-10 max-w-none dark:prose-invert">
 			{@html entry.bodyHtml}
 		</article>
 	{:else}
 		<section
-			class="mb-10 rounded-lg border border-dashed border-gray-300 bg-gray-50 p-5 text-sm text-gray-600"
+			class="mb-10 rounded-md border border-dashed border-strong bg-sunken p-5 text-sm text-muted"
 		>
-			<p class="font-semibold text-gray-800">We're still writing the family guide for this spot.</p>
+			<p class="font-display font-semibold text-default">
+				We're still writing the family guide for this spot.
+			</p>
 			<p class="mt-1">
 				The address and website above are verified. Once we publish parent-tested tips, hours, and
 				FAQs, they'll appear right here.
@@ -157,15 +196,20 @@
 
 	{#if nearby.length}
 		<section class="mb-10">
-			<h2 class="mb-3 text-xl font-bold text-gray-900">Nearby places</h2>
+			<h2 class="mb-3 font-display text-xl font-bold text-default">Nearby places</h2>
 			<ul class="grid gap-3 sm:grid-cols-3">
 				{#each nearby as n (n.id)}
-					<li
-						class="rounded-md border border-gray-200 bg-white p-3 transition hover:border-primary-400"
-					>
-						<a href={`/locations/${n.stateSlug}/${n.citySlug}/${n.slug}`} class="block">
-							<div class="font-semibold text-gray-900">{n.frontmatter.name}</div>
-							<div class="text-xs text-gray-500">
+					<li>
+						<a
+							href={`/locations/${n.stateSlug}/${n.citySlug}/${n.slug}`}
+							class="group block rounded-md border border-subtle bg-surface p-3 transition duration-fast hover:border-strong hover:shadow-md dark:hover:bg-elevated"
+						>
+							<div
+								class="font-display font-semibold text-default transition-colors duration-fast group-hover:text-primary-700 dark:group-hover:text-primary-300"
+							>
+								{n.frontmatter.name}
+							</div>
+							<div class="mt-1 font-mono text-xs uppercase tracking-wide text-subtle">
 								{n.frontmatter.city}, {n.frontmatter.state} · {n.distanceMiles.toFixed(1)} mi
 							</div>
 						</a>

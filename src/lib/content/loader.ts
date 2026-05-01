@@ -99,8 +99,20 @@ function buildIndex(): Map<string, LocationEntry> {
 
 const INDEX = buildIndex();
 
+const INDEX_BY_ID = new Map<number, LocationEntry>([...INDEX.values()].map((e) => [e.id, e]));
+
 export function getEntry(state: string, city: string, slug: string): LocationEntry | null {
 	return INDEX.get(`${state.toLowerCase()}/${city}/${slug}`) ?? null;
+}
+
+export function getEntryById(id: number): LocationEntry | null {
+	return INDEX_BY_ID.get(id) ?? null;
+}
+
+export function hrefForId(id: number): string | null {
+	const e = INDEX_BY_ID.get(id);
+	if (!e) return null;
+	return `/locations/${e.stateSlug}/${e.citySlug}/${e.slug}`;
 }
 
 export function listEntries(): LocationEntry[] {

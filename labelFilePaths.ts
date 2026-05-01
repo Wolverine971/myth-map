@@ -18,7 +18,8 @@ const EXCLUDED_DIRS = [
 	'coverage',
 	'.nyc_output',
 	'tmp',
-	'temp'
+	'temp',
+	'geographies'
 ];
 
 const EXCLUDED_FILES = [

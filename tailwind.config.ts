@@ -7,6 +7,23 @@ export default {
 		'./node_modules/flowbite-svelte/**/*.{html,js,svelte,ts}'
 	],
 
+	// Keep dynamically-composed brand classes alive (used by /styleguide and similar
+	// data-driven UI). Without this, Tailwind purges every shade of every ramp.
+	safelist: [
+		{
+			pattern:
+				/^bg-(primary|secondary|accent|tertiary|neutral|danger)-(50|100|200|300|400|500|600|700|800|900)$/
+		},
+		{
+			pattern:
+				/^text-(primary|secondary|accent|tertiary|neutral|danger)-(50|100|200|300|400|500|600|700|800|900)$/
+		},
+		{
+			pattern:
+				/^border-(primary|secondary|accent|tertiary|neutral|danger)-(50|100|200|300|400|500|600|700|800|900)$/
+		}
+	],
+
 	plugins: [require('flowbite/plugin'), require('@tailwindcss/typography')],
 	darkMode: 'class',
 

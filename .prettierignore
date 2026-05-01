@@ -2,3 +2,6 @@
 pnpm-lock.yaml
 package-lock.json
 yarn.lock
+
+# Geographic data — large generated GeoJSON, do not format or touch
+src/geographies/

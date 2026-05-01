@@ -15,9 +15,7 @@
 	const dispatch = createEventDispatcher();
 
 	let inputElement: HTMLInputElement;
-	let focused = false;
 
-	// Debounced search function
 	const debouncedSearch = debounce((searchValue: string) => {
 		if (searchValue.length >= minLength || searchValue.length === 0) {
 			dispatch('search', searchValue);
@@ -37,20 +35,16 @@
 	}
 
 	function handleKeydown(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
-			handleClear();
-		}
+		if (event.key === 'Escape') handleClear();
 		dispatch('keydown', event);
 	}
 
-	// Size classes
 	$: sizeClasses = {
 		sm: 'text-sm px-3 py-2 pl-9',
 		md: 'text-base px-4 py-3 pl-11',
 		lg: 'text-lg px-5 py-4 pl-12'
 	};
 
-	// Just the icon dimensions — never combined with positioning classes.
 	$: iconSize = {
 		sm: 'h-4 w-4',
 		md: 'h-5 w-5',
@@ -58,15 +52,13 @@
 	};
 
 	onMount(() => {
-		// Auto-focus if needed
 		return () => {
-			debouncedSearch.cancel?.();
+			(debouncedSearch as unknown as { cancel?: () => void }).cancel?.();
 		};
 	});
 </script>
 
 <div class="group relative">
-	<!-- Hidden description for screen readers -->
 	<div id="search-description" class="sr-only">
 		Search by location name, city, state, address, or activity tags. Results will appear as you
 		type.
@@ -74,10 +66,12 @@
 
 	<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
 		{#if isLoading}
-			<GlobeOutline class="animate-spin text-gray-400 {iconSize[size]}" />
+			<GlobeOutline class="animate-spin text-subtle {iconSize[size]}" />
 		{:else}
 			<SearchOutline
-				class="text-gray-400 {iconSize[size]} transition-colors group-focus-within:text-primary-500"
+				class="text-subtle transition-colors duration-fast group-focus-within:text-primary-700 dark:group-focus-within:text-primary-300 {iconSize[
+					size
+				]}"
 			/>
 		{/if}
 	</div>
@@ -87,13 +81,11 @@
 		bind:value
 		type="text"
 		{placeholder}
-		class="block w-full rounded-lg border border-gray-300 bg-white {sizeClasses[
+		class="block w-full rounded-sm border border-subtle bg-surface text-default transition-colors duration-fast placeholder:text-subtle focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 disabled:cursor-not-allowed disabled:bg-sunken disabled:text-subtle dark:focus:border-primary-300 dark:focus:ring-primary-300 {sizeClasses[
 			size
-		]} text-gray-900 transition-colors focus:border-primary-500 focus:ring-1 focus:ring-primary-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500"
+		]}"
 		on:input={handleInput}
 		on:keydown={handleKeydown}
-		on:focus={() => (focused = true)}
-		on:blur={() => (focused = false)}
 		on:focus
 		on:blur
 		disabled={isLoading}
@@ -107,19 +99,12 @@
 	{#if showClearButton && value.length > 0}
 		<button
 			type="button"
-			class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+			class="absolute inset-y-0 right-0 flex items-center pr-3 text-subtle transition-colors duration-fast hover:text-tertiary-700 dark:hover:text-tertiary-300"
 			on:click={handleClear}
 			aria-label="Clear search"
 		>
 			<CloseCircleSolid class="h-4 w-4" />
 		</button>
-	{/if}
-
-	<!-- Focus ring for better accessibility -->
-	{#if focused}
-		<div
-			class="pointer-events-none absolute -inset-1 rounded-lg border-2 border-primary-500 opacity-20"
-		></div>
 	{/if}
 </div>
 
@@ -132,7 +117,6 @@
 			transform: rotate(360deg);
 		}
 	}
-
 	.animate-spin {
 		animation: spin 1s linear infinite;
 	}

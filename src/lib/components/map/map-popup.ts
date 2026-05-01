@@ -1,6 +1,8 @@
 // src/lib/components/map/map-popup.ts
+import { hrefForId } from '$lib/content/loader';
 
 export type PopupProperties = {
+	id?: number;
 	name?: string;
 	address_line_1?: string;
 	city?: string;
@@ -19,9 +21,11 @@ export function buildAddress(props: PopupProperties): string {
 }
 
 export function buildDetailsLink(props: PopupProperties): string {
-	if (!props.state || !props.city || !props.name) return '#';
-	const slug = (s: string) => s.replace(/\s+/g, '-');
-	return `/locations/states/${props.state}/${slug(props.city)}/${slug(props.name)}`;
+	if (typeof props.id === 'number') {
+		const href = hrefForId(props.id);
+		if (href) return href;
+	}
+	return '#';
 }
 
 function escapeHTML(value: string): string {

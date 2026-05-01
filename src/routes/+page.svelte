@@ -216,12 +216,7 @@
 		'@type': 'WebSite',
 		name: 'Tiny Tribe Adventures',
 		description: 'Family-tested places for when you need ideas.',
-		url: 'https://tinytribeadventures.com',
-		potentialAction: {
-			'@type': 'SearchAction',
-			target: 'https://tinytribeadventures.com/search?q={search_term_string}',
-			'query-input': 'required name=search_term_string'
-		}
+		url: 'https://tinytribeadventures.com'
 	}}
 />
 
@@ -281,7 +276,7 @@
 					</div>
 					<button
 						on:click={clearAllFilters}
-						class="rounded-sm border border-subtle bg-surface px-3 py-1.5 font-mono text-xs uppercase tracking-wide text-default transition-colors duration-fast hover:border-strong hover:text-tertiary-600"
+						class="rounded-sm border border-subtle bg-surface px-3 py-1.5 font-mono text-xs uppercase tracking-wide text-default transition-colors duration-fast hover:border-strong hover:text-tertiary-700 dark:hover:text-tertiary-300"
 					>
 						Clear filters
 					</button>
@@ -354,7 +349,7 @@
 										</p>
 										<button
 											on:click={clearAllFilters}
-											class="rounded-sm bg-primary-700 px-4 py-2 font-mono text-xs uppercase tracking-wide text-white transition-colors duration-fast hover:bg-primary-600"
+											class="rounded-sm bg-primary-700 px-4 py-2 font-mono text-xs uppercase tracking-wide text-white transition-colors duration-fast hover:bg-primary-600 dark:bg-primary-500 dark:text-primary-50 dark:hover:bg-primary-400"
 										>
 											Clear filters
 										</button>

@@ -11,6 +11,7 @@
 	export let publishedTime: string = '';
 	export let modifiedTime: string = '';
 	export let structuredData: object | null = null;
+	export let noIndex: boolean = false;
 
 	// Base URL
 	const baseUrl = 'https://tinytribeadventures.com';
@@ -28,20 +29,18 @@
 		? title
 		: `${title} | Tiny Tribe Adventures`;
 
-	// Default keywords
-	$: allKeywords = keywords
-		? `${keywords}, family activities, kids activities, family fun, Maryland, Virginia, Delaware, DC`
-		: 'family activities, kids activities, family fun, Maryland, Virginia, Delaware, DC';
+	$: robotsContent = noIndex ? 'noindex, nofollow' : 'index, follow';
 </script>
 
 <svelte:head>
 	<!-- Primary Meta Tags -->
 	<title>{pageTitle}</title>
-	<meta name="title" content={pageTitle} />
 	<meta name="description" content={description} />
-	<meta name="keywords" content={allKeywords} />
+	{#if keywords}
+		<meta name="keywords" content={keywords} />
+	{/if}
 	<meta name="author" content={author} />
-	<meta name="robots" content="index, follow" />
+	<meta name="robots" content={robotsContent} />
 
 	<!-- Canonical URL -->
 	{#if absoluteCanonical}
@@ -55,6 +54,7 @@
 	<meta property="og:image" content={absoluteOgImage} />
 	<meta property="og:image:alt" content={ogImageAlt} />
 	<meta property="og:site_name" content="Tiny Tribe Adventures" />
+	<meta property="og:locale" content="en_US" />
 	{#if absoluteCanonical}
 		<meta property="og:url" content={absoluteCanonical} />
 	{/if}
@@ -66,11 +66,11 @@
 	{/if}
 
 	<!-- Twitter -->
-	<meta property="twitter:card" content="summary_large_image" />
-	<meta property="twitter:title" content={title} />
-	<meta property="twitter:description" content={description} />
-	<meta property="twitter:image" content={absoluteOgImage} />
-	<meta property="twitter:image:alt" content={ogImageAlt} />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content={title} />
+	<meta name="twitter:description" content={description} />
+	<meta name="twitter:image" content={absoluteOgImage} />
+	<meta name="twitter:image:alt" content={ogImageAlt} />
 
 	<!-- Additional Meta Tags -->
 	<meta name="theme-color" content="#014421" />

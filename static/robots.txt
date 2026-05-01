@@ -4,4 +4,4 @@ Disallow: /register/
 Disallow: /login/
 Allow: /
 
-Sitemap: https://www.tinytribeadventures.com/sitemap.xml
+Sitemap: https://tinytribeadventures.com/sitemap.xml

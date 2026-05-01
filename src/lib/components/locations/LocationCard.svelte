@@ -16,9 +16,9 @@
 	}
 </script>
 
-<!-- src/lib/components/locations/LocationCard.svelte -->
 <script lang="ts">
 	import { getLocationIcon } from '../../../utils/locationPhotos';
+	import { hrefForId } from '$lib/content/loader';
 
 	export let name: string;
 	export let address: string;
@@ -28,7 +28,6 @@
 	export let contentLocation: any;
 	export let innerWidth: number = 0;
 
-	// Public exports surfaced for parent flexibility — currently unread inside the card.
 	void coords;
 	void contentLocation;
 	void innerWidth;
@@ -75,7 +74,6 @@
 		return false;
 	}
 
-	// City + state line: address looks like "Street, City, ST Zip"
 	$: cityState = (() => {
 		if (!address) return '';
 		const parts = address
@@ -87,14 +85,11 @@
 	})();
 
 	$: detailsHref = (() => {
-		const state = contentLocation?.location?.state;
-		const city = contentLocation?.location?.city;
-		if (!state || !city || !name) return null;
-		const slug = (s: string) => s.replace(/\s+/g, '-');
-		return `/locations/states/${state}/${slug(city)}/${slug(name)}`;
+		const id = contentLocation?.location?.id ?? contentLocation?.id;
+		if (typeof id !== 'number') return null;
+		return hrefForId(id);
 	})();
 
-	// Compact tag chips: drop noise tags that don't add scanning value.
 	const SUPPRESS = new Set(['Activity', 'Eats', 'Indoor', 'Outdoor', 'both']);
 	$: chipTags = tagNames.filter((n) => !SUPPRESS.has(n)).slice(0, 3);
 
@@ -150,55 +145,79 @@
 		</div>
 	</a>
 
-	{#if website}
-		<a class="card__website" href={website} target="_blank" rel="noopener noreferrer">
-			<span>Website</span>
-			<svg
-				width="12"
-				height="12"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2.25"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				aria-hidden="true"
-			>
-				<path d="M7 17 17 7" /><path d="M7 7h10v10" />
-			</svg>
-		</a>
+	{#if detailsHref || website}
+		<div class="card__footer">
+			{#if detailsHref}
+				<a class="card__cta card__cta--primary" href={detailsHref} aria-label={`View details for ${name}`}>
+					<span>Details</span>
+					<svg
+						width="12"
+						height="12"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2.25"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true"
+					>
+						<path d="M5 12h14" /><path d="m13 6 6 6-6 6" />
+					</svg>
+				</a>
+			{/if}
+			{#if website}
+				<a
+					class="card__cta card__cta--secondary"
+					href={website}
+					target="_blank"
+					rel="noopener noreferrer"
+					aria-label={`Open ${name} website in a new tab`}
+				>
+					<span>Website</span>
+					<svg
+						width="12"
+						height="12"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2.25"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true"
+					>
+						<path d="M7 17 17 7" /><path d="M7 7h10v10" />
+					</svg>
+				</a>
+			{/if}
+		</div>
 	{/if}
 </article>
 
 <style>
+	/* Field-manual card — sharp 2px corners, borders do the work, no lift on hover.
+	   Category palettes survive as the topo "elevation band" at the top. */
 	.card {
-		--band-from: #e6f0ea; /* primary-50 */
-		--band-to: #c2dac9; /* primary-100 */
-		--accent: #014421; /* primary-500 */
-		--accent-soft: #f7f0e6; /* secondary-100 */
+		--band-from: theme('colors.primary.50');
+		--band-to: theme('colors.primary.100');
+		--accent: theme('colors.primary.700');
 
 		position: relative;
 		display: flex;
 		flex-direction: column;
 		height: 100%;
-		background: #ffffff;
-		border: 1px solid #eee0cc; /* secondary-200 */
-		border-radius: 14px;
+		background: var(--surface-surface);
+		border: 1px solid var(--border-subtle);
+		border-radius: 2px;
 		overflow: hidden;
 		transition:
-			transform 0.18s ease,
-			box-shadow 0.18s ease,
-			border-color 0.18s ease;
-		box-shadow: 0 1px 2px rgba(1, 68, 33, 0.04);
+			border-color 100ms cubic-bezier(0.22, 1, 0.36, 1),
+			box-shadow 100ms cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
 	.card:hover,
 	.card:focus-within {
-		transform: translateY(-2px);
-		border-color: var(--accent);
-		box-shadow:
-			0 14px 24px -12px rgba(1, 68, 33, 0.22),
-			0 4px 8px -4px rgba(1, 68, 33, 0.08);
+		border-color: var(--border-strong);
+		box-shadow: 0 4px 12px rgba(1, 68, 33, 0.08);
 	}
 
 	.card__inner {
@@ -209,31 +228,54 @@
 		color: inherit;
 	}
 
-	.card__inner:focus-visible {
-		outline: 2px solid var(--accent);
-		outline-offset: -2px;
-	}
-
-	/* Category palettes */
+	/* Category palettes — light mode topo "elevation zones" */
 	.card--outdoor {
-		--band-from: #e6f0ea;
-		--band-to: #9bc2a7;
-		--accent: #014421;
+		--band-from: theme('colors.primary.50');
+		--band-to: theme('colors.primary.200');
+		--accent: theme('colors.primary.700');
 	}
 	.card--indoor {
-		--band-from: #f1f9fd; /* accent-50 */
-		--band-to: #abdaf1; /* accent-300 */
-		--accent: #5e8fa3; /* accent-800 */
+		--band-from: theme('colors.accent.50');
+		--band-to: theme('colors.accent.300');
+		--accent: theme('colors.accent.800');
 	}
 	.card--eats {
-		--band-from: #fbefe6; /* tertiary-50 */
-		--band-to: #f5d8c2; /* tertiary-100 */
-		--accent: #a44600; /* tertiary-700 */
+		--band-from: theme('colors.tertiary.50');
+		--band-to: theme('colors.tertiary.200');
+		--accent: theme('colors.tertiary.700');
 	}
 	.card--activity {
-		--band-from: #fcf9f5; /* secondary-50 */
-		--band-to: #eee0cc; /* secondary-200 */
-		--accent: #014421;
+		--band-from: theme('colors.secondary.50');
+		--band-to: theme('colors.secondary.200');
+		--accent: theme('colors.primary.700');
+	}
+
+	/* Dark mode — bands shift to muted versions of the same hues so the topo zones
+	   still read but don't blow out against the dusk surface. */
+	:global(.dark) .card {
+		--band-from: theme('colors.primary.900');
+		--band-to: theme('colors.primary.800');
+		--accent: theme('colors.primary.300');
+	}
+	:global(.dark) .card--outdoor {
+		--band-from: theme('colors.primary.900');
+		--band-to: theme('colors.primary.700');
+		--accent: theme('colors.primary.300');
+	}
+	:global(.dark) .card--indoor {
+		--band-from: theme('colors.accent.900');
+		--band-to: theme('colors.accent.700');
+		--accent: theme('colors.accent.200');
+	}
+	:global(.dark) .card--eats {
+		--band-from: theme('colors.tertiary.900');
+		--band-to: theme('colors.tertiary.700');
+		--accent: theme('colors.tertiary.200');
+	}
+	:global(.dark) .card--activity {
+		--band-from: theme('colors.secondary.900');
+		--band-to: theme('colors.secondary.700');
+		--accent: theme('colors.primary.300');
 	}
 
 	.card__band {
@@ -243,7 +285,7 @@
 		gap: 0.25rem;
 		padding: 0.625rem 0.75rem;
 		background: linear-gradient(135deg, var(--band-from), var(--band-to));
-		border-bottom: 1px solid rgba(1, 68, 33, 0.06);
+		border-bottom: 1px solid var(--border-subtle);
 		min-height: 64px;
 	}
 
@@ -264,8 +306,9 @@
 	.card__category {
 		flex: 1;
 		min-width: 0;
-		font-size: 0.625rem;
-		font-weight: 700;
+		font-family: theme('fontFamily.mono');
+		font-size: 0.6875rem;
+		font-weight: 600;
 		letter-spacing: 0.05em;
 		text-transform: uppercase;
 		color: var(--accent);
@@ -282,12 +325,14 @@
 		padding: 0.75rem 0.875rem 0.875rem;
 	}
 
+	/* Title uses the display font (Bitter) per the type system */
 	.card__title {
 		margin: 0;
-		font-size: 0.9375rem;
+		font-family: theme('fontFamily.display');
+		font-size: 1rem;
 		font-weight: 700;
-		line-height: 1.3;
-		color: #014421;
+		line-height: 1.25;
+		color: var(--text-default);
 		letter-spacing: -0.01em;
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
@@ -302,13 +347,13 @@
 		align-items: center;
 		gap: 0.3125rem;
 		font-size: 0.75rem;
-		color: #5a6673; /* neutral-700 */
+		color: var(--text-muted);
 		line-height: 1.3;
 	}
 
 	.card__location svg {
 		flex-shrink: 0;
-		color: #708090;
+		color: theme('colors.tertiary.500');
 	}
 
 	.card__location span {
@@ -327,46 +372,79 @@
 		gap: 0.25rem;
 	}
 
+	/* Stamped tag — sharp 2px corners, mono, uppercase. Field-guide label, not pill. */
 	.card__chip {
+		font-family: theme('fontFamily.mono');
 		font-size: 0.6875rem;
 		font-weight: 500;
-		color: #4e5964; /* neutral-800 */
-		background: #f7f0e6; /* secondary-100 */
-		padding: 0.1875rem 0.5rem;
-		border-radius: 999px;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		color: var(--text-default);
+		background: var(--surface-sunken);
+		border: 1px solid var(--border-subtle);
+		padding: 0.125rem 0.4375rem;
+		border-radius: 2px;
 		line-height: 1.3;
 		white-space: nowrap;
 	}
 
-	.card__website {
+	.card__footer {
+		display: flex;
+		border-top: 1px solid var(--border-subtle);
+		background: var(--surface-sunken);
+	}
+
+	.card__cta {
+		flex: 1;
 		display: inline-flex;
 		align-items: center;
-		justify-content: flex-end;
+		justify-content: center;
 		gap: 0.25rem;
 		padding: 0.4375rem 0.875rem;
-		border-top: 1px solid #f7f0e6; /* secondary-100 */
+		font-family: theme('fontFamily.mono');
 		font-size: 0.6875rem;
 		font-weight: 600;
-		letter-spacing: 0.02em;
-		color: var(--accent);
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
 		text-decoration: none;
-		background: #fcf9f5; /* secondary-50 */
 		transition:
-			background 0.15s ease,
-			color 0.15s ease;
+			background 100ms cubic-bezier(0.22, 1, 0.36, 1),
+			color 100ms cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
-	.card__website:hover {
-		background: #f7f0e6;
-		color: #013d1e;
+	.card__cta + .card__cta {
+		border-left: 1px solid var(--border-subtle);
 	}
 
-	.card__website:focus-visible {
-		outline: 2px solid var(--accent);
-		outline-offset: -2px;
+	.card__cta--primary {
+		color: var(--accent);
 	}
 
-	.card__website svg {
+	.card__cta--primary:hover {
+		background: var(--surface-elevated);
+		color: theme('colors.primary.800');
+		box-shadow: inset 0 1px 0 var(--border-subtle);
+	}
+
+	:global(.dark) .card__cta--primary:hover {
+		color: theme('colors.primary.200');
+	}
+
+	.card__cta--secondary {
+		color: var(--text-muted);
+	}
+
+	.card__cta--secondary:hover {
+		background: var(--surface-elevated);
+		color: theme('colors.tertiary.700');
+		box-shadow: inset 0 1px 0 var(--border-subtle);
+	}
+
+	:global(.dark) .card__cta--secondary:hover {
+		color: theme('colors.tertiary.300');
+	}
+
+	.card__cta svg {
 		flex-shrink: 0;
 	}
 </style>

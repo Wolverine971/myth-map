@@ -88,7 +88,8 @@
 
 	$: checkedItems = selectedTags.filter((t) => !VIRTUAL_TAGS.has(t));
 
-	let activeClass = 'text-primary-700 hover:text-primary-900';
+	let activeClass =
+		'text-primary-700 hover:text-primary-900 dark:text-primary-300 dark:hover:text-primary-200';
 </script>
 
 <div class="flex flex-wrap items-center gap-2">
@@ -109,14 +110,14 @@
 				>
 					Any
 				</DropdownItem>
-				<div class="my-1 border-t border-secondary-200"></div>
+				<div class="my-1 border-t border-subtle"></div>
 			{/if}
 			{#each BASE_OPTIONS as option}
 				<DropdownItem
 					on:click={() => pickBase(option)}
 					class={baseSelect === option
-						? 'bg-primary-50 font-semibold text-primary-700'
-						: 'hover:bg-primary-50'}
+						? 'bg-primary-50 font-semibold text-primary-700 dark:bg-primary-900 dark:text-primary-300'
+						: 'hover:bg-primary-50 dark:hover:bg-primary-900'}
 					disabled={!selectableTagsMap[option]}
 				>
 					<div class="flex w-full items-center justify-between">
@@ -154,7 +155,7 @@
 				>
 					Any
 				</DropdownItem>
-				<div class="my-1 border-t border-secondary-200"></div>
+				<div class="my-1 border-t border-subtle"></div>
 			{/if}
 			{#each INDOOR_OUTDOOR_OPTIONS as option}
 				<DropdownItem
@@ -187,11 +188,13 @@
 			<div class="max-h-60 overflow-y-auto">
 				{#each displayTags as tag (tag.name)}
 					<li
-						class="rounded p-2 hover:bg-primary-50 {tag.disabled ? 'opacity-50' : ''}"
+						class="rounded-sm p-2 transition-colors duration-fast hover:bg-primary-50 dark:hover:bg-primary-900 {tag.disabled
+							? 'opacity-50'
+							: ''}"
 						transition:fade={{ duration: 100 }}
 					>
 						<Checkbox
-							class={tag.disabled ? 'cursor-not-allowed text-gray-400' : ''}
+							class={tag.disabled ? 'cursor-not-allowed text-subtle' : ''}
 							on:change={(e) => onTagCheckboxChange(tag, e)}
 							checked={tag.checked}
 							disabled={tag.disabled}
@@ -232,21 +235,24 @@
 		align-items: center;
 		gap: 0.375rem;
 		padding: 0.4375rem 0.75rem;
-		font-size: 0.8125rem;
+		font-family: theme('fontFamily.mono');
+		font-size: 0.6875rem;
 		font-weight: 600;
-		color: theme('colors.neutral.800');
-		background: #ffffff;
-		border: 1px solid theme('colors.secondary.200');
-		border-radius: 999px;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: var(--text-default);
+		background: var(--surface-surface);
+		border: 1px solid var(--border-subtle);
+		border-radius: 2px;
 		cursor: pointer;
 		transition:
-			background-color 0.15s ease,
-			border-color 0.15s ease,
-			color 0.15s ease;
+			background-color 100ms cubic-bezier(0.22, 1, 0.36, 1),
+			border-color 100ms cubic-bezier(0.22, 1, 0.36, 1),
+			color 100ms cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
 	.filter-trigger:hover {
-		border-color: theme('colors.primary.300');
+		border-color: var(--border-strong);
 		color: theme('colors.primary.700');
 	}
 
@@ -256,17 +262,32 @@
 		color: theme('colors.primary.700');
 	}
 
+	:global(.dark) .filter-trigger--active {
+		background: theme('colors.primary.900');
+		border-color: theme('colors.primary.400');
+		color: theme('colors.primary.200');
+	}
+
 	.active-chip {
 		display: inline-flex;
 		align-items: center;
 		gap: 0.375rem;
 		padding: 0.25rem 0.5rem 0.25rem 0.625rem;
-		font-size: 0.75rem;
+		font-family: theme('fontFamily.mono');
+		font-size: 0.6875rem;
 		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
 		color: theme('colors.primary.700');
 		background: theme('colors.primary.50');
 		border: 1px solid theme('colors.primary.200');
-		border-radius: 999px;
+		border-radius: 2px;
+	}
+
+	:global(.dark) .active-chip {
+		color: theme('colors.primary.200');
+		background: theme('colors.primary.900');
+		border-color: theme('colors.primary.700');
 	}
 
 	.active-chip button {
@@ -276,10 +297,14 @@
 		border: none;
 		padding: 0;
 		cursor: pointer;
-		transition: color 0.15s ease;
+		transition: color 100ms cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
 	.active-chip button:hover {
 		color: theme('colors.tertiary.600');
+	}
+
+	:global(.dark) .active-chip button {
+		color: theme('colors.primary.300');
 	}
 </style>
