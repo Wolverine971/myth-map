@@ -22,7 +22,7 @@ export default {
 			runtime: 'nodejs20.x', // Explicitly specify Node 20 runtime
 			regions: ['iad1'], // Optional: specify region (iad1 is US East)
 			memory: 1024, // Optional: specify memory limit in MB
-			maxDuration: 10, // Optional: max execution time in seconds
+			maxDuration: 10 // Optional: max execution time in seconds
 		}),
 
 		alias: {
@@ -42,11 +42,7 @@ export default {
 				}
 				console.warn(`Prerender error on ${path}: ${message}`);
 			},
-			entries: [
-				'*',
-				'/blog',
-				'/locations'
-			]
+			entries: ['*', '/blog', '/locations']
 		},
 
 		env: {

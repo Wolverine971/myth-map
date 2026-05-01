@@ -54,9 +54,7 @@ export async function loadState(stateAbbr: string) {
  */
 export async function loadStateBoundary(stateAbbr: string) {
 	try {
-		const mod = await import(
-			`../geographies/states/boundaries/${stateAbbr.toLowerCase()}.json`
-		);
+		const mod = await import(`../geographies/states/boundaries/${stateAbbr.toLowerCase()}.json`);
 		return mod.default;
 	} catch (error) {
 		console.error(`Failed to load boundary for state ${stateAbbr}:`, error);

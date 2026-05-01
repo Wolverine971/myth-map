@@ -13,7 +13,7 @@ class BundleAnalyzer {
 	private startTime = Date.now();
 	private chunkLoadTimes = new Map<string, number>();
 	private loadedChunks = new Set<string>();
-	
+
 	constructor() {
 		if (browser) {
 			this.setupPerformanceObserver();
@@ -31,7 +31,7 @@ class BundleAnalyzer {
 					}
 				});
 			});
-			
+
 			try {
 				observer.observe({ entryTypes: ['resource'] });
 			} catch (error) {
@@ -47,8 +47,10 @@ class BundleAnalyzer {
 
 	getStats(): BundleStats {
 		const loadTime = Date.now() - this.startTime;
-		const networkTime = Array.from(this.chunkLoadTimes.values())
-			.reduce((sum, time) => sum + time, 0);
+		const networkTime = Array.from(this.chunkLoadTimes.values()).reduce(
+			(sum, time) => sum + time,
+			0
+		);
 
 		return {
 			totalSize: this.estimateTotalSize(),
@@ -68,7 +70,7 @@ class BundleAnalyzer {
 	private getPendingChunks(): string[] {
 		// This would track known chunks that haven't loaded yet
 		const knownChunks = ['map', 'comments', 'admin', 'marketing'];
-		return knownChunks.filter(chunk => !this.loadedChunks.has(chunk));
+		return knownChunks.filter((chunk) => !this.loadedChunks.has(chunk));
 	}
 
 	// Log performance metrics
@@ -86,7 +88,7 @@ class BundleAnalyzer {
 	// Report to analytics (if implemented)
 	reportToAnalytics() {
 		const stats = this.getStats();
-		
+
 		// This could send to Google Analytics, PostHog, etc.
 		if (typeof gtag === 'function') {
 			gtag('event', 'bundle_performance', {
@@ -102,7 +104,7 @@ class BundleAnalyzer {
 		if (!browser) return null;
 
 		const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-		
+
 		return {
 			fcp: this.getFirstContentfulPaint(),
 			lcp: this.getLargestContentfulPaint(),

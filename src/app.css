@@ -1,9 +1,42 @@
 /* src/app.css */
+
+/* ============================================================
+ * Self-hosted variable fonts — see docs/design-system.md §6
+ * ============================================================ */
+@import '@fontsource-variable/bitter';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+ * Surface & text tokens — theme-aware via CSS variables.
+ * Light mode = "Kraft cardstock"
+ * Dark mode  = "Dusk topo map"
+ * ============================================================ */
 :root {
+	/* Surfaces */
+	--surface-page: #fcf9f5; /* secondary-50 — kraft */
+	--surface-surface: #ffffff; /* white index card */
+	--surface-elevated: #ffffff;
+	--surface-sunken: #f7f0e6; /* secondary-100 */
+
+	/* Borders */
+	--border-subtle: #eee0cc; /* secondary-200 */
+	--border-strong: #e5d0b3; /* secondary-300 */
+
+	/* Text */
+	--text-default: #4e5964; /* neutral-800 — slate ink */
+	--text-muted: #657382; /* neutral-600 */
+	--text-subtle: #708090; /* neutral-500 */
+	--text-inverted: #ffffff;
+
+	/* Focus */
+	--ring-focus: #014421; /* primary-500 */
+
+	/* Brand colors as CSS vars (for places that need them) */
 	--color-primary-500: #014421;
 	--color-secondary-500: #d2b48c;
 	--color-accent-500: #87ceeb;
@@ -11,20 +44,132 @@
 	--color-neutral-500: #708090;
 }
 
-body {
-	@apply bg-secondary-50 text-neutral-800;
+.dark {
+	/* Surfaces — Dusk topo map */
+	--surface-page: #1a1410; /* dark warm brown — kraft at twilight */
+	--surface-surface: #2a211b; /* lifted brown */
+	--surface-elevated: #352a22;
+	--surface-sunken: #13100d;
+
+	/* Borders */
+	--border-subtle: #3d2f26;
+	--border-strong: #5a4636;
+
+	/* Text — kraft tone now reads as text */
+	--text-default: #eee0cc; /* secondary-200 */
+	--text-muted: #dcc099; /* secondary-400 */
+	--text-subtle: #bda27e; /* secondary-600 */
+	--text-inverted: #1a1410;
+
+	/* Focus — lighter for contrast */
+	--ring-focus: #74aa85; /* primary-300 */
+
+	color-scheme: dark;
 }
 
+/* ============================================================
+ * Reduced-motion: honored globally.
+ * ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+/* ============================================================
+ * Base layer — body + page chrome.
+ * ============================================================ */
+@layer base {
+	html {
+		font-family: theme('fontFamily.sans');
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+
+	body {
+		background-color: var(--surface-page);
+		color: var(--text-default);
+		font-family: theme('fontFamily.sans');
+	}
+
+	h1,
+	h2,
+	h3,
+	h4 {
+		font-family: theme('fontFamily.display');
+		letter-spacing: -0.01em;
+	}
+
+	/* Selection — kraft on forest */
+	::selection {
+		background-color: theme('colors.primary.500');
+		color: #ffffff;
+	}
+
+	/* Focus ring — consistent across the app */
+	:focus-visible {
+		outline: 2px solid var(--ring-focus);
+		outline-offset: 2px;
+	}
+}
+
+/* ============================================================
+ * Layout — main content container.
+ * ============================================================ */
 main {
 	@apply mx-auto my-4 max-w-5xl px-4;
 }
 
+@media screen and (max-width: 1050px) {
+	main {
+		@apply mx-4;
+	}
+}
+
+@media screen and (max-width: 500px) {
+	main {
+		@apply mx-1 px-1;
+	}
+}
+
+/* ============================================================
+ * Utilities.
+ * ============================================================ */
+
+/* Spinner used in legacy code paths */
 .loader {
 	@apply inline-block animate-spin rounded-full border-4 border-white border-b-transparent;
 }
 
+/* Mono data label — for coordinates, distances, "0.4 mi NW"
+ * Field-manual data on a map. */
+.data-label {
+	@apply font-mono text-xs uppercase tracking-wide text-muted;
+}
+
+/* Stamped tag — replaces pill tags throughout the app.
+ * Field-guide stamped label, not SaaS candy pill. */
+.stamped-tag {
+	@apply inline-flex items-center rounded-sm border border-subtle bg-sunken px-2 py-0.5 font-mono text-xs uppercase tracking-wide text-default;
+}
+
+/* Card hover — borders do the work, small shadow on hover only.
+ * Pair with `border border-subtle` in the default state. */
+.card-hover {
+	@apply transition-colors duration-fast hover:border-strong hover:shadow-md;
+}
+
+/* ============================================================
+ * Markdown / blog prose styles (.preview).
+ * Tightened to match the field-manual scale.
+ * ============================================================ */
 .preview {
-	@apply mx-auto max-w-3xl p-5 font-sans leading-relaxed text-neutral-800;
+	@apply mx-auto max-w-3xl p-5 font-sans leading-relaxed text-default;
 
 	h1,
 	h2,
@@ -32,7 +177,7 @@ main {
 	h4,
 	h5,
 	h6 {
-		@apply mb-2 mt-6 font-bold text-primary-700;
+		@apply mb-2 mt-6 font-display font-bold text-primary-700;
 	}
 
 	h1 {
@@ -59,19 +204,19 @@ main {
 	}
 
 	a {
-		@apply text-accent-600 no-underline hover:underline;
+		@apply text-accent-700 underline-offset-2 hover:underline;
 	}
 
 	code {
-		@apply rounded bg-secondary-100 px-1 py-0.5 font-mono;
+		@apply rounded-sm bg-sunken px-1 py-0.5 font-mono text-sm;
 	}
 
 	pre {
-		@apply overflow-x-auto rounded bg-secondary-100 p-4;
+		@apply overflow-x-auto rounded-sm bg-sunken p-4;
 	}
 
 	blockquote {
-		@apply m-0 border-l-4 border-secondary-300 pl-4 text-neutral-600;
+		@apply m-0 border-l-4 border-strong pl-4 text-muted;
 	}
 
 	ul,
@@ -84,7 +229,7 @@ main {
 	}
 
 	hr {
-		@apply my-8 border-t border-none border-secondary-300;
+		@apply my-8 border-t border-strong;
 	}
 
 	table {
@@ -93,23 +238,10 @@ main {
 
 	th,
 	td {
-		@apply border border-secondary-300 p-2 text-left;
+		@apply border border-strong p-2 text-left;
 	}
 
 	th {
-		@apply bg-secondary-100 font-bold;
-	}
-}
-
-@media screen and (max-width: 1050px) {
-	main {
-		@apply mx-4;
-	}
-}
-
-@media screen and (max-width: 500px) {
-	main {
-		@apply mx-1;
-		@apply px-1;
+		@apply bg-sunken font-bold;
 	}
 }

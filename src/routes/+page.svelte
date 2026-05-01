@@ -1,14 +1,13 @@
 <!-- src/routes/+page.svelte -->
 <script lang="ts">
-	import { Heading, P, TabItem, Tabs } from 'flowbite-svelte';
+	import { TabItem, Tabs } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import { lazy } from '../utils/lazy';
 	import { derived, writable } from 'svelte/store';
 
 	import { LazyMap, preloadCriticalComponents } from '$lib/utils/lazyComponents';
 	import { filterService } from '$lib/services/filterService';
-	
+
 	const { componentStore: mapComponentStore, load: loadMap } = LazyMap;
 	import LocationCard from '$lib/components/locations/LocationCard.svelte';
 	import LocationFilters from '$lib/components/locations/LocationFilters.svelte';
@@ -18,30 +17,25 @@
 	import SEOHead from '$lib/components/shared/SEOHead.svelte';
 	import SearchBar from '$lib/components/shared/SearchBar.svelte';
 	import Pagination from '$lib/components/shared/Pagination.svelte';
+	import { InfoCircleSolid, MapPinAltSolid } from 'flowbite-svelte-icons';
 	import type { PageData } from './$types';
 	import { currentLocation } from '$lib/stores/locationStore';
-import { dataManager } from '$lib/stores/dataManager';
-import { userPreferences } from '$lib/stores/userPreferencesStore';
-import type { FilterState } from '$lib/types/filters';
+	import { dataManager } from '$lib/stores/dataManager';
+	import { userPreferences } from '$lib/stores/userPreferencesStore';
 
 	export let data: PageData;
 
-	const url = 'https://tinytribeadventures.com';
-	
-	// Initialize user preferences
 	const prefs = userPreferences.getPreferences();
-	
-	// UI state variables
+
 	let showFilterRestoreNotice = false;
-	
-	// Check if we should restore previous filter state
+
 	let initialFilterState = {
 		selectedTags: prefs.preferredTags,
 		selectedState: prefs.defaultState,
 		selectedCity: prefs.defaultCity,
 		searchQuery: ''
 	};
-	
+
 	if (userPreferences.shouldRestoreFilters()) {
 		const lastState = userPreferences.getLastFilterState();
 		if (lastState) {
@@ -49,13 +43,14 @@ import type { FilterState } from '$lib/types/filters';
 			showFilterRestoreNotice = true;
 		}
 	}
-	
-	// Filter state management - initialize with saved or default state
+
 	const selectedTags = writable<string[]>(initialFilterState.selectedTags);
-	const selectedState = writable<{ name: string; abr: string } | null>(initialFilterState.selectedState);
+	const selectedState = writable<{ name: string; abr: string } | null>(
+		initialFilterState.selectedState
+	);
 	const selectedCity = writable<string | null>(initialFilterState.selectedCity);
 	const searchQuery = writable<string>(initialFilterState.searchQuery);
-	
+
 	let userLocation: { lat: number; lng: number } | null = null;
 	let selectedTab = 'gallery';
 	let innerWidth = 0;
@@ -63,7 +58,6 @@ import type { FilterState } from '$lib/types/filters';
 	let hasError = false;
 	let errorMessage = '';
 
-	// Pagination state - initialize with user preferences
 	let currentPage = 1;
 	let itemsPerPage = prefs.itemsPerPage;
 
@@ -71,7 +65,6 @@ import type { FilterState } from '$lib/types/filters';
 
 	const unsubscribeLocation = currentLocation.subscribe((value) => (userLocation = value));
 
-	// Derived store for filtered locations using memoized service
 	const filteredLocations = derived(
 		[selectedTags, selectedState, selectedCity, searchQuery],
 		([$selectedTags, $selectedState, $selectedCity, $searchQuery]) =>
@@ -87,16 +80,8 @@ import type { FilterState } from '$lib/types/filters';
 			)
 	);
 
-	// Derived store for available tags based on current geographic filters
-	const availableTags = derived(
-		[selectedState, selectedCity],
-		([$selectedState, $selectedCity]) =>
-			filterService.getAvailableTags(
-				data.locations,
-				data.locationTags,
-				$selectedState,
-				$selectedCity
-			)
+	const availableTags = derived([selectedState, selectedCity], ([$selectedState, $selectedCity]) =>
+		filterService.getAvailableTags(data.locations, data.locationTags, $selectedState, $selectedCity)
 	);
 
 	$: shownLocations = $filteredLocations.filter(
@@ -115,7 +100,6 @@ import type { FilterState } from '$lib/types/filters';
 
 	onMount(() => {
 		try {
-			// Cache the server data for future use
 			dataManager.cacheServerData({
 				locations: data.locations,
 				tags: data.tags,
@@ -128,17 +112,11 @@ import type { FilterState } from '$lib/types/filters';
 
 			isLoading = false;
 
-			// Set default tab from user preferences
 			selectedTab = prefs.defaultView;
 			if (selectedTab === 'map') loadMap();
 
-			// Update activity time
 			userPreferences.updateActivityTime();
-
-			// Setup filter state persistence
 			filterPersistenceCleanup = setupFilterPersistence();
-
-			// Preload critical components
 			preloadCriticalComponents();
 		} catch (error) {
 			console.error('Error loading page data:', error);
@@ -155,9 +133,7 @@ import type { FilterState } from '$lib/types/filters';
 
 	function handleTagFilterChange(event: CustomEvent) {
 		selectedTags.set(event.detail);
-		currentPage = 1; // Reset to first page when filtering
-		
-		// Save preferred tags to user preferences
+		currentPage = 1;
 		userPreferences.updatePreference('preferredTags', event.detail);
 	}
 
@@ -165,182 +141,149 @@ import type { FilterState } from '$lib/types/filters';
 		const { state, city } = event.detail;
 		selectedState.set(state);
 		selectedCity.set(city);
-		currentPage = 1; // Reset to first page when filtering
-		
-		// Save location preferences
-		userPreferences.updatePreferences({
-			defaultState: state,
-			defaultCity: city
-		});
-		
-		// Clear conflicting tags when geography changes
-		// This ensures tags are still valid for the new geographic scope
-		selectedTags.update(currentTags => {
-			return currentTags.filter(tag => availableTagsMap[tag]);
-		});
+		currentPage = 1;
+		userPreferences.updatePreferences({ defaultState: state, defaultCity: city });
+		selectedTags.update((currentTags) => currentTags.filter((tag) => availableTagsMap[tag]));
 	}
 
 	async function handleTabChange(tabName: string) {
 		selectedTab = tabName;
-		
-		// Save view preference
 		userPreferences.updatePreference('defaultView', tabName as 'gallery' | 'map');
-		
 		if (tabName === 'map') {
 			await loadMap();
 		}
 	}
 
-	// Helper to clear all filters
 	function clearAllFilters() {
 		selectedTags.set([]);
 		selectedState.set(null);
 		selectedCity.set(null);
 		searchQuery.set('');
-		currentPage = 1; // Reset to first page
-		showFilterRestoreNotice = false; // Hide restore notice
-		
-		// Clear saved filter state
+		currentPage = 1;
+		showFilterRestoreNotice = false;
 		userPreferences.clearFilterState();
 	}
 
-	// Search handler
 	function handleSearch(event: CustomEvent) {
 		const query = event.detail;
 		searchQuery.set(query);
-		currentPage = 1; // Reset to first page when searching
-		
-		// Add search term to history if it's not empty
+		currentPage = 1;
 		if (query.trim()) {
 			userPreferences.addSearchTerm(query.trim());
 		}
 	}
 
-	// Pagination handler
 	function handlePageChange(event: CustomEvent) {
 		currentPage = event.detail;
-		// Scroll to top of results
 		document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth' });
 	}
 
-	// Retry function for error recovery
 	function retryLoadData() {
 		hasError = false;
 		errorMessage = '';
 		isLoading = true;
 		window.location.reload();
 	}
-	
-	// Setup filter state persistence
+
 	function setupFilterPersistence() {
-		// Save filter state whenever it changes
 		const unsubscribers = [
 			selectedTags.subscribe(() => saveCurrentFilterState()),
 			selectedState.subscribe(() => saveCurrentFilterState()),
 			selectedCity.subscribe(() => saveCurrentFilterState()),
 			searchQuery.subscribe(() => saveCurrentFilterState())
 		];
-		
-		// Cleanup on unmount
-		return () => {
-			unsubscribers.forEach(unsub => unsub());
-		};
+		return () => unsubscribers.forEach((unsub) => unsub());
 	}
-	
-	// Save current filter state
+
 	function saveCurrentFilterState() {
-		const currentState = {
+		userPreferences.saveFilterState({
 			selectedTags: $selectedTags,
 			selectedState: $selectedState,
 			selectedCity: $selectedCity,
 			searchQuery: $searchQuery
-		};
-		userPreferences.saveFilterState(currentState);
+		});
 		userPreferences.updateActivityTime();
 	}
 </script>
 
 <SEOHead
-	title="Tiny Tribe Adventures - Family Activity Finder"
-	description="Discover amazing family-friendly activities and adventures across Maryland, Virginia, Delaware, and Washington DC. Find playgrounds, museums, restaurants, and more!"
+	title="Tiny Tribe Adventures — Family-tested places for when you need ideas"
+	description="A curated guide to family-friendly adventures in Maryland, Virginia, Delaware, and DC. Built parent-to-parent."
 	canonical="/"
-	keywords="family activities, kids activities, Maryland activities, Virginia family fun, Delaware attractions, DC family activities, playgrounds, museums, family restaurants"
+	keywords="family activities, kids activities, Maryland activities, Virginia family fun, Delaware attractions, DC family activities, playgrounds, museums"
 	structuredData={{
-		"@context": "https://schema.org",
-		"@type": "WebSite",
-		"name": "Tiny Tribe Adventures",
-		"description": "A tool for chronically curious families looking for their next adventure!",
-		"url": "https://tinytribeadventures.com",
-		"potentialAction": {
-			"@type": "SearchAction",
-			"target": "https://tinytribeadventures.com/search?q={search_term_string}",
-			"query-input": "required name=search_term_string"
+		'@context': 'https://schema.org',
+		'@type': 'WebSite',
+		name: 'Tiny Tribe Adventures',
+		description: 'Family-tested places for when you need ideas.',
+		url: 'https://tinytribeadventures.com',
+		potentialAction: {
+			'@type': 'SearchAction',
+			target: 'https://tinytribeadventures.com/search?q={search_term_string}',
+			'query-input': 'required name=search_term_string'
 		}
 	}}
 />
 
 <svelte:window bind:innerWidth />
 
-<main id="main-content" class="min-h-screen bg-gray-50">
+<main id="main-content" class="min-h-screen">
 	<div class="container mx-auto px-4 py-6 sm:px-6 md:py-8 lg:px-8">
-		<h1 class="mb-4 text-3xl font-extrabold text-primary-700 sm:text-4xl md:text-5xl">
-			Family Friendly Activity Finder
-		</h1>
-
-		<h2 class="mb-6 text-lg font-semibold text-gray-600 sm:text-xl md:text-2xl">
-			Your one stop shop for planning the next family adventure!
-		</h2>
+		<!-- Field-manual style header block -->
+		<div class="mb-6 flex flex-col gap-2 border-b border-subtle pb-6">
+			<div class="flex items-center gap-2 font-mono text-xs uppercase tracking-wide text-muted">
+				<MapPinAltSolid class="h-3.5 w-3.5 text-tertiary-500" />
+				<span>Field guide · DC · MD · VA · DE</span>
+			</div>
+			<h1 class="font-display text-3xl text-primary-700 dark:text-primary-300 sm:text-4xl">
+				Family Activity Finder
+			</h1>
+			<p class="text-base text-muted sm:text-lg">Family-tested places for when you need ideas.</p>
+		</div>
 
 		<div class="flex w-full flex-col gap-6">
-			<!-- Search Bar -->
 			<div class="w-full">
-				<SearchBar 
-					placeholder="Search by location name, city, or activity type..."
+				<SearchBar
+					placeholder="Search by name, city, or activity type…"
 					value={$searchQuery}
 					on:search={handleSearch}
 					size="md"
 				/>
 			</div>
 
-			<!-- Filter restore notice -->
 			{#if showFilterRestoreNotice}
-				<div 
-					class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg flex items-center justify-between"
-					transition:fade={{ duration: 300 }}
+				<div
+					class="flex items-center justify-between rounded-sm border border-accent-200 bg-accent-50 px-4 py-3 text-accent-800 dark:border-accent-800 dark:bg-accent-900/20 dark:text-accent-300"
+					transition:fade={{ duration: 150 }}
 				>
-					<div class="flex items-center">
-						<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-							<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-						</svg>
+					<div class="flex items-center gap-2">
+						<InfoCircleSolid class="h-4 w-4" />
 						<span class="text-sm">Your previous filters have been restored</span>
 					</div>
 					<button
-						on:click={() => showFilterRestoreNotice = false}
-						class="text-blue-700 hover:text-blue-800 text-sm font-medium"
+						on:click={() => (showFilterRestoreNotice = false)}
+						class="text-sm font-medium underline-offset-2 hover:underline"
 					>
 						Dismiss
 					</button>
 				</div>
 			{/if}
 
-			<!-- Clear filters button -->
 			{#if $selectedTags.length > 0 || $selectedState || $selectedCity || $searchQuery}
-				<div class="flex justify-between items-center" transition:fade={{ duration: 200 }}>
-					<div class="text-sm text-gray-600">
+				<div class="flex items-center justify-between" transition:fade={{ duration: 100 }}>
+					<div class="font-mono text-xs uppercase tracking-wide text-muted">
 						{#key totalFilteredItems}
-							<span in:fade={{ duration: 300 }}>
-								{totalFilteredItems} of {data.locations.length} locations found
-							</span>
+							<span>{totalFilteredItems} / {data.locations.length} locations</span>
 						{/key}
 						{#if totalPages > 1}
-							• Page {currentPage} of {totalPages}
+							<span class="ml-2">· Page {currentPage} of {totalPages}</span>
 						{/if}
 					</div>
-					<button 
+					<button
 						on:click={clearAllFilters}
-						class="rounded-lg bg-gray-200 px-3 py-2 text-sm font-medium transition-colors hover:bg-gray-300 sm:px-4"
+						class="rounded-sm border border-subtle bg-surface px-3 py-1.5 font-mono text-xs uppercase tracking-wide text-default transition-colors duration-fast hover:border-strong hover:text-tertiary-600"
 					>
-						Clear All Filters
+						Clear filters
 					</button>
 				</div>
 			{/if}
@@ -365,7 +308,7 @@ import type { FilterState } from '$lib/types/filters';
 				<Tabs tabStyle="underline" contentClass="p-2 sm:p-4 bg-transparent">
 					<TabItem open title="Gallery View" on:click={() => handleTabChange('gallery')}>
 						{#if hasError}
-							<ErrorState 
+							<ErrorState
 								error={errorMessage}
 								title="Unable to load locations"
 								onRetry={retryLoadData}
@@ -373,41 +316,47 @@ import type { FilterState } from '$lib/types/filters';
 							/>
 						{:else}
 							<div id="results-section" class="space-y-6">
-								<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+								<div
+									class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+								>
 									{#if isLoading}
 										{#each Array(8) as _, i (i)}
 											<SkeletonCard variant="card" />
 										{/each}
 									{:else}
 										{#each paginatedLocations as content_location (content_location.location.id ?? content_location.location.name)}
-											<div in:fade|local={{ duration: 200 }}>
-												<LocationCard
-													name={content_location.location.name}
-													coords={{
-														lat: Number(content_location.location.lat),
-														lng: Number(content_location.location.lng)
-													}}
-													address={`${content_location.location.address_line_1 ?? ''}${content_location.location.address_line_2 ? ` ${content_location.location.address_line_2}` : ''}, ${content_location.location.city}, ${content_location.location.state} ${content_location.location.zip_code ?? ''}`}
-													website={content_location.website ?? ''}
-													tags={data.locationTags.filter(
-														(tag) => tag.location.name === content_location.location.name
-													)}
-													contentLocation={content_location}
-													{innerWidth}
-												/>
-											</div>
+											<LocationCard
+												name={content_location.location.name}
+												coords={{
+													lat: Number(content_location.location.lat),
+													lng: Number(content_location.location.lng)
+												}}
+												address={`${content_location.location.address_line_1 ?? ''}${content_location.location.address_line_2 ? ` ${content_location.location.address_line_2}` : ''}, ${content_location.location.city}, ${content_location.location.state} ${content_location.location.zip_code ?? ''}`}
+												website={content_location.website ?? ''}
+												tags={data.locationTags.filter(
+													(tag) => tag.location.name === content_location.location.name
+												)}
+												contentLocation={content_location}
+												{innerWidth}
+											/>
 										{/each}
 									{/if}
 								</div>
 
 								{#if !isLoading && totalFilteredItems === 0}
-									<div class="py-12 text-center">
-										<p class="mb-4 text-lg text-gray-600">No locations found matching your filters.</p>
+									<!-- Empty state — coordinate-style label -->
+									<div class="border border-dashed border-strong bg-sunken px-6 py-12 text-center">
+										<div class="mb-2 font-mono text-xs uppercase tracking-wide text-muted">
+											No locations in this grid square
+										</div>
+										<p class="mb-4 text-base text-default">
+											Adjust your filters to find more places.
+										</p>
 										<button
 											on:click={clearAllFilters}
-											class="rounded-lg bg-primary-600 px-6 py-3 text-white transition-colors hover:bg-primary-700"
+											class="rounded-sm bg-primary-700 px-4 py-2 font-mono text-xs uppercase tracking-wide text-white transition-colors duration-fast hover:bg-primary-600"
 										>
-											Clear Filters
+											Clear filters
 										</button>
 									</div>
 								{:else if !isLoading && totalPages > 1}
@@ -434,12 +383,12 @@ import type { FilterState } from '$lib/types/filters';
 									selectedCity={$selectedCity}
 								/>
 							{:else}
-								<!-- Map loading skeleton -->
-								<div class="flex h-full w-full items-center justify-center rounded-lg bg-gray-200 animate-pulse">
+								<div
+									class="flex h-full w-full animate-pulse items-center justify-center rounded-sm border border-subtle bg-sunken"
+								>
 									<div class="text-center">
-										<div class="mb-4 h-12 w-12 mx-auto rounded-lg bg-gray-300"></div>
-										<div class="h-4 w-32 mx-auto rounded bg-gray-300"></div>
-										<div class="mt-2 h-3 w-24 mx-auto rounded bg-gray-250"></div>
+										<div class="mx-auto mb-3 h-10 w-10 rounded-sm bg-secondary-200"></div>
+										<div class="mx-auto h-3 w-24 rounded-sm bg-secondary-200"></div>
 									</div>
 								</div>
 							{/if}
@@ -453,6 +402,6 @@ import type { FilterState } from '$lib/types/filters';
 
 <style>
 	.tab-sections {
-		border-radius: 0.5rem;
+		border-radius: 2px;
 	}
 </style>

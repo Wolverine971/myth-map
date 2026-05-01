@@ -10,20 +10,20 @@ export interface UserPreferences {
 	defaultCity: string | null;
 	preferredTags: string[];
 	itemsPerPage: number;
-	
+
 	// UI preferences
 	defaultView: 'gallery' | 'map';
 	theme: 'light' | 'dark' | 'auto';
-	
+
 	// Accessibility preferences
 	reducedMotion: boolean;
 	highContrast: boolean;
-	
+
 	// Location and map preferences
 	showDistances: boolean;
 	distanceUnit: 'miles' | 'kilometers';
 	mapZoomLevel: number;
-	
+
 	// Notification preferences
 	showNotifications: boolean;
 	notificationPosition: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
@@ -101,7 +101,7 @@ class UserPreferencesManager {
 
 	private applyTheme(theme: 'light' | 'dark') {
 		if (!browser) return;
-		
+
 		if (theme === 'dark') {
 			document.documentElement.classList.add('dark');
 		} else {
@@ -109,10 +109,7 @@ class UserPreferencesManager {
 		}
 	}
 
-	updatePreference<K extends keyof UserPreferences>(
-		key: K,
-		value: UserPreferences[K]
-	): void {
+	updatePreference<K extends keyof UserPreferences>(key: K, value: UserPreferences[K]): void {
 		this.preferences = { ...this.preferences, [key]: value };
 		this.store.set(this.preferences);
 		this.savePreferences();
@@ -129,10 +126,7 @@ class UserPreferencesManager {
 
 		// Apply accessibility changes immediately
 		if (key === 'reducedMotion') {
-			document.documentElement.style.setProperty(
-				'--animation-duration',
-				value ? '0ms' : '300ms'
-			);
+			document.documentElement.style.setProperty('--animation-duration', value ? '0ms' : '300ms');
 		}
 	}
 
@@ -167,7 +161,7 @@ class UserPreferencesManager {
 		this.preferences = { ...defaultPreferences };
 		this.store.set(this.preferences);
 		this.savePreferences();
-		
+
 		// Apply default theme
 		this.applyTheme('light');
 		document.documentElement.style.setProperty('--animation-duration', '300ms');
@@ -199,9 +193,9 @@ class UserPreferencesManager {
 
 	addSearchTerm(term: string): void {
 		if (!term.trim()) return;
-		
+
 		const history = this.getSearchHistory();
-		const updated = [term, ...history.filter(t => t !== term)].slice(0, 10);
+		const updated = [term, ...history.filter((t) => t !== term)].slice(0, 10);
 		cacheManager.set('search_history', updated, CacheTTL.USER_PREFS);
 	}
 
@@ -228,11 +222,11 @@ class UserPreferencesManager {
 	shouldRestoreFilters(): boolean {
 		const lastState = this.getLastFilterState();
 		if (!lastState) return false;
-		
+
 		// Check if filter state was saved recently (within 30 minutes)
 		const lastActivity = cacheManager.get<number>('last_activity_time');
 		if (!lastActivity) return false;
-		
+
 		const timeSinceActivity = Date.now() - lastActivity;
 		return timeSinceActivity < 30 * 60 * 1000; // 30 minutes
 	}

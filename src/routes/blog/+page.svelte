@@ -4,7 +4,11 @@
 	import SEOHead from '$lib/components/shared/SEOHead.svelte';
 </script>
 
-<SEOHead title="Blog" description="Topics related to family-friendly locations." canonical="/blog" />
+<SEOHead
+	title="Blog"
+	description="Topics related to family-friendly locations."
+	canonical="/blog"
+/>
 
 <Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold md:text-5xl">Blog</Heading>
 <hr />

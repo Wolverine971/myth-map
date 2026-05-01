@@ -11,6 +11,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 ## 1. LOCATION OVERVIEW & HISTORY
 
 ### Basic Information
+
 - **Full official name and any common nicknames**
 - **Exact address and landmark details**
 - **Brief history:** When was it established? Any significant changes over the years?
@@ -18,6 +19,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 - **Size/scale of the location**
 
 ### Historical Context for Families
+
 - **How has this location evolved for families over time?**
 - **Any notable incidents, closures, or major renovations?**
 - **Reputation in the local community**
@@ -28,6 +30,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 ## 2. AGE APPROPRIATENESS & DEVELOPMENTAL CONSIDERATIONS
 
 ### Age Ranges
+
 - **Minimum recommended age and why**
 - **Maximum age where kids typically lose interest**
 - **Sweet spot age range for optimal enjoyment**
@@ -39,6 +42,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
   - Teens (13+ years)
 
 ### Developmental Benefits
+
 - **What skills does this activity develop?** (motor, social, cognitive, creative)
 - **Educational value and learning opportunities**
 - **Physical activity level required**
@@ -49,6 +53,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 ## 3. LOGISTICS & PRACTICAL DETAILS
 
 ### Parking & Transportation
+
 - **Parking availability:** Free, paid, street, lot size, difficulty level
 - **Public transportation access**
 - **Drop-off zones or stroller-friendly pathways**
@@ -56,6 +61,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 - **Accessibility for those with mobility challenges**
 
 ### Facilities & Amenities
+
 - **Restroom locations, cleanliness, changing tables**
 - **Stroller accessibility throughout the location**
 - **Seating areas for parents/caregivers**
@@ -64,6 +70,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 - **Nursing/pumping accommodations**
 
 ### Safety & Supervision
+
 - **Layout and sightlines for supervising children**
 - **Potential safety hazards or areas of concern**
 - **Fencing, boundaries, or containment features**
@@ -75,6 +82,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 ## 4. TIMING & CROWD MANAGEMENT
 
 ### Optimal Visit Times
+
 - **Best days of the week and specific times**
 - **Times to avoid due to crowds, school groups, or special events**
 - **Seasonal variations in experience quality**
@@ -82,6 +90,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 - **Rush periods and slow periods throughout the day**
 
 ### Reservations & Planning
+
 - **Advance booking requirements**
 - **Walk-in policies and wait times**
 - **Group size limitations**
@@ -93,6 +102,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 ## 5. WEATHER CONSIDERATIONS
 
 ### Weather Dependency
+
 - **How weather affects the experience (indoor/outdoor ratio)**
 - **What happens during rain, snow, extreme heat/cold?**
 - **Seasonal closures or reduced operations**
@@ -100,6 +110,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 - **Nearby alternative activities for bad weather days**
 
 ### Dress Code & Preparation
+
 - **Recommended clothing for different seasons**
 - **Special gear needed (swim clothes, closed-toe shoes, etc.)**
 - **Sun protection considerations**
@@ -110,6 +121,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 ## 6. FOOD & SNACK POLICIES
 
 ### On-Site Food Options
+
 - **Restaurant/café details, hours, and food quality**
 - **Kids' menu availability and pricing**
 - **Dietary restrictions accommodations**
@@ -117,6 +129,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 - **Food quality and value for families**
 
 ### Outside Food Policies
+
 - **Can you bring your own snacks/meals?**
 - **Designated eating areas for outside food**
 - **Restrictions on types of food/drinks**
@@ -128,6 +141,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 ## 7. COST ANALYSIS
 
 ### Pricing Structure
+
 - **Admission costs for different ages**
 - **Family packages or discounts available**
 - **Hidden costs (parking, activities, food)**
@@ -135,6 +149,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 - **Free days or discount programs**
 
 ### Value Assessment
+
 - **Cost per hour of entertainment**
 - **What's included vs. additional fees**
 - **Comparison to similar local attractions**
@@ -145,6 +160,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 ## 8. COMMON PITFALLS & CHALLENGES
 
 ### What Goes Wrong
+
 - **Most frequent complaints from families**
 - **Timing mistakes parents commonly make**
 - **Misaligned expectations vs. reality**
@@ -152,6 +168,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 - **Logistical frustrations (parking, lines, crowds)**
 
 ### How to Avoid Problems
+
 - **Specific preparation tips**
 - **What to bring/not bring**
 - **Communication strategies with kids beforehand**
@@ -162,6 +179,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 ## 9. BEST-CASE SCENARIOS
 
 ### When This Location Shines
+
 - **Ideal conditions for maximum enjoyment**
 - **Special moments or experiences unique to this place**
 - **What makes families become repeat visitors**
@@ -169,6 +187,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 - **Perfect timing and preparation examples**
 
 ### Success Stories
+
 - **Types of families who absolutely love this place**
 - **Memorable experiences that exceed expectations**
 - **What creates the "wow" factor**
@@ -178,6 +197,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 ## 10. WHO THIS IS NOT FOR
 
 ### Poor Fit Scenarios
+
 - **Age groups that will be bored or frustrated**
 - **Family types or personalities that won't enjoy it**
 - **Physical limitations that make it challenging**
@@ -185,6 +205,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 - **Time constraints that make it feel rushed**
 
 ### Alternative Recommendations
+
 - **Better options for families who wouldn't enjoy this**
 - **Similar but more appropriate alternatives nearby**
 - **When to skip this location entirely**
@@ -194,6 +215,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 ## 11. INSIDER TIPS & LOCAL KNOWLEDGE
 
 ### Pro Tips
+
 - **Staff recommendations for first-time families**
 - **Local parent secrets and shortcuts**
 - **Best photo opportunities**
@@ -201,6 +223,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 - **Seasonal events or special programming**
 
 ### Community Insights
+
 - **Local parent group opinions**
 - **Recent changes or improvements**
 - **Future plans or expansions**
@@ -211,6 +234,7 @@ You are a family travel and activity expert researching **[LOCATION NAME]** loca
 ## 12. ACCESSIBILITY & SPECIAL NEEDS
 
 ### Accommodations Available
+
 - **Wheelchair and mobility device access**
 - **Sensory-friendly options or times**
 - **Special needs programming**
@@ -233,7 +257,6 @@ Please organize your research findings using the above categories, providing spe
 **[ADDRESS/AREA]:** Ellicott City, MD 21042
 **[TAGS]:** Physical Activity Eats Activity Animals Playground Outdoor
 
-
 ---
 
-*Use this prompt by filling in the bracketed information and feeding it to your preferred LLM for comprehensive location research.*
+_Use this prompt by filling in the bracketed information and feeding it to your preferred LLM for comprehensive location research._

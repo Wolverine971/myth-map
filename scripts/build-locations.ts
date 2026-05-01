@@ -145,10 +145,7 @@ function parseAddress(fullAddress: string, state: string, zip: string) {
 	// Trim trailing punctuation
 	addr = addr.replace(/[,\s]+$/, '').trim();
 
-	const parts = addr
-		.split(',')
-		.map(clean)
-		.filter(Boolean);
+	const parts = addr.split(',').map(clean).filter(Boolean);
 	if (parts.length === 0) return { street: '', city: '' };
 	if (parts.length === 1) {
 		// No comma between street and city, e.g. "9309 Snowden River Pkwy Columbia".
@@ -179,10 +176,7 @@ function parseAddress(fullAddress: string, state: string, zip: string) {
 
 function parseTags(raw: string | undefined): string[] {
 	if (!raw) return [];
-	return raw
-		.split(',')
-		.map(clean)
-		.filter(Boolean);
+	return raw.split(',').map(clean).filter(Boolean);
 }
 
 interface ParsedLocation {
@@ -216,7 +210,9 @@ function loadOverrides(): Record<string, AddressOverride> {
 	try {
 		return JSON.parse(fs.readFileSync(OVERRIDES_PATH, 'utf8'));
 	} catch (err) {
-		console.warn(`⚠ Failed to parse ${path.relative(ROOT, OVERRIDES_PATH)}: ${(err as Error).message}`);
+		console.warn(
+			`⚠ Failed to parse ${path.relative(ROOT, OVERRIDES_PATH)}: ${(err as Error).message}`
+		);
 		return {};
 	}
 }
@@ -293,7 +289,9 @@ function loadAndParseCSV(): { locations: ParsedLocation[]; issues: string[] } {
 	});
 
 	if (overridesApplied.length) {
-		console.log(`Applied ${overridesApplied.length} address override(s): ${overridesApplied.join(', ')}`);
+		console.log(
+			`Applied ${overridesApplied.length} address override(s): ${overridesApplied.join(', ')}`
+		);
 	}
 
 	return { locations, issues };
@@ -383,10 +381,7 @@ function loadEnv(): Record<string, string> {
 		if (eq === -1) continue;
 		const key = trimmed.slice(0, eq).trim();
 		let val = trimmed.slice(eq + 1).trim();
-		if (
-			(val.startsWith('"') && val.endsWith('"')) ||
-			(val.startsWith("'") && val.endsWith("'"))
-		) {
+		if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
 			val = val.slice(1, -1);
 		}
 		out[key] = val;
@@ -558,7 +553,9 @@ async function main() {
 	console.log(`\n=== Geocoding ${locations.length} locations ===`);
 	const stats = await geocodeAll(locations, mapboxToken);
 
-	console.log(`\nGeocoding done. Cached: ${stats.cached}, hits: ${stats.hits}, misses: ${stats.misses}`);
+	console.log(
+		`\nGeocoding done. Cached: ${stats.cached}, hits: ${stats.hits}, misses: ${stats.misses}`
+	);
 	console.log(
 		`  by source — census: ${stats.bySource.census}, mapbox: ${stats.bySource.mapbox}, miss: ${stats.bySource.miss}`
 	);

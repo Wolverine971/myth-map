@@ -15,7 +15,10 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"label-paths": "tsx labelFilePaths.ts",
-		"build:locations": "tsx scripts/build-locations.ts"
+		"build:locations": "tsx scripts/build-locations.ts",
+		"content:sync": "tsx scripts/sync-location-content.ts",
+		"content:status": "tsx scripts/content-status.ts",
+		"gen:all": "pnpm format && pnpm content:sync && pnpm label-paths"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-vercel": "^5.7.2",
@@ -25,6 +28,7 @@
 		"@tailwindcss/typography": "^0.5.13",
 		"@types/eslint": "^8.56.7",
 		"@types/mapbox__mapbox-sdk": "^0.15.1",
+		"@types/suncalc": "^1.9.2",
 		"autoprefixer": "^10.4.19",
 		"eslint": "^9.0.0",
 		"eslint-config-prettier": "^9.1.0",
@@ -51,6 +55,9 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@fontsource-variable/bitter": "^5.2.10",
+		"@fontsource-variable/inter": "^5.2.8",
+		"@fontsource-variable/jetbrains-mono": "^5.2.8",
 		"@mapbox/mapbox-sdk": "^0.16.0",
 		"@types/mapbox-gl": "^3.1.0",
 		"date-picker-svelte": "^2.13.0",
@@ -60,6 +67,7 @@
 		"qrcode": "^1.5.4",
 		"rehype-slug": "^6.0.0",
 		"remark-abbr": "^1.4.2",
-		"remark-github": "^12.0.0"
+		"remark-github": "^12.0.0",
+		"suncalc": "^1.9.0"
 	}
 }

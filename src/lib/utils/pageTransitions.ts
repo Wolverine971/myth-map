@@ -1,3 +1,4 @@
+// src/lib/utils/pageTransitions.ts
 import { browser } from '$app/environment';
 import { backOut, cubicOut, elasticOut } from 'svelte/easing';
 // src/lib/utils/pageTransitions.ts
@@ -60,7 +61,7 @@ export function getTransition(config: TransitionConfig) {
 		switch (type) {
 			case 'fade':
 				return fade(node, { duration, delay, easing });
-			
+
 			case 'fly':
 				const flyOptions: any = { duration, delay, easing };
 				switch (direction) {
@@ -80,19 +81,19 @@ export function getTransition(config: TransitionConfig) {
 						flyOptions.y = 50;
 				}
 				return fly(node, flyOptions);
-			
+
 			case 'slide':
 				return slide(node, { duration, delay, easing });
-			
+
 			case 'scale':
 				return scale(node, { duration, delay, easing, start: 0.8 });
-			
+
 			case 'blur':
 				return blur(node, { duration, delay, easing });
-			
+
 			case 'none':
 				return { duration: 0 };
-			
+
 			default:
 				return fade(node, { duration: 0 });
 		}
@@ -103,12 +104,15 @@ export function getTransition(config: TransitionConfig) {
 export function staggered(config: TransitionConfig, index: number, staggerDelay: number = 50) {
 	return {
 		...config,
-		delay: (config.delay || 0) + (index * staggerDelay)
+		delay: (config.delay || 0) + index * staggerDelay
 	};
 }
 
 // Reduced motion support
-export function getAccessibleTransition(config: TransitionConfig, prefersReducedMotion: boolean = false) {
+export function getAccessibleTransition(
+	config: TransitionConfig,
+	prefersReducedMotion: boolean = false
+) {
 	if (prefersReducedMotion) {
 		return {
 			type: 'fade' as TransitionType,
@@ -125,11 +129,11 @@ export function createPageTransition(fromRoute: string, toRoute: string): Transi
 	if (fromRoute.includes('/locations/') && toRoute === '/') {
 		return { type: 'fly', direction: 'right', duration: 400 };
 	}
-	
+
 	if (fromRoute === '/' && toRoute.includes('/locations/')) {
 		return { type: 'fly', direction: 'left', duration: 400 };
 	}
-	
+
 	// Default fade transition
 	return defaultTransitions.page;
 }
@@ -142,7 +146,7 @@ export function createSafeTransition(config: TransitionConfig) {
 			if (!browser || !node || !(node instanceof Element)) {
 				return { duration: 0 };
 			}
-			
+
 			// Get the transition function and call it with the node
 			const transitionFn = getTransition(config);
 			return transitionFn(node);

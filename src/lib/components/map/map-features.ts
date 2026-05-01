@@ -22,10 +22,7 @@ export function buildFeatureCollection(locations: any[]): GeoJSON.FeatureCollect
 				},
 				geometry: {
 					type: 'Point',
-					coordinates: [
-						Number(contentLocation.location.lng),
-						Number(contentLocation.location.lat)
-					]
+					coordinates: [Number(contentLocation.location.lng), Number(contentLocation.location.lat)]
 				}
 			}))
 	};

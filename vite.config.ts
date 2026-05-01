@@ -1,6 +1,6 @@
+// vite.config.ts
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
-
 
 // import generateCityIndex from './vite-plugin-generate-city-index.js';
 // import { geoJsonPlugin } from 'vite-plugin-tailwind-purgecss';
@@ -16,7 +16,7 @@ export default defineConfig({
 				// Code splitting configuration
 				manualChunks: {
 					// Vendor chunks
-					'vendor-ui': ['flowbite-svelte', 'flowbite-svelte-icons'],
+					'vendor-ui': ['flowbite-svelte', 'flowbite-svelte-icons']
 				},
 				// Ensure static assets are properly handled
 				assetFileNames: (assetInfo) => {

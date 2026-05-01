@@ -115,7 +115,7 @@ class DataManager {
 	invalidateLocations() {
 		cacheManager.delete(CacheKeys.LOCATIONS);
 		cacheManager.delete(CacheKeys.LOCATION_TAGS);
-		
+
 		// Clear related caches
 		cacheManager.clearExpired();
 	}
@@ -154,19 +154,19 @@ class DataManager {
 
 	// Derived stores for easy access
 	get locations() {
-		return derived(this.store, $store => $store?.locations || []);
+		return derived(this.store, ($store) => $store?.locations || []);
 	}
 
 	get tags() {
-		return derived(this.store, $store => $store?.tags || []);
+		return derived(this.store, ($store) => $store?.tags || []);
 	}
 
 	get locationTags() {
-		return derived(this.store, $store => $store?.locationTags || []);
+		return derived(this.store, ($store) => $store?.locationTags || []);
 	}
 
 	get isDataAvailable() {
-		return derived(this.store, $store => !!$store);
+		return derived(this.store, ($store) => !!$store);
 	}
 }
 
@@ -181,39 +181,35 @@ class CityDataCache {
 	async getCityData(stateAbbr: string): Promise<string[]> {
 		const key = stateAbbr.toLowerCase();
 		const cached = this.cityCache.get(key);
-		
+
 		if (cached && Date.now() - cached.timestamp < this.CITY_CACHE_TTL) {
 			return cached.data;
 		}
 
 		try {
 			// Dynamically import city data
-			const indexModule = await import(
-				`../../geographies/cities/${key}/index.json`
-			);
-			
-			const cities = indexModule.default.map((city: string) =>
-				this.normalizeCityName(city)
-			);
-			
+			const indexModule = await import(`../../geographies/cities/${key}/index.json`);
+
+			const cities = indexModule.default.map((city: string) => this.normalizeCityName(city));
+
 			// Cache the result
 			this.cityCache.set(key, { data: cities, timestamp: Date.now() });
-			
+
 			// Also cache in localStorage for persistence
 			if (browser) {
 				cacheManager.set(`cities_${key}`, cities, this.CITY_CACHE_TTL);
 			}
-			
+
 			return cities;
 		} catch (error) {
 			console.error(`Failed to load cities for state ${stateAbbr}:`, error);
-			
+
 			// Try to get from localStorage cache
 			if (browser) {
 				const cached = cacheManager.get(`cities_${key}`);
 				if (cached) return cached;
 			}
-			
+
 			return [];
 		}
 	}
@@ -222,7 +218,7 @@ class CityDataCache {
 		// Simplified normalization - just proper case
 		return city
 			.split(/[\s-]+/)
-			.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+			.map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
 			.join(' ');
 	}
 
@@ -246,7 +242,7 @@ class SearchCacheManager {
 	getCachedSearchResults(query: string, filters: any = {}): any | null {
 		const key = this.getSearchKey(query, filters);
 		const cached = this.searchCache.get(key);
-		
+
 		if (cached && Date.now() - cached.timestamp < this.SEARCH_CACHE_TTL) {
 			return cached.data;
 		}
@@ -258,12 +254,12 @@ class SearchCacheManager {
 	setCachedSearchResults(query: string, filters: any = {}, data: any): void {
 		const key = this.getSearchKey(query, filters);
 		this.searchCache.set(key, { data, timestamp: Date.now() });
-		
+
 		// Clean up old entries if cache gets too large
 		if (this.searchCache.size > 50) {
 			const entries = Array.from(this.searchCache.entries());
 			entries.sort((a, b) => a[1].timestamp - b[1].timestamp);
-			
+
 			// Remove oldest 25% of entries
 			const toRemove = Math.floor(entries.length * 0.25);
 			for (let i = 0; i < toRemove; i++) {

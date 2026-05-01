@@ -3,8 +3,8 @@
 	import NavBar from '$lib/components/base/NavBar.svelte';
 	import { preloadCriticalComponents } from '$lib/utils/lazyComponents';
 	import { initializeOptimizations } from '$lib/utils/appOptimizations';
-	import { injectAnimationCSS } from '$lib/utils/pageTransitions';
 	import Toast from '$lib/components/shared/Toast.svelte';
+	import '$lib/stores/themeStore'; // wires up sunset-aware theme system
 	import '../app.css';
 	import { onMount } from 'svelte';
 
@@ -12,7 +12,6 @@
 
 	onMount(() => {
 		initializeOptimizations();
-		injectAnimationCSS();
 		preloadCriticalComponents();
 	});
 </script>

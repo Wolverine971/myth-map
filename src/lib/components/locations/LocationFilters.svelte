@@ -1,12 +1,12 @@
 <!-- src/lib/components/locations/LocationFilters.svelte -->
 <script lang="ts">
-	import { createEventDispatcher, onMount } from 'svelte';
-	import { Button, Checkbox, Dropdown, DropdownItem } from 'flowbite-svelte';
+	import { createEventDispatcher } from 'svelte';
+	import { Checkbox, Dropdown, DropdownItem } from 'flowbite-svelte';
 	import { ChevronDownOutline, CloseCircleSolid } from 'flowbite-svelte-icons';
 	import { fade } from 'svelte/transition';
 
 	const dispatch = createEventDispatcher();
-	
+
 	export let allTags: { name: string }[] = [];
 	export let selectableTagsMap: Record<string, number> = {};
 	export let selectedTags: string[] = [];
@@ -14,247 +14,212 @@
 	let baseDropdownOpen = false;
 	let indoorOutdoorDropdownOpen = false;
 	let tagsDropdownOpen = false;
-	
-	let displayTags: { name: string; checked: boolean; disabled: boolean }[] = [];
+
+	type TagState = { name: string; checked: boolean; disabled: boolean };
+
+	const BASE_OPTIONS: string[] = ['Activity', 'Eats'];
+	const INDOOR_OUTDOOR_OPTIONS: string[] = ['Indoor', 'Outdoor'];
+	const VIRTUAL_TAGS = new Set<string>([...BASE_OPTIONS, ...INDOOR_OUTDOOR_OPTIONS]);
+	const TAGS_TO_REMOVE = new Set(['both']);
+
+	let displayTags: TagState[] = [];
 	let baseSelect: string | null = null;
 	let indoorOutdoorSelect: string | null = null;
-	let tagsToRemove = ['both']
 
-	onMount(() => {
-		displayTags = allTags.filter(t => !tagsToRemove.includes(t.name) ).map((tag) => ({
-			...tag,
+	// `displayTags` only tracks concrete tags (not virtual base categories).
+	// Virtual selections are tracked separately in `baseSelect` and `indoorOutdoorSelect`.
+	$: displayTags = allTags
+		.filter((t) => !TAGS_TO_REMOVE.has(t.name) && !VIRTUAL_TAGS.has(t.name))
+		.map((tag) => ({
+			name: tag.name,
 			checked: selectedTags.includes(tag.name),
 			disabled: !selectableTagsMap[tag.name]
 		}));
-	});
 
-	// Update display tags when selectableTagsMap changes
-	$: if (selectableTagsMap && displayTags.length > 0) {
-		displayTags = displayTags.map((tag) => ({
-			...tag,
-			disabled: !selectableTagsMap[tag.name]
-		}));
+	$: baseSelect = selectedTags.includes('Activity')
+		? 'Activity'
+		: selectedTags.includes('Eats')
+			? 'Eats'
+			: null;
+
+	$: indoorOutdoorSelect = selectedTags.includes('Indoor')
+		? 'Indoor'
+		: selectedTags.includes('Outdoor')
+			? 'Outdoor'
+			: null;
+
+	function emit(next: string[]) {
+		dispatch('filterChange', next);
 	}
 
-	// Update display tags when selectedTags changes externally
-	$: if (selectedTags && displayTags.length > 0) {
-		displayTags = displayTags.map((tag) => ({
-			...tag,
-			checked: selectedTags.includes(tag.name)
-		}));
-		
-		// Update base selections
-		baseSelect = selectedTags.includes('Activity') ? 'Activity' : 
-					 selectedTags.includes('Eats') ? 'Eats' : null;
-		indoorOutdoorSelect = selectedTags.includes('Indoor') ? 'Indoor' :
-							 selectedTags.includes('Outdoor') ? 'Outdoor' : null;
+	function toggleConcrete(name: string, checked: boolean) {
+		const next = checked ? [...selectedTags, name] : selectedTags.filter((t) => t !== name);
+		emit(next);
 	}
 
-	function emitFilterChange() {
-		const checkedTags = displayTags.filter(tag => tag.checked).map(tag => tag.name);
-		dispatch('filterChange', checkedTags);
-	}
-
-	function updateChecked(item: { name: string }, event: Event) {
+	function onTagCheckboxChange(tag: TagState, event: Event) {
+		if (tag.disabled) return;
 		const target = event.target as HTMLInputElement;
-		
-		displayTags = displayTags.map((tag) => {
-			if (tag.name === item.name) {
-				return { ...tag, checked: target.checked };
-			}
-			return tag;
-		});
-
-		emitFilterChange();
+		toggleConcrete(tag.name, target.checked);
 	}
 
-	function baseSelection(event: Event) {
-		const target = event.target as HTMLElement;
-		const selection = target.innerText;
-		
-		// Clear previous base selection
-		if (baseSelect && baseSelect !== selection) {
-			displayTags = displayTags.map((tag) => {
-				if (tag.name === baseSelect) {
-					return { ...tag, checked: false };
-				}
-				return tag;
-			});
-		}
+	function pickOneOf(group: string[], picked: string) {
+		const without = selectedTags.filter((t) => !group.includes(t));
+		emit([...without, picked]);
+	}
 
-		baseSelect = selection;
-		
-		// Set new selection
-		displayTags = displayTags.map((tag) => {
-			if (tag.name === selection) {
-				return { ...tag, checked: true };
-			}
-			return tag;
-		});
+	function clearGroup(group: string[]) {
+		emit(selectedTags.filter((t) => !group.includes(t)));
+	}
 
-		emitFilterChange();
+	function pickBase(name: string) {
+		pickOneOf(BASE_OPTIONS, name);
 		baseDropdownOpen = false;
 	}
 
-	function indoorOutdoorSelection(event: Event) {
-		const target = event.target as HTMLElement;
-		const selection = target.innerText;
-		
-		// Clear previous indoor/outdoor selection
-		if (indoorOutdoorSelect && indoorOutdoorSelect !== selection) {
-			displayTags = displayTags.map((tag) => {
-				if (tag.name === indoorOutdoorSelect) {
-					return { ...tag, checked: false };
-				}
-				return tag;
-			});
-		}
-
-		indoorOutdoorSelect = selection;
-		
-		// Set new selection
-		displayTags = displayTags.map((tag) => {
-			if (tag.name === selection) {
-				return { ...tag, checked: true };
-			}
-			return tag;
-		});
-
-		emitFilterChange();
+	function pickIndoorOutdoor(name: string) {
+		pickOneOf(INDOOR_OUTDOOR_OPTIONS, name);
 		indoorOutdoorDropdownOpen = false;
 	}
 
 	function removeTag(tagName: string) {
-		displayTags = displayTags.map((tag) => {
-			if (tag.name === tagName) {
-				return { ...tag, checked: false };
-			}
-			return tag;
-		});
-
-		// Update special selections
-		if (tagName === baseSelect) {
-			baseSelect = null;
-		}
-		if (tagName === indoorOutdoorSelect) {
-			indoorOutdoorSelect = null;
-		}
-
-		emitFilterChange();
+		emit(selectedTags.filter((t) => t !== tagName));
 	}
 
-	// Get checked items for display
-	$: checkedItems = displayTags.filter(tag => tag.checked);
+	$: checkedItems = selectedTags.filter((t) => !VIRTUAL_TAGS.has(t));
 
-	let activeClass = 'text-orange-700 dark:text-orange-300 hover:text-orange-900 dark:hover:text-orange-500';
+	let activeClass = 'text-primary-700 hover:text-primary-900';
 </script>
 
-<div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+<div class="flex flex-wrap items-center gap-2">
 	<!-- Base Activity/Eats Filter -->
-	<div class="relative" transition:fade={{ duration: 600 }}>
-		<Button outline size="sm" class="w-full sm:w-auto {baseSelect ? 'ring-2 ring-primary-600' : ''}">
-			<span class="text-xs sm:text-sm">{baseSelect ? baseSelect : 'Activity/Eats'}</span>
-			<ChevronDownOutline class="ms-2 h-4 w-4" />
-		</Button>
-		<Dropdown
-			style="z-index: 50"
-			placement="bottom"
-			bind:open={baseDropdownOpen}
-			{activeClass}
-		>
-			<DropdownItem
-				class="hover:bg-gray-100 {baseSelect === 'Activity' ? 'bg-primary-50 font-semibold text-primary-700' : ''}"
-				on:click={baseSelection}
-				disabled={!selectableTagsMap['Activity']}
-			>
-				Activity {!selectableTagsMap['Activity'] ? '(unavailable)' : ''}
-			</DropdownItem>
-			<DropdownItem
-				class="hover:bg-gray-100 {baseSelect === 'Eats' ? 'bg-primary-50 font-semibold text-primary-700' : ''}"
-				on:click={baseSelection}
-				disabled={!selectableTagsMap['Eats']}
-			>
-				Eats {!selectableTagsMap['Eats'] ? '(unavailable)' : ''}
-			</DropdownItem>
+	<div class="relative">
+		<button type="button" class="filter-trigger" class:filter-trigger--active={!!baseSelect}>
+			<span>{baseSelect ?? 'Activity / Eats'}</span>
+			<ChevronDownOutline class="h-3.5 w-3.5" />
+		</button>
+		<Dropdown style="z-index: 50" placement="bottom" bind:open={baseDropdownOpen} {activeClass}>
+			{#if baseSelect}
+				<DropdownItem
+					on:click={() => {
+						clearGroup(BASE_OPTIONS);
+						baseDropdownOpen = false;
+					}}
+					class="font-medium text-neutral-600"
+				>
+					Any
+				</DropdownItem>
+				<div class="my-1 border-t border-secondary-200"></div>
+			{/if}
+			{#each BASE_OPTIONS as option}
+				<DropdownItem
+					on:click={() => pickBase(option)}
+					class={baseSelect === option
+						? 'bg-primary-50 font-semibold text-primary-700'
+						: 'hover:bg-primary-50'}
+					disabled={!selectableTagsMap[option]}
+				>
+					<div class="flex w-full items-center justify-between">
+						<span>{option}</span>
+						<span class="ml-2 text-xs text-neutral-500">{selectableTagsMap[option] ?? 0}</span>
+					</div>
+				</DropdownItem>
+			{/each}
 		</Dropdown>
 	</div>
 
 	<!-- Indoor/Outdoor Filter -->
-	<div class="relative" transition:fade={{ duration: 800 }}>
-		<Button outline size="sm" class="w-full sm:w-auto {indoorOutdoorSelect ? 'ring-2 ring-primary-600' : ''}">
-			<span class="text-xs sm:text-sm">{indoorOutdoorSelect ? indoorOutdoorSelect : 'Indoor/Outdoor'}</span>
-			<ChevronDownOutline class="ms-2 h-4 w-4" />
-		</Button>
+	<div class="relative">
+		<button
+			type="button"
+			class="filter-trigger"
+			class:filter-trigger--active={!!indoorOutdoorSelect}
+		>
+			<span>{indoorOutdoorSelect ?? 'Indoor / Outdoor'}</span>
+			<ChevronDownOutline class="h-3.5 w-3.5" />
+		</button>
 		<Dropdown
 			style="z-index: 50"
 			placement="bottom"
 			bind:open={indoorOutdoorDropdownOpen}
 			{activeClass}
 		>
-			<DropdownItem
-				class="hover:bg-gray-100 {indoorOutdoorSelect === 'Indoor' ? 'bg-primary-50 font-semibold text-primary-700' : ''}"
-				on:click={indoorOutdoorSelection}
-				disabled={!selectableTagsMap['Indoor']}
-			>
-				Indoor {!selectableTagsMap['Indoor'] ? '(unavailable)' : ''}
-			</DropdownItem>
-			<DropdownItem
-				class="hover:bg-gray-100 {indoorOutdoorSelect === 'Outdoor' ? 'bg-primary-50 font-semibold text-primary-700' : ''}"
-				on:click={indoorOutdoorSelection}
-				disabled={!selectableTagsMap['Outdoor']}
-			>
-				Outdoor {!selectableTagsMap['Outdoor'] ? '(unavailable)' : ''}
-			</DropdownItem>
+			{#if indoorOutdoorSelect}
+				<DropdownItem
+					on:click={() => {
+						clearGroup(INDOOR_OUTDOOR_OPTIONS);
+						indoorOutdoorDropdownOpen = false;
+					}}
+					class="font-medium text-neutral-600"
+				>
+					Any
+				</DropdownItem>
+				<div class="my-1 border-t border-secondary-200"></div>
+			{/if}
+			{#each INDOOR_OUTDOOR_OPTIONS as option}
+				<DropdownItem
+					on:click={() => pickIndoorOutdoor(option)}
+					class={indoorOutdoorSelect === option
+						? 'bg-primary-50 font-semibold text-primary-700'
+						: 'hover:bg-primary-50'}
+					disabled={!selectableTagsMap[option]}
+				>
+					<div class="flex w-full items-center justify-between">
+						<span>{option}</span>
+						<span class="ml-2 text-xs text-neutral-500">{selectableTagsMap[option] ?? 0}</span>
+					</div>
+				</DropdownItem>
+			{/each}
 		</Dropdown>
 	</div>
 
-	<!-- Other Tags Filter -->
-	<div class="relative" transition:fade={{ duration: 1000 }}>
-		<Button outline size="sm" class="w-full sm:w-auto {checkedItems.length > 0 ? 'ring-2 ring-primary-600' : ''}">
-			<span class="text-xs sm:text-sm">Tags ({checkedItems.length})</span>
-			<ChevronDownOutline class="ms-2 h-4 w-4" />
-		</Button>
+	<!-- Tags Filter -->
+	<div class="relative">
+		<button
+			type="button"
+			class="filter-trigger"
+			class:filter-trigger--active={checkedItems.length > 0}
+		>
+			<span>Tags{checkedItems.length > 0 ? ` (${checkedItems.length})` : ''}</span>
+			<ChevronDownOutline class="h-3.5 w-3.5" />
+		</button>
 		<Dropdown placement="bottom" bind:open={tagsDropdownOpen}>
 			<div class="max-h-60 overflow-y-auto">
 				{#each displayTags as tag (tag.name)}
-					{#if tag.name !== 'Activity' && tag.name !== 'Eats' && tag.name !== 'Indoor' && tag.name !== 'Outdoor'}
-						<li
-							class="rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-600 {tag.disabled ? 'opacity-50' : ''}"
-							transition:fade={{ duration: 100 }}
+					<li
+						class="rounded p-2 hover:bg-primary-50 {tag.disabled ? 'opacity-50' : ''}"
+						transition:fade={{ duration: 100 }}
+					>
+						<Checkbox
+							class={tag.disabled ? 'cursor-not-allowed text-gray-400' : ''}
+							on:change={(e) => onTagCheckboxChange(tag, e)}
+							checked={tag.checked}
+							disabled={tag.disabled}
 						>
-							<Checkbox
-								class={tag.disabled ? 'cursor-not-allowed text-gray-400' : ''}
-								on:change={(e) => {
-									if (!tag.disabled) {
-										updateChecked(tag, e);
-									}
-								}}
-								bind:checked={tag.checked}
-								disabled={tag.disabled}
-							>
-								{tag.name}
-								{#if tag.disabled}
-									<span class="text-xs text-gray-400 ml-1">(unavailable)</span>
-								{/if}
-							</Checkbox>
-						</li>
-					{/if}
+							{tag.name}
+							{#if tag.disabled}
+								<span class="ml-1 text-xs text-neutral-500">(none)</span>
+							{/if}
+						</Checkbox>
+					</li>
 				{/each}
 			</div>
 		</Dropdown>
 	</div>
 
-	<!-- Selected Tags Display -->
+	<!-- Active Tag Chips (excluding virtual categories — those show on the trigger buttons) -->
 	{#if checkedItems.length > 0}
-		<div class="flex flex-wrap gap-1 sm:ml-4">
-			{#each checkedItems as checkedItem (checkedItem.name)}
-				<div class="chip" transition:fade={{ duration: 200 }}>
-					<span class="text-sm">{checkedItem.name}</span>
-					<CloseCircleSolid
-						withEvents
-						on:click={() => removeTag(checkedItem.name)}
-						class="ml-2 h-4 w-4 cursor-pointer hover:text-red-500 transition-colors"
-					/>
+		<div class="flex flex-wrap gap-1.5">
+			{#each checkedItems as name (name)}
+				<div class="active-chip" transition:fade={{ duration: 150 }}>
+					<span>{name}</span>
+					<button
+						type="button"
+						aria-label={`Remove ${name} filter`}
+						on:click={() => removeTag(name)}
+					>
+						<CloseCircleSolid class="h-3.5 w-3.5" />
+					</button>
 				</div>
 			{/each}
 		</div>
@@ -262,7 +227,59 @@
 </div>
 
 <style>
-	.chip {
-		@apply flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-xs transition-all hover:bg-gray-200 sm:text-sm;
+	.filter-trigger {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+		padding: 0.4375rem 0.75rem;
+		font-size: 0.8125rem;
+		font-weight: 600;
+		color: theme('colors.neutral.800');
+		background: #ffffff;
+		border: 1px solid theme('colors.secondary.200');
+		border-radius: 999px;
+		cursor: pointer;
+		transition:
+			background-color 0.15s ease,
+			border-color 0.15s ease,
+			color 0.15s ease;
+	}
+
+	.filter-trigger:hover {
+		border-color: theme('colors.primary.300');
+		color: theme('colors.primary.700');
+	}
+
+	.filter-trigger--active {
+		background: theme('colors.primary.50');
+		border-color: theme('colors.primary.500');
+		color: theme('colors.primary.700');
+	}
+
+	.active-chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+		padding: 0.25rem 0.5rem 0.25rem 0.625rem;
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: theme('colors.primary.700');
+		background: theme('colors.primary.50');
+		border: 1px solid theme('colors.primary.200');
+		border-radius: 999px;
+	}
+
+	.active-chip button {
+		display: inline-flex;
+		color: theme('colors.primary.500');
+		background: transparent;
+		border: none;
+		padding: 0;
+		cursor: pointer;
+		transition: color 0.15s ease;
+	}
+
+	.active-chip button:hover {
+		color: theme('colors.tertiary.600');
 	}
 </style>

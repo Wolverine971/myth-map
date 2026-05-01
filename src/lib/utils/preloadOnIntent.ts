@@ -79,7 +79,7 @@ class PreloadManager {
 		if (!browser) return;
 
 		let timeoutId: number;
-		
+
 		const handleMouseEnter = () => {
 			timeoutId = window.setTimeout(() => {
 				this.executePreload(key);
@@ -148,7 +148,7 @@ class PreloadManager {
 	// Preload during idle time
 	private preloadIdle() {
 		const criticalKeys = ['map', 'comments', 'search'];
-		criticalKeys.forEach(key => {
+		criticalKeys.forEach((key) => {
 			if (this.preloadQueue.has(key)) {
 				this.executePreload(key);
 			}
@@ -162,7 +162,7 @@ class PreloadManager {
 
 	// Preload multiple components
 	preloadMultiple(keys: string[]) {
-		return Promise.all(keys.map(key => this.executePreload(key)));
+		return Promise.all(keys.map((key) => this.executePreload(key)));
 	}
 
 	// Get preload statistics
@@ -213,9 +213,11 @@ export function preload(element: HTMLElement, options: { key: string } & Preload
 
 // Helper to register preloads
 export function registerPreloads() {
-	const { LazyMap, LazyComments, LazyItineraryModal } = import('$lib/utils/lazyComponents').then(module => {
-		preloadManager.register('map', module.LazyMap.load);
-		preloadManager.register('comments', module.LazyComments.load);
-		preloadManager.register('itinerary', module.LazyItineraryModal.load);
-	});
+	const { LazyMap, LazyComments, LazyItineraryModal } = import('$lib/utils/lazyComponents').then(
+		(module) => {
+			preloadManager.register('map', module.LazyMap.load);
+			preloadManager.register('comments', module.LazyComments.load);
+			preloadManager.register('itinerary', module.LazyItineraryModal.load);
+		}
+	);
 }

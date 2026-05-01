@@ -18,7 +18,7 @@
 	export let variant: 'default' | 'minimal' | 'compact' = 'default';
 
 	// Build the complete breadcrumb list including home
-	$: allItems = showHome 
+	$: allItems = showHome
 		? [{ label: homeLabel, href: homeHref, icon: HomeOutline }, ...items]
 		: items;
 
@@ -36,9 +36,12 @@
 	};
 
 	$: linkClasses = {
-		default: 'font-medium text-primary-600 hover:text-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded px-1 py-0.5',
-		minimal: 'text-primary-600 hover:text-primary-800 focus:outline-none focus:ring-1 focus:ring-primary-500 rounded px-0.5',
-		compact: 'text-primary-600 hover:text-primary-800 focus:outline-none focus:ring-1 focus:ring-primary-500 rounded'
+		default:
+			'font-medium text-primary-600 hover:text-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded px-1 py-0.5',
+		minimal:
+			'text-primary-600 hover:text-primary-800 focus:outline-none focus:ring-1 focus:ring-primary-500 rounded px-0.5',
+		compact:
+			'text-primary-600 hover:text-primary-800 focus:outline-none focus:ring-1 focus:ring-primary-500 rounded'
 	};
 
 	$: currentClasses = {
@@ -76,8 +79,8 @@
 					</span>
 				{:else if item.href}
 					<!-- Linked breadcrumb item -->
-					<a 
-						href={item.href} 
+					<a
+						href={item.href}
 						class="{linkClasses[variant]} {itemClasses[variant]}"
 						aria-label="Go to {item.label}"
 					>
@@ -102,7 +105,10 @@
 
 				{#if index < allItems.length - 1}
 					<!-- Separator -->
-					<svelte:component this={separator} class="{separatorClasses[variant]} mx-1 flex-shrink-0 sm:mx-2" />
+					<svelte:component
+						this={separator}
+						class="{separatorClasses[variant]} mx-1 flex-shrink-0 sm:mx-2"
+					/>
 				{/if}
 			</li>
 		{/each}
@@ -111,13 +117,13 @@
 
 <!-- Structured data for better SEO -->
 {@html `<script type="application/ld+json">${JSON.stringify({
-	"@context": "https://schema.org",
-	"@type": "BreadcrumbList",
-	"itemListElement": allItems.map((item, index) => ({
-		"@type": "ListItem",
-		"position": index + 1,
-		"name": item.label,
-		"item": item.href ? `https://tinytribeadventures.com${item.href}` : undefined
+	'@context': 'https://schema.org',
+	'@type': 'BreadcrumbList',
+	itemListElement: allItems.map((item, index) => ({
+		'@type': 'ListItem',
+		position: index + 1,
+		name: item.label,
+		item: item.href ? `https://tinytribeadventures.com${item.href}` : undefined
 	}))
 })}</script>`}
 
@@ -129,25 +135,26 @@
 			scrollbar-width: none;
 			-ms-overflow-style: none;
 		}
-		
+
 		nav::-webkit-scrollbar {
 			display: none;
 		}
-		
+
 		ol {
 			white-space: nowrap;
 			min-width: min-content;
 		}
 	}
-	
+
 	/* Enhanced focus states */
 	a:focus {
 		outline: 2px solid transparent;
 		outline-offset: 2px;
 	}
-	
+
 	/* Smooth transitions for all interactive elements */
-	a, span {
+	a,
+	span {
 		transition: all 0.2s ease-in-out;
 	}
 </style>

@@ -357,10 +357,7 @@
 		const copyId = `copy-${(props.name || 'location').replace(/\s+/g, '-')}`;
 		const address = buildAddress(props);
 
-		popup
-			.setLngLat(coordinates)
-			.setHTML(buildPopupHTML(props, copyId))
-			.addTo(map);
+		popup.setLngLat(coordinates).setHTML(buildPopupHTML(props, copyId)).addTo(map);
 
 		// Wire the copy button after the popup DOM exists.
 		queueMicrotask(() => {
@@ -412,81 +409,112 @@
 		visibility: visible !important;
 	}
 
-	/* Mapbox popup styling */
+	/* ============================================================
+	   Map popup — Tiny Tribe Adventures brand palette
+	   Forest Green primary, Sandstone surface, Slate Gray text
+	   ============================================================ */
+
 	:global(.mapboxgl-popup) {
-		font-family: system-ui, -apple-system, sans-serif;
+		font-family:
+			system-ui,
+			-apple-system,
+			'Segoe UI',
+			sans-serif;
 		z-index: 10;
 	}
 
 	:global(.mapboxgl-popup-content) {
-		background: white;
-		border-radius: 0.75rem;
-		box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+		background: #ffffff;
+		border: 1px solid #eee0cc; /* secondary-200 */
+		border-radius: 14px;
+		box-shadow:
+			0 12px 24px -8px rgba(1, 68, 33, 0.18),
+			0 4px 12px -4px rgba(1, 68, 33, 0.08);
 		padding: 0;
-		min-width: 280px;
-		max-width: 320px;
+		min-width: 264px;
+		max-width: 300px;
+		overflow: hidden;
 	}
 
 	:global(.mapboxgl-popup-close-button) {
-		font-size: 20px;
-		padding: 0.5rem;
-		color: #6b7280;
-		right: 0;
-		top: 0;
+		font-size: 18px;
+		width: 26px;
+		height: 26px;
+		padding: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #708090; /* neutral-500 */
+		right: 8px;
+		top: 8px;
+		border-radius: 999px;
+		transition:
+			background-color 0.15s ease,
+			color 0.15s ease;
 	}
 
 	:global(.mapboxgl-popup-close-button:hover) {
-		color: #374151;
-		background-color: #f3f4f6;
-		border-radius: 0 0.75rem 0 0.75rem;
+		color: #014421;
+		background-color: #f7f0e6; /* secondary-100 */
 	}
 
 	:global(.mapboxgl-popup-tip) {
-		border-top-color: white;
+		border-top-color: #ffffff;
 	}
 
-	/* Popup content styling */
+	/* Popup content */
 	:global(.popup-content) {
-		padding: 1.25rem;
+		padding: 1rem 1.125rem 1.125rem;
 	}
 
 	:global(.popup-title) {
-		font-size: 1.25rem;
+		font-size: 1.0625rem;
 		font-weight: 700;
-		color: #111827;
-		margin: 0 0 1rem 0;
-		line-height: 1.4;
+		color: #014421; /* primary-500, Forest Green */
+		margin: 0 0 0.625rem 0;
+		line-height: 1.3;
+		letter-spacing: -0.01em;
+		padding-right: 1.5rem; /* leave room for close button */
 	}
 
-	:global(.popup-address-section) {
-		margin-bottom: 1rem;
-	}
-
-	:global(.popup-address-header) {
+	:global(.popup-address-row) {
 		display: flex;
-		align-items: center;
+		align-items: flex-start;
 		gap: 0.5rem;
-		margin-bottom: 0.5rem;
-	}
-
-	:global(.popup-label) {
-		font-size: 0.875rem;
-		font-weight: 600;
-		color: #6b7280;
-		text-transform: uppercase;
-		letter-spacing: 0.025em;
+		margin: 0 0 0.875rem 0;
 	}
 
 	:global(.popup-address) {
-		font-size: 0.875rem;
-		color: #374151;
-		margin: 0 0 0.75rem 0;
+		flex: 1;
+		font-size: 0.8125rem;
+		color: #4e5964; /* neutral-800 */
+		margin: 0;
 		line-height: 1.5;
 	}
 
-	:global(.popup-icon) {
+	:global(.popup-copy-btn) {
 		flex-shrink: 0;
-		color: #9ca3af;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		padding: 0;
+		border: 1px solid #eee0cc; /* secondary-200 */
+		border-radius: 8px;
+		background: #fcf9f5; /* secondary-50 */
+		color: #708090; /* neutral-500 */
+		cursor: pointer;
+		transition:
+			background-color 0.15s ease,
+			color 0.15s ease,
+			border-color 0.15s ease;
+	}
+
+	:global(.popup-copy-btn:hover) {
+		background: #f7f0e6; /* secondary-100 */
+		border-color: #e5d0b3; /* secondary-300 */
+		color: #014421; /* primary-500 */
 	}
 
 	:global(.popup-actions) {
@@ -495,70 +523,63 @@
 		flex-wrap: wrap;
 	}
 
-	/* Popup buttons */
 	:global(.popup-btn) {
 		display: inline-flex;
 		align-items: center;
+		justify-content: center;
 		gap: 0.375rem;
 		padding: 0.5rem 0.875rem;
-		font-size: 0.875rem;
-		font-weight: 500;
-		border-radius: 0.5rem;
+		font-size: 0.8125rem;
+		font-weight: 600;
+		border-radius: 9px;
 		text-decoration: none;
-		transition: all 0.2s;
+		transition:
+			background-color 0.15s ease,
+			color 0.15s ease,
+			border-color 0.15s ease,
+			transform 0.15s ease;
 		cursor: pointer;
 		border: 1px solid transparent;
 		line-height: 1;
+		white-space: nowrap;
 	}
 
 	:global(.popup-btn-primary) {
-		background-color: #3b82f6;
-		color: white;
-		border-color: #3b82f6;
+		background-color: #014421; /* primary-500, Forest Green */
+		color: #ffffff;
+		border-color: #014421;
+		flex: 1;
 	}
 
 	:global(.popup-btn-primary:hover) {
-		background-color: #2563eb;
-		border-color: #2563eb;
+		background-color: #013d1e; /* primary-600 */
+		border-color: #013d1e;
 		transform: translateY(-1px);
-		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 	}
 
 	:global(.popup-btn-secondary) {
-		background-color: #f3f4f6;
-		color: #374151;
-		border-color: #e5e7eb;
+		background-color: #ffffff;
+		color: #014421; /* primary-500 */
+		border-color: #c2dac9; /* primary-100 */
 	}
 
 	:global(.popup-btn-secondary:hover) {
-		background-color: #e5e7eb;
-		border-color: #d1d5db;
-		transform: translateY(-1px);
-	}
-
-	:global(.popup-btn-copy) {
-		background-color: white;
-		color: #6b7280;
-		border: 1px solid #e5e7eb;
-		padding: 0.375rem 0.75rem;
-		font-size: 0.75rem;
-	}
-
-	:global(.popup-btn-copy:hover) {
-		background-color: #f9fafb;
-		color: #374151;
-		border-color: #d1d5db;
+		background-color: #e6f0ea; /* primary-50 */
+		border-color: #9bc2a7; /* primary-200 */
 	}
 
 	:global(.popup-btn .popup-icon) {
 		color: currentColor;
+		flex-shrink: 0;
 	}
 
 	/* Mapbox control group buttons */
 	:global(.mapboxgl-ctrl-group) {
 		background: white;
 		border-radius: 0.5rem;
-		box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+		box-shadow:
+			0 1px 3px 0 rgba(0, 0, 0, 0.1),
+			0 1px 2px 0 rgba(0, 0, 0, 0.06);
 	}
 
 	:global(.mapboxgl-ctrl button) {
@@ -634,7 +655,10 @@
 		border-top: 2px solid #374151;
 		border-left: 2px solid #374151;
 		border-radius: 2px 0 0 0;
-		box-shadow: 16px 0 0 0 #374151, 0 16px 0 0 #374151, 16px 16px 0 0 #374151;
+		box-shadow:
+			16px 0 0 0 #374151,
+			0 16px 0 0 #374151,
+			16px 16px 0 0 #374151;
 	}
 
 	:global(.exit-fullscreen-icon::before) {
@@ -658,6 +682,9 @@
 		border-bottom: 2px solid #374151;
 		border-right: 2px solid #374151;
 		border-radius: 0 0 2px 0;
-		box-shadow: 8px 0 0 0 #374151, 0 8px 0 0 #374151, 8px 8px 0 0 #374151;
+		box-shadow:
+			8px 0 0 0 #374151,
+			0 8px 0 0 #374151,
+			8px 8px 0 0 #374151;
 	}
 </style>

@@ -3,27 +3,27 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { Card, Button } from 'flowbite-svelte';
 	import { RefreshOutline, ExclamationCircleOutline } from 'flowbite-svelte-icons';
-	
+
 	export let fallback: 'card' | 'page' | 'inline' = 'card';
 	export let showRetry = true;
 	export let retryLabel = 'Try Again';
 	export let onRetry: (() => void) | null = null;
-	
+
 	let hasError = false;
 	let errorMessage = '';
-	
+
 	function handleError(event: ErrorEvent) {
 		hasError = true;
 		errorMessage = event.message || 'An unexpected error occurred';
 		console.error('ErrorBoundary caught error:', event.error);
 	}
-	
+
 	function handleUnhandledRejection(event: PromiseRejectionEvent) {
 		hasError = true;
 		errorMessage = event.reason?.message || 'An unexpected error occurred';
 		console.error('ErrorBoundary caught promise rejection:', event.reason);
 	}
-	
+
 	function retry() {
 		hasError = false;
 		errorMessage = '';
@@ -33,12 +33,12 @@
 			window.location.reload();
 		}
 	}
-	
+
 	onMount(() => {
 		window.addEventListener('error', handleError);
 		window.addEventListener('unhandledrejection', handleUnhandledRejection);
 	});
-	
+
 	onDestroy(() => {
 		window.removeEventListener('error', handleError);
 		window.removeEventListener('unhandledrejection', handleUnhandledRejection);
@@ -77,9 +77,7 @@
 			<div class="py-8">
 				<ExclamationCircleOutline class="mx-auto mb-4 h-12 w-12 text-red-500" />
 				<h3 class="mb-2 text-lg font-semibold text-gray-900">Unable to Load Content</h3>
-				<p class="mb-4 text-gray-600">
-					We're having trouble loading this content right now.
-				</p>
+				<p class="mb-4 text-gray-600">We're having trouble loading this content right now.</p>
 				{#if showRetry}
 					<Button color="primary" size="sm" on:click={retry}>
 						<RefreshOutline class="mr-2 h-4 w-4" />

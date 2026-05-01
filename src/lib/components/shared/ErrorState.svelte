@@ -1,31 +1,37 @@
 <!-- src/lib/components/shared/ErrorState.svelte -->
 <script lang="ts">
 	import { Card, Button } from 'flowbite-svelte';
-	import { 
-		ExclamationCircleOutline, 
-		RefreshOutline, 
+	import {
+		ExclamationCircleOutline,
+		RefreshOutline,
 		CloseCircleOutline,
 		ServerOutline
 	} from 'flowbite-svelte-icons';
-	
+
 	export let error: Error | string | null = null;
 	export let variant: 'card' | 'inline' | 'page' = 'card';
 	export let title = 'Something went wrong';
 	export let showRetry = true;
 	export let retryLabel = 'Try again';
 	export let onRetry: (() => void) | null = null;
-	
+
 	// Determine error type and messaging
 	$: errorType = getErrorType(error);
 	$: ({ icon, message, suggestion } = getErrorDetails(errorType));
-	
-	function getErrorType(err: Error | string | null): 'network' | 'server' | 'not-found' | 'generic' {
+
+	function getErrorType(
+		err: Error | string | null
+	): 'network' | 'server' | 'not-found' | 'generic' {
 		if (!err) return 'generic';
-		
+
 		const errorString = typeof err === 'string' ? err : err.message;
 		const lowerError = errorString.toLowerCase();
-		
-		if (lowerError.includes('fetch') || lowerError.includes('network') || lowerError.includes('connection')) {
+
+		if (
+			lowerError.includes('fetch') ||
+			lowerError.includes('network') ||
+			lowerError.includes('connection')
+		) {
 			return 'network';
 		}
 		if (lowerError.includes('404') || lowerError.includes('not found')) {
@@ -36,7 +42,7 @@
 		}
 		return 'generic';
 	}
-	
+
 	function getErrorDetails(type: string) {
 		switch (type) {
 			case 'network':
@@ -49,13 +55,13 @@
 				return {
 					icon: ServerOutline,
 					message: 'Our servers are experiencing issues',
-					suggestion: 'We\'re working to fix this. Please try again in a few moments.'
+					suggestion: "We're working to fix this. Please try again in a few moments."
 				};
 			case 'not-found':
 				return {
 					icon: ExclamationCircleOutline,
 					message: 'Content not found',
-					suggestion: 'The content you\'re looking for might have been moved or deleted.'
+					suggestion: "The content you're looking for might have been moved or deleted."
 				};
 			default:
 				return {
@@ -65,7 +71,7 @@
 				};
 		}
 	}
-	
+
 	function handleRetry() {
 		if (onRetry) {
 			onRetry();
@@ -82,7 +88,7 @@
 			<h1 class="mb-4 text-2xl font-bold text-gray-900">{title}</h1>
 			<p class="mb-2 text-lg text-gray-700">{message}</p>
 			<p class="mb-8 text-gray-500">{suggestion}</p>
-			
+
 			{#if showRetry}
 				<div class="space-x-4">
 					<Button color="primary" on:click={handleRetry}>
@@ -94,7 +100,6 @@
 			{/if}
 		</div>
 	</div>
-
 {:else if variant === 'card'}
 	<Card class="text-center">
 		<div class="py-8">
@@ -102,7 +107,7 @@
 			<h3 class="mb-2 text-lg font-semibold text-gray-900">{title}</h3>
 			<p class="mb-2 text-gray-700">{message}</p>
 			<p class="mb-6 text-sm text-gray-500">{suggestion}</p>
-			
+
 			{#if showRetry}
 				<Button color="primary" size="sm" on:click={handleRetry}>
 					<RefreshOutline class="mr-2 h-4 w-4" />
@@ -111,7 +116,6 @@
 			{/if}
 		</div>
 	</Card>
-
 {:else}
 	<!-- Inline variant -->
 	<div class="rounded-lg border border-red-200 bg-red-50 p-4">

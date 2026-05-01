@@ -36,7 +36,7 @@ export function memoize<TArgs extends any[], TResult>(
 
 		// Calculate new value
 		const value = fn(...args);
-		
+
 		// Store in cache
 		cache.set(key, { value, timestamp: now });
 

@@ -6,7 +6,10 @@ export const prerender = true;
 const SITE = 'https://tinytribeadventures.com';
 
 function escapeXml(s: string) {
-	return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[c]!);
+	return s.replace(
+		/[&<>"']/g,
+		(c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[c]!
+	);
 }
 
 export async function GET() {

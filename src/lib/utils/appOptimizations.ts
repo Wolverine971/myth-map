@@ -33,7 +33,7 @@ function setupResourceHints() {
 		'https://api.mapbox.com'
 	];
 
-	prefetchDomains.forEach(domain => {
+	prefetchDomains.forEach((domain) => {
 		if (!document.querySelector(`link[href="${domain}"]`)) {
 			const link = document.createElement('link');
 			link.rel = 'dns-prefetch';
@@ -43,12 +43,9 @@ function setupResourceHints() {
 	});
 
 	// Preconnect to critical origins
-	const preconnectOrigins = [
-		'https://fonts.gstatic.com',
-		'https://api.mapbox.com'
-	];
+	const preconnectOrigins = ['https://fonts.gstatic.com', 'https://api.mapbox.com'];
 
-	preconnectOrigins.forEach(origin => {
+	preconnectOrigins.forEach((origin) => {
 		if (!document.querySelector(`link[href="${origin}"][rel="preconnect"]`)) {
 			const link = document.createElement('link');
 			link.rel = 'preconnect';
@@ -68,15 +65,19 @@ function optimizeThirdPartyScripts() {
 		}
 	];
 
-	thirdPartyScripts.forEach(script => {
+	thirdPartyScripts.forEach((script) => {
 		if (script.condition()) {
 			loadScriptAsync(script.src);
 		} else {
-			document.addEventListener('visibilitychange', () => {
-				if (script.condition()) {
-					loadScriptAsync(script.src);
-				}
-			}, { once: true });
+			document.addEventListener(
+				'visibilitychange',
+				() => {
+					if (script.condition()) {
+						loadScriptAsync(script.src);
+					}
+				},
+				{ once: true }
+			);
 		}
 	});
 }
@@ -99,7 +100,7 @@ function setupPerformanceMonitoring() {
 			const vitals = bundleAnalyzer.getWebVitals();
 			if (vitals) {
 				console.log('Web Vitals:', vitals);
-				
+
 				// Report to analytics if configured
 				bundleAnalyzer.reportToAnalytics();
 			}
@@ -122,7 +123,7 @@ function optimizeImageLoading() {
 	// Set up image intersection observer for eager loading of above-fold images
 	const imageObserver = new IntersectionObserver(
 		(entries) => {
-			entries.forEach(entry => {
+			entries.forEach((entry) => {
 				if (entry.isIntersecting) {
 					const img = entry.target as HTMLImageElement;
 					if (img.dataset.src && !img.src) {
@@ -141,7 +142,7 @@ function optimizeImageLoading() {
 
 	// Auto-observe images with data-src
 	const observeImages = () => {
-		document.querySelectorAll('img[data-src]').forEach(img => {
+		document.querySelectorAll('img[data-src]').forEach((img) => {
 			imageObserver.observe(img);
 		});
 	};
@@ -165,11 +166,12 @@ export function registerServiceWorker() {
 	if (!browser || !('serviceWorker' in navigator)) return;
 
 	window.addEventListener('load', () => {
-		navigator.serviceWorker.register('/sw.js')
-			.then(registration => {
+		navigator.serviceWorker
+			.register('/sw.js')
+			.then((registration) => {
 				console.log('SW registered: ', registration);
 			})
-			.catch(registrationError => {
+			.catch((registrationError) => {
 				console.log('SW registration failed: ', registrationError);
 			});
 	});
@@ -179,15 +181,15 @@ export function registerServiceWorker() {
 export function cleanupResources() {
 	// Clean up any observers or listeners
 	preloadManager.destroy();
-	
+
 	// Clear caches if memory is low
 	if ('memory' in performance) {
 		const memory = (performance as any).memory;
 		if (memory.usedJSHeapSize > memory.totalJSHeapSize * 0.8) {
 			// Clear component cache
 			if ('caches' in window) {
-				caches.keys().then(names => {
-					names.forEach(name => {
+				caches.keys().then((names) => {
+					names.forEach((name) => {
 						if (name.includes('component-cache')) {
 							caches.delete(name);
 						}

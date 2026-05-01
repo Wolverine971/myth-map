@@ -5,6 +5,39 @@
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<!--
+			Theme bootstrap — runs before first paint to avoid FOUC.
+			Reads localStorage for explicit theme preference, falls back to
+			cached effective theme, then OS preference.
+			Sunset-aware recompute runs after hydration in themeStore.
+		-->
+		<script>
+			(function () {
+				try {
+					var pref = localStorage.getItem('tta-theme');
+					var effective;
+					if (pref === 'light' || pref === 'dark') {
+						effective = pref;
+					} else {
+						var cached = localStorage.getItem('tta-effective-theme');
+						if (cached === 'light' || cached === 'dark') {
+							effective = cached;
+						} else {
+							effective = window.matchMedia('(prefers-color-scheme: dark)').matches
+								? 'dark'
+								: 'light';
+						}
+					}
+					if (effective === 'dark') {
+						document.documentElement.classList.add('dark');
+					}
+				} catch (e) {
+					/* localStorage unavailable — let CSS default win */
+				}
+			})();
+		</script>
+
 		%sveltekit.head%
 	</head>
 
