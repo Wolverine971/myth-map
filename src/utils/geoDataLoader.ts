@@ -46,6 +46,23 @@ export async function loadState(stateAbbr: string) {
 		return [];
 	}
 }
+
+/**
+ * Load the state outline polygon (FeatureCollection with one Feature) bundled
+ * statically under src/geographies/states/boundaries/. Replaces the previous
+ * runtime fetch against tigerweb.geo.census.gov.
+ */
+export async function loadStateBoundary(stateAbbr: string) {
+	try {
+		const mod = await import(
+			`../geographies/states/boundaries/${stateAbbr.toLowerCase()}.json`
+		);
+		return mod.default;
+	} catch (error) {
+		console.error(`Failed to load boundary for state ${stateAbbr}:`, error);
+		return null;
+	}
+}
 export function findState(name: string) {
 	const lowercaseName = name.toLowerCase();
 	return states.find(
@@ -63,55 +80,8 @@ export function getStateName(stateAbbreviation) {
 }
 
 export const states = [
-	// { name: 'Alabama', abr: 'AL' },
-	// { name: 'Alaska', abr: 'AK' },
-	// { name: 'Arizona', abr: 'AZ' },
-	// { name: 'Arkansas', abr: 'AR' },
-	// { name: 'California', abr: 'CA' },
-	// { name: 'Colorado', abr: 'CO' },
-	// { name: 'Connecticut', abr: 'CT' },
-	// { name: 'Delaware', abr: 'DE' },
-	// { name: 'Florida', abr: 'FL' },
-	// { name: 'Georgia', abr: 'GA' },
-	// { name: 'Hawaii', abr: 'HI' },
-	// { name: 'Idaho', abr: 'ID' },
-	// { name: 'Illinois', abr: 'IL' },
-	// { name: 'Indiana', abr: 'IN' },
-	// { name: 'Iowa', abr: 'IA' },
-	// { name: 'Kansas', abr: 'KS' },
-	// { name: 'Kentucky', abr: 'KY' },
-	// { name: 'Louisiana', abr: 'LA' },
-	// { name: 'Maine', abr: 'ME' },
+	{ name: 'District of Columbia', abr: 'DC' },
+	{ name: 'Delaware', abr: 'DE' },
 	{ name: 'Maryland', abr: 'MD' },
-	// { name: 'Massachusetts', abr: 'MA' },
-	// { name: 'Michigan', abr: 'MI' },
-	// { name: 'Minnesota', abr: 'MN' },
-	// { name: 'Mississippi', abr: 'MS' },
-	// { name: 'Missouri', abr: 'MO' },
-	// { name: 'Montana', abr: 'MT' },
-	// { name: 'Nebraska', abr: 'NE' },
-	// { name: 'Nevada', abr: 'NV' },
-	// { name: 'New Hampshire', abr: 'NH' },
-	// { name: 'New Jersey', abr: 'NJ' },
-	// { name: 'New Mexico', abr: 'NM' },
-	// { name: 'New York', abr: 'NY' },
-	// { name: 'North Carolina', abr: 'NC' },
-	// { name: 'North Dakota', abr: 'ND' },
-	// { name: 'Ohio', abr: 'OH' },
-	// { name: 'Oklahoma', abr: 'OK' },
-	// { name: 'Oregon', abr: 'OR' },
-	// { name: 'Pennsylvania', abr: 'PA' },
-	// { name: 'Rhode Island', abr: 'RI' },
-	// { name: 'South Carolina', abr: 'SC' },
-	// { name: 'South Dakota', abr: 'SD' },
-	// { name: 'Tennessee', abr: 'TN' },
-	// { name: 'Texas', abr: 'TX' },
-	// { name: 'Utah', abr: 'UT' },
-	// { name: 'Vermont', abr: 'VT' },
-	// { name: 'Virginia', abr: 'VA' },
-	// { name: 'Washington', abr: 'WA' },
-	// { name: 'West Virginia', abr: 'WV' },
-	// { name: 'Wisconsin', abr: 'WI' },
-	// { name: 'Wyoming', abr: 'WY' },
-	{ name: 'District of Columbia', abr: 'DC' }
+	{ name: 'Virginia', abr: 'VA' }
 ];
