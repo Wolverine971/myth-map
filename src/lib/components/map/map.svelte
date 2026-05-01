@@ -17,13 +17,13 @@
 	import { notifications } from '../shared/notifications';
 	import { attachLazyIconLoader } from './map-icons';
 	import {
-		clusterLayer,
-		clusterCountLayer,
+		buildClusterLayer,
+		buildClusterCountLayer,
 		focusRingLayer,
 		unclusteredPointLayer,
-		stateBoundaryLayer,
-		selectedCityFillLayer,
-		selectedCityOutlineLayer,
+		buildStateBoundaryLayer,
+		buildSelectedCityFillLayer,
+		buildSelectedCityOutlineLayer,
 		SHOWN_LOCATIONS_SOURCE_ID
 	} from './map-layers';
 	import { buildFeatureCollection } from './map-features';
@@ -110,8 +110,13 @@
 			style: currentStyleUrl,
 			center: [-76.7818, 39.2141],
 			zoom: 7,
-			minZoom: 3,
+			minZoom: 5,
 			maxZoom: 18,
+			// DC / MD / DE / VA region — keep panning anchored to the service area.
+			maxBounds: [
+				[-83.5, 35.8],
+				[-74.5, 41.2]
+			],
 			accessToken: PUBLIC_MAP_KEY,
 			renderWorldCopies: false,
 			preserveDrawingBuffer: false,
@@ -180,15 +185,16 @@
 				type: 'geojson',
 				data: buildFeatureCollection(initialData),
 				cluster: true,
-				clusterMaxZoom: 16,
-				clusterRadius: 40,
-				clusterProperties: {
-					point_count_abbreviated: ['+', ['get', 'point_count']]
-				}
+				// Stop clustering at z14 so individual pins reveal at neighborhood/street zoom.
+				clusterMaxZoom: 14,
+				clusterRadius: 40
 			});
 		}
-		if (!map.getLayer(clusterLayer.id)) map.addLayer(clusterLayer);
-		if (!map.getLayer(clusterCountLayer.id)) map.addLayer(clusterCountLayer);
+		const theme = get(effectiveTheme);
+		const cluster = buildClusterLayer(theme);
+		const clusterCount = buildClusterCountLayer(theme);
+		if (!map.getLayer(cluster.id)) map.addLayer(cluster);
+		if (!map.getLayer(clusterCount.id)) map.addLayer(clusterCount);
 		if (!map.getLayer(focusRingLayer.id)) map.addLayer(focusRingLayer);
 		if (!map.getLayer(unclusteredPointLayer.id)) map.addLayer(unclusteredPointLayer);
 	}
@@ -242,7 +248,7 @@
 	function updateStateLayer(stateGeoJSON: GeoJSON.GeoJSON) {
 		if (!map.getSource('state-boundary')) {
 			map.addSource('state-boundary', { type: 'geojson', data: stateGeoJSON });
-			map.addLayer(stateBoundaryLayer);
+			map.addLayer(buildStateBoundaryLayer(get(effectiveTheme)));
 		} else {
 			(map.getSource('state-boundary') as GeoJSONSource).setData(stateGeoJSON);
 		}
@@ -326,9 +332,10 @@
 
 	function updateCityLayer(cityFeature: GeoJSON.Feature) {
 		if (!map.getSource('selected-city')) {
+			const theme = get(effectiveTheme);
 			map.addSource('selected-city', { type: 'geojson', data: cityFeature });
-			map.addLayer(selectedCityFillLayer);
-			map.addLayer(selectedCityOutlineLayer);
+			map.addLayer(buildSelectedCityFillLayer(theme));
+			map.addLayer(buildSelectedCityOutlineLayer(theme));
 		} else {
 			(map.getSource('selected-city') as GeoJSONSource).setData(cityFeature);
 		}
@@ -395,18 +402,14 @@
 		if (!features.length) return;
 		const feature = features[0];
 		const clusterId = feature.properties?.cluster_id as number | undefined;
-		const pointCount = (feature.properties?.point_count as number) ?? 0;
 		if (clusterId == null) return;
 		const clusterSource = map.getSource(SHOWN_LOCATIONS_SOURCE_ID) as GeoJSONSource;
 		const center = (feature.geometry as GeoJSON.Point).coordinates as [number, number];
 
 		clusterSource.getClusterExpansionZoom(clusterId, (err, zoom) => {
 			if (err || zoom == null) return;
-			let targetZoom = zoom;
-			if (pointCount > 50) targetZoom = Math.min(zoom + 2, 16);
-			else if (pointCount > 20) targetZoom = Math.min(zoom + 1.5, 16);
-			else if (pointCount > 10) targetZoom = Math.min(zoom + 1, 16);
-
+			// Nudge half a zoom past the break point so the cluster visibly cracks open.
+			const targetZoom = Math.min(zoom + 0.5, 18);
 			map.flyTo({ center, zoom: targetZoom, duration: 500, curve: 1, essential: true });
 		});
 	}
