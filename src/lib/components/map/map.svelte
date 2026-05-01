@@ -1,11 +1,10 @@
 <!-- src/lib/components/map/map.svelte -->
 <script lang="ts">
-	import { setContext, onMount, onDestroy } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { PUBLIC_MAP_KEY } from '$env/static/public';
 	import { browser } from '$app/environment';
 	import './mapbox.css';
 	import { getLocationIcon } from '../../../utils/locationPhotos.js';
-	import { getCurrentLocation } from '../../../utils/userLocation';
 	import { loadCityGeoJSON } from '../../../utils/geoDataLoader';
 	import type { Map, Popup, Marker, LngLatBounds } from 'mapbox-gl';
 	import { notifications } from '../shared/notifications';
@@ -16,58 +15,28 @@
 	export let selectedState: { name: string; abr: string } | null = null;
 	export let selectedCity: string | null = null;
 
-	let _selectedState;
-	let _selectedCity;
+	let prevStateAbr: string | null = null;
+	let prevCity: string | null = null;
 
 	let mapContainer: HTMLElement;
 	let map: Map;
 	let popup: Popup;
 	let currentLocationMarker: Marker;
 	let mapboxgl: typeof import('mapbox-gl');
-	const audio = new Audio('/sounds/tic-toc-click.wav');
+	let audio: HTMLAudioElement;
 
-	const key = Symbol();
+	let mapReady = false;
 
-	let mapInitialized = false;
-
-	$: if (map && mapboxgl && mapInitialized) {
-		if (shownLocations) updateLocations(shownLocations);
-		if (selectedState) updateStateFilter(selectedState);
-		if (selectedState && selectedCity) updateCityFilter(selectedState, selectedCity);
-		if (selectedState && !selectedCity) unselectCityFilter();
-	}
-
-	$: if (currentLocation && mapInitialized) showCurrentLocation();
-
-	const showCurrentLocation = async () => {
-		if (!currentLocation?.lat && browser) {
-			await getCurrentLocation();
-		}
-
-		if (!map || !mapboxgl?.Marker) return;
-
-		if (!currentLocationMarker) {
-			const el = createMarkerElement();
-			currentLocationMarker = new mapboxgl.Marker(el)
-				.setLngLat(currentLocation)
-				.setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`
-					<div class="popup-content">
-						<h3 class="popup-title">📍 Your Location</h3>
-						<p class="popup-address">You are here</p>
-					</div>
-				`))
-				.addTo(map);
-		} else {
-			currentLocationMarker.setLngLat(currentLocation);
-		}
-	};
+	$: if (mapReady) syncShownLocations(shownLocations);
+	$: if (mapReady) syncStateFilter(selectedState);
+	$: if (mapReady) syncCityFilter(selectedState, selectedCity);
+	$: if (mapReady && currentLocation) updateCurrentLocation(currentLocation);
 
 	onMount(async () => {
-		if (browser) {
-			mapboxgl = await import('mapbox-gl');
-			await initMap();
-			mapInitialized = true;
-		}
+		if (!browser) return;
+		mapboxgl = await import('mapbox-gl');
+		audio = new Audio('/sounds/tic-toc-click.wav');
+		await initMap();
 	});
 
 	onDestroy(() => {
@@ -88,32 +57,25 @@
 			renderWorldCopies: false,
 			preserveDrawingBuffer: false,
 			antialias: false,
-			fadeDuration: 300 // Smooth fade-in for tiles
+			fadeDuration: 300
 		});
 
 		map.on('load', async () => {
 			try {
 				popup = new mapboxgl.Popup({ offset: [0, 0], className: 'popups' });
 				await initLayers();
-				updateMapState();
 				addMapControls();
 				addMapEventListeners();
 				optimizeForMobile();
+				// Apply any filters/state queued before load completed
+				if (selectedState) await syncStateFilter(selectedState);
+				if (selectedState && selectedCity) await syncCityFilter(selectedState, selectedCity);
+				if (currentLocation) updateCurrentLocation(currentLocation);
+				mapReady = true;
 			} catch (error) {
 				console.error('Error initializing map:', error);
 			}
 		});
-	}
-
-	function updateMapState() {
-		if (shownLocations) updateLocations(shownLocations);
-		if (currentLocation) updateCurrentLocation(currentLocation);
-		
-		// Use setTimeout to ensure map is fully loaded before applying filters
-		setTimeout(() => {
-			if (selectedState) updateStateFilter(selectedState);
-			if (selectedState && selectedCity) updateCityFilter(selectedState, selectedCity);
-		}, 100);
 	}
 
 	async function initLayers() {
@@ -171,15 +133,15 @@
 
 	function addMapSources() {
 		if (!map.getSource('shownLocations')) {
+			const initialData = shownLocations?.length ? shownLocations : locations;
 			map.addSource('shownLocations', {
 				type: 'geojson',
-				data: getFeatureCollection(locations),
+				data: getFeatureCollection(initialData),
 				cluster: true,
-				clusterMaxZoom: 16, // Increased from 14 to allow more zoom before unclustering
-				clusterRadius: 40, // Reduced from 50 for tighter clusters
+				clusterMaxZoom: 16,
+				clusterRadius: 40,
 				clusterProperties: {
-					// Add cluster properties for better control
-					point_count_abbreviated: ["+", ["get", "point_count"]]
+					point_count_abbreviated: ['+', ['get', 'point_count']]
 				}
 			});
 		}
@@ -254,13 +216,28 @@
 		layers.forEach((layer) => map.addLayer({ ...layer, source: 'shownLocations' }));
 	}
 
-	async function updateStateFilter(stateObj: { name: string; abr: string }) {
-		const { abr: stateAbbr, name: stateName } = stateObj;
-		if (!stateAbbr || !map) return;
+	function syncShownLocations(list: any[]) {
+		if (!map?.getSource('shownLocations')) return;
+		(map.getSource('shownLocations') as mapboxgl.GeoJSONSource).setData(getFeatureCollection(list ?? []));
+	}
 
-		if (_selectedState && _selectedState.abr === stateAbbr) return;
+	async function syncStateFilter(stateObj: { name: string; abr: string } | null) {
+		if (!map) return;
 
-		_selectedState = stateObj;
+		if (!stateObj) {
+			if (prevStateAbr) {
+				removeStateLayers();
+				removeSelectedCityLayers();
+				prevStateAbr = null;
+				prevCity = null;
+			}
+			return;
+		}
+
+		if (prevStateAbr === stateObj.abr) return;
+		prevStateAbr = stateObj.abr;
+
+		const { name: stateName } = stateObj;
 
 		try {
 			const response = await fetch(
@@ -273,20 +250,19 @@
 
 			const stateGeoJSON = await response.json();
 
-			if (!stateGeoJSON.features || stateGeoJSON.features.length === 0) {
+			if (!stateGeoJSON.features?.length) {
 				throw new Error('No features found for state');
 			}
 
 			updateStateLayer(stateGeoJSON);
-			if (!selectedCity) removeSelectedCityLayers();
-
-			if (selectedCity) return;
-
-			fitMapToBounds(stateGeoJSON);
-			_selectedState = stateObj;
+			if (!selectedCity) {
+				removeSelectedCityLayers();
+				fitMapToBounds(stateGeoJSON);
+			}
 		} catch (error) {
 			console.error('Error loading state boundary:', error);
 			notifications.warning(`Failed to load boundary for ${stateName}`);
+			prevStateAbr = null; // allow retry
 		}
 	}
 
@@ -310,10 +286,17 @@
 	}
 
 	function removeSelectedCityLayers() {
+		if (!map) return;
 		['selected-city-layer', 'selected-city-outline'].forEach((layerId) => {
 			if (map.getLayer(layerId)) map.removeLayer(layerId);
 		});
 		if (map.getSource('selected-city')) map.removeSource('selected-city');
+	}
+
+	function removeStateLayers() {
+		if (!map) return;
+		if (map.getLayer('state-boundary-layer')) map.removeLayer('state-boundary-layer');
+		if (map.getSource('state-boundary')) map.removeSource('state-boundary');
 	}
 
 	function fitMapToBounds(geoJSON) {
@@ -339,47 +322,42 @@
 		}
 	}
 
-	async function updateCityFilter(stateName: { abr: string; name: string }, cityName: string) {
-		if (!map || !cityName) return;
+	async function syncCityFilter(
+		stateObj: { abr: string; name: string } | null,
+		cityName: string | null
+	) {
+		if (!map) return;
 
-		if (_selectedCity && _selectedCity === cityName) return;
+		if (!cityName || !stateObj) {
+			if (prevCity) {
+				removeSelectedCityLayers();
+				prevCity = null;
+			}
+			return;
+		}
+
+		if (prevCity === cityName) return;
+		prevCity = cityName;
 
 		try {
 			const cityGeoJSON = await loadCityGeoJSON(
-				stateName.abr,
+				stateObj.abr,
 				cityName.toLowerCase().replace(/\s+/g, '-')
 			);
 
-			if (!cityGeoJSON) {
-				throw new Error('No GeoJSON data found for city');
-			}
+			if (!cityGeoJSON) throw new Error('No GeoJSON data found for city');
 
 			const cityFeature =
 				cityGeoJSON.type === 'FeatureCollection' ? cityGeoJSON.features[0] : cityGeoJSON;
 
-			if (!cityFeature) {
-				throw new Error('No valid city feature found');
-			}
+			if (!cityFeature) throw new Error('No valid city feature found');
 
 			updateCityLayer(cityFeature);
 			zoomToLocation(cityFeature);
-			_selectedCity = cityName;
 		} catch (error) {
 			console.error('Error loading city GeoJSON:', error);
 			notifications.warning(`Failed to load boundary for ${cityName}`);
-			// Don't set _selectedCity if there was an error
-		}
-	}
-
-	async function unselectCityFilter() {
-		if (!map) return;
-
-		_selectedCity = null;
-
-		try {
-			removeSelectedCityLayers();
-		} catch (error) {
-			console.error('Error removing selected city GeoJSON:', error);
+			prevCity = null; // allow retry
 		}
 	}
 
@@ -426,46 +404,39 @@
 		});
 	}
 
-	function updateLocations(locations: any[]) {
-		if (!map || !map.getSource('shownLocations')) return;
+	function updateCurrentLocation(location: { lat: number; lng: number } | null) {
+		if (!location || !map || !mapboxgl) return;
 
-		const source = map.getSource('shownLocations') as mapboxgl.GeoJSONSource;
-		if (source) {
-			source.setData(getFeatureCollection(locations));
+		const { lat, lng } = location;
+		if (
+			lat == null ||
+			lng == null ||
+			isNaN(lat) ||
+			isNaN(lng) ||
+			Math.abs(lat) > 90 ||
+			Math.abs(lng) > 180
+		) {
+			console.warn('Invalid current-location coordinates:', location);
+			return;
+		}
+
+		if (!currentLocationMarker) {
+			const el = createMarkerElement();
+			currentLocationMarker = new mapboxgl.Marker(el)
+				.setLngLat([lng, lat])
+				.setPopup(
+					new mapboxgl.Popup({ offset: 25 }).setHTML(`
+						<div class="popup-content">
+							<h3 class="popup-title">📍 Your Location</h3>
+							<p class="popup-address">You are here</p>
+						</div>
+					`)
+				)
+				.addTo(map);
+		} else {
+			currentLocationMarker.setLngLat([lng, lat]);
 		}
 	}
-
-	async function updateCurrentLocation(location: { lat: number; lng: number }) {
-	if (!location || !map || !mapboxgl) {
-		if (!location && browser) {
-			await getCurrentLocation();
-		}
-		return;
-	}
-
-	// Validate coordinates
-	if (!location.lat || !location.lng || 
-		isNaN(location.lat) || isNaN(location.lng) ||
-		Math.abs(location.lat) > 90 || Math.abs(location.lng) > 180) {
-		console.error('Invalid coordinates:', location);
-		return;
-	}
-
-	if (!currentLocationMarker) {
-		const el = createMarkerElement();
-		currentLocationMarker = new mapboxgl.Marker(el)
-			.setLngLat([location.lng, location.lat])
-			.setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`
-				<div class="popup-content">
-					<h3 class="popup-title">📍 Your Location</h3>
-					<p class="popup-address">You are here</p>
-				</div>
-			`))
-			.addTo(map);
-	} else {
-		currentLocationMarker.setLngLat([location.lng, location.lat]);
-	}
-}
 
 	function createMarkerElement() {
 		const el = document.createElement('div');
@@ -789,15 +760,13 @@
 
 	function optimizeForMobile() {
 		if (window.innerWidth < 768) {
+			// Prevent the map from hijacking the page scroll, but keep dragging/touch panning enabled.
 			map.scrollZoom.disable();
 			map.dragRotate.disable();
 			map.touchZoomRotate.disableRotation();
-			map.dragPan.disable();
-			map.addControl(new mapboxgl.NavigationControl({ showCompass: false }));
 		}
 	}
 
-	setContext(key, { getMap: () => map });
 </script>
 
 <div class="map-wrap">

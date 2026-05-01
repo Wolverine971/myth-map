@@ -12,3 +12,7 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 schema.ts
 supabase
+
+# build-locations.ts intermediates (final output is committed)
+scripts/.parsed.json
+scripts/.geocode-cache.json

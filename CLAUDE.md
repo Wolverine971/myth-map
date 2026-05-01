@@ -4,92 +4,99 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Tiny Tribe Adventures (tinytribeadventures.com) is a SvelteKit application that helps families discover adventure locations across DC, Maryland, Delaware, and Virginia. It features an interactive Mapbox-powered map, user accounts, itinerary planning, and location management.
+Tiny Tribe Adventures (tinytribeadventures.com) is a SvelteKit application that helps families discover adventure locations across DC, Maryland, Delaware, and Virginia. It features an interactive Mapbox-powered map, Supabase-backed user accounts, itinerary planning, and admin location management.
 
 ## Key Commands
 
-### Development
 ```bash
-# Start development server
-pnpm dev
-
-# Build for production
-pnpm build
-
-# Preview production build
-pnpm preview
-
-# Lint code
-pnpm lint
-
-# Format code with Prettier
-pnpm format
-
-# Type checking
-pnpm check
+pnpm dev                # Vite dev server
+pnpm build              # Production build (Vercel adapter)
+pnpm preview            # Preview production build
+pnpm check              # svelte-kit sync && svelte-check (type check)
+pnpm check:watch        # Type check in watch mode
+pnpm lint               # prettier --check . && eslint .
+pnpm format             # Prettier write
+pnpm label-paths        # Run labelFilePaths.ts to add/refresh `// path/to/file` headers in source files
 ```
 
-## Architecture Overview
+There is no test framework configured. Package manager is **pnpm** (>=7.13), Node **>=18** (deploy target Node 20).
+
+### Regenerating Supabase types
+
+The Database type is imported from `src/schema.ts` (see `src/app.d.ts`). To regenerate:
+
+```bash
+npx supabase gen types typescript --project-id "ivskdkbujlthefzqdkdl" --schema public > src/schema.ts
+```
+
+Note: `src/schema.ts` is gitignored / generated; do not hand-edit. The previous CLAUDE.md referenced `src/DatabaseDefinitions.ts` — that file does not exist; use `src/schema.ts`.
+
+## Architecture
 
 ### Tech Stack
-- **Frontend**: SvelteKit 2.5.26, Svelte 4.2.7, TypeScript
-- **Styling**: Tailwind CSS 3.4.4, Flowbite Svelte components
-- **Database**: Supabase (PostgreSQL with TypeScript types)
-- **Maps**: Mapbox GL JS, Mapbox SDK for geocoding
-- **Deployment**: Vercel (Node.js 20.x runtime)
+- **SvelteKit 2 + Svelte 4 + TypeScript**, Vite 5
+- **Tailwind 3** + Flowbite Svelte + lucide-svelte
+- **Supabase** (`@supabase/ssr` for server, `@supabase/supabase-js` for browser) for auth + Postgres
+- **Mapbox GL JS** + `@mapbox/mapbox-sdk` for the interactive map and geocoding
+- **mdsvex** for `.svx` / `.md` blog content
+- **Vercel adapter** — runtime `nodejs20.x`, region `iad1`, 1024 MB, 10s max duration (configured in `svelte.config.js`)
 
-### Key Directories
-- `src/routes/` - SvelteKit pages and API endpoints
-- `src/lib/` - Shared components and utilities
-- `src/geographies/` - JSON files containing location data for cities
-- `src/blog/` - Blog content in Markdown/MDsveX format
-- `supabase/` - Database types and configuration
-- `static/` - Images, icons, and static assets
+### Path aliases (svelte.config.js)
+- `$components` → `src/lib/components`
+- `$ui` → `src/lib/ui`
+- `$utils` → `src/lib/utils`
+- Standard SvelteKit `$lib`, `$app/*`, `$env/*` are also available.
 
-### Important Patterns
+### Auth flow (`src/hooks.server.ts`)
+Two handles run via `sequence(supabase, authGuard)`:
+1. `supabase` — creates a per-request server client, populates `event.locals.supabase`, `getUser`, `safeGetSession`. `safeGetSession` validates the JWT via `getUser()` (do not trust `getSession()` alone).
+2. `authGuard` — redirects unauthenticated users away from `/private/**` to `/auth`, and authenticated users away from `/auth` to `/private`.
 
-1. **Supabase Integration**: The app uses Supabase for auth and database. Type-safe database queries are made using generated types from `src/DatabaseDefinitions.ts`.
+`event.locals` types live in `src/app.d.ts` (`App.Locals`). The browser-side singleton lives in `src/lib/supabaseClient.ts`. Prefer `event.locals.supabase` in `+page.server.ts` / `+layout.server.ts` so cookies flow correctly.
 
-2. **Geographic Data**: Location data is stored in JSON files under `src/geographies/`. Each city has its own file with standardized structure.
+### Data layer
+- Server `+page.server.ts` / `+layout.server.ts` files load locations, tags, and `location_tags` from Supabase.
+- `src/lib/stores/dataManager.ts` is a singleton that mirrors that data into `localStorage` via `cacheStore.ts` (`CacheKeys`, `CacheTTL`). It exposes derived stores for `locations`, `tags`, `locationTags`, plus `cityDataCache` (per-state city lists, lazy-imported from `src/geographies/cities/<state>/index.json`) and `searchCacheManager`.
+- When mutating location/tag data, call `dataManager.invalidateLocations()` (or appropriate cache key) so the next load refetches.
 
-3. **Map Icons**: Custom SVG icons for different location types are in `static/images/icons/`. The icon mapping is handled in components.
+### Geographic data
+- `src/geographies/cities/<state>/<city>.json` and `src/geographies/states/*` hold GeoJSON for boundaries.
+- `geoJsonPlugin.js` is a Vite transform that **decimates GeoJSON polygon rings to every 10th coordinate at build/transform time** for any imported `.json`. This is destructive simplification — if you need full-fidelity coordinates for a JSON import, fetch it at runtime instead of importing it.
+- `vite-plugin-generate-city-index.js` + `generateCityIndex.js` exist to (re)build city `index.json` files. The plugin is currently commented out in `vite.config.ts`; run `node generateCityIndex.js` manually if you add cities.
 
-4. **Theme Colors**:
-   - Primary: Forest Green (#014421)
-   - Secondary: Sandstone (#D2B48C)
-   - Accent: Sky Blue (#87CEEB)
-   - Tertiary: Rustic Orange (#CD5700)
+### Build config notes (`vite.config.ts`)
+- `assetsInlineLimit: 0` — assets stay as separate files (matters for icon SVGs).
+- Manual chunk: `vendor-ui` bundles `flowbite-svelte` + `flowbite-svelte-icons`.
+- `@mapbox/mapbox-sdk` is excluded from `optimizeDeps` and should be loaded on demand.
+- Sourcemaps are enabled in production builds.
 
-5. **Routes Structure**:
-   - `/admin` - Admin panel for location management
-   - `/account` - User account management
-   - `/itineraries` - Trip planning features
-   - `/locations` - Location browsing and details
-   - `/map` - Main interactive map interface
+### Routes overview
+- `/` — landing
+- `/map` — main interactive Mapbox view
+- `/locations`, `/locations/add`, `/locations/states`, `/locations/zipcodes` — browse/add
+- `/itineraries`, `/trips` — trip planning (uses `svelte-dnd-action`)
+- `/admin`, `/admin/users` — admin tools
+- `/account`, `/login`, `/register` — auth/account
+- `/blog` — mdsvex content (`src/blog/`)
+- `/api/comments`, `/api/send-calendar-invites`, `/api/send-invites` — server endpoints (Google APIs via `googleapis` lib)
+- `/sitemap.xml` — dynamic sitemap; `prerender.entries` in `svelte.config.js` includes `'*'`, `/blog`, `/locations`
 
-### Development Guidelines
+### Theme colors
+- Primary Forest Green `#014421`
+- Secondary Sandstone `#D2B48C`
+- Accent Sky Blue `#87CEEB`
+- Tertiary Rustic Orange `#CD5700`
 
-1. **Component Creation**: Follow existing Svelte component patterns. Components should be TypeScript-enabled and use proper prop typing.
+### Required env vars
+- `PUBLIC_SUPABASE_URL`
+- `PUBLIC_SUPABASE_ANON_KEY`
 
-2. **Database Queries**: Always use the generated Supabase types for type safety. Check `src/DatabaseDefinitions.ts` for available tables and types.
+(Public prefix is `PUBLIC_` per `svelte.config.js`. Server-only Google credentials are needed for the calendar/invite endpoints.)
 
-3. **Styling**: Use Tailwind CSS utilities. Custom styles should follow the established color theme.
+## Conventions
 
-4. **Geographic Data**: When adding new locations, follow the existing JSON structure in `src/geographies/`.
-
-5. **Environment Variables**: Required variables are:
-   - `PUBLIC_SUPABASE_URL`
-   - `PUBLIC_SUPABASE_ANON_KEY`
-
-### Common Tasks
-
-- **Adding a new location type**: Update icon mappings and ensure corresponding SVG exists in `static/images/icons/`
-- **Modifying database schema**: Changes should be reflected in Supabase types
-- **Adding new pages**: Create in `src/routes/` following SvelteKit conventions
-- **Updating geographic data**: Modify JSON files in `src/geographies/`
-
-### Notes
-- No test framework is currently configured
-- The project uses pnpm as the package manager
-- Vite is configured with custom plugins for processing GeoJSON data
-- The app is optimized for mobile-first responsive design
+- Source files start with a `// path/to/file` header comment, maintained by `pnpm label-paths`. Re-run after large moves/renames.
+- Prefer `event.locals.supabase` in `*.server.ts` files over the browser singleton.
+- Always use generated types from `src/schema.ts` for Supabase queries.
+- Mobile-first responsive design — check small breakpoints first.
+- Map icons live in `static/images/icons/`; the location-type → icon mapping is in components, not a central registry — search before adding a new type.

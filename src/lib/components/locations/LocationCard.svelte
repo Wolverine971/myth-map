@@ -1,45 +1,32 @@
 <!-- src/lib/components/locations/LocationCard.svelte -->
 <script lang="ts">
-	import { Card, Button, Dropdown, DropdownItem } from 'flowbite-svelte';
-	import { ChevronDownOutline, ChevronRightOutline } from 'flowbite-svelte-icons';
+	import { Card, Button } from 'flowbite-svelte';
+	import { ChevronRightOutline } from 'flowbite-svelte-icons';
 	import SimpleImage from '$lib/components/shared/SimpleImage.svelte';
 	import { browser } from '$app/environment';
 	import { getLocationIcon } from '../../../utils/locationPhotos';
 	import { currentLocation } from '$lib/stores/locationStore';
 	import { deserialize } from '$app/forms';
 	import { getCurrentLocation } from '../../../utils/userLocation';
-	import { currentItinerary } from '$lib/stores/itineraryStore';
-	import type { SizeType } from 'flowbite-svelte/dist/types';
-	import type { Location } from '$lib/types';
 
 	export let name: string;
 	export let address: string;
 	export let website: string;
 	export let tags: Array<{ tags: { name: string } }>;
 	export let coords: { lat: number; lng: number };
-	export let size: SizeType = 'md';
 	export let contentLocation: any;
-	export let user: any;
-	export let innerWidth: number;
+	export let innerWidth: number = 0;
 
-	let location: Location = contentLocation.location;
 	let duration: number | null = null;
 	let distance: number | null = null;
 	let distanceLoading = false;
 	let distanceError = false;
 	let userLocation: { lat: number; lng: number } | null = null;
-	let isInItinerary = false;
 
-	// Fix address parsing to handle undefined/null cases
 	$: addressParts = address ? address.split(',') : [];
-	$: addressPart1 = addressParts[0] || '';
 	$: addressPart2Joined = addressParts.length > 1 ? addressParts.slice(1).join(',').trim() : '';
 
-	// Subscribe to stores
 	currentLocation.subscribe((value) => (userLocation = value));
-	currentItinerary.subscribe((value) => {
-		isInItinerary = value?.items?.some((item) => item.location.id === location.id) ?? false;
-	});
 
 	async function getHowFarAwayIsLocation() {
 		if (distanceLoading || !browser) return;
@@ -96,37 +83,6 @@
 		}
 	}
 
-	function addToItinerary() {
-		if (!location || !user) return;
-
-		try {
-			const newLocation: Location = {
-				id: location.id,
-				name,
-				latitude: coords.lat,
-				longitude: coords.lng,
-				address: location.address,
-				description: location.description
-			};
-
-			currentItinerary.addItem({
-				location: newLocation,
-				itineraryId: $currentItinerary?.id,
-				name: user?.email ?? '',
-				userId: user?.id
-			});
-		} catch (error) {
-			console.error('Error adding to itinerary:', error);
-		}
-	}
-
-	// Safely generate the details URL
-	$: detailsUrl =
-		location?.state && location?.city && name
-			? `/locations/states/${location.state}/${location.city.replace(/\s+/g, '-')}/${name.replace(/\s+/g, '-')}`
-			: '#';
-
-	// Safely truncate name
 	$: displayName =
 		name && name.length > 40 ? name.slice(0, 40) + '...' : name || 'Unknown Location';
 
@@ -200,25 +156,15 @@
 
 		<!-- Action buttons -->
 		<div class="mt-auto flex flex-col gap-2 pt-2">
-			<a href={detailsUrl} class="w-full">
-				<Button
-					color="primary"
-					size="xs"
-					class="w-full justify-between transition-transform hover:scale-105 active:scale-95"
-				>
-					<span>View Details</span>
-					<ChevronRightOutline class="ml-2 h-3 w-3 transition-transform group-hover:translate-x-1" />
-				</Button>
-			</a>
-
 			{#if website}
 				<a href={website} target="_blank" rel="noopener noreferrer" class="w-full">
 					<Button
-						color="alternative"
+						color="primary"
 						size="xs"
-						class="w-full transition-colors hover:bg-primary-50 hover:text-primary-700"
+						class="w-full justify-between transition-transform hover:scale-105 active:scale-95"
 					>
-						🌐 Website
+						<span>Visit Website</span>
+						<ChevronRightOutline class="ml-2 h-3 w-3 transition-transform group-hover:translate-x-1" />
 					</Button>
 				</a>
 			{/if}

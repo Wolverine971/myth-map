@@ -62,21 +62,20 @@ import type { FilterState } from '$lib/types/filters';
 	let isLoading = true;
 	let hasError = false;
 	let errorMessage = '';
-	let isFiltering = false;
-	
+
 	// Pagination state - initialize with user preferences
 	let currentPage = 1;
 	let itemsPerPage = prefs.itemsPerPage;
 
 	$: isDesktop = innerWidth >= 768;
 
-	currentLocation.subscribe((value) => (userLocation = value));
+	const unsubscribeLocation = currentLocation.subscribe((value) => (userLocation = value));
 
 	// Derived store for filtered locations using memoized service
 	const filteredLocations = derived(
 		[selectedTags, selectedState, selectedCity, searchQuery],
-		([$selectedTags, $selectedState, $selectedCity, $searchQuery]) => {
-			return filterService.getFilteredLocations(
+		([$selectedTags, $selectedState, $selectedCity, $searchQuery]) =>
+			filterService.getFilteredLocations(
 				data.locations,
 				{
 					selectedTags: $selectedTags,
@@ -85,63 +84,36 @@ import type { FilterState } from '$lib/types/filters';
 					searchQuery: $searchQuery
 				},
 				data.locationTags
-			);
-		}
+			)
 	);
 
 	// Derived store for available tags based on current geographic filters
 	const availableTags = derived(
 		[selectedState, selectedCity],
-		([$selectedState, $selectedCity]) => {
-			return filterService.getAvailableTags(
+		([$selectedState, $selectedCity]) =>
+			filterService.getAvailableTags(
 				data.locations,
 				data.locationTags,
 				$selectedState,
 				$selectedCity
-			);
-		}
+			)
 	);
 
-	// Reactive statement for paginated locations
-	$: paginatedLocations = (() => {
-		const startIndex = (currentPage - 1) * itemsPerPage;
-		const endIndex = startIndex + itemsPerPage;
-		return shownLocations.slice(startIndex, endIndex);
-	})();
+	$: shownLocations = $filteredLocations.filter(
+		(l) => l?.location?.lat != null && l?.location?.lng != null
+	);
+	$: availableTagsMap = $availableTags;
+	$: totalFilteredItems = shownLocations.length;
+	$: totalPages = Math.max(1, Math.ceil(totalFilteredItems / itemsPerPage));
+	$: if (currentPage > totalPages) currentPage = 1;
+	$: paginatedLocations = shownLocations.slice(
+		(currentPage - 1) * itemsPerPage,
+		currentPage * itemsPerPage
+	);
 
-	// Reactive variables for template
-	let shownLocations = [];
-	let availableTagsMap = {};
-	let totalPages = 1;
-	let totalFilteredItems = 0;
+	let filterPersistenceCleanup: (() => void) | null = null;
 
-	// Subscribe to derived stores with filtering indicator
-	let filterTimeout: number;
-	filteredLocations.subscribe(value => {
-		// Show filtering state for better UX
-		isFiltering = true;
-		clearTimeout(filterTimeout);
-		
-		filterTimeout = setTimeout(() => {
-			shownLocations = value;
-			totalFilteredItems = value.length;
-			totalPages = Math.max(1, Math.ceil(totalFilteredItems / itemsPerPage));
-			
-			// Reset to page 1 if current page is beyond available pages
-			if (currentPage > totalPages) {
-				currentPage = 1;
-			}
-			
-			isFiltering = false;
-		}, 150); // Small delay to show loading state
-	});
-
-
-	availableTags.subscribe(value => {
-		availableTagsMap = value;
-	});
-
-	onMount(async () => {
+	onMount(() => {
 		try {
 			// Cache the server data for future use
 			dataManager.cacheServerData({
@@ -150,26 +122,21 @@ import type { FilterState } from '$lib/types/filters';
 				locationTags: data.locationTags
 			});
 
-			// Initialize available tags
-			const baseTagMap = Object.fromEntries(data.tags.map((tag) => [tag.name, 1]));
-			availableTagsMap = { ...baseTagMap };
-
-			// Check if data loaded successfully
 			if (!data.locations) {
 				throw new Error('Failed to load location data');
 			}
 
-			shownLocations = data.locations;
 			isLoading = false;
 
 			// Set default tab from user preferences
 			selectedTab = prefs.defaultView;
+			if (selectedTab === 'map') loadMap();
 
 			// Update activity time
 			userPreferences.updateActivityTime();
-			
+
 			// Setup filter state persistence
-			setupFilterPersistence();
+			filterPersistenceCleanup = setupFilterPersistence();
 
 			// Preload critical components
 			preloadCriticalComponents();
@@ -179,6 +146,11 @@ import type { FilterState } from '$lib/types/filters';
 			errorMessage = error instanceof Error ? error.message : 'Failed to load data';
 			isLoading = false;
 		}
+
+		return () => {
+			filterPersistenceCleanup?.();
+			unsubscribeLocation();
+		};
 	});
 
 	function handleTagFilterChange(event: CustomEvent) {
@@ -402,45 +374,43 @@ import type { FilterState } from '$lib/types/filters';
 						{:else}
 							<div id="results-section" class="space-y-6">
 								<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-									{#each isLoading || isFiltering ? Array(8) : paginatedLocations as content_location, index (content_location?.location?.id || Math.random())}
-										{#if isLoading || isFiltering}
+									{#if isLoading}
+										{#each Array(8) as _, i (i)}
 											<SkeletonCard variant="card" />
-										{:else}
-											<div 
-												in:fade={{ duration: 300, delay: index * 50 }}
-												class="animate-in"
-											>
+										{/each}
+									{:else}
+										{#each paginatedLocations as content_location (content_location.location.id ?? content_location.location.name)}
+											<div in:fade|local={{ duration: 200 }}>
 												<LocationCard
 													name={content_location.location.name}
 													coords={{
-														lat: content_location.location.lat,
-														lng: content_location.location.lng
+														lat: Number(content_location.location.lat),
+														lng: Number(content_location.location.lng)
 													}}
-													address={`${content_location.location.address_line_1}${content_location.location.address_line_2 ? ` ${content_location.location.address_line_2}` : ''}, ${content_location.location.city}, ${content_location.location.state} ${content_location.location.zip_code}`}
-													website={content_location.website}
+													address={`${content_location.location.address_line_1 ?? ''}${content_location.location.address_line_2 ? ` ${content_location.location.address_line_2}` : ''}, ${content_location.location.city}, ${content_location.location.state} ${content_location.location.zip_code ?? ''}`}
+													website={content_location.website ?? ''}
 													tags={data.locationTags.filter(
 														(tag) => tag.location.name === content_location.location.name
 													)}
 													contentLocation={content_location}
-													user={data?.user}
 													{innerWidth}
 												/>
 											</div>
-										{/if}
-									{/each}
+										{/each}
+									{/if}
 								</div>
-								
-								{#if !isLoading && !isFiltering && totalFilteredItems === 0}
+
+								{#if !isLoading && totalFilteredItems === 0}
 									<div class="py-12 text-center">
 										<p class="mb-4 text-lg text-gray-600">No locations found matching your filters.</p>
-										<button 
+										<button
 											on:click={clearAllFilters}
 											class="rounded-lg bg-primary-600 px-6 py-3 text-white transition-colors hover:bg-primary-700"
 										>
 											Clear Filters
 										</button>
 									</div>
-								{:else if !isLoading && !isFiltering && totalPages > 1}
+								{:else if !isLoading && totalPages > 1}
 									<Pagination
 										{currentPage}
 										{totalPages}

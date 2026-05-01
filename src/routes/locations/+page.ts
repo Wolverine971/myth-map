@@ -1,22 +1,9 @@
 // src/routes/locations/+page.ts
-import { supabase } from '$lib/supabaseClient';
-import type { PageServerLoad } from './$types';
+import type { PageLoad } from './$types';
+import locationsData from '$lib/data/locations.json';
 
-export const load: PageServerLoad = async (event) => {
-	try {
-		const { data: existingLocationData, error: existingLocationDataError } = await supabase
-			.from('content_locations').select(`*, location:locations(*)`);
+export const prerender = true;
 
-		if (existingLocationDataError) {
-			console.log('existingLocationDataError', existingLocationDataError);
-		}
-
-
-
-		return {
-			contentLocations: existingLocationData
-		};
-	} catch (error) {
-		console.error('error', error);
-	}
+export const load: PageLoad = async () => {
+	return { contentLocations: locationsData.locations };
 };

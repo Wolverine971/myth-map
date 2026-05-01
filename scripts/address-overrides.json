@@ -1,0 +1,14 @@
+{
+	"Swansfield Neighborhood Playground": {
+		"full_address": "5659 Cedar Lane, Columbia, MD 21044",
+		"zip_code": "21044",
+		"state": "MD",
+		"note": "CSV had only 'Harper's Choice, Columbia, MD'. 5659 Cedar Lane is the Swansfield Mini Water Park / Tot Lots HC15+HC16 location per Columbia Association."
+	},
+	"Cedar Lane Park East Playground": {
+		"full_address": "10745 Clarksville Pike, Columbia, MD 21044",
+		"zip_code": "21044",
+		"state": "MD",
+		"note": "CSV had only 'Cedar Lane Path'. 10745 Route 108 = 10745 Clarksville Pike is the Cedar Lane Park East entrance per howardcountymd.gov."
+	}
+}

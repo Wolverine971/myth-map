@@ -40,11 +40,7 @@ export default defineConfig({
 
 	// Optimize dependencies
 	optimizeDeps: {
-		include: [
-			'flowbite-svelte',
-			'flowbite-svelte-icons',
-			'@supabase/supabase-js'
-		],
-		exclude: ['@mapbox/mapbox-sdk'] // Large dependency, load on demand
+		include: ['flowbite-svelte', 'flowbite-svelte-icons'],
+		exclude: ['@mapbox/mapbox-sdk']
 	}
 });

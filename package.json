@@ -9,13 +9,13 @@
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
-		"devTest": "vavite-loader vite dev",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
-		"label-paths": "tsx labelFilePaths.ts"
+		"label-paths": "tsx labelFilePaths.ts",
+		"build:locations": "tsx scripts/build-locations.ts"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-vercel": "^5.7.2",
@@ -51,25 +51,15 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@google-cloud/local-auth": "^3.0.1",
 		"@mapbox/mapbox-sdk": "^0.16.0",
-		"@supabase/auth-helpers-sveltekit": "^0.13.0",
-		"@supabase/ssr": "^0.4.0",
-		"@supabase/supabase-js": "^2.43.4",
 		"@types/mapbox-gl": "^3.1.0",
-		"@vavite/node-loader": "^4.1.1",
 		"date-picker-svelte": "^2.13.0",
-		"google-auth-library": "^9.11.0",
-		"googleapis": "^140.0.0",
-		"googleapis-common": "^7.2.0",
 		"lucide-svelte": "^0.436.0",
 		"mapbox-gl": "^3.4.0",
 		"marked": "^13.0.2",
 		"qrcode": "^1.5.4",
 		"rehype-slug": "^6.0.0",
 		"remark-abbr": "^1.4.2",
-		"remark-github": "^12.0.0",
-		"supabase": "^1.172.2",
-		"svelte-dnd-action": "^0.9.49"
+		"remark-github": "^12.0.0"
 	}
 }

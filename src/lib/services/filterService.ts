@@ -11,13 +11,18 @@ export interface FilterState {
 
 export interface LocationData {
 	location: {
+		id?: number | string;
 		name: string;
 		city: string;
 		state: string;
 		address_line_1?: string;
-		lat: number;
-		lng: number;
+		address_line_2?: string;
+		zip_code?: string;
+		lat: number | null;
+		lng: number | null;
+		[key: string]: any;
 	};
+	website?: string;
 	[key: string]: any;
 }
 

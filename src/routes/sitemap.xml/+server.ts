@@ -1,129 +1,37 @@
 // src/routes/sitemap.xml/+server.ts
-import { supabase } from '$lib/supabaseClient';
+import locationsData from '$lib/data/locations.json';
 
-// const SITE_URL = 'tinytribeadventures.com';
+export const prerender = true;
 
-const getAllLocations = async () => {
-	const { data: locations, error } = await supabase.from(`content_locations`)
-		.select(`*, location:locations(*)`);
+const SITE = 'https://tinytribeadventures.com';
 
-	if (error) {
-		console.log(error);
-	}
-	// go through approval process
-	// join locations and content_locations
-
-	const citiesMap = {}
-
-	const goodLocations = locations.map((location) => {
-		citiesMap[location.location.city] = true;
-		return {
-			loc: escapeXmlUrl(`https://tinytribeadventures.com/locations/states/${location.location.state}/${location.location.city.replace(/ /g, '-')}/${location.loc}`),
-			lastmod: location.updated_at,
-			changefreq: 'weekly'
-		};
-	});
-	const cities = Object.keys(citiesMap).map((city) => {
-		return {
-			loc: escapeXmlUrl(`https://tinytribeadventures.com/locations/states/MD/${city.replace(/ /g, '-')}`),
-			lastmod: '2024-08-05',
-			changefreq: 'weekly'
-		};
-	});
-	return [...cities, ...goodLocations];
-
-};
-
-export async function GET() {
-	const locations = await getAllLocations();
-
-	return new Response(
-		`
-	<?xml version="1.0" encoding="UTF-8" ?>
-	<urlset
-	  xmlns="https://www.sitemaps.org/schemas/sitemap/0.9"
-	  xmlns:xhtml="https://www.w3.org/1999/xhtml"
-	  xmlns:mobile="https://www.google.com/schemas/sitemap-mobile/1.0"
-	  xmlns:news="https://www.google.com/schemas/sitemap-news/0.9"
-	  xmlns:image="https://www.google.com/schemas/sitemap-image/1.1"
-	  xmlns:video="https://www.google.com/schemas/sitemap-video/1.1"
-	>
-
-	<url>
-	    <loc>https://tinytribeadventures.com</loc>
-	    <lastmod>2024-07-03</lastmod>
-	    <changefreq>monthly</changefreq>
-	    <priority>1.0</priority>
-	</url>
-	<url>
-	    <loc>https://tinytribeadventures.com/locations</loc>
-	    <lastmod>2024-08-05</lastmod>
-	    <changefreq>monthly</changefreq>
-	    <priority>1.0</priority>
-	</url>
-	<url>
-	    <loc>https://tinytribeadventures.com/about</loc>
-	    <lastmod>2024-04-05</lastmod>
-	    <changefreq>monthly</changefreq>
-	    <priority>0.7</priority>
-	</url>
-	<url>
-	    <loc>https://tinytribeadventures.com/locations/states/MD</loc>
-	    <lastmod>2024-09-10</lastmod>
-	    <changefreq>monthly</changefreq>
-	    <priority>0.7</priority>
-	</url>
-
-	
-
-	${locations
-				.map((post) => {
-					return `<url>
-			<loc>${post.loc}</loc>
-			<lastmod>${post?.lastmod ? new Date(post?.lastmod).toISOString() : new Date().toISOString()}</lastmod>
-			<changefreq>monthly</changefreq>
-			<priority>0.7</priority>
-			</url>`
-				})
-				.join('')}
-	
-
-	  
-			
-
-	</urlset>`.trim(),
-		{
-			headers: {
-				'Content-Type': 'application/xml'
-			}
-		}
-	);
+function escapeXml(s: string) {
+	return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[c]!);
 }
 
-// ${
-// 	locations
-// 		.map((post) => {
-// 			return `<url>
-// 			<loc>${post.loc}</loc>
-// 			<lastmod>${post?.lastmod ? new Date(post?.lastmod).toISOString() : new Date().toISOString()}</lastmod>
-// 			<changefreq>monthly</changefreq>
-// 			<priority>0.7</priority>
-// 			</url>`
-// 		})
-// 	.join('')
-// }
+export async function GET() {
+	const today = new Date().toISOString().split('T')[0];
+	const staticUrls = [
+		{ loc: SITE, priority: 1.0 },
+		{ loc: `${SITE}/locations`, priority: 0.9 },
+		{ loc: `${SITE}/about`, priority: 0.7 },
+		{ loc: `${SITE}/contact`, priority: 0.5 },
+		{ loc: `${SITE}/blog`, priority: 0.5 }
+	];
 
-function escapeXmlUrl(url) {
-	const xmlEntities = {
-		'&': '&amp;',
-		'<': '&lt;',
-		'>': '&gt;',
-		'"': '&quot;',
-		"'": '&apos;',
-		',': '%2C' // URL encode commas
-	};
+	const xml = `<?xml version="1.0" encoding="UTF-8" ?>
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+${staticUrls
+	.map(
+		(u) => `  <url>
+    <loc>${escapeXml(u.loc)}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>${u.priority}</priority>
+  </url>`
+	)
+	.join('\n')}
+</urlset>`;
 
-	return url.replace(/[&<>"',]/g, function (char) {
-		return xmlEntities[char] || char;
-	});
+	return new Response(xml, { headers: { 'Content-Type': 'application/xml' } });
 }

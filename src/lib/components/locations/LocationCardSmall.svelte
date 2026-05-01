@@ -3,44 +3,16 @@
 	import { Card, Button, Badge } from 'flowbite-svelte';
 	import { getLocationIcon } from '../../../utils/locationPhotos';
 	import SimpleImage from '$lib/components/shared/SimpleImage.svelte';
-	import { currentItinerary } from '$lib/stores/itineraryStore';
-	import type { Location } from '$lib/types';
-	import { 
-		ChevronRightOutline, 
-		MapPinOutline,
-		GlobeOutline
-	} from 'flowbite-svelte-icons';
+	import { MapPinOutline, GlobeOutline } from 'flowbite-svelte-icons';
 
 	export let name: string;
-	export let address: string;
+	export let address: string = '';
 	export let website: string = '';
 	export let tags: Array<{ tags: { name: string } }> = [];
-	export let coords: { lat: number; lng: number };
-	export let contentLocation: any;
-	export let user: any;
-	export let innerWidth: number;
 
-	let location: Location = contentLocation.location;
-	let isInItinerary = false;
-
-	// Parse address for better display
 	$: addressParts = address ? address.split(',') : [];
 	$: cityStateZip = addressParts.length > 1 ? addressParts.slice(1).join(',').trim() : '';
-
-	// Subscribe to stores
-	currentItinerary.subscribe((value) => {
-		isInItinerary = value?.items?.some((item) => item.location.id === location.id) ?? false;
-	});
-
-	// Generate safe URL for location details
-	$: detailsUrl = location?.state && location?.city && name 
-		? `/locations/states/${location.state}/${location.city.replace(/\s+/g, '-')}/${name.replace(/\s+/g, '-')}`
-		: '#';
-
-	// Truncate name for display
-	$: displayName = name && name.length > 40 ? name.slice(0, 40) + '...' : (name || 'Unknown Location');
-
-	// Get location icon
+	$: displayName = name && name.length > 40 ? name.slice(0, 40) + '...' : name || 'Unknown Location';
 	$: locationIcon = name ? getLocationIcon(name) : 'mythmap';
 </script>
 
@@ -102,31 +74,16 @@
 			{/if}
 
 			<!-- Action Buttons -->
-			<div class="mt-auto flex gap-2">
-				<a href={detailsUrl} class="flex-1">
-					<Button 
-						color="primary" 
-						size="xs" 
-						class="w-full justify-between"
-					>
-						<span class="text-xs sm:text-sm">Details</span>
-						<ChevronRightOutline class="ml-1 h-3 w-3" />
-					</Button>
-				</a>
-
-				{#if website}
-					<a href={website} target="_blank" rel="noopener noreferrer">
-						<Button
-							color="alternative"
-							size="xs"
-							class="flex items-center gap-1"
-						>
-							<GlobeOutline class="h-3 w-3" />
-							<span class="hidden sm:inline text-xs sm:text-sm">Website</span>
+			{#if website}
+				<div class="mt-auto flex gap-2">
+					<a href={website} target="_blank" rel="noopener noreferrer" class="flex-1">
+						<Button color="primary" size="xs" class="w-full justify-between">
+							<span class="text-xs sm:text-sm">Visit Website</span>
+							<GlobeOutline class="ml-1 h-3 w-3" />
 						</Button>
 					</a>
-				{/if}
-			</div>
+				</div>
+			{/if}
 		</div>
 	</div>
 </Card>

@@ -30,8 +30,7 @@ function setupResourceHints() {
 	const prefetchDomains = [
 		'https://fonts.googleapis.com',
 		'https://fonts.gstatic.com',
-		'https://api.mapbox.com',
-		'https://supabase.co'
+		'https://api.mapbox.com'
 	];
 
 	prefetchDomains.forEach(domain => {
