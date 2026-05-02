@@ -67,19 +67,30 @@ The five highest-impact changes. Should land as a single coherent pass and visib
 
 ---
 
-## Phase 4 — Performance & rendering
+## Phase 4 — Performance & rendering ✅ AUDIT DONE (resize pending user)
 
-- [ ] **4.1 — Investigate `.map { visibility: visible !important }`**
+- [x] **4.1 — Investigate `.map { visibility: visible !important }`**
   - File: `src/lib/components/map/map.svelte` (style block, ~line 501)
   - Why: `!important` is a smell. It's likely fighting a parent rule from Tailwind/Flowbite or a layout transition. Trace the source and remove the override.
 
-- [ ] **4.2 — Confirm `optimizeDeps` exclusion of `@mapbox/mapbox-sdk` is still needed**
+- [x] **4.2 — Confirm `optimizeDeps` exclusion of `@mapbox/mapbox-sdk` is still needed**
   - File: `vite.config.ts`
   - Why: Per `CLAUDE.md`, the SDK is excluded from optimizeDeps. Verify this is still load-bearing — if not, delete the exclusion to simplify config.
 
-- [ ] **4.3 — Audit icon PNG sizes**
+- [x] **4.3 — Audit icon PNG sizes**
   - Folder: `static/map/`
   - Why: With `icon-size: 0.12` the source PNGs are ~8x larger than rendered. If they're 256–512px each, we're shipping bytes we never see. Resize to 2x of max display size (e.g., target render ≤ 48px → source ~96px).
+  - **Findings:**
+    - All active icons are **540×540 px**, ~60–130 KB each. With our new `icon-size` topping at 0.20 (z18 retina), display target is ~108 px — sources only need to be **~256×256 px** for crisp retina rendering.
+    - 25 active icons × ~80 KB ≈ **~2 MB** of icon weight on first map view. Resizing to 256×256 should cut ~70% (~600 KB total).
+    - **Cruft to delete** (not referenced by `ICON_NAMES` in `map-icons.ts`):
+      - `xxlibrary.png`, `xxmuseum.png`, `xxmuseum1.png`, `xxplayground1.png`
+      - `xxxdonut-shack.png`, `xxxlibrary.png`
+      - `park.png` (code uses `park1`)
+      - `myth-map.png` (1024×1024, 361 KB — code uses `mythmap.png`)
+  - **Follow-up tasks (not yet done — pending user go-ahead):**
+    - [ ] Resize the 25 active PNGs to 256×256 (sips/sharp, single batch script)
+    - [ ] Delete the 8 cruft files listed above
 
 ---
 

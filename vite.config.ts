@@ -39,8 +39,9 @@ export default defineConfig({
 	},
 
 	// Optimize dependencies
+	// @mapbox/mapbox-sdk is only imported server-side (src/routes/+page.server.ts),
+	// so Vite never pre-bundles it for the browser — no need to exclude.
 	optimizeDeps: {
-		include: ['flowbite-svelte', 'flowbite-svelte-icons'],
-		exclude: ['@mapbox/mapbox-sdk']
+		include: ['flowbite-svelte', 'flowbite-svelte-icons']
 	}
 });
