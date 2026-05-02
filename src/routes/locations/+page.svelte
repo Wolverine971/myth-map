@@ -158,18 +158,12 @@
 
 			<ul class="grid gap-3 sm:grid-cols-2">
 				{#each group.entries as entry (entry.id)}
-					{@const linkable = entry.frontmatter.published}
-					{@const cardHref = linkable
-						? `/locations/${entry.stateSlug}/${entry.citySlug}/${entry.slug}`
-						: entry.location.website || null}
-					{@const externalLink = !linkable && !!cardHref}
+					{@const hasGuide = entry.frontmatter.published}
+					{@const detailHref = `/locations/${entry.stateSlug}/${entry.citySlug}/${entry.slug}`}
 					{@const coords = formatCoords(entry.location.location.lat, entry.location.location.lng)}
 					<li>
-						<svelte:element
-							this={cardHref ? 'a' : 'div'}
-							href={cardHref ?? undefined}
-							target={externalLink ? '_blank' : undefined}
-							rel={externalLink ? 'noopener noreferrer' : undefined}
+						<a
+							href={detailHref}
 							class="group relative flex h-full items-start gap-3 rounded-md border border-subtle bg-surface p-3 transition duration-fast hover:border-strong hover:shadow-md dark:hover:bg-elevated"
 						>
 							<img
@@ -185,7 +179,7 @@
 									>
 										{entry.frontmatter.name}
 									</h3>
-									{#if linkable}
+									{#if hasGuide}
 										<span
 											class="mt-0.5 flex-shrink-0 rounded-sm border border-primary-200 bg-primary-50 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wide text-primary-700 dark:border-primary-700 dark:bg-primary-900 dark:text-primary-300"
 										>
@@ -205,24 +199,15 @@
 											{coords}
 										</span>
 									{/if}
-									{#if linkable}
-										<span aria-hidden="true" class="text-subtle">·</span>
-										<span
-											class="font-mono text-xs uppercase tracking-wide text-tertiary-600 transition-colors duration-fast group-hover:text-tertiary-700 dark:text-tertiary-400 dark:group-hover:text-tertiary-300"
-										>
-											Read guide →
-										</span>
-									{:else if entry.location.website}
-										<span aria-hidden="true" class="text-subtle">·</span>
-										<span
-											class="font-mono text-xs uppercase tracking-wide text-tertiary-600 transition-colors duration-fast group-hover:text-tertiary-700 dark:text-tertiary-400 dark:group-hover:text-tertiary-300"
-										>
-											Visit site →
-										</span>
-									{/if}
+									<span aria-hidden="true" class="text-subtle">·</span>
+									<span
+										class="font-mono text-xs uppercase tracking-wide text-tertiary-600 transition-colors duration-fast group-hover:text-tertiary-700 dark:text-tertiary-400 dark:group-hover:text-tertiary-300"
+									>
+										{hasGuide ? 'Read guide →' : 'View details →'}
+									</span>
 								</div>
 							</div>
-						</svelte:element>
+						</a>
 					</li>
 				{/each}
 			</ul>

@@ -51,17 +51,17 @@ The five highest-impact changes. Should land as a single coherent pass and visib
 
 ---
 
-## Phase 3 — Cluster visual & interaction polish
+## Phase 3 — Cluster visual & interaction polish ✅ DONE
 
-- [ ] **3.1 — Hover affordance on clusters**
+- [x] **3.1 — Hover affordance on clusters**
   - Files: `map.svelte:387-395` (event listeners) and `map-layers.ts:71-86` (cluster paint)
   - Why: Clusters only change cursor on hover — no visual feedback. Add a feature-state-driven stroke bump (e.g., `'circle-stroke-width': ['case', ['boolean', ['feature-state', 'hover'], false], 4, 2.5]`) and wire `mousemove`/`mouseleave` handlers that set/clear feature state by `cluster_id`.
 
-- [ ] **3.2 — Re-tune cluster step thresholds**
+- [x] **3.2 — Re-tune cluster step thresholds**
   - File: `src/lib/components/map/map-layers.ts:30-69`
   - Why: First bucket is labeled "1–4" but Mapbox only clusters at 2+, so it's really "2–4". Reconsider whether the thresholds (5, 10, 25, 50) match the actual density distribution in our data — if most clusters are 2–8, shift the ramp so color variance lives where users see it.
 
-- [ ] **3.3 — Use Promise form of `getClusterExpansionZoom`**
+- [x] **3.3 — Use Promise form of `getClusterExpansionZoom`**
   - File: `src/lib/components/map/map.svelte:407-415`
   - Why: Stylistic. Modern Mapbox returns a Promise. Lets us drop the callback and use `await`.
 

@@ -165,6 +165,8 @@
 		const cityToRestore = selectedCity;
 		prevStateAbr = null;
 		prevCity = null;
+		// setStyle wipes the source + any feature state we set on its features.
+		hoveredClusterId = null;
 
 		map.setStyle(desired);
 
@@ -391,17 +393,54 @@
 		}
 	}
 
+	let hoveredClusterId: number | null = null;
+
+	function setClusterHover(id: number | null) {
+		if (hoveredClusterId === id) return;
+		if (hoveredClusterId != null) {
+			map.setFeatureState(
+				{ source: SHOWN_LOCATIONS_SOURCE_ID, id: hoveredClusterId },
+				{ hover: false }
+			);
+		}
+		hoveredClusterId = id;
+		if (id != null) {
+			map.setFeatureState({ source: SHOWN_LOCATIONS_SOURCE_ID, id }, { hover: true });
+		}
+	}
+
 	function addMapEventListeners() {
 		map.on('click', 'clusters', handleClusterClick);
 		map.on('click', 'unclustered-point', handleUnclusteredPointClick);
 		const setCursor = (cursor: string) => () => (map.getCanvas().style.cursor = cursor);
-		map.on('mouseenter', 'clusters', setCursor('pointer'));
-		map.on('mouseleave', 'clusters', setCursor(''));
+
+		map.on('mousemove', 'clusters', (e) => {
+			map.getCanvas().style.cursor = 'pointer';
+			const id = e.features?.[0]?.id;
+			if (typeof id === 'number') setClusterHover(id);
+		});
+		map.on('mouseleave', 'clusters', () => {
+			map.getCanvas().style.cursor = '';
+			setClusterHover(null);
+		});
+
 		map.on('mouseenter', 'unclustered-point', setCursor('pointer'));
 		map.on('mouseleave', 'unclustered-point', setCursor(''));
 	}
 
-	function handleClusterClick(e: MapMouseEvent) {
+	// The Mapbox v3 typings only expose the callback form of
+	// getClusterExpansionZoom. Wrap it once so the click handler can `await`.
+	function clusterExpansionZoom(source: GeoJSONSource, clusterId: number): Promise<number> {
+		return new Promise((resolve, reject) => {
+			source.getClusterExpansionZoom(clusterId, (err, zoom) => {
+				if (err) reject(err);
+				else if (zoom == null) reject(new Error('No expansion zoom returned'));
+				else resolve(zoom);
+			});
+		});
+	}
+
+	async function handleClusterClick(e: MapMouseEvent) {
 		const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
 		if (!features.length) return;
 		const feature = features[0];
@@ -410,12 +449,14 @@
 		const clusterSource = map.getSource(SHOWN_LOCATIONS_SOURCE_ID) as GeoJSONSource;
 		const center = (feature.geometry as GeoJSON.Point).coordinates as [number, number];
 
-		clusterSource.getClusterExpansionZoom(clusterId, (err, zoom) => {
-			if (err || zoom == null) return;
+		try {
+			const zoom = await clusterExpansionZoom(clusterSource, clusterId);
 			// Nudge half a zoom past the break point so the cluster visibly cracks open.
 			const targetZoom = Math.min(zoom + 0.5, 18);
 			map.flyTo({ center, zoom: targetZoom, duration: 500, curve: 1, essential: true });
-		});
+		} catch (error) {
+			console.error('Error expanding cluster:', error);
+		}
 	}
 
 	function handleUnclusteredPointClick(e: MapMouseEvent & { features?: GeoJSON.Feature[] }) {

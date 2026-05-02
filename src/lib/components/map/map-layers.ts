@@ -27,21 +27,24 @@ type ClusterPalette = {
 	textHalo: string;
 };
 
+// Thresholds tuned for the actual location density in the DMV data set —
+// most clusters live in the 2–20 range, so we put more color resolution
+// in the low/mid buckets and reserve the darkest tone for genuinely big stacks.
 const CLUSTER_PALETTE: Record<EffectiveTheme, ClusterPalette> = {
 	// Light mode: clusters are deep forest, kraft text on top
 	light: {
 		steps: [
 			'step',
 			['get', 'point_count'],
-			'#74AA85', //  1–4   primary-300
-			5,
-			'#579769', //  5–9   primary-400
-			10,
-			'#014421', // 10–24  primary-500 (Forest Green)
-			25,
-			'#013D1E', // 25–49  primary-600
-			50,
-			'#012E16' // 50+    primary-800
+			'#74AA85', //  2     primary-300
+			3,
+			'#579769', //  3–6   primary-400
+			7,
+			'#014421', //  7–14  primary-500 (Forest Green)
+			15,
+			'#013D1E', // 15–29  primary-600
+			30,
+			'#012E16' // 30+    primary-800
 		],
 		stroke: '#FCF9F5', // kraft (secondary-50) — pops off the green
 		textColor: '#FCF9F5', // kraft text on dark fills
@@ -52,15 +55,15 @@ const CLUSTER_PALETTE: Record<EffectiveTheme, ClusterPalette> = {
 		steps: [
 			'step',
 			['get', 'point_count'],
-			'#579769', //  1–4   primary-400
-			5,
-			'#74AA85', //  5–9   primary-300
-			10,
-			'#9BC2A7', // 10–24  primary-200
-			25,
-			'#C2DAC9', // 25–49  primary-100
-			50,
-			'#E6F0EA' // 50+    primary-50
+			'#579769', //  2     primary-400
+			3,
+			'#74AA85', //  3–6   primary-300
+			7,
+			'#9BC2A7', //  7–14  primary-200
+			15,
+			'#C2DAC9', // 15–29  primary-100
+			30,
+			'#E6F0EA' // 30+    primary-50
 		],
 		stroke: '#1A1410', // dusk page bg — lifts cluster off the dark map
 		textColor: '#1A1410', // dark text on light fills
@@ -77,8 +80,9 @@ export function buildClusterLayer(theme: EffectiveTheme): AnyLayer {
 		filter: ['has', 'point_count'],
 		paint: {
 			'circle-color': p.steps,
-			'circle-radius': ['step', ['get', 'point_count'], 18, 5, 22, 10, 26, 25, 30, 50, 35],
-			'circle-stroke-width': 2.5,
+			// Radius ramps along the same buckets as the color palette.
+			'circle-radius': ['step', ['get', 'point_count'], 18, 3, 22, 7, 26, 15, 30, 30, 35],
+			'circle-stroke-width': ['case', ['boolean', ['feature-state', 'hover'], false], 4, 2.5],
 			'circle-stroke-color': p.stroke,
 			'circle-stroke-opacity': 0.9
 		}
