@@ -10,9 +10,6 @@
 	export let tags: Array<{ tags: { name: string } }> = [];
 	export let coords: { lat: number; lng: number };
 	export let contentLocation: any;
-	export let innerWidth: number = 0;
-
-	void innerWidth;
 
 	$: focusKey = (() => {
 		const id = contentLocation?.location?.id ?? contentLocation?.id;

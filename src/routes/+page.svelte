@@ -501,7 +501,6 @@
 									(tag) => tag.location.name === content_location.location.name
 								)}
 								contentLocation={content_location}
-								{innerWidth}
 							/>
 						{/each}
 					{/if}
@@ -580,7 +579,6 @@
 								(tag) => tag.location.name === content_location.location.name
 							)}
 							contentLocation={content_location}
-							{innerWidth}
 						/>
 					{/each}
 				{/if}

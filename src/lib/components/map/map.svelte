@@ -118,10 +118,14 @@
 				[-74.5, 41.2]
 			],
 			accessToken: PUBLIC_MAP_KEY,
+			// Modern alternative to disabling scrollZoom on mobile: requires two-finger
+			// drag on touch and ⌘/Ctrl+scroll on desktop, with auto-overlay hints. Keeps
+			// pinch-to-zoom working everywhere without hijacking page scroll.
+			cooperativeGestures: true,
 			renderWorldCopies: false,
 			preserveDrawingBuffer: false,
 			antialias: false,
-			fadeDuration: 300
+			fadeDuration: 200
 		});
 
 		attachLazyIconLoader(map);
@@ -432,17 +436,22 @@
 			coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
 		}
 
+		// Offset upward so the popup has room above the pin. Cap by viewport height
+		// so short canvases (mobile, in-app browsers) don't push the pin off-screen.
+		const canvasHeight = map.getCanvas().clientHeight || 0;
+		const popupOffset: [number, number] = [0, -Math.min(100, Math.round(canvasHeight * 0.18))];
+
 		if (map.getZoom() < 15) {
 			map.flyTo({
 				center: coordinates,
 				zoom: 15,
 				duration: 500,
 				curve: 1.2,
-				offset: [0, -100],
+				offset: popupOffset,
 				essential: true
 			});
 		} else {
-			map.panTo(coordinates, { duration: 300, offset: [0, -100] });
+			map.panTo(coordinates, { duration: 300, offset: popupOffset });
 		}
 
 		const copyId = `copy-${(props.name || 'location').replace(/\s+/g, '-')}`;
@@ -475,12 +484,11 @@
 	}
 
 	function optimizeForMobile() {
-		if (window.innerWidth < 768) {
-			// Prevent the map from hijacking page scroll, but keep dragging/touch panning enabled.
-			map.scrollZoom.disable();
-			map.dragRotate.disable();
-			map.touchZoomRotate.disableRotation();
-		}
+		// cooperativeGestures (set in the constructor) handles scroll/pinch behavior
+		// across viewports. We still suppress rotation so the map can't drift askew
+		// from accidental two-finger twists or right-drags.
+		map.dragRotate.disable();
+		map.touchZoomRotate.disableRotation();
 	}
 </script>
 

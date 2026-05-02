@@ -1,5 +1,5 @@
 // src/lib/components/map/map-layers.ts
-import type { AnyLayer } from 'mapbox-gl';
+import type { AnyLayer, ExpressionSpecification } from 'mapbox-gl';
 import type { EffectiveTheme } from '$lib/stores/themeStore';
 
 export const SHOWN_LOCATIONS_SOURCE_ID = 'shownLocations';
@@ -21,7 +21,7 @@ export const SHOWN_LOCATIONS_SOURCE_ID = 'shownLocations';
 // Clusters — density deepens the forest
 // ============================================================
 type ClusterPalette = {
-	steps: any[];
+	steps: ExpressionSpecification;
 	stroke: string;
 	textColor: string;
 	textHalo: string;
@@ -137,15 +137,7 @@ export const unclusteredPointLayer: AnyLayer = {
 	layout: {
 		'icon-image': ['get', 'icon'],
 		'icon-anchor': 'bottom',
-		'icon-size': [
-			'interpolate',
-			['linear'],
-			['zoom'],
-			8, 0.08,
-			12, 0.12,
-			16, 0.16,
-			18, 0.2
-		],
+		'icon-size': ['interpolate', ['linear'], ['zoom'], 8, 0.08, 12, 0.12, 16, 0.16, 18, 0.2],
 		'icon-allow-overlap': true,
 		'icon-ignore-placement': true
 	}

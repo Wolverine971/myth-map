@@ -66,7 +66,7 @@ If you can find five of these for a location, the page is already worth visiting
 ### Cautions / honest mediocrity
 
 - Common complaints (read between the entitled-Yelp-reviewer noise).
-- What this place is *not* good for (e.g., "not great for under-3s", "skip if you hate crowds").
+- What this place is _not_ good for (e.g., "not great for under-3s", "skip if you hate crowds").
 - Closures, renovations, or known issues currently affecting the visit.
 
 Saying a place isn't right for everyone builds trust. Don't oversell.
@@ -75,9 +75,9 @@ Saying a place isn't right for everyone builds trust. Don't oversell.
 
 In rough order of trust:
 
-1. **Official website** — hours, prices, calendar, FAQs, accessibility page. Treat these as authoritative *but* check the timestamp/recency.
+1. **Official website** — hours, prices, calendar, FAQs, accessibility page. Treat these as authoritative _but_ check the timestamp/recency.
 2. **Official social media (last 30 days)** — closures, weather changes, new exhibits, real-time gotchas.
-3. **Google Maps reviews** — sort by *most recent*. Search the review text for "kids", "stroller", "parking", "bathroom". 4-star reviews are usually more honest than 5-star.
+3. **Google Maps reviews** — sort by _most recent_. Search the review text for "kids", "stroller", "parking", "bathroom". 4-star reviews are usually more honest than 5-star.
 4. **Reddit** — search `"<place name>" with kids` and the local subreddit (`r/baltimore`, `r/maryland`, `r/washingtondc`, etc.). Long threads beat headlines.
 5. **TripAdvisor / Yelp** — filter to "families" / "with kids". Skim, don't trust any single review.
 6. **Local mom blogs / Facebook mom groups** — gold for tactical tips. Search `"<place name> site:macaronikid.com"` etc.
@@ -126,11 +126,13 @@ Each location markdown file already has a frontmatter block and stub headings. U
 ## Best time to visit
 
 ## FAQs
+
+## Helpful links
 ```
 
 ### Overview (1–2 short paragraphs)
 
-What it is. Who it's for. What makes it different from the other 50 places like it. Lead with specifics, not adjectives. End with a sentence about who *shouldn't* bother (e.g., "skip if your kids are under 3 — most of it is too physical").
+What it is. Who it's for. What makes it different from the other 50 places like it. Lead with specifics, not adjectives. End with a sentence about who _shouldn't_ bother (e.g., "skip if your kids are under 3 — most of it is too physical").
 
 ### What to know before you go (skimmable list)
 
@@ -176,6 +178,65 @@ If a section can't honestly hit 3+ specific tips, it's better to leave fewer tha
 
 Answers should be 1–3 sentences. If "we don't know," skip the question — don't fake an answer.
 
+### Helpful links (curated outbound references)
+
+A short list of authoritative external pages a parent might want next. This isn't an SEO link farm — it's a curated "here's where to dig deeper" shelf. **Quality over quantity. 3–8 links is the sweet spot. Zero is fine if there's nothing worth pointing to.**
+
+Categories that almost always belong here, when they exist:
+
+- **Official site** — homepage and (if different) the page for hours, tickets, or the specific exhibit.
+- **Operating authority** — the county / state parks department, museum foundation, or nonprofit that runs the place.
+- **Reservations / tickets** — direct ticket page if the official site buries it.
+- **Trail or facility map** — PDF or interactive map.
+- **Accessibility page** — if the venue publishes one.
+- **Calendar / events** — events feed, programs page, summer-camp page, or seasonal schedule.
+- **Trail data** — AllTrails / Hiking Project link for nature spots.
+- **Local-news coverage** — recent article from a reputable outlet about a renovation, opening, or notable event. Skip listicles and content-mill pieces.
+- **Wikipedia** — only if it's a substantive, well-sourced article (historic sites, major institutions). Skip stubs.
+- **Atlas Obscura / National Register of Historic Places** — for places with real historical depth.
+- **Companion guide** — when a sister site (a state park, an adjacent attraction) is so commonly visited together that omitting it would be a disservice.
+
+What does **not** belong:
+
+- TripAdvisor, Yelp, Google Maps review pages (review surfaces, not authoritative sources).
+- Generic listicles ("10 best parks in Maryland") and content-mill blogs.
+- Affiliate or coupon sites.
+- Personal blogs unless the post is genuinely the best resource on a specific question (rare, but possible — link the post directly, not the homepage).
+- Social media profiles (Facebook / Instagram pages) unless they are the only place hours and closures are posted, in which case link the specific page that has that info.
+- Other Tiny Tribe Adventures pages — internal linking is handled by the template (breadcrumbs + nearby places). Don't hand-link those here.
+
+Format:
+
+```markdown
+## Helpful links
+
+- [Official site](https://example.org) — hours, ticket pricing, and the events calendar.
+- [Howard County Parks page](https://example.gov) — operating authority; trail closures and seasonal alerts post here first.
+- [Trail map (PDF)](https://example.org/map.pdf) — official map showing all five loops.
+- [AllTrails page](https://www.alltrails.com/...) — recent conditions and a difficulty rating with photos.
+```
+
+Each link gets a one-clause description telling the reader _why_ that link is worth their click. No bare URLs, no "click here," no descriptions that just restate the page title.
+
+### Inline links (within prose and FAQs)
+
+Beyond the curated section, link inline whenever you reference:
+
+- A specific operator or authority ("operated by [Howard County Recreation & Parks](url)")
+- A program or class with its own page ("The [summer nature camp](url) fills up by April")
+- A trail you name ("The [Cascade Falls trail](url) is the family-friendly loop")
+
+Inline-link rules:
+
+- **Real, working URLs only.** No placeholders. Verify each link before saving.
+- **Link the noun, not the verb.** Link "Cascade Falls trail," not "click here."
+- **No tracking parameters or affiliate tags.** Strip `?utm_*`, `?ref=`, etc.
+- **One link per fact.** Don't double-source the same claim with two links unless they're genuinely complementary.
+- **Don't link in the FAQ answers unless the source is critical.** FAQs should be skimmable; piles of underlines are noise.
+- **No `nofollow` needed for editorial outbound links** — these are real recommendations, not paid placements.
+
+If a fact is non-obvious or contested (e.g., a date, a specific price, an unusual policy), linking it inline doubles as a citation: the reader can verify in one click.
+
 ## Quality bar
 
 A page is ready to flip `published: true` when:
@@ -183,9 +244,10 @@ A page is ready to flip `published: true` when:
 - Every fact in it is verified against at least one trustworthy source, with at least one fact cross-checked against the official site.
 - It contains at least 3 specific, tactical tips that aren't on the official site.
 - The tone passes the "mom-friend-text" test on a re-read.
-- It tells the reader what the place is *not* good for, in addition to what it is good for.
+- It tells the reader what the place is _not_ good for, in addition to what it is good for.
 - It does not contain any invented quotes, testimonials, or family anecdotes.
 - It does not contain any of the banned phrases above.
+- Every external link has been clicked and confirmed live, with no tracking or affiliate parameters, and each one has a one-clause description explaining why it's worth the click.
 
 ## Frontmatter and publishing flow
 
@@ -218,8 +280,9 @@ When asked to enrich a location:
 
 1. Read this brief end-to-end before starting.
 2. Read the current markdown file at the location's path.
-3. Run searches in the order in the "Where to research" section, taking notes on each data point in the checklist.
+3. Run searches in the order in the "Where to research" section, taking notes on each data point in the checklist _and_ on candidate outbound links worth keeping.
 4. Cross-check the official site for at least one logistic fact before writing.
-5. Draft the page using the existing section headings.
-6. Self-review against the quality bar checklist before saving.
-7. Update `last_modified` to today's date. Leave `published` as `false` for human review unless explicitly told otherwise.
+5. Draft the page using the existing section headings, including the curated `## Helpful links` block and any inline links to operators, programs, or named trails.
+6. Verify every external link is live, strip any tracking / affiliate parameters, and confirm each has a one-clause description.
+7. Self-review against the quality bar checklist before saving.
+8. Update `last_modified` to today's date. Leave `published` as `false` for human review unless explicitly told otherwise.
