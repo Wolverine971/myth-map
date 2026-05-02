@@ -88,19 +88,22 @@ The five highest-impact changes. Should land as a single coherent pass and visib
       - `xxxdonut-shack.png`, `xxxlibrary.png`
       - `park.png` (code uses `park1`)
       - `myth-map.png` (1024×1024, 361 KB — code uses `mythmap.png`)
-  - **Follow-up tasks (not yet done — pending user go-ahead):**
-    - [ ] Resize the 25 active PNGs to 256×256 (sips/sharp, single batch script)
-    - [ ] Delete the 8 cruft files listed above
+  - **Follow-up tasks:**
+    - [x] Deleted the 8 cruft files (saved ~270 KB; originals preserved in `static/map/_originals/`)
+    - [x] **Installed `pngquant` and resized + quantized all 25 active icons.**
+      - Pipeline: `sips -Z 256 file --out file` then `pngquant --strip --quality=70-95 --speed 1 --force --ext .png *.png`.
+      - **Result: 2.1 MB → 0.6 MB** (~70% reduction). 23 icons quantized to 8-bit palette; 2 (`art-studio.png`, `park-with-zoo.png`) stayed RGBA because pngquant couldn't hit the quality target — they still benefit from the 540→256 resize.
+      - Originals preserved at `static/map/_originals/` if anything ever needs to be regenerated.
 
 ---
 
-## Phase 5 — Style swap robustness
+## Phase 5 — Style swap robustness ✅ DONE
 
-- [ ] **5.1 — Order layers explicitly after style swap**
+- [x] **5.1 — Order layers explicitly after style swap**
   - File: `src/lib/components/map/map.svelte:147-174` (`swapMapStyle`)
   - Why: After `setStyle`, layers re-add in source order, but city/state polygons should sit _under_ clusters and pins. Pass an explicit `beforeId` when re-adding to lock the stack.
 
-- [ ] **5.2 — Restore focus ring filter atomically with style swap**
+- [x] **5.2 — Restore focus ring filter atomically with style swap**
   - File: `src/lib/components/map/map.svelte:162-173`
   - Why: There's a frame between layers being added and `syncFocusRing` running where the ring shows on the wrong feature. Apply the filter inside the same `style.load` callback before any paint.
 

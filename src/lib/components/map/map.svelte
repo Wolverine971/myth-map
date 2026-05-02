@@ -50,6 +50,16 @@
 
 	let currentStyleUrl: string | null = null;
 
+	let mapContainer: HTMLElement;
+	let map: Map;
+	let popup: Popup;
+	let geolocateControl: GeolocateControl;
+	let mapboxgl: typeof import('mapbox-gl');
+	let audio: HTMLAudioElement;
+
+	let mapReady = false;
+	let unsubscribeTheme: (() => void) | null = null;
+
 	let focusedId: LocationFocusKey | null = null;
 	const unsubscribeFocus = locationFocus.subscribe(({ hovered, selected }) => {
 		const next = hovered ?? selected;
@@ -60,16 +70,6 @@
 
 	let prevStateAbr: string | null = null;
 	let prevCity: string | null = null;
-
-	let mapContainer: HTMLElement;
-	let map: Map;
-	let popup: Popup;
-	let geolocateControl: GeolocateControl;
-	let mapboxgl: typeof import('mapbox-gl');
-	let audio: HTMLAudioElement;
-
-	let mapReady = false;
-	let unsubscribeTheme: (() => void) | null = null;
 
 	$: if (mapReady) syncShownLocations(shownLocations);
 	$: if (mapReady) syncStateFilter(selectedState);
@@ -173,11 +173,14 @@
 		map.once('style.load', async () => {
 			try {
 				addInitialSourceAndLayers();
+				// Restore focus ring synchronously with the layer add — otherwise
+				// awaits below would leave the ring at its default __none__ filter
+				// while polygon GeoJSON fetches resolve.
+				syncFocusRing(focusedId);
 				if (stateToRestore) await syncStateFilter(stateToRestore);
 				if (stateToRestore && cityToRestore) {
 					await syncCityFilter(stateToRestore, cityToRestore);
 				}
-				syncFocusRing(focusedId);
 			} catch (error) {
 				console.error('Error restoring layers after style swap:', error);
 			}
@@ -251,10 +254,17 @@
 		}
 	}
 
+	// Anchors polygon overlays underneath the marker stack so pins and clusters
+	// always render on top. Falls back to top-of-stack if clusters haven't been
+	// added yet (e.g. earliest paint frame).
+	function markerAnchorId(): string | undefined {
+		return map.getLayer('clusters') ? 'clusters' : undefined;
+	}
+
 	function updateStateLayer(stateGeoJSON: GeoJSON.GeoJSON) {
 		if (!map.getSource('state-boundary')) {
 			map.addSource('state-boundary', { type: 'geojson', data: stateGeoJSON });
-			map.addLayer(buildStateBoundaryLayer(get(effectiveTheme)));
+			map.addLayer(buildStateBoundaryLayer(get(effectiveTheme)), markerAnchorId());
 		} else {
 			(map.getSource('state-boundary') as GeoJSONSource).setData(stateGeoJSON);
 		}
@@ -339,9 +349,10 @@
 	function updateCityLayer(cityFeature: GeoJSON.Feature) {
 		if (!map.getSource('selected-city')) {
 			const theme = get(effectiveTheme);
+			const anchor = markerAnchorId();
 			map.addSource('selected-city', { type: 'geojson', data: cityFeature });
-			map.addLayer(buildSelectedCityFillLayer(theme));
-			map.addLayer(buildSelectedCityOutlineLayer(theme));
+			map.addLayer(buildSelectedCityFillLayer(theme), anchor);
+			map.addLayer(buildSelectedCityOutlineLayer(theme), anchor);
 		} else {
 			(map.getSource('selected-city') as GeoJSONSource).setData(cityFeature);
 		}
