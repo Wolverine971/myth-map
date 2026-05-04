@@ -29,6 +29,8 @@ export type RawLocation = {
 	};
 };
 
+export type Faq = { question: string; answer: string };
+
 export type LocationEntry = {
 	id: number;
 	stateSlug: string;
@@ -37,6 +39,7 @@ export type LocationEntry = {
 	frontmatter: Frontmatter;
 	body: string;
 	bodyHtml: string;
+	faqs: Faq[];
 	location: RawLocation;
 };
 
@@ -83,6 +86,7 @@ function buildIndex(): Map<string, LocationEntry> {
 		const key = `${stateSlug}/${cs}/${data.slug}`;
 		const fm = data as Frontmatter;
 		const bodyHtml = fm.published ? (marked.parse(body, { async: false }) as string) : '';
+		const faqs = fm.published ? extractFaqs(body) : [];
 		out.set(key, {
 			id: fm.id,
 			stateSlug,
@@ -91,6 +95,7 @@ function buildIndex(): Map<string, LocationEntry> {
 			frontmatter: fm,
 			body,
 			bodyHtml,
+			faqs,
 			location
 		});
 	}
@@ -187,6 +192,49 @@ export function nearbyEntries(
 	}
 	others.sort((a, b) => a.distanceMiles - b.distanceMiles);
 	return others.slice(0, limit);
+}
+
+export function pairedEntries(entry: LocationEntry): LocationEntry[] {
+	const pairs = entry.frontmatter.pair_with;
+	if (!pairs || pairs.length === 0) return [];
+	const out: LocationEntry[] = [];
+	const seen = new Set<number>([entry.id]);
+	for (const raw of pairs) {
+		const key = raw.trim().toLowerCase();
+		const e = INDEX.get(key);
+		if (!e || seen.has(e.id)) continue;
+		seen.add(e.id);
+		out.push(e);
+	}
+	return out;
+}
+
+function extractFaqs(body: string): Faq[] {
+	const headingMatch = body.match(/^##\s+FAQs?\s*$/im);
+	if (!headingMatch || headingMatch.index === undefined) return [];
+	const after = body.slice(headingMatch.index + headingMatch[0].length);
+	const nextHeading = after.match(/^##\s/m);
+	const section = nextHeading?.index !== undefined ? after.slice(0, nextHeading.index) : after;
+
+	const faqs: Faq[] = [];
+	const re = /\*\*([^*\n][^*]*?\?)\*\*\s*\n+([\s\S]+?)(?=\n\s*\n\s*\*\*|\s*$)/g;
+	let m: RegExpExecArray | null;
+	while ((m = re.exec(section)) !== null) {
+		const question = m[1].trim();
+		const answer = stripInlineMarkdown(m[2].trim());
+		if (question && answer) faqs.push({ question, answer });
+	}
+	return faqs;
+}
+
+function stripInlineMarkdown(s: string): string {
+	return s
+		.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+		.replace(/\*\*([^*]+)\*\*/g, '$1')
+		.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '$1')
+		.replace(/`([^`]+)`/g, '$1')
+		.replace(/\s+/g, ' ')
+		.trim();
 }
 
 function haversineMiles(lat1: number, lng1: number, lat2: number, lng2: number): number {

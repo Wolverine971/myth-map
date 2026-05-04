@@ -2,7 +2,7 @@
 
 > A portable playbook for designing or re-designing a product's visual system from first principles, in a guided conversation with an LLM agent.
 >
-> This template was distilled from the Tiny Tribe Adventures process (see `docs/design-system.md` in this repo for the actual output it produced). Drop it into any project to re-run the same flow.
+> This template was distilled from the Tiny Tribe Adventures process (see `docs/tiny-tribe-design-system.md` in this repo for the actual output it produced). Drop it into any project to re-run the same flow.
 
 ---
 

@@ -8,15 +8,18 @@ seeded_at: 2026-05-01
 last_modified: 2026-05-01
 published: true
 published_at: 2026-05-01
+verified_at: 2026-05-01
+stroller_friendly: partial
+wheelchair_accessible: partial
+changing_table: false
+noise_level: moderate
+sensory_load: low
+season_best: [spring, fall]
+rainy_day_ok: false
+hot_day_ok: true
+cold_day_ok: true
+pair_with: [md/elkridge/rockburn-branch-park]
 ---
-
-# Rockburn Branch Park East
-
-**Address:** 5400 Landing Rd, Elkridge, MD 21075
-**Website:** [https://www.howardcountymd.gov/recreation-parks/location/rockburn-branch-park-east](https://www.howardcountymd.gov/recreation-parks/location/rockburn-branch-park-east)
-**Type:** Activity
-**Setting:** Outdoor
-**Price:** Free
 
 ## Overview
 

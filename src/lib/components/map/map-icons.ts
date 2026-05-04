@@ -1,5 +1,6 @@
 // src/lib/components/map/map-icons.ts
-import type { Map } from 'mapbox-gl';
+// Alias the Mapbox `Map` type so it doesn't shadow the JS built-in Map constructor.
+import type { Map as MapboxMap } from 'mapbox-gl';
 
 const ICON_NAMES = [
 	'playground',
@@ -29,14 +30,14 @@ const ICON_NAMES = [
 	'aircraft-observation'
 ] as const;
 
+// Mapbox layer references icon IDs like "playground1"; the asset on disk is /map/playground.png.
 const FILENAME_BY_ID = new Map<string, string>(
-	// Mapbox layer references icon IDs like "playground1"; the asset on disk is /map/playground.png
-	ICON_NAMES.map((name) => [`${name}1`, `/map/${name === 'park1' ? 'park1' : name}.png`])
+	ICON_NAMES.map((name) => [`${name}1`, `/map/${name}.png`])
 );
 
 const inFlight = new Map<string, Promise<void>>();
 
-function loadImage(map: Map, id: string): Promise<void> {
+function loadImage(map: MapboxMap, id: string): Promise<void> {
 	if (map.hasImage(id)) return Promise.resolve();
 
 	const existing = inFlight.get(id);
@@ -70,7 +71,7 @@ function loadImage(map: Map, id: string): Promise<void> {
  * layer references an icon that hasn't been registered yet. We load on demand
  * instead of front-loading every PNG at startup.
  */
-export function attachLazyIconLoader(map: Map) {
+export function attachLazyIconLoader(map: MapboxMap) {
 	map.on('styleimagemissing', (e) => {
 		void loadImage(map, e.id);
 	});

@@ -55,7 +55,6 @@ export const allPlaceIcons = {
 	'Patuxent Research Refuge - North Tract': 'nature-preserve',
 	'Greenbrier State Park': 'hiking-trail',
 	'Lake Elkhorn': 'lake',
-	Grounded: '', // 'outdoor-adventure',
 	'Village Center': 'community-center',
 	'Thomas A. Dixon, Jr. Aircraft Observation Area': 'aircraft-observation'
 };

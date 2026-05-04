@@ -251,6 +251,100 @@ Please organize your research findings using the above categories, providing spe
 
 ---
 
+## 13. STRUCTURED FRONTMATTER OUTPUT
+
+In addition to the prose findings above, produce a **frontmatter block** ready
+to paste into the location's markdown file at
+`src/lib/content/locations/{state}/{city-slug}/{slug}.md`. This block powers
+the Quick Facts card, FAQ schema, pairings, accessibility filtering, and the
+verification surface on the live page.
+
+**Rules:**
+
+- Only set a field if the research above genuinely supports it. **Unset is
+  always better than guessed.** The Quick Facts card hides anything missing.
+- Use the exact value vocabularies below. The parser is strict.
+- `verified_at` is the date you completed this research (the date facts were
+  re-checked on the official source, not the date you wrote prose).
+- Leave the required fields (`id`, `slug`, `name`, `city`, `state`,
+  `seeded_at`, `last_modified`, `published`, `published_at`) for the sync
+  script — only output the optional fields below in the structured block.
+
+### Field reference
+
+```yaml
+verified_at: 2026-05-04 # ISO date: when operational facts were re-checked
+
+# Accessibility & sensory
+stroller_friendly: yes # yes | partial | no  (the experience, not the parking)
+wheelchair_accessible: partial # yes | partial | no
+nursing_room: true # true | false  (dedicated room or family/companion restroom)
+changing_table: true # true | false
+noise_level: moderate # quiet | moderate | loud
+sensory_load: high # low | moderate | high  (lights, crowds, transitions)
+
+# Season & weather
+season_best: [spring, fall] # any subset of [spring, summer, fall, winter] — omit if year-round
+rainy_day_ok: true # true | false  ("would I bring kids here in steady rain?")
+hot_day_ok: false # true | false  (90°F+ test — shade, AC, water all count)
+cold_day_ok: true # true | false  (sub-freezing test)
+
+# Editor-picked pairings
+pair_with: [md/catonsville/charlsies-bakehouse]
+# Array of "state/city-slug/slug" keys — must match an existing TTA location.
+# Only include if you have first-hand reason to believe these stack as a half-day combo.
+```
+
+### What "yes / partial / no" actually means
+
+- `stroller_friendly: yes` — paths roll, exhibits and play areas are passable
+  with a standard stroller, no required transfers.
+- `stroller_friendly: partial` — some areas roll, others don't. State the
+  catch in the prose (e.g. "lobby fine, course is too tight").
+- `stroller_friendly: no` — strollers are impractical or banned.
+- Same logic for `wheelchair_accessible`. Default to **partial** when in doubt
+  — most state parks, museums with theaters, and outdoor playgrounds are
+  partial.
+
+### What "sensory_load" means
+
+- `low` — outdoor playground vibe. Few transitions, low noise, kids self-pace.
+- `moderate` — typical museum or indoor activity. Some announcements, periodic
+  crowds.
+- `high` — loud music, dark rooms, theatrical effects, party hosts on
+  microphones, unpredictable transitions. Flag it.
+
+### FAQ section format
+
+Generate **6–10 FAQs** in the prose. Use this exact pattern — the loader
+parses it into JSON-LD `FAQPage` schema. Every Q must end in `?`, every Q must
+be on its own line, and there must be a blank line between Q/A blocks.
+
+```markdown
+## FAQs
+
+**Is there parking?**
+Answer paragraph.
+
+**How long should we plan for?**
+Answer paragraph.
+```
+
+Common FAQ topics worth covering: parking, duration, age sweet spot, food
+policy, stroller-friendliness, restroom/changing/nursing, weather contingency,
+reservation requirement, sensory accommodations, special-event scheduling.
+
+### Pairing guidance
+
+- Only suggest a `pair_with` entry that you have specific reason to believe
+  works as a half-day combo: geographic proximity, complementary energy
+  (active → calm, indoor → outdoor), or repeat-visitor patterns.
+- Never invent a pairing target. If the candidate isn't already a TTA
+  location, mention it in the prose ("pair with Charlsie's down the road")
+  but leave it out of `pair_with`.
+
+---
+
 ## CUSTOMIZATION VARIABLES
 
 **[LOCATION NAME]:** Clarks Elioak Farm

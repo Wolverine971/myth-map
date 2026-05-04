@@ -8,15 +8,18 @@ seeded_at: 2026-05-01
 last_modified: 2026-05-01
 published: true
 published_at: 2026-05-01
+verified_at: 2026-05-01
+stroller_friendly: partial
+wheelchair_accessible: partial
+changing_table: false
+noise_level: moderate
+sensory_load: low
+season_best: [spring, fall]
+rainy_day_ok: false
+hot_day_ok: false
+cold_day_ok: true
+pair_with: [md/catonsville/charlsies-bakehouse]
 ---
-
-# Hilton Tire Park
-
-**Address:** 1101 Hilton Ave Catonsville, MD 21228
-**Website:** [https://dnr.maryland.gov/publiclands/pages/central/patapscovalley/hilton/playground-nature-center.aspx](https://dnr.maryland.gov/publiclands/pages/central/patapscovalley/hilton/playground-nature-center.aspx)
-**Type:** Activity
-**Setting:** Outdoor
-**Price:** $
 
 ## Overview
 

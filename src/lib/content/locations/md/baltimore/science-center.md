@@ -8,15 +8,17 @@ seeded_at: 2026-05-01
 last_modified: 2026-05-01
 published: true
 published_at: 2026-05-01
+verified_at: 2026-05-01
+stroller_friendly: yes
+wheelchair_accessible: yes
+nursing_room: true
+changing_table: true
+noise_level: moderate
+sensory_load: moderate
+rainy_day_ok: true
+hot_day_ok: true
+cold_day_ok: true
 ---
-
-# Science Center
-
-**Address:** 601 Light St Baltimore, MD 21230
-**Website:** [https://www.mdsci.org/](https://www.mdsci.org/)
-**Type:** Activity
-**Setting:** Indoor
-**Price:** $$
 
 ## Overview
 

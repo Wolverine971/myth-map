@@ -8,15 +8,17 @@ seeded_at: 2026-05-01
 last_modified: 2026-05-01
 published: true
 published_at: 2026-05-01
+verified_at: 2026-05-01
+stroller_friendly: partial
+wheelchair_accessible: yes
+nursing_room: false
+changing_table: false
+noise_level: loud
+sensory_load: high
+rainy_day_ok: true
+hot_day_ok: true
+cold_day_ok: true
 ---
-
-# Monster Mini Golf
-
-**Address:** 7351 Assateague Drive, Suite 380, Jessup, MD 20794
-**Website:** [https://monsterminigolf.com/locations/us/md/columbia/](https://monsterminigolf.com/locations/us/md/columbia/)
-**Type:** Activity
-**Setting:** Indoor
-**Price:** $
 
 ## Overview
 

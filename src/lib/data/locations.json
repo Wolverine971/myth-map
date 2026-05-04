@@ -757,27 +757,6 @@
 			}
 		},
 		{
-			"id": 37,
-			"website": "https://www.groundedoec.com/",
-			"location": {
-				"id": 37,
-				"name": "Grounded",
-				"address_line_1": "8378 Main Street",
-				"address_line_2": "",
-				"city": "Old Ellicott City",
-				"state": "MD",
-				"zip_code": "21043",
-				"full_address": "8378 Main Street, Old Ellicott City, MD 21043",
-				"website": "https://www.groundedoec.com/",
-				"type": "Activity",
-				"indoor_outdoor": "Outdoor",
-				"price": "$$",
-				"notes": "",
-				"lat": 39.268442674965,
-				"lng": -76.800271026219
-			}
-		},
-		{
 			"id": 38,
 			"website": "https://www.nasa.gov/goddard/visitor-center/",
 			"location": {
@@ -2539,19 +2518,6 @@
 				"id": 36,
 				"name": "Mayo Beach Park",
 				"city": "Edgewater",
-				"state": "MD"
-			},
-			"tags": {
-				"id": 4,
-				"name": "Physical Activity"
-			}
-		},
-		{
-			"id": 97,
-			"location": {
-				"id": 37,
-				"name": "Grounded",
-				"city": "Old Ellicott City",
 				"state": "MD"
 			},
 			"tags": {

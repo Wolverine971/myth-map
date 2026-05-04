@@ -8,15 +8,19 @@ seeded_at: 2026-05-01
 last_modified: 2026-05-01
 published: true
 published_at: 2026-05-01
+verified_at: 2026-05-01
+stroller_friendly: yes
+wheelchair_accessible: yes
+nursing_room: false
+changing_table: false
+noise_level: loud
+sensory_load: high
+season_best: [spring, fall]
+rainy_day_ok: false
+hot_day_ok: false
+cold_day_ok: true
+pair_with: [md/severn/carlsons-donuts]
 ---
-
-# Thomas A. Dixon, Jr. Aircraft Observation Area
-
-**Address:** 1911 Dorsey Rd, Glen Burnie, MD 21061
-**Website:** [https://www.aacounty.org/locations/bwi-trail-thomas-dixon-jr-aircraft-observation-area](https://www.aacounty.org/locations/bwi-trail-thomas-dixon-jr-aircraft-observation-area)
-**Type:** Activity
-**Setting:** Outdoor
-**Price:** Free
 
 ## Overview
 

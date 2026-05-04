@@ -8,15 +8,17 @@ seeded_at: 2026-05-01
 last_modified: 2026-05-01
 published: true
 published_at: 2026-05-01
+verified_at: 2026-05-01
+stroller_friendly: partial
+wheelchair_accessible: yes
+nursing_room: false
+changing_table: false
+noise_level: moderate
+sensory_load: low
+rainy_day_ok: true
+hot_day_ok: true
+cold_day_ok: true
 ---
-
-# Donut shack
-
-**Address:** 497 Ritchie Hwy Ste 2E, Severna Park, MD 21146
-**Website:** [theshackisback.com](https://theshackisback.com/)
-**Phone:** (410) 544-0278
-**Type:** Food
-**Setting:** Indoor
 
 ## Overview
 
@@ -28,7 +30,7 @@ This is a quick stop, not a destination. The shop is small, the seating is a cou
 
 - **Hours:** Open 24/7, every day. The shop publishes a reduced December schedule (Wed 5am through Sun 10pm, closed Mon–Tue) and returns to 24/7 in January — worth a quick check before a holiday-week run.
 - **Cost:** Classic donuts run roughly $1.50 each; signature/premium donuts (Tuxedo, Peanut Butter Cup, etc.) around $2.25; a dozen is in the $14 range. Coffee priced like a normal cafe.
-- **Ordering:** Walk in, or [order ahead through Toast](https://order.theshackisback.com/) for pickup. No table service.
+- **Ordering:** Walk in, [order ahead through Toast](https://order.theshackisback.com/) for pickup, or call **[(410) 544-0278](tel:4105440278)**. No table service.
 - **Payment:** Cards accepted (Visa/MC, mobile pay). They were cash-only for years, so older guides still say bring cash — you don't need to anymore, but $20 in cash never hurts.
 - **Parking:** Free lot directly in front of the shop, shared with the strip's other tenants. Tight on weekend mornings between about 8 and 10:30am — circle once or park at the far end and walk.
 - **Seating:** A vinyl-stool counter and a few small tables. Maybe 15 seats total. Plan to grab and go if you have more than two kids in tow.
