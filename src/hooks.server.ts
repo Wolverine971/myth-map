@@ -27,7 +27,9 @@ function normalizeLocationSegments(segments: string[]): string[] {
 }
 
 export const handle: Handle = async ({ event, resolve }) => {
-	const { pathname, search } = event.url;
+	// NOTE: do not destructure `search` from event.url here — accessing
+	// url.search throws on prerendered routes. Read it lazily below.
+	const pathname = event.url.pathname;
 
 	// Old `/locations/states/...` URLs → canonical `/locations/...`
 	if (
@@ -37,7 +39,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		const rest = pathname.slice(STATES_PREFIX.length).split('/').filter(Boolean);
 		const normalized = normalizeLocationSegments(rest);
 		const target = LOCATIONS_PREFIX + (normalized.length ? '/' + normalized.join('/') : '');
-		throw redirect(301, target + search);
+		throw redirect(301, target + event.url.search);
 	}
 
 	// Mixed-case `/locations/<state>[/<city>[/<slug>]]` → lowercase canonical
@@ -46,7 +48,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 		if (rest.length >= 1 && rest.length <= 3) {
 			const normalized = normalizeLocationSegments(rest);
 			if (normalized.every(Boolean) && normalized.join('/') !== rest.join('/')) {
-				throw redirect(301, LOCATIONS_PREFIX + '/' + normalized.join('/') + search);
+				throw redirect(301, LOCATIONS_PREFIX + '/' + normalized.join('/') + event.url.search);
 			}
 		}
 	}
