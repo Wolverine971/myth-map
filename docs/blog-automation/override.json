@@ -1,0 +1,10 @@
+{
+	"pause": false,
+	"reason": null,
+	"forceNext": null,
+	"rateLimit": {
+		"maxPerWeek": 5,
+		"currentWeekCount": 1,
+		"weekStartDate": "2026-05-11"
+	}
+}

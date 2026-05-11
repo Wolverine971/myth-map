@@ -12,6 +12,7 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 schema.ts
 supabase
+logs/
 
 # build-locations.ts intermediates (final output is committed)
 scripts/.parsed.json
