@@ -1,5 +1,5 @@
 {
-	"lastUpdated": "2026-05-11T16:36:58.288Z",
+	"lastUpdated": "2026-05-12T18:17:14.865Z",
 	"stats": {
 		"totalLocations": 57,
 		"totalWritten": 15,
@@ -10,39 +10,6 @@
 		"completionRate": "26.3%"
 	},
 	"queue": [
-		{
-			"id": 30,
-			"locationKey": "md/columbia/playseum",
-			"slug": "playseum",
-			"name": "Playseum",
-			"city": "Columbia",
-			"state": "MD",
-			"address": "10300 Little Patuxent Parkway, STE 1870, Columbia, MD 21044",
-			"contentPath": "src/lib/content/locations/md/columbia/playseum.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 104,
-			"priorityReason": "Seeded stub with empty family-guide sections; high family-search intent.",
-			"estimatedTraffic": "high",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "columbia-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
 		{
 			"id": 41,
 			"locationKey": "md/ellicott-city/baltimore-ohio-ellicott-city-station-museum",
@@ -1386,12 +1353,49 @@
 				"wordCount": 1277,
 				"faqCount": 10,
 				"helpfulLinkCount": 0,
-				"missingSections": ["Helpful links"]
+				"missingSections": [
+					"Helpful links"
+				]
 			}
 		}
 	],
 	"inProgress": null,
 	"completed": [
+		{
+			"id": 30,
+			"locationKey": "md/columbia/playseum",
+			"slug": "playseum",
+			"name": "Playseum",
+			"city": "Columbia",
+			"state": "MD",
+			"address": "10300 Little Patuxent Parkway, STE 1870, Columbia, MD 21044",
+			"contentPath": "src/lib/content/locations/md/columbia/playseum.md",
+			"published": false,
+			"contentState": "unstarted",
+			"priority": 104,
+			"priorityReason": "Seeded stub with empty family-guide sections; high family-search intent.",
+			"estimatedTraffic": "high",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "columbia-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"completedAt": "2026-05-12T18:20:08.031Z",
+			"durationMinutes": 2.7
+		},
 		{
 			"id": 8,
 			"locationKey": "md/baltimore/national-aquarium",
