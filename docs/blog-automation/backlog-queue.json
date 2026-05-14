@@ -1,81 +1,15 @@
 {
-	"lastUpdated": "2026-05-12T18:17:14.865Z",
+	"lastUpdated": "2026-05-14T16:39:29.146Z",
 	"stats": {
 		"totalLocations": 57,
-		"totalWritten": 15,
-		"totalNeedsBlog": 42,
+		"totalWritten": 18,
+		"totalNeedsBlog": 39,
 		"totalPublished": 13,
 		"totalPublishedButThin": 1,
-		"totalDraftedUnpublished": 3,
-		"completionRate": "26.3%"
+		"totalDraftedUnpublished": 6,
+		"completionRate": "31.6%"
 	},
 	"queue": [
-		{
-			"id": 41,
-			"locationKey": "md/ellicott-city/baltimore-ohio-ellicott-city-station-museum",
-			"slug": "baltimore-ohio-ellicott-city-station-museum",
-			"name": "Baltimore & Ohio Ellicott City Station Museum",
-			"city": "Ellicott City",
-			"state": "MD",
-			"address": "3711 Maryland Avenue, Ellicott City, MD 21043",
-			"contentPath": "src/lib/content/locations/md/ellicott-city/baltimore-ohio-ellicott-city-station-museum.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 104,
-			"priorityReason": "Seeded stub with empty family-guide sections; high family-search intent.",
-			"estimatedTraffic": "high",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "ellicott-city-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
-		{
-			"id": 29,
-			"locationKey": "md/ellicott-city/clarks-elioak-farm",
-			"slug": "clarks-elioak-farm",
-			"name": "Clarks Elioak Farm",
-			"city": "Ellicott City",
-			"state": "MD",
-			"address": "10500 Clarksville Pike, Ellicott City, MD 21042",
-			"contentPath": "src/lib/content/locations/md/ellicott-city/clarks-elioak-farm.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 104,
-			"priorityReason": "Seeded stub with empty family-guide sections; high family-search intent.",
-			"estimatedTraffic": "high",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "ellicott-city-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
 		{
 			"id": 33,
 			"locationKey": "md/ellicott-city/ellicott-mills-childrens-museum",
@@ -1353,14 +1287,84 @@
 				"wordCount": 1277,
 				"faqCount": 10,
 				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Helpful links"
-				]
+				"missingSections": ["Helpful links"]
 			}
 		}
 	],
 	"inProgress": null,
 	"completed": [
+		{
+			"id": 29,
+			"locationKey": "md/ellicott-city/clarks-elioak-farm",
+			"slug": "clarks-elioak-farm",
+			"name": "Clarks Elioak Farm",
+			"city": "Ellicott City",
+			"state": "MD",
+			"address": "10500 Clarksville Pike, Ellicott City, MD 21042",
+			"contentPath": "src/lib/content/locations/md/ellicott-city/clarks-elioak-farm.md",
+			"published": false,
+			"contentState": "unstarted",
+			"priority": 104,
+			"priorityReason": "Seeded stub with empty family-guide sections; high family-search intent.",
+			"estimatedTraffic": "high",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "ellicott-city-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-05-14T16:33:01.000Z",
+			"completedAt": "2026-05-14T16:38:48.000Z",
+			"durationMinutes": 5.8
+		},
+		{
+			"id": 41,
+			"locationKey": "md/ellicott-city/baltimore-ohio-ellicott-city-station-museum",
+			"slug": "baltimore-ohio-ellicott-city-station-museum",
+			"name": "Baltimore & Ohio Ellicott City Station Museum",
+			"city": "Ellicott City",
+			"state": "MD",
+			"address": "3711 Maryland Avenue, Ellicott City, MD 21043",
+			"contentPath": "src/lib/content/locations/md/ellicott-city/baltimore-ohio-ellicott-city-station-museum.md",
+			"published": false,
+			"contentState": "unstarted",
+			"priority": 104,
+			"priorityReason": "Seeded stub with empty family-guide sections; high family-search intent.",
+			"estimatedTraffic": "high",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "ellicott-city-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-05-13T14:05:00.000Z",
+			"completedAt": "2026-05-13T14:12:41.000Z",
+			"durationMinutes": 7.7
+		},
 		{
 			"id": 30,
 			"locationKey": "md/columbia/playseum",
