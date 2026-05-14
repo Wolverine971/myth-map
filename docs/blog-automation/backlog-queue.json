@@ -1,48 +1,15 @@
 {
-	"lastUpdated": "2026-05-14T16:39:29.146Z",
+	"lastUpdated": "2026-05-14T17:17:31.815Z",
 	"stats": {
 		"totalLocations": 57,
-		"totalWritten": 18,
-		"totalNeedsBlog": 39,
+		"totalWritten": 19,
+		"totalNeedsBlog": 38,
 		"totalPublished": 13,
 		"totalPublishedButThin": 1,
-		"totalDraftedUnpublished": 6,
-		"completionRate": "31.6%"
+		"totalDraftedUnpublished": 7,
+		"completionRate": "33.3%"
 	},
 	"queue": [
-		{
-			"id": 33,
-			"locationKey": "md/ellicott-city/ellicott-mills-childrens-museum",
-			"slug": "ellicott-mills-childrens-museum",
-			"name": "Ellicott Mills Childrens Museum",
-			"city": "Ellicott City",
-			"state": "MD",
-			"address": "3725 Park Avenue, Ellicott City, MD 21043",
-			"contentPath": "src/lib/content/locations/md/ellicott-city/ellicott-mills-childrens-museum.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 104,
-			"priorityReason": "Seeded stub with empty family-guide sections; high family-search intent.",
-			"estimatedTraffic": "high",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "ellicott-city-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
 		{
 			"id": 17,
 			"locationKey": "md/ellicott-city/marys-land-farm",
@@ -1293,6 +1260,42 @@
 	],
 	"inProgress": null,
 	"completed": [
+		{
+			"id": 33,
+			"locationKey": "md/ellicott-city/ellicott-mills-childrens-museum",
+			"slug": "ellicott-mills-childrens-museum",
+			"name": "Ellicott Mills Childrens Museum",
+			"city": "Ellicott City",
+			"state": "MD",
+			"address": "3725 Park Avenue, Ellicott City, MD 21043",
+			"contentPath": "src/lib/content/locations/md/ellicott-city/ellicott-mills-childrens-museum.md",
+			"published": false,
+			"contentState": "unstarted",
+			"priority": 104,
+			"priorityReason": "Seeded stub with empty family-guide sections; high family-search intent.",
+			"estimatedTraffic": "high",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "ellicott-city-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-05-14T17:13:14.000Z",
+			"completedAt": "2026-05-14T17:17:10.000Z",
+			"durationMinutes": 3.9
+		},
 		{
 			"id": 29,
 			"locationKey": "md/ellicott-city/clarks-elioak-farm",
