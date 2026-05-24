@@ -1,114 +1,15 @@
 {
-	"lastUpdated": "2026-05-14T17:17:31.815Z",
+	"lastUpdated": "2026-05-21T06:03:24.000Z",
 	"stats": {
 		"totalLocations": 57,
-		"totalWritten": 19,
-		"totalNeedsBlog": 38,
+		"totalWritten": 21,
+		"totalNeedsBlog": 36,
 		"totalPublished": 13,
 		"totalPublishedButThin": 1,
-		"totalDraftedUnpublished": 7,
-		"completionRate": "33.3%"
+		"totalDraftedUnpublished": 9,
+		"completionRate": "36.8%"
 	},
 	"queue": [
-		{
-			"id": 17,
-			"locationKey": "md/ellicott-city/marys-land-farm",
-			"slug": "marys-land-farm",
-			"name": "Mary’s Land Farm",
-			"city": "Ellicott City",
-			"state": "MD",
-			"address": "4979 Sheppard Lane, Ellicott City, MD 21042",
-			"contentPath": "src/lib/content/locations/md/ellicott-city/marys-land-farm.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 104,
-			"priorityReason": "Seeded stub with empty family-guide sections; high family-search intent.",
-			"estimatedTraffic": "high",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "ellicott-city-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
-		{
-			"id": 38,
-			"locationKey": "md/greenbelt/nasa-goddard-flight-center",
-			"slug": "nasa-goddard-flight-center",
-			"name": "NASA Goddard Flight Center",
-			"city": "Greenbelt",
-			"state": "MD",
-			"address": "8800 Greenbelt Road, Greenbelt, MD 20771",
-			"contentPath": "src/lib/content/locations/md/greenbelt/nasa-goddard-flight-center.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 99,
-			"priorityReason": "Seeded stub with empty family-guide sections; high family-search intent.",
-			"estimatedTraffic": "high",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "greenbelt-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
-		{
-			"id": 43,
-			"locationKey": "md/lutherville/the-fire-museum-of-md",
-			"slug": "the-fire-museum-of-md",
-			"name": "The Fire Museum of MD",
-			"city": "Lutherville",
-			"state": "MD",
-			"address": "1301-R York Road, Lutherville, MD 21093",
-			"contentPath": "src/lib/content/locations/md/lutherville/the-fire-museum-of-md.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 99,
-			"priorityReason": "Seeded stub with empty family-guide sections; high family-search intent.",
-			"estimatedTraffic": "high",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "lutherville-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
 		{
 			"id": 56,
 			"locationKey": "md/woodbine/larriland-farm",
@@ -1261,6 +1162,42 @@
 	"inProgress": null,
 	"completed": [
 		{
+			"id": 38,
+			"locationKey": "md/greenbelt/nasa-goddard-flight-center",
+			"slug": "nasa-goddard-flight-center",
+			"name": "NASA Goddard Flight Center",
+			"city": "Greenbelt",
+			"state": "MD",
+			"address": "8800 Greenbelt Road, Greenbelt, MD 20771",
+			"contentPath": "src/lib/content/locations/md/greenbelt/nasa-goddard-flight-center.md",
+			"published": false,
+			"contentState": "unstarted",
+			"priority": 99,
+			"priorityReason": "Seeded stub with empty family-guide sections; high family-search intent.",
+			"estimatedTraffic": "high",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "greenbelt-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-05-20T06:01:39.000Z",
+			"completedAt": "2026-05-20T06:01:39.000Z",
+			"durationMinutes": 1
+		},
+		{
 			"id": 33,
 			"locationKey": "md/ellicott-city/ellicott-mills-childrens-museum",
 			"slug": "ellicott-mills-childrens-museum",
@@ -1438,6 +1375,42 @@
 			"startedAt": "2026-05-11T16:29:35.368Z",
 			"completedAt": "2026-05-11T16:36:08.144Z",
 			"durationMinutes": 6.5
+		},
+		{
+			"id": 17,
+			"locationKey": "md/ellicott-city/marys-land-farm",
+			"slug": "marys-land-farm",
+			"name": "Mary’s Land Farm",
+			"city": "Ellicott City",
+			"state": "MD",
+			"address": "4979 Sheppard Lane, Ellicott City, MD 21042",
+			"contentPath": "src/lib/content/locations/md/ellicott-city/marys-land-farm.md",
+			"published": false,
+			"contentState": "unstarted",
+			"priority": 104,
+			"priorityReason": "Seeded stub with empty family-guide sections; high family-search intent.",
+			"estimatedTraffic": "high",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "ellicott-city-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-05-19T14:18:00.000Z",
+			"completedAt": "2026-05-19T14:20:00.000Z",
+			"durationMinutes": 2
 		}
 	],
 	"failed": [],
