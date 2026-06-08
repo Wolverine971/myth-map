@@ -212,28 +212,69 @@ function processDirectory(
 	return { processed, updated };
 }
 
+function processFiles(files: string[], rootDir: string): { processed: number; updated: number } {
+	let processed = 0;
+	let updated = 0;
+
+	for (const file of files) {
+		const fullPath = path.resolve(rootDir, file);
+
+		if (!fs.existsSync(fullPath)) continue;
+		if (!fs.statSync(fullPath).isFile()) continue;
+		if (!shouldProcessFile(fullPath)) continue;
+
+		processed++;
+		const wasUpdated = addOrUpdatePathComment(fullPath, rootDir);
+		if (wasUpdated) {
+			updated++;
+			console.log(`Updated: ${getRelativePath(fullPath, rootDir)}`);
+		}
+	}
+
+	return { processed, updated };
+}
+
 function main() {
-	const args = process.argv.slice(2);
-	const targetDir = args[0] || process.cwd();
-	const rootDir = path.resolve(targetDir);
+	const args = process.argv.slice(2).filter((arg) => !arg.startsWith('--'));
+	const rootDir = process.cwd();
 
-	console.log(`Starting file path labeling in: ${rootDir}`);
-	console.log('Supported file types:', Object.keys(COMMENT_PATTERNS).join(', '));
-	console.log('');
+	// No args, or a single directory arg → walk the tree (original behavior).
+	// Otherwise, treat the args as an explicit list of files to (re)label.
+	const isFullWalk =
+		args.length === 0 ||
+		(args.length === 1 && fs.existsSync(args[0]) && fs.statSync(args[0]).isDirectory());
 
+	if (isFullWalk) {
+		const targetDir = args[0] || rootDir;
+		const resolvedRoot = path.resolve(targetDir);
+		console.log(`Starting file path labeling in: ${resolvedRoot}`);
+		console.log('Supported file types:', Object.keys(COMMENT_PATTERNS).join(', '));
+		console.log('');
+
+		const startTime = Date.now();
+		const result = processDirectory(resolvedRoot, resolvedRoot);
+		const endTime = Date.now();
+
+		console.log('');
+		console.log('='.repeat(50));
+		console.log(`Processed ${result.processed} files`);
+		console.log(`Updated ${result.updated} files`);
+		console.log(`Completed in ${endTime - startTime}ms`);
+
+		if (result.updated === 0) {
+			console.log('All files are already up to date!');
+		}
+		return;
+	}
+
+	// Explicit file list (used by `pnpm gen:all` for changed-only labeling).
 	const startTime = Date.now();
-	const result = processDirectory(rootDir, rootDir);
+	const result = processFiles(args, rootDir);
 	const endTime = Date.now();
 
-	console.log('');
-	console.log('='.repeat(50));
-	console.log(`Processed ${result.processed} files`);
-	console.log(`Updated ${result.updated} files`);
-	console.log(`Completed in ${endTime - startTime}ms`);
-
-	if (result.updated === 0) {
-		console.log('All files are already up to date!');
-	}
+	console.log(
+		`Path labels: processed ${result.processed} file(s), updated ${result.updated} in ${endTime - startTime}ms`
+	);
 }
 
 // Run the script

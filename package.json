@@ -19,7 +19,8 @@
 		"content:sync": "tsx scripts/sync-location-content.ts",
 		"content:status": "tsx scripts/content-status.ts",
 		"blog:queue": "tsx scripts/generate-location-blog-queue.ts",
-		"gen:all": "pnpm format && pnpm content:sync && pnpm label-paths"
+		"gen:all": "tsx scripts/gen.ts",
+		"gen:full": "tsx scripts/gen.ts --all"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-vercel": "^5.7.2",
