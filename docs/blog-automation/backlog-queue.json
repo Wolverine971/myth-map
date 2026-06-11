@@ -1,81 +1,15 @@
 {
-	"lastUpdated": "2026-06-08T12:40:07.000Z",
+	"lastUpdated": "2026-06-10T06:05:51.000Z",
 	"stats": {
 		"totalLocations": 57,
-		"totalWritten": 22,
-		"totalNeedsBlog": 33,
+		"totalWritten": 24,
+		"totalNeedsBlog": 31,
 		"totalPublished": 13,
 		"totalPublishedButThin": 1,
-		"totalDraftedUnpublished": 10,
-		"completionRate": "38.6%"
+		"totalDraftedUnpublished": 12,
+		"completionRate": "42.1%"
 	},
 	"queue": [
-		{
-			"id": 12,
-			"locationKey": "md/columbia/cedar-lane-park-east-playground",
-			"slug": "cedar-lane-park-east-playground",
-			"name": "Cedar Lane Park East Playground",
-			"city": "Columbia",
-			"state": "MD",
-			"address": "10745 Clarksville Pike, Columbia, MD 21044",
-			"contentPath": "src/lib/content/locations/md/columbia/cedar-lane-park-east-playground.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 98,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "columbia-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
-		{
-			"id": 11,
-			"locationKey": "md/columbia/cedar-lane-park-playground",
-			"slug": "cedar-lane-park-playground",
-			"name": "Cedar Lane Park Playground",
-			"city": "Columbia",
-			"state": "MD",
-			"address": "5081 Cedar Ln, Columbia, MD 21044",
-			"contentPath": "src/lib/content/locations/md/columbia/cedar-lane-park-playground.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 98,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "columbia-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
 		{
 			"id": 25,
 			"locationKey": "md/columbia/color-burst-park",
@@ -1023,7 +957,9 @@
 				"wordCount": 1277,
 				"faqCount": 10,
 				"helpfulLinkCount": 0,
-				"missingSections": ["Helpful links"]
+				"missingSections": [
+					"Helpful links"
+				]
 			}
 		},
 		{
@@ -1061,6 +997,67 @@
 	],
 	"inProgress": null,
 	"completed": [
+		{
+			"id": 11,
+			"locationKey": "md/columbia/cedar-lane-park-playground",
+			"slug": "cedar-lane-park-playground",
+			"name": "Cedar Lane Park Playground",
+			"city": "Columbia",
+			"state": "MD",
+			"address": "5081 Cedar Ln, Columbia, MD 21044",
+			"contentPath": "src/lib/content/locations/md/columbia/cedar-lane-park-playground.md",
+			"published": false,
+			"contentState": "drafted-unpublished",
+			"priority": 98,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "columbia-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-06-10T06:01:47.000Z",
+			"completedAt": "2026-06-10T06:05:51.000Z",
+			"durationMinutes": 4.1,
+			"reviewNote": "West-playground equipment mix (swings, rock wall) and surface type from secondary sources, not the official county page; shade coverage and changing-table availability unverified and omitted. Flagged in an HTML comment for site-visit verification before publishing."
+		},
+		{
+			"id": 12,
+			"locationKey": "md/columbia/cedar-lane-park-east-playground",
+			"slug": "cedar-lane-park-east-playground",
+			"name": "Cedar Lane Park East Playground",
+			"city": "Columbia",
+			"state": "MD",
+			"address": "10745 Clarksville Pike, Columbia, MD 21044",
+			"contentPath": "src/lib/content/locations/md/columbia/cedar-lane-park-east-playground.md",
+			"published": false,
+			"contentState": "drafted-unpublished",
+			"priority": 98,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "columbia-activity-cluster",
+			"reviewNote": "Playground surface conflicting across sources (rubberized vs mulch); changing-table/nursing availability unconfirmed. Both flagged in an HTML comment for site-visit verification before publishing.",
+			"startedAt": "2026-06-09T06:01:20.000Z",
+			"completedAt": "2026-06-09T06:03:56.000Z",
+			"durationMinutes": 2.6
+		},
 		{
 			"id": 6,
 			"locationKey": "md/columbia/bland-air-regional-park-west-playground",
