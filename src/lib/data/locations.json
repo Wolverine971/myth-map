@@ -1196,6 +1196,27 @@
 				"lat": 39.541539622085,
 				"lng": -77.608316036114
 			}
+		},
+		{
+			"id": 59,
+			"website": "http://parkewest.hoaspace.com/",
+			"location": {
+				"id": 59,
+				"name": "Parke West Neighborhood Parks",
+				"address_line_1": "Parke West neighborhood",
+				"address_line_2": "",
+				"city": "Glen Burnie",
+				"state": "MD",
+				"zip_code": "21061",
+				"full_address": "Parke West neighborhood, Glen Burnie, MD 21061",
+				"website": "http://parkewest.hoaspace.com/",
+				"type": "Activity",
+				"indoor_outdoor": "Outdoor",
+				"price": "Free",
+				"notes": "Private neighborhood parks; confirm resident/guest access before visiting.",
+				"lat": 39.134178333333,
+				"lng": -76.6467789
+			}
 		}
 	],
 	"tags": [
@@ -3134,6 +3155,45 @@
 			"tags": {
 				"id": 19,
 				"name": "Swimming"
+			}
+		},
+		{
+			"id": 145,
+			"location": {
+				"id": 59,
+				"name": "Parke West Neighborhood Parks",
+				"city": "Glen Burnie",
+				"state": "MD"
+			},
+			"tags": {
+				"id": 5,
+				"name": "Playground"
+			}
+		},
+		{
+			"id": 146,
+			"location": {
+				"id": 59,
+				"name": "Parke West Neighborhood Parks",
+				"city": "Glen Burnie",
+				"state": "MD"
+			},
+			"tags": {
+				"id": 6,
+				"name": "Park"
+			}
+		},
+		{
+			"id": 147,
+			"location": {
+				"id": 59,
+				"name": "Parke West Neighborhood Parks",
+				"city": "Glen Burnie",
+				"state": "MD"
+			},
+			"tags": {
+				"id": 4,
+				"name": "Physical Activity"
 			}
 		}
 	]
