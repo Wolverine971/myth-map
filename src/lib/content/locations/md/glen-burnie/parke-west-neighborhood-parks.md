@@ -4,11 +4,11 @@ slug: parke-west-neighborhood-parks
 name: Parke West Neighborhood Parks
 city: Glen Burnie
 state: MD
-seeded_at: 2026-06-11
-last_modified: 2026-06-11
+seeded_at: 2026-06-12
+last_modified: 2026-06-12
 published: true
-published_at: 2026-06-11
-verified_at: 2026-06-11
+published_at: 2026-06-12
+verified_at: 2026-06-12
 stroller_friendly: partial
 wheelchair_accessible: partial
 nursing_room: false

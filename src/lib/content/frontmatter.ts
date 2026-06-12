@@ -41,6 +41,14 @@ export type Frontmatter = {
 	// Curated pairings — array of "state/city-slug/slug" keys from the loader
 	// index. Used to surface "pair with" suggestions on the page.
 	pair_with?: string[];
+
+	// Parent field note (set by /outing). parent_tested means a real family
+	// visit is documented in the page's "## Parent field note" section — the
+	// trust layer on top of researched content. visit_ages are display strings
+	// like "4yo" or "18mo".
+	parent_tested?: boolean;
+	last_visited?: string;
+	visit_ages?: string[];
 };
 
 const REQUIRED_FM_KEYS: ReadonlyArray<keyof Frontmatter> = [
@@ -67,7 +75,10 @@ const OPTIONAL_FM_KEYS: ReadonlyArray<keyof Frontmatter> = [
 	'rainy_day_ok',
 	'hot_day_ok',
 	'cold_day_ok',
-	'pair_with'
+	'pair_with',
+	'parent_tested',
+	'last_visited',
+	'visit_ages'
 ];
 
 export const FM_KEYS: ReadonlyArray<keyof Frontmatter> = [...REQUIRED_FM_KEYS, ...OPTIONAL_FM_KEYS];

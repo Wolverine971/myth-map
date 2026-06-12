@@ -77,6 +77,7 @@ After the writer exits:
    - `## Helpful links`
 3. Confirm `last_modified` changed to today's date.
 4. Confirm `published` is still `false` unless explicitly instructed otherwise.
+5. If the file had a `## Parent field note` section before the writer ran (check git diff), confirm it is still present and unmodified, and that `parent_tested`, `last_visited`, and `visit_ages` frontmatter survived. If the writer damaged any of these, restore them from git and log it as a failure condition.
 
 ## Queue Update
 

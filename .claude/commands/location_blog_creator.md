@@ -22,6 +22,15 @@ Read these before researching or editing:
 
 Use `docs/location-research-brief.md` as the editorial authority. Use `docs/location-research-prompt.md` to make sure the research covers structured logistics and optional frontmatter fields.
 
+## Parent field notes
+
+Some pages carry a `## Parent field note` section and `parent_tested: true` frontmatter, written by `/outing` from a real family visit. This is the trust layer of the site. Rules:
+
+1. **Never rewrite, trim, or relocate the `## Parent field note` section.** Preserve it verbatim as the first `##` section of the body, before `## Overview`.
+2. **Field notes outrank research.** If the note says there's no shade and a review says otherwise, the note wins. Weave its facts (parking tip, age fit, warnings) into Overview, Tips, and FAQs so the page is consistent with it.
+3. Check `docs/field-notes/` for archive files whose `places:` frontmatter includes this locationKey — they may hold raw detail that never made it onto the page. Use them as a primary source.
+4. Preserve `parent_tested`, `last_visited`, and `visit_ages` frontmatter exactly. Never set `parent_tested: true` yourself — only `/outing` does that.
+
 ## Scope
 
 You own one location markdown file only. Do not rewrite unrelated locations, route code, or loaders.
