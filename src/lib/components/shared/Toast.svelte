@@ -1,12 +1,13 @@
 <!-- src/lib/components/shared/Toast.svelte -->
-<script>
+<script lang="ts">
 	import { flip } from 'svelte/animate';
 	import { fly } from 'svelte/transition';
 	import { notifications } from '$lib/components/shared/notifications';
+	import type { NotificationType } from '$lib/components/shared/notifications';
 
-	export let themes = {
+	export let themes: Record<NotificationType, string> = {
 		danger: '#E26D69',
-		success: '##49d3df',
+		success: '#49d3df',
 		warning: '#f0ad4e',
 		info: '#45cda8',
 		default: '#aaaaaa'
@@ -18,7 +19,7 @@
 		<div
 			animate:flip
 			class="toast"
-			style="background: {themes[notification.type]};"
+			style:background={themes[notification.type] ?? themes.default}
 			transition:fly={{ y: 30 }}
 		>
 			<div class="content">{notification.message}</div>

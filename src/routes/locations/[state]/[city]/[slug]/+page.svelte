@@ -67,6 +67,9 @@
 					}))
 				}
 			: null;
+	$: faqStructuredDataScript = faqStructuredData
+		? `<script type="application/ld+json">${JSON.stringify(faqStructuredData)}<` + '/script>'
+		: '';
 
 	$: description = fm.published
 		? `${loc.name} in ${loc.city}, ${loc.state}. Family-friendly tips, hours, parking, and what to know before you go.`
@@ -142,7 +145,8 @@
 
 <svelte:head>
 	{#if faqStructuredData}
-		{@html `<script type="application/ld+json">${JSON.stringify(faqStructuredData)}</script>`}
+		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+		{@html faqStructuredDataScript}
 	{/if}
 </svelte:head>
 
@@ -288,6 +292,7 @@
 
 	{#if fm.published && entry.bodyHtml}
 		<article class="prose prose-lg mb-6 max-w-none dark:prose-invert">
+			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			{@html entry.bodyHtml}
 		</article>
 		{#if verifiedLabel}

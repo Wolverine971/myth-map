@@ -173,8 +173,9 @@ class CacheManager {
 		}
 
 		this.store.update((cache) => {
-			const { [key]: removed, ...rest } = cache;
-			return rest;
+			const next = { ...cache };
+			delete next[key];
+			return next;
 		});
 	}
 
@@ -190,7 +191,6 @@ class CacheManager {
 	}
 
 	clearExpired(): void {
-		const now = Date.now();
 		const toDelete: string[] = [];
 
 		Object.entries(this.memoryCache).forEach(([key, item]) => {

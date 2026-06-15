@@ -13,7 +13,6 @@
 	import ThemeToggle from './ThemeToggle.svelte';
 
 	let dropdownNavOpen = false;
-	let navMenuButton: HTMLElement;
 
 	afterNavigate(() => {
 		dropdownNavOpen = false;
@@ -51,7 +50,6 @@
 				<div class="flex flex-shrink-0 items-center gap-2">
 					<ThemeToggle />
 					<NavHamburger
-						bind:this={navMenuButton}
 						class="text-default hover:text-primary-700 dark:hover:text-primary-300 md:hidden"
 						aria-haspopup="true"
 						aria-expanded={dropdownNavOpen}

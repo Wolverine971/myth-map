@@ -18,6 +18,18 @@ export default [
 				...globals.browser,
 				...globals.node
 			}
+		},
+		rules: {
+			'no-undef': 'off',
+			'@typescript-eslint/no-explicit-any': 'off',
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{
+					argsIgnorePattern: '^_',
+					caughtErrorsIgnorePattern: '^_',
+					varsIgnorePattern: '^_'
+				}
+			]
 		}
 	},
 	{
@@ -29,6 +41,6 @@ export default [
 		}
 	},
 	{
-		ignores: ['build/', '.svelte-kit/', 'dist/']
+		ignores: ['build/', '.svelte-kit/', '.vercel/', 'dist/']
 	}
 ];

@@ -71,8 +71,8 @@ function parseCSV(text: string): string[][] {
 function clean(s: string | undefined): string {
 	if (!s) return '';
 	return s
-		.replace(/[​-‍﻿]/g, '') // zero-width chars
-		.replace(/ /g, ' ') // non-breaking space
+		.replace(/[\u200B-\u200D\uFEFF]/g, '') // zero-width chars
+		.replace(/\u00A0/g, ' ') // non-breaking space
 		.trim()
 		.replace(/\s+/g, ' ');
 }
@@ -470,7 +470,7 @@ async function geocodeAll(locations: ParsedLocation[], mapboxToken: string) {
 	let hits = 0;
 	let misses = 0;
 	let cached = 0;
-	let bySource = { census: 0, mapbox: 0, miss: 0 };
+	const bySource = { census: 0, mapbox: 0, miss: 0 };
 
 	for (const loc of locations) {
 		const key = loc.full_address;

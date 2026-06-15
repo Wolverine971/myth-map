@@ -74,11 +74,11 @@ Skip entirely if `--quick`. Otherwise: **one batch, max 4 questions, never re-as
 Gap priority order — ask only the top gaps:
 
 1. **Would you go back?** (the verdict; most valuable single fact)
-2. **What age did it actually work for?** (not who came — who it *worked* for)
+2. **What age did it actually work for?** (not who came — who it _worked_ for)
 3. **First 10 minutes tip** — where to park, which entrance, what to do right away
 4. **One warning** — what should another parent know before going?
 
-For structured facts you can *infer* from the dump (e.g. "splash pad" → `hot_day_ok: true`; "we brought the stroller, fine" → `stroller_friendly: yes`), present them as a single confirm/correct list, not open questions. Do not interrogate; if he gives short answers, take them and move on.
+For structured facts you can _infer_ from the dump (e.g. "splash pad" → `hot_day_ok: true`; "we brought the stroller, fine" → `stroller_friendly: yes`), present them as a single confirm/correct list, not open questions. Do not interrogate; if he gives short answers, take them and move on.
 
 Append the answers to the archive file's `## Follow-up answers` section.
 
@@ -91,7 +91,7 @@ Insert as the **first `##` section of the body** (immediately before `## Overvie
 ```markdown
 ## Parent field note
 
-> *Visited June 2026 with a 4-year-old and an 18-month-old.*
+> _Visited June 2026 with a 4-year-old and an 18-month-old._
 
 **Would we go back?** Yes — but mornings only.
 **Best for:** ages 2–6 who like water play

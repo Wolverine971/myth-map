@@ -78,7 +78,7 @@
 		console.log('Image loaded successfully:', src);
 	}
 
-	function handleError(event: any) {
+	function handleError() {
 		hasError = true;
 		console.warn('Image failed to load:', src, 'Falling back to:', fallbackSrc);
 		// Don't set isLoaded = true here, let the fallback image load
@@ -87,12 +87,6 @@
 	function handleFallbackLoad() {
 		isLoaded = true;
 		console.log('Fallback image loaded:', fallbackSrc);
-	}
-
-	// Generate srcset for responsive images if needed
-	function generateSrcset(baseSrc: string): string {
-		// For now, return the base src. In production, you'd generate multiple sizes
-		return baseSrc;
 	}
 
 	$: shouldShowImage = loading === 'eager' || isIntersecting;
@@ -119,11 +113,9 @@
 		</div>
 	{:else if !isLoaded && placeholder === 'skeleton'}
 		<!-- Skeleton placeholder while loading -->
-		<div class="absolute inset-0 animate-pulse bg-gray-200">
-			{#if placeholder === 'blur'}
-				<div class="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-300"></div>
-			{/if}
-		</div>
+		<div class="absolute inset-0 animate-pulse bg-gray-200"></div>
+	{:else if !isLoaded && placeholder === 'blur'}
+		<div class="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-300"></div>
 	{/if}
 
 	{#if shouldShowImage}

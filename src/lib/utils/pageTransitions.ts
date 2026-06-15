@@ -46,7 +46,7 @@ export const defaultTransitions: Record<string, TransitionConfig> = {
 export function getTransition(config: TransitionConfig) {
 	// Return no-op function during SSR
 	if (!browser) {
-		return (node: Element) => ({ duration: 0 });
+		return (_node: Element) => ({ duration: 0 });
 	}
 
 	const { type, direction, duration = 300, delay = 0, easing = cubicOut } = config;
@@ -62,8 +62,8 @@ export function getTransition(config: TransitionConfig) {
 			case 'fade':
 				return fade(node, { duration, delay, easing });
 
-			case 'fly':
-				const flyOptions: any = { duration, delay, easing };
+			case 'fly': {
+				const flyOptions: Parameters<typeof fly>[1] = { duration, delay, easing };
 				switch (direction) {
 					case 'left':
 						flyOptions.x = -100;
@@ -81,6 +81,7 @@ export function getTransition(config: TransitionConfig) {
 						flyOptions.y = 50;
 				}
 				return fly(node, flyOptions);
+			}
 
 			case 'slide':
 				return slide(node, { duration, delay, easing });

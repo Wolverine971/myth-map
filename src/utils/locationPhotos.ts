@@ -1,5 +1,5 @@
 // src/utils/locationPhotos.ts
-export const allPlaceIcons = {
+export const allPlaceIcons: Record<string, string> = {
 	'Science Center': '',
 	'Port Discovery': '',
 	'NASA Goddard Flight Center': 'nasa',

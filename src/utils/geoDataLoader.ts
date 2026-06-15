@@ -3,10 +3,10 @@
 export async function loadCitiesForState(stateAbbr: string) {
 	try {
 		const indexModule = await import(`../geographies/cities/${stateAbbr.toLowerCase()}/index.json`);
-		const cityList = indexModule.default;
+		const cityList = indexModule.default as string[];
 
 		const cityData = await Promise.all(
-			cityList.map(async (cityName) => {
+			cityList.map(async (cityName: string) => {
 				const cityModule = await import(
 					`../geographies/cities/${stateAbbr.toLowerCase()}/${cityName}.json`
 				);
@@ -67,12 +67,12 @@ export function findState(name: string) {
 		(s) => s.name.toLowerCase() === lowercaseName || s.abr.toLowerCase() === lowercaseName
 	);
 }
-export function getStateAbbreviation(stateName) {
+export function getStateAbbreviation(stateName: string) {
 	const state = states.find((s) => s.name === stateName);
 	return state ? state.abr : null;
 }
 
-export function getStateName(stateAbbreviation) {
+export function getStateName(stateAbbreviation: string) {
 	const state = states.find((s) => s.abr === stateAbbreviation);
 	return state ? state.name : null;
 }

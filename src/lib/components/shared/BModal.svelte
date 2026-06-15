@@ -24,25 +24,29 @@
 
 {#if open}
 	<!-- Backdrop -->
-	<div
+	<button
+		type="button"
 		class="fixed inset-0 z-40 bg-black bg-opacity-50"
+		aria-label="Close modal"
 		on:click={closeModal}
 		transition:fade={{ duration: 200 }}
 	/>
 
 	<!-- Modal -->
 	<div
-		class="fixed inset-0 z-50 flex items-center justify-center p-4"
+		class="pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4"
 		transition:fade={{ duration: 200 }}
 	>
 		<div
-			class="flex max-h-[90vh] w-full max-w-6xl flex-col rounded-lg bg-white shadow-xl"
+			class="pointer-events-auto flex max-h-[90vh] w-full max-w-6xl flex-col rounded-lg bg-white shadow-xl"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="modal-title"
 			transition:scale={{ duration: 200, start: 0.95 }}
-			on:click|stopPropagation
 		>
 			<!-- Header -->
 			<div class="flex items-center justify-between border-b p-4">
-				<h2 class="text-xl font-semibold">{title}</h2>
+				<h2 id="modal-title" class="text-xl font-semibold">{title}</h2>
 				<button
 					class="rounded-full p-2 hover:bg-gray-100"
 					on:click={closeModal}

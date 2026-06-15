@@ -15,7 +15,7 @@
 		console.log('SimpleImage loaded successfully:', src);
 	}
 
-	function handleError(event: any) {
+	function handleError() {
 		hasError = true;
 		console.warn('SimpleImage failed to load:', src, 'Falling back to:', fallbackSrc);
 	}

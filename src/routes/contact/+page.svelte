@@ -1,9 +1,7 @@
 <!-- src/routes/contact/+page.svelte -->
 <script lang="ts">
-	import { Heading, P, Button } from 'flowbite-svelte';
+	import { Heading } from 'flowbite-svelte';
 	import SEOHead from '$lib/components/shared/SEOHead.svelte';
-	import type { PageData } from './$types';
-	export let data: PageData;
 </script>
 
 <SEOHead

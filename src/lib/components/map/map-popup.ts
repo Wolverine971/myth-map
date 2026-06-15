@@ -11,6 +11,19 @@ export type PopupProperties = {
 	website?: string;
 };
 
+export type RadarPopupProperties = {
+	id?: string;
+	name?: string;
+	layer?: string;
+	driveMinutes?: string | number;
+	distanceMiles?: string | number;
+	reason?: string;
+	url?: string;
+	address?: string;
+	city?: string;
+	state?: string;
+};
+
 export function buildAddress(props: PopupProperties): string {
 	const street = (props.address_line_1 || '').trim();
 	const city = (props.city || '').trim();
@@ -90,6 +103,37 @@ export function buildPopupHTML(props: PopupProperties, copyButtonId: string): st
 				</a>
 				${websiteButton}
 			</div>
+		</div>
+	`;
+}
+
+export function buildRadarPopupHTML(props: RadarPopupProperties): string {
+	const name = escapeHTML(props.name || 'Nearby place');
+	const layer = escapeHTML((props.layer || 'radar').replace(/_/g, ' '));
+	const reason = props.reason ? `<p class="popup-address">${escapeHTML(props.reason)}</p>` : '';
+	const place = props.address || [props.city, props.state].filter(Boolean).join(', ');
+	const placeBlock = place ? `<p class="popup-address">${escapeHTML(place)}</p>` : '';
+	const drive =
+		props.driveMinutes || props.distanceMiles
+			? `<div class="popup-address">${escapeHTML(
+					props.driveMinutes ? `${props.driveMinutes} min ring` : `${props.distanceMiles} mi away`
+				)}</div>`
+			: '';
+	const url = props.url?.trim();
+	const detailsButton = url
+		? `<a class="popup-btn popup-btn-primary" href="${escapeHTML(url)}" target="${/^https?:\/\//.test(url) ? '_blank' : '_self'}" rel="noopener noreferrer">
+				<span>Details</span>${/^https?:\/\//.test(url) ? EXTERNAL_LINK : ARROW_RIGHT}
+			</a>`
+		: '';
+
+	return `
+		<div class="popup-content">
+			<div class="popup-address">${layer}</div>
+			<h3 class="popup-title">${name}</h3>
+			${placeBlock}
+			${drive}
+			${reason}
+			${detailsButton ? `<div class="popup-actions">${detailsButton}</div>` : ''}
 		</div>
 	`;
 }

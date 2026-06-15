@@ -24,21 +24,36 @@
 		buildStateBoundaryLayer,
 		buildSelectedCityFillLayer,
 		buildSelectedCityOutlineLayer,
+		buildRadarClusterCountLayer,
+		buildRadarClusterLayer,
+		buildRadarIsochroneFillLayer,
+		buildRadarIsochroneOutlineLayer,
+		radarFocusRingLayer,
+		radarUnclusteredPointLayer,
+		RADAR_ENTITIES_SOURCE_ID,
+		RADAR_ISOCHRONE_SOURCE_ID,
 		SHOWN_LOCATIONS_SOURCE_ID
 	} from './map-layers';
-	import { buildFeatureCollection } from './map-features';
-	import { buildAddress, buildPopupHTML } from './map-popup';
+	import { buildFeatureCollection, buildRadarFeatureCollection } from './map-features';
+	import { buildAddress, buildPopupHTML, buildRadarPopupHTML } from './map-popup';
 	import { FullscreenControl } from './FullscreenControl';
-	import { currentLocation } from '$lib/stores/locationStore';
+	import { currentLocation as currentLocationStore } from '$lib/stores/locationStore';
 	import { locationFocus, type LocationFocusKey } from '$lib/stores/locationFocusStore';
 	import { effectiveTheme, type EffectiveTheme } from '$lib/stores/themeStore';
+	import type { RadarResult } from '$lib/types/radar';
 
 	export let locations: any[] = [];
 	export let shownLocations: any[] = [];
 	export let selectedState: { name: string; abr: string } | null = null;
 	export let selectedCity: string | null = null;
+	export let radarResult: RadarResult | null = null;
+	export let radarFocusedId: string | null = null;
 
-	const dispatch = createEventDispatcher<{ pinclick: { id: LocationFocusKey } }>();
+	const dispatch = createEventDispatcher<{
+		pinclick: { id: LocationFocusKey };
+		radarpinclick: { id: string };
+		mapviewchange: { center: { lat: number; lng: number } };
+	}>();
 
 	// Mapbox base styles per theme.
 	// Using `outdoors-v12` for light because it leans topographic — fits the brand.
@@ -74,6 +89,8 @@
 	$: if (mapReady) syncShownLocations(shownLocations);
 	$: if (mapReady) syncStateFilter(selectedState);
 	$: if (mapReady) syncCityFilter(selectedState, selectedCity);
+	$: if (mapReady) syncRadarResult(radarResult);
+	$: if (mapReady) syncRadarFocus(radarFocusedId);
 
 	onMount(async () => {
 		if (!browser) return;
@@ -142,6 +159,9 @@
 				autoActivateGeolocate();
 				mapReady = true;
 				syncFocusRing(focusedId);
+				syncRadarResult(radarResult);
+				syncRadarFocus(radarFocusedId);
+				dispatchMapViewChange();
 			} catch (error) {
 				console.error('Error initializing map:', error);
 			}
@@ -177,6 +197,8 @@
 				// awaits below would leave the ring at its default __none__ filter
 				// while polygon GeoJSON fetches resolve.
 				syncFocusRing(focusedId);
+				syncRadarResult(radarResult);
+				syncRadarFocus(radarFocusedId);
 				if (stateToRestore) await syncStateFilter(stateToRestore);
 				if (stateToRestore && cityToRestore) {
 					await syncCityFilter(stateToRestore, cityToRestore);
@@ -206,6 +228,43 @@
 		if (!map.getLayer(clusterCount.id)) map.addLayer(clusterCount);
 		if (!map.getLayer(focusRingLayer.id)) map.addLayer(focusRingLayer);
 		if (!map.getLayer(unclusteredPointLayer.id)) map.addLayer(unclusteredPointLayer);
+		addRadarSourceAndLayers();
+	}
+
+	function addRadarSourceAndLayers() {
+		if (!map.getSource(RADAR_ISOCHRONE_SOURCE_ID)) {
+			map.addSource(RADAR_ISOCHRONE_SOURCE_ID, {
+				type: 'geojson',
+				data: emptyFeatureCollection()
+			});
+		}
+		if (!map.getSource(RADAR_ENTITIES_SOURCE_ID)) {
+			map.addSource(RADAR_ENTITIES_SOURCE_ID, {
+				type: 'geojson',
+				data: buildRadarFeatureCollection(radarResult?.entities ?? []),
+				cluster: true,
+				clusterMaxZoom: 14,
+				clusterRadius: 42
+			});
+		}
+
+		const theme = get(effectiveTheme);
+		const anchor = markerAnchorId();
+		const isochroneFill = buildRadarIsochroneFillLayer(theme);
+		const isochroneOutline = buildRadarIsochroneOutlineLayer(theme);
+		if (!map.getLayer(isochroneFill.id)) map.addLayer(isochroneFill, anchor);
+		if (!map.getLayer(isochroneOutline.id)) map.addLayer(isochroneOutline, anchor);
+
+		const radarCluster = buildRadarClusterLayer(theme);
+		const radarClusterCount = buildRadarClusterCountLayer(theme);
+		if (!map.getLayer(radarCluster.id)) map.addLayer(radarCluster);
+		if (!map.getLayer(radarClusterCount.id)) map.addLayer(radarClusterCount);
+		if (!map.getLayer(radarFocusRingLayer.id)) map.addLayer(radarFocusRingLayer);
+		if (!map.getLayer(radarUnclusteredPointLayer.id)) map.addLayer(radarUnclusteredPointLayer);
+	}
+
+	function emptyFeatureCollection(): GeoJSON.FeatureCollection {
+		return { type: 'FeatureCollection', features: [] };
 	}
 
 	function syncFocusRing(id: LocationFocusKey | null) {
@@ -217,6 +276,18 @@
 	function syncShownLocations(list: any[]) {
 		const source = map?.getSource(SHOWN_LOCATIONS_SOURCE_ID) as GeoJSONSource | undefined;
 		source?.setData(buildFeatureCollection(list ?? []));
+	}
+
+	function syncRadarResult(result: RadarResult | null) {
+		const isochroneSource = map?.getSource(RADAR_ISOCHRONE_SOURCE_ID) as GeoJSONSource | undefined;
+		isochroneSource?.setData(result?.isochrones ?? emptyFeatureCollection());
+		const entitySource = map?.getSource(RADAR_ENTITIES_SOURCE_ID) as GeoJSONSource | undefined;
+		entitySource?.setData(buildRadarFeatureCollection(result?.entities ?? []));
+	}
+
+	function syncRadarFocus(id: string | null) {
+		if (!map?.getLayer('radar-focus-ring')) return;
+		map.setFilter('radar-focus-ring', ['==', ['get', 'id'], id ?? '__none__']);
 	}
 
 	async function syncStateFilter(stateObj: { name: string; abr: string } | null) {
@@ -382,7 +453,7 @@
 			if (!coords) return;
 			const { latitude, longitude, accuracy, heading } = coords;
 			if (latitude == null || longitude == null) return;
-			currentLocation.set({
+			currentLocationStore.set({
 				latitude,
 				longitude,
 				accuracy: accuracy ?? 0,
@@ -423,6 +494,9 @@
 	function addMapEventListeners() {
 		map.on('click', 'clusters', handleClusterClick);
 		map.on('click', 'unclustered-point', handleUnclusteredPointClick);
+		map.on('click', 'radar-clusters', handleRadarClusterClick);
+		map.on('click', 'radar-unclustered-point', handleRadarPointClick);
+		map.on('moveend', dispatchMapViewChange);
 		const setCursor = (cursor: string) => () => (map.getCanvas().style.cursor = cursor);
 
 		map.on('mousemove', 'clusters', (e) => {
@@ -437,6 +511,16 @@
 
 		map.on('mouseenter', 'unclustered-point', setCursor('pointer'));
 		map.on('mouseleave', 'unclustered-point', setCursor(''));
+		map.on('mouseenter', 'radar-clusters', setCursor('pointer'));
+		map.on('mouseleave', 'radar-clusters', setCursor(''));
+		map.on('mouseenter', 'radar-unclustered-point', setCursor('pointer'));
+		map.on('mouseleave', 'radar-unclustered-point', setCursor(''));
+	}
+
+	function dispatchMapViewChange() {
+		if (!map) return;
+		const center = map.getCenter();
+		dispatch('mapviewchange', { center: { lat: center.lat, lng: center.lng } });
 	}
 
 	// The Mapbox v3 typings only expose the callback form of
@@ -468,6 +552,65 @@
 		} catch (error) {
 			console.error('Error expanding cluster:', error);
 		}
+	}
+
+	async function handleRadarClusterClick(e: MapMouseEvent) {
+		const features = map.queryRenderedFeatures(e.point, { layers: ['radar-clusters'] });
+		if (!features.length) return;
+		const feature = features[0];
+		const clusterId = feature.properties?.cluster_id as number | undefined;
+		if (clusterId == null) return;
+		const clusterSource = map.getSource(RADAR_ENTITIES_SOURCE_ID) as GeoJSONSource;
+		const center = (feature.geometry as GeoJSON.Point).coordinates as [number, number];
+
+		try {
+			const zoom = await clusterExpansionZoom(clusterSource, clusterId);
+			map.flyTo({
+				center,
+				zoom: Math.min(zoom + 0.5, 18),
+				duration: 500,
+				curve: 1,
+				essential: true
+			});
+		} catch (error) {
+			console.error('Error expanding radar cluster:', error);
+		}
+	}
+
+	function handleRadarPointClick(e: MapMouseEvent & { features?: GeoJSON.Feature[] }) {
+		const feature = e.features?.[0];
+		if (!feature || feature.geometry.type !== 'Point') return;
+
+		const props = (feature.properties || {}) as Record<string, string>;
+		const coordinates = (feature.geometry.coordinates as number[]).slice() as [number, number];
+		const id = props.id;
+		if (id) dispatch('radarpinclick', { id });
+
+		while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+			coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+		}
+
+		const canvasHeight = map.getCanvas().clientHeight || 0;
+		const popupOffset: [number, number] = [0, -Math.min(90, Math.round(canvasHeight * 0.16))];
+		map.panTo(coordinates, { duration: 300, offset: popupOffset });
+
+		popup
+			.setLngLat(coordinates)
+			.setHTML(
+				buildRadarPopupHTML({
+					id,
+					name: props.name,
+					layer: props.layer,
+					driveMinutes: props.driveMinutes,
+					distanceMiles: props.distanceMiles,
+					reason: props.reason,
+					url: props.url,
+					address: props.address,
+					city: props.city,
+					state: props.state
+				})
+			)
+			.addTo(map);
 	}
 
 	function handleUnclusteredPointClick(e: MapMouseEvent & { features?: GeoJSON.Feature[] }) {

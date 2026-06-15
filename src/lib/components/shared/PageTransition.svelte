@@ -15,7 +15,6 @@
 	export let key: string = '';
 
 	let mounted = false;
-	let transitioning = false;
 	let prefersReducedMotion = false;
 	let previousRoute = '';
 
@@ -36,13 +35,10 @@
 
 	// Handle navigation events
 	beforeNavigate(() => {
-		transitioning = true;
 		previousRoute = $page.route.id || '';
 	});
 
 	afterNavigate(() => {
-		transitioning = false;
-
 		// Scroll to top after transition
 		setTimeout(() => {
 			window.scrollTo(0, 0);
@@ -67,19 +63,19 @@
 	// Get the actual transition function
 	$: transition =
 		browser && mounted ? getTransition(finalTransitionConfig) : () => ({ duration: 0 });
+	$: outTransition =
+		browser && mounted
+			? getTransition({
+					...finalTransitionConfig,
+					duration: (finalTransitionConfig.duration ?? 0) * 0.5
+				})
+			: () => ({ duration: 0 });
 </script>
 
 <div class="page-wrapper">
 	{#key transitionKey}
 		{#if browser && mounted}
-			<div
-				class="page-content"
-				in:transition
-				out:transition={{
-					...finalTransitionConfig,
-					duration: finalTransitionConfig.duration * 0.5
-				}}
-			>
+			<div class="page-content" in:transition out:outTransition>
 				<slot />
 			</div>
 		{:else}

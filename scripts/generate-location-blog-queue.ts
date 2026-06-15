@@ -11,7 +11,6 @@ import {
 	loadLocations,
 	parseFrontmatter,
 	slugify,
-	type Frontmatter,
 	type RawLocation
 } from './lib/content.js';
 

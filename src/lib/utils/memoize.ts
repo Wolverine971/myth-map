@@ -43,7 +43,7 @@ export function memoize<TArgs extends any[], TResult>(
 		// Enforce size limit
 		if (cache.size > maxSize) {
 			const firstKey = cache.keys().next().value;
-			cache.delete(firstKey);
+			if (firstKey !== undefined) cache.delete(firstKey);
 		}
 
 		return value;
@@ -69,6 +69,7 @@ export function memoizeLocationFilter(
 	filterFn: (locations: any[], filters: any) => any[],
 	options: MemoizeOptions = { maxSize: 50, ttl: 5 * 60 * 1000 } // 5 minutes default
 ) {
+	const { maxSize = 50, ttl = 5 * 60 * 1000 } = options;
 	const cache = new Map<string, CacheEntry<any[]>>();
 
 	return (locations: any[], filters: any): any[] => {
@@ -77,7 +78,7 @@ export function memoizeLocationFilter(
 		const now = Date.now();
 		const cached = cache.get(key);
 
-		if (cached && (options.ttl === 0 || now - cached.timestamp < options.ttl)) {
+		if (cached && (ttl === 0 || now - cached.timestamp < ttl)) {
 			return cached.value;
 		}
 
@@ -85,10 +86,11 @@ export function memoizeLocationFilter(
 		cache.set(key, { value: result, timestamp: now });
 
 		// Clean up old entries
-		if (cache.size > (options.maxSize || 50)) {
+		if (cache.size > maxSize) {
 			const entries = Array.from(cache.entries());
 			entries.sort((a, b) => a[1].timestamp - b[1].timestamp);
-			cache.delete(entries[0][0]);
+			const oldest = entries[0]?.[0];
+			if (oldest) cache.delete(oldest);
 		}
 
 		return result;

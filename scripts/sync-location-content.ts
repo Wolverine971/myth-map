@@ -25,7 +25,6 @@ import {
 	parseFrontmatter,
 	seedBody,
 	serializeFrontmatter,
-	slugify,
 	todayIsoDate,
 	type Frontmatter,
 	type RawLocation

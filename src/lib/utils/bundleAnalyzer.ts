@@ -41,7 +41,7 @@ class BundleAnalyzer {
 	}
 
 	private extractChunkName(url: string): string {
-		const match = url.match(/\/([^\/]*\.js)$/);
+		const match = url.match(/[/]([^/]*[.]js)$/);
 		return match ? match[1] : url;
 	}
 
@@ -88,10 +88,15 @@ class BundleAnalyzer {
 	// Report to analytics (if implemented)
 	reportToAnalytics() {
 		const stats = this.getStats();
+		const maybeGtag = (
+			globalThis as typeof globalThis & {
+				gtag?: (eventName: string, action: string, params: Record<string, unknown>) => void;
+			}
+		).gtag;
 
 		// This could send to Google Analytics, PostHog, etc.
-		if (typeof gtag === 'function') {
-			gtag('event', 'bundle_performance', {
+		if (typeof maybeGtag === 'function') {
+			maybeGtag('event', 'bundle_performance', {
 				load_time: stats.loadTime,
 				chunks_loaded: stats.loadedChunks.length,
 				estimated_size: stats.totalSize
@@ -126,14 +131,17 @@ class BundleAnalyzer {
 
 	private getFirstInputDelay(): number {
 		const entries = performance.getEntriesByType('first-input');
-		return entries.length > 0 ? entries[0].processingStart - entries[0].startTime : 0;
+		const firstEntry = entries[0] as (PerformanceEntry & { processingStart?: number }) | undefined;
+		return firstEntry?.processingStart ? firstEntry.processingStart - firstEntry.startTime : 0;
 	}
 
 	private getCumulativeLayoutShift(): number {
-		const entries = performance.getEntriesByType('layout-shift');
+		const entries = performance.getEntriesByType('layout-shift') as Array<
+			PerformanceEntry & { hadRecentInput?: boolean; value?: number }
+		>;
 		return entries
-			.filter((entry: any) => !entry.hadRecentInput)
-			.reduce((sum, entry: any) => sum + entry.value, 0);
+			.filter((entry) => !entry.hadRecentInput)
+			.reduce((sum, entry) => sum + (entry.value ?? 0), 0);
 	}
 }
 

@@ -7,14 +7,15 @@
 		RefreshOutline,
 		CheckCircleSolid,
 		ClockOutline,
-		ExclamationTriangleOutline
+		ExclamationCircleOutline
 	} from 'flowbite-svelte-icons';
+	import type { DataFreshness } from '$lib/stores/dataManager';
 
 	export let showDetails = false;
 	export let size: 'sm' | 'md' | 'lg' = 'sm';
 
 	let cacheStats = { totalItems: 0, validItems: 0, expiredItems: 0, memoryUsage: 0, averageAge: 0 };
-	let dataFreshness = { isFresh: false, age: null, nextRefresh: null };
+	let dataFreshness: DataFreshness = { isFresh: false, age: null, nextRefresh: null };
 	let isRefreshing = false;
 
 	const sizeClasses = {
@@ -106,7 +107,7 @@
 		{:else if statusIcon === 'warning'}
 			<ClockOutline class={iconSizeClasses[size]} />
 		{:else if statusIcon === 'error'}
-			<ExclamationTriangleOutline class={iconSizeClasses[size]} />
+			<ExclamationCircleOutline class={iconSizeClasses[size]} />
 		{/if}
 	</div>
 

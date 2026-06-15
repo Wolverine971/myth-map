@@ -84,7 +84,6 @@
 	];
 
 	let demoBox = false;
-	let demoSlow = false;
 
 	let pageDemo = 3;
 </script>

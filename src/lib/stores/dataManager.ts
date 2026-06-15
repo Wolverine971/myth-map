@@ -10,6 +10,12 @@ export interface LocationData {
 	lastUpdated: number;
 }
 
+export interface DataFreshness {
+	isFresh: boolean;
+	age: number | null;
+	nextRefresh: number | null;
+}
+
 class DataManager {
 	private store = writable<LocationData | null>(null);
 	private isLoading = writable(false);
@@ -23,9 +29,9 @@ class DataManager {
 
 	private async loadCachedData() {
 		try {
-			const cachedLocations = cacheManager.get(CacheKeys.LOCATIONS);
-			const cachedTags = cacheManager.get(CacheKeys.TAGS);
-			const cachedLocationTags = cacheManager.get(CacheKeys.LOCATION_TAGS);
+			const cachedLocations = cacheManager.get<any[]>(CacheKeys.LOCATIONS);
+			const cachedTags = cacheManager.get<any[]>(CacheKeys.TAGS);
+			const cachedLocationTags = cacheManager.get<any[]>(CacheKeys.LOCATION_TAGS);
 
 			if (cachedLocations && cachedTags && cachedLocationTags) {
 				this.store.set({
@@ -59,10 +65,10 @@ class DataManager {
 	}
 
 	// Check if cached data is still fresh
-	isCachedDataFresh(maxAge: number = CacheTTL.MEDIUM): boolean {
-		const locations = cacheManager.get(CacheKeys.LOCATIONS);
-		const tags = cacheManager.get(CacheKeys.TAGS);
-		const locationTags = cacheManager.get(CacheKeys.LOCATION_TAGS);
+	isCachedDataFresh(_maxAge: number = CacheTTL.MEDIUM): boolean {
+		const locations = cacheManager.get<any[]>(CacheKeys.LOCATIONS);
+		const tags = cacheManager.get<any[]>(CacheKeys.TAGS);
+		const locationTags = cacheManager.get<any[]>(CacheKeys.LOCATION_TAGS);
 
 		return !!(locations && tags && locationTags);
 	}
@@ -71,9 +77,9 @@ class DataManager {
 	getCachedData(): LocationData | null {
 		if (!browser) return null;
 
-		const locations = cacheManager.get(CacheKeys.LOCATIONS);
-		const tags = cacheManager.get(CacheKeys.TAGS);
-		const locationTags = cacheManager.get(CacheKeys.LOCATION_TAGS);
+		const locations = cacheManager.get<any[]>(CacheKeys.LOCATIONS);
+		const tags = cacheManager.get<any[]>(CacheKeys.TAGS);
+		const locationTags = cacheManager.get<any[]>(CacheKeys.LOCATION_TAGS);
 
 		if (locations && tags && locationTags) {
 			return {
@@ -121,10 +127,10 @@ class DataManager {
 	}
 
 	// Get data freshness info
-	getDataFreshness() {
-		const locations = cacheManager.get(CacheKeys.LOCATIONS);
-		const tags = cacheManager.get(CacheKeys.TAGS);
-		const locationTags = cacheManager.get(CacheKeys.LOCATION_TAGS);
+	getDataFreshness(): DataFreshness {
+		const locations = cacheManager.get<any[]>(CacheKeys.LOCATIONS);
+		const tags = cacheManager.get<any[]>(CacheKeys.TAGS);
+		const locationTags = cacheManager.get<any[]>(CacheKeys.LOCATION_TAGS);
 
 		if (!locations || !tags || !locationTags) {
 			return { isFresh: false, age: null, nextRefresh: null };
@@ -206,7 +212,7 @@ class CityDataCache {
 
 			// Try to get from localStorage cache
 			if (browser) {
-				const cached = cacheManager.get(`cities_${key}`);
+				const cached = cacheManager.get<string[]>(`cities_${key}`);
 				if (cached) return cached;
 			}
 

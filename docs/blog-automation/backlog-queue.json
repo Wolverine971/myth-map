@@ -1,81 +1,15 @@
 {
-	"lastUpdated": "2026-06-10T06:05:51.000Z",
+	"lastUpdated": "2026-06-15T06:01:12.576Z",
 	"stats": {
-		"totalLocations": 57,
-		"totalWritten": 24,
-		"totalNeedsBlog": 31,
-		"totalPublished": 13,
+		"totalLocations": 58,
+		"totalWritten": 26,
+		"totalNeedsBlog": 29,
+		"totalPublished": 14,
 		"totalPublishedButThin": 1,
-		"totalDraftedUnpublished": 12,
-		"completionRate": "42.1%"
+		"totalDraftedUnpublished": 13,
+		"completionRate": "44.8%"
 	},
 	"queue": [
-		{
-			"id": 25,
-			"locationKey": "md/columbia/color-burst-park",
-			"slug": "color-burst-park",
-			"name": "Color Burst Park",
-			"city": "Columbia",
-			"state": "MD",
-			"address": "6000 Merriweather Dr, Columbia, MD 21044",
-			"contentPath": "src/lib/content/locations/md/columbia/color-burst-park.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 98,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "columbia-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
-		{
-			"id": 31,
-			"locationKey": "md/columbia/doodle-hatch",
-			"slug": "doodle-hatch",
-			"name": "Doodle Hatch",
-			"city": "Columbia",
-			"state": "MD",
-			"address": "8775 Cloudleap Court, Columbia, Maryland, U.S.A. 21045",
-			"contentPath": "src/lib/content/locations/md/columbia/doodle-hatch.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 98,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "columbia-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
 		{
 			"id": 45,
 			"locationKey": "md/columbia/howard-county-library-central-branch",
@@ -957,9 +891,7 @@
 				"wordCount": 1277,
 				"faqCount": 10,
 				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Helpful links"
-				]
+				"missingSections": ["Helpful links"]
 			}
 		},
 		{
@@ -997,6 +929,44 @@
 	],
 	"inProgress": null,
 	"completed": [
+		{
+			"id": 31,
+			"locationKey": "md/columbia/doodle-hatch",
+			"slug": "doodle-hatch",
+			"name": "Doodle Hatch",
+			"city": "Columbia",
+			"state": "MD",
+			"address": "8775 Cloudleap Court, Columbia, Maryland, U.S.A. 21045",
+			"contentPath": "src/lib/content/locations/md/columbia/doodle-hatch.md",
+			"published": false,
+			"contentState": "drafted-unpublished",
+			"priority": 98,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "columbia-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-06-15T06:01:19.000Z",
+			"completedAt": "2026-06-15T06:05:12.000Z",
+			"durationMinutes": 3.9,
+			"contentPath": "src/lib/content/locations/md/columbia/doodle-hatch.md",
+			"reviewNote": "Hours conflict (official Fri–Sun 10–5 vs. cited extended summer Tues–Sun) and visit-length conflict (timed 2-hour vs. 'play all day' promos) flagged in an HTML comment; official wording used. stroller/wheelchair set to partial by inference; nursing_room/changing_table left unset. Founder reported battling stage-4 cancer (WMAR) — kept out of copy; confirm operating status before publishing."
+		},
 		{
 			"id": 11,
 			"locationKey": "md/columbia/cedar-lane-park-playground",
@@ -1428,6 +1398,44 @@
 			"durationMinutes": 2
 		}
 	],
-	"failed": [],
+	"failed": [
+		{
+			"id": 25,
+			"locationKey": "md/columbia/color-burst-park",
+			"slug": "color-burst-park",
+			"name": "Color Burst Park",
+			"city": "Columbia",
+			"state": "MD",
+			"address": "6000 Merriweather Dr, Columbia, MD 21044",
+			"contentPath": "src/lib/content/locations/md/columbia/color-burst-park.md",
+			"published": false,
+			"contentState": "unstarted",
+			"priority": 98,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "columbia-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-06-12T06:02:52.000Z",
+			"failedAt": "2026-06-14T06:00:00.000Z",
+			"error": "stale inProgress timeout",
+			"logPath": "logs/blog-automation/cron-2026-06-14.log"
+		}
+	],
 	"skipped": []
 }

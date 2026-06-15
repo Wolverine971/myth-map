@@ -192,7 +192,7 @@ export const preloadManager = new PreloadManager();
 
 // Svelte action for easy use in templates
 export function preload(element: HTMLElement, options: { key: string } & PreloadOptions) {
-	const { key, trigger, delay, threshold } = options;
+	const { key, trigger, delay } = options;
 
 	switch (trigger) {
 		case 'hover':
@@ -213,11 +213,7 @@ export function preload(element: HTMLElement, options: { key: string } & Preload
 
 // Helper to register preloads
 export function registerPreloads() {
-	const { LazyMap, LazyComments, LazyItineraryModal } = import('$lib/utils/lazyComponents').then(
-		(module) => {
-			preloadManager.register('map', module.LazyMap.load);
-			preloadManager.register('comments', module.LazyComments.load);
-			preloadManager.register('itinerary', module.LazyItineraryModal.load);
-		}
-	);
+	void import('$lib/utils/lazyComponents').then((module) => {
+		preloadManager.register('map', module.LazyMap.load);
+	});
 }

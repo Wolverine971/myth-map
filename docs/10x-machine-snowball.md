@@ -83,17 +83,17 @@ The site captures no demand. Two surfaces, both one-time:
       outing ideas — three practical picks when I have good ones"). No weekly
       promise.
 - [ ] **One-place submission form** — a no-code form (Tally) embedded or
-      linked: "Send one place your kids loved." The key field: *what should
-      another parent know before going?* Submissions land in email; the cron
+      linked: "Send one place your kids loved." The key field: _what should
+      another parent know before going?_ Submissions land in email; the cron
       can later fold them into the backlog queue automatically.
 
 ## Move 3 — Feed the machine ground truth (the moat-saver)
 
 This is the most important move strategically. The honest risk in the current
-setup: the daily automation produces well-*researched* pages, but the moat in
-both vision docs is parent-*tested*. Pure automation drifts toward exactly
+setup: the daily automation produces well-_researched_ pages, but the moat in
+both vision docs is parent-_tested_. Pure automation drifts toward exactly
 what the snowball plan warns against ("generic AI-written roundups") — better
-written, but missing the one thing competitors can't copy: *we actually went.*
+written, but missing the one thing competitors can't copy: _we actually went._
 
 The fix is an ingestion path for DJ's 3-minute captures:
 
@@ -146,13 +146,13 @@ code, then it grows automatically as the cron adds pages:
 
 ## What this changes vs. the snowball plan
 
-| Snowball plan said | Machine snowball says |
-| --- | --- |
-| 45-minute manual week upgrading pages | The cron upgrades pages daily; DJ's week is 0 minutes unless an outing happened |
-| "Capture beats polish" — write rough notes | Same, but the note is the *only* writing DJ ever does |
+| Snowball plan said                             | Machine snowball says                                                                                                                              |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 45-minute manual week upgrading pages          | The cron upgrades pages daily; DJ's week is 0 minutes unless an outing happened                                                                    |
+| "Capture beats polish" — write rough notes     | Same, but the note is the _only_ writing DJ ever does                                                                                              |
 | Build product surfaces only after manual proof | Mostly right, but wrong for topic pages & schema — those are one-time code against data **already captured**, cheaper to build than to do manually |
-| Monthly 2-hour packaging session | Machine drafts; DJ approves in 10 minutes |
-| Phase gates by manual traction | Same gates, kept verbatim |
+| Monthly 2-hour packaging session               | Machine drafts; DJ approves in 10 minutes                                                                                                          |
+| Phase gates by manual traction                 | Same gates, kept verbatim                                                                                                                          |
 
 What survives untouched: the geography wedge (Howard County first), the
 no-weekly-promise rule, the decision gates, the guiding sentence, all the
@@ -169,11 +169,11 @@ The one rule this doc adds:
 
 ## Setup sequence (each = one supervised Claude Code session)
 
-1. Publish the 12-draft backlog + auto-publish gate in the cron. *(~1 hr)*
-2. Email capture + submission form. *(~1–2 hrs)*
-3. Field-note inbox + cron ingestion. *(~1–2 hrs)*
-4. Topic pages + pair-with links + schema audit. *(~2 hrs)*
-5. Monthly email drafter. *(~1 hr)*
+1. Publish the 12-draft backlog + auto-publish gate in the cron. _(~1 hr)_
+2. Email capture + submission form. _(~1–2 hrs)_
+3. Field-note inbox + cron ingestion. _(~1–2 hrs)_
+4. Topic pages + pair-with links + schema audit. _(~2 hrs)_
+5. Monthly email drafter. _(~1 hr)_
 
 Roughly one focused weekend of supervision total. After that, the recurring
 human cost of the entire growth plan is: notice things on family outings,

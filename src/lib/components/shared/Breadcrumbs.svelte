@@ -3,7 +3,7 @@
 	import { ChevronRightOutline, HomeOutline } from 'flowbite-svelte-icons';
 	import { fade, fly } from 'svelte/transition';
 
-	export interface BreadcrumbItem {
+	interface BreadcrumbItem {
 		label: string;
 		href?: string;
 		current?: boolean;
@@ -64,6 +64,18 @@
 		if (label.length <= maxLength) return label;
 		return label.slice(0, maxLength - 3) + '...';
 	}
+
+	$: breadcrumbStructuredData =
+		`<script type="application/ld+json">${JSON.stringify({
+			'@context': 'https://schema.org',
+			'@type': 'BreadcrumbList',
+			itemListElement: allItems.map((item, index) => ({
+				'@type': 'ListItem',
+				position: index + 1,
+				name: item.label,
+				item: item.href ? `https://tinytribeadventures.com${item.href}` : undefined
+			}))
+		})}<` + '/script>';
 </script>
 
 <nav aria-label="Breadcrumb" class="w-full">
@@ -119,16 +131,8 @@
 </nav>
 
 <!-- Structured data for better SEO -->
-{@html `<script type="application/ld+json">${JSON.stringify({
-	'@context': 'https://schema.org',
-	'@type': 'BreadcrumbList',
-	itemListElement: allItems.map((item, index) => ({
-		'@type': 'ListItem',
-		position: index + 1,
-		name: item.label,
-		item: item.href ? `https://tinytribeadventures.com${item.href}` : undefined
-	}))
-})}</script>`}
+<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+{@html breadcrumbStructuredData}
 
 <style>
 	/* Ensure breadcrumbs work well on small screens */

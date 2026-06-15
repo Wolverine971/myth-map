@@ -20,7 +20,7 @@ export default defineConfig({
 				},
 				// Ensure static assets are properly handled
 				assetFileNames: (assetInfo) => {
-					const info = assetInfo.name.split('.');
+					const info = (assetInfo.name ?? 'asset').split('.');
 					const extType = info[info.length - 1];
 					if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType)) {
 						return `img/[name]-[hash][extname]`;

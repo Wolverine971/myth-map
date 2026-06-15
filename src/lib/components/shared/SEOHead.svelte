@@ -30,6 +30,9 @@
 		: `${title} | Tiny Tribe Adventures`;
 
 	$: robotsContent = noIndex ? 'noindex, nofollow' : 'index, follow';
+	$: structuredDataScript = structuredData
+		? `<script type="application/ld+json">${JSON.stringify(structuredData)}<` + '/script>'
+		: '';
 </script>
 
 <svelte:head>
@@ -81,6 +84,7 @@
 
 	<!-- Structured Data -->
 	{#if structuredData}
-		{@html `<script type="application/ld+json">${JSON.stringify(structuredData)}</script>`}
+		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+		{@html structuredDataScript}
 	{/if}
 </svelte:head>

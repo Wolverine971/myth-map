@@ -507,7 +507,6 @@ shown what people want.
 2. **Topic pages**
 
    Create pages that match parent intent:
-
    - rainy-day outings near Baltimore
    - free indoor places for toddlers in Howard County
    - stroller-friendly walks near Columbia
@@ -839,4 +838,3 @@ When deciding what to do next, use this:
 If yes, do it.
 
 If no, skip it for now.
-

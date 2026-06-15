@@ -114,11 +114,13 @@
 			{/if}
 			{#each BASE_OPTIONS as option}
 				<DropdownItem
-					on:click={() => pickBase(option)}
-					class={baseSelect === option
+					on:click={() => selectableTagsMap[option] && pickBase(option)}
+					aria-disabled={!selectableTagsMap[option]}
+					class="{baseSelect === option
 						? 'bg-primary-50 font-semibold text-primary-700 dark:bg-primary-900 dark:text-primary-300'
-						: 'hover:bg-primary-50 dark:hover:bg-primary-900'}
-					disabled={!selectableTagsMap[option]}
+						: 'hover:bg-primary-50 dark:hover:bg-primary-900'} {!selectableTagsMap[option]
+						? 'cursor-not-allowed opacity-50'
+						: ''}"
 				>
 					<div class="flex w-full items-center justify-between">
 						<span>{option}</span>
@@ -159,11 +161,13 @@
 			{/if}
 			{#each INDOOR_OUTDOOR_OPTIONS as option}
 				<DropdownItem
-					on:click={() => pickIndoorOutdoor(option)}
-					class={indoorOutdoorSelect === option
+					on:click={() => selectableTagsMap[option] && pickIndoorOutdoor(option)}
+					aria-disabled={!selectableTagsMap[option]}
+					class="{indoorOutdoorSelect === option
 						? 'bg-primary-50 font-semibold text-primary-700'
-						: 'hover:bg-primary-50'}
-					disabled={!selectableTagsMap[option]}
+						: 'hover:bg-primary-50'} {!selectableTagsMap[option]
+						? 'cursor-not-allowed opacity-50'
+						: ''}"
 				>
 					<div class="flex w-full items-center justify-between">
 						<span>{option}</span>

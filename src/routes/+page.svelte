@@ -16,12 +16,17 @@
 	import SEOHead from '$lib/components/shared/SEOHead.svelte';
 	import SearchBar from '$lib/components/shared/SearchBar.svelte';
 	import Pagination from '$lib/components/shared/Pagination.svelte';
+	import RadarButton from '$lib/components/radar/RadarButton.svelte';
+	import RadarConditionsBanner from '$lib/components/radar/RadarConditionsBanner.svelte';
+	import RadarResultsTray from '$lib/components/radar/RadarResultsTray.svelte';
 	import { InfoCircleSolid, MapPinAltSolid } from 'flowbite-svelte-icons';
 	import type { PageData } from './$types';
 	import { currentLocation } from '$lib/stores/locationStore';
 	import { dataManager } from '$lib/stores/dataManager';
 	import { userPreferences } from '$lib/stores/userPreferencesStore';
 	import { locationFocus } from '$lib/stores/locationFocusStore';
+	import { radarStore } from '$lib/stores/radarStore';
+	import type { RadarLayer } from '$lib/types/radar';
 
 	export let data: PageData;
 
@@ -64,6 +69,8 @@
 	let isLoading = true;
 	let hasError = false;
 	let errorMessage = '';
+	let radarFocusedId: string | null = null;
+	let mapCenter: { lat: number; lng: number } = { lat: 39.2141, lng: -76.7818 };
 
 	let currentPage = 1;
 	let itemsPerPage = prefs.itemsPerPage;
@@ -180,6 +187,56 @@
 		if (next === 'map' || next === 'split') {
 			await loadMap();
 		}
+	}
+
+	async function handleRadarScan() {
+		if (viewMode === 'list') {
+			await setView(isDesktop ? 'split' : 'map');
+		} else {
+			await loadMap();
+		}
+
+		const scanCenter = userLocation ?? mapCenter;
+
+		try {
+			await radarStore.scan({ lat: scanCenter.lat, lng: scanCenter.lng });
+		} catch (error) {
+			console.error('Radar scan failed:', error);
+		}
+	}
+
+	function handleRadarClear() {
+		radarFocusedId = null;
+		radarStore.clear();
+	}
+
+	function handleRadarEntityFocus(event: CustomEvent<{ id: string | null }>) {
+		radarFocusedId = event.detail.id;
+	}
+
+	function handleRadarEntitySelect(event: CustomEvent<{ id: string }>) {
+		radarFocusedId = event.detail.id;
+	}
+
+	function handleRadarPinClick(event: CustomEvent<{ id: string }>) {
+		radarFocusedId = event.detail.id;
+	}
+
+	async function handleRadarLayerChange(event: CustomEvent<RadarLayer[]>) {
+		const layers = event.detail;
+		radarStore.setLayers(layers);
+		const center = $radarStore.lastCenter ?? userLocation ?? mapCenter;
+		if ($radarStore.status === 'success' || $radarStore.status === 'error') {
+			try {
+				await radarStore.scan({ lat: center.lat, lng: center.lng, layers });
+			} catch (error) {
+				console.error('Radar layer scan failed:', error);
+			}
+		}
+	}
+
+	function handleMapViewChange(event: CustomEvent<{ center: { lat: number; lng: number } }>) {
+		mapCenter = event.detail.center;
 	}
 
 	function clearAllFilters() {
@@ -409,43 +466,65 @@
 			{/if}
 		</div>
 
-		<!-- Stamped segmented control -->
-		<div
-			class="view-toggle inline-flex self-start rounded-sm border border-subtle bg-surface p-0.5 sm:self-auto"
-			role="tablist"
-			aria-label="View mode"
-		>
-			<button
-				type="button"
-				role="tab"
-				aria-selected={viewMode === 'list'}
-				class:active={viewMode === 'list'}
-				on:click={() => setView('list')}
+		<div class="flex flex-wrap items-center gap-2">
+			<RadarButton
+				status={$radarStore.status}
+				hasLocation={!!userLocation}
+				on:scan={handleRadarScan}
+			/>
+
+			<!-- Stamped segmented control -->
+			<div
+				class="view-toggle inline-flex self-start rounded-sm border border-subtle bg-surface p-0.5 sm:self-auto"
+				role="tablist"
+				aria-label="View mode"
 			>
-				List
-			</button>
-			{#if isDesktop}
 				<button
 					type="button"
 					role="tab"
-					aria-selected={viewMode === 'split'}
-					class:active={viewMode === 'split'}
-					on:click={() => setView('split')}
+					aria-selected={viewMode === 'list'}
+					class:active={viewMode === 'list'}
+					on:click={() => setView('list')}
 				>
-					Split
+					List
 				</button>
-			{/if}
-			<button
-				type="button"
-				role="tab"
-				aria-selected={viewMode === 'map'}
-				class:active={viewMode === 'map'}
-				on:click={() => setView('map')}
-			>
-				Map
-			</button>
+				{#if isDesktop}
+					<button
+						type="button"
+						role="tab"
+						aria-selected={viewMode === 'split'}
+						class:active={viewMode === 'split'}
+						on:click={() => setView('split')}
+					>
+						Split
+					</button>
+				{/if}
+				<button
+					type="button"
+					role="tab"
+					aria-selected={viewMode === 'map'}
+					class:active={viewMode === 'map'}
+					on:click={() => setView('map')}
+				>
+					Map
+				</button>
+			</div>
 		</div>
 	</div>
+
+	{#if $radarStore.status !== 'idle'}
+		<div class="radar-panel-stack mb-4">
+			<RadarConditionsBanner result={$radarStore.result} />
+			<RadarResultsTray
+				state={$radarStore}
+				focusedId={radarFocusedId}
+				on:clear={handleRadarClear}
+				on:entityfocus={handleRadarEntityFocus}
+				on:entityselect={handleRadarEntitySelect}
+				on:layerchange={handleRadarLayerChange}
+			/>
+		</div>
+	{/if}
 
 	<!-- ─── Main content ────────────────────────────────────────── -->
 	{#if hasError}
@@ -462,10 +541,13 @@
 					this={$mapComponentStore}
 					locations={data.locations}
 					{shownLocations}
-					currentLocation={userLocation}
 					selectedState={$selectedState}
 					selectedCity={$selectedCity}
+					radarResult={$radarStore.result}
+					{radarFocusedId}
 					on:pinclick={handlePinClick}
+					on:radarpinclick={handleRadarPinClick}
+					on:mapviewchange={handleMapViewChange}
 				/>
 			{:else}
 				<div
@@ -537,10 +619,13 @@
 							this={$mapComponentStore}
 							locations={data.locations}
 							{shownLocations}
-							currentLocation={userLocation}
 							selectedState={$selectedState}
 							selectedCity={$selectedCity}
+							radarResult={$radarStore.result}
+							{radarFocusedId}
 							on:pinclick={handlePinClick}
+							on:radarpinclick={handleRadarPinClick}
+							on:mapviewchange={handleMapViewChange}
 						/>
 					{:else}
 						<div
@@ -638,6 +723,11 @@
 	:global(.dark) .view-toggle button.active {
 		background: theme('colors.primary.500');
 		color: theme('colors.primary.50');
+	}
+
+	.radar-panel-stack {
+		display: grid;
+		gap: 0.75rem;
 	}
 
 	/* ─── Map-only pane ─────────────────────────────────────── */

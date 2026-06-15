@@ -24,10 +24,14 @@
 		initializeOptimizations();
 		preloadCriticalComponents();
 	});
+
+	$: organizationSchemaScript =
+		`<script type="application/ld+json">${JSON.stringify(organizationSchema)}<` + '/script>';
 </script>
 
 <svelte:head>
-	{@html `<script type="application/ld+json">${JSON.stringify(organizationSchema)}</script>`}
+	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+	{@html organizationSchemaScript}
 </svelte:head>
 
 <svelte:window bind:innerWidth />

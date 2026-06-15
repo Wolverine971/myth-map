@@ -92,16 +92,6 @@
 		});
 		cityOpen = false;
 	}
-
-	// Count locations by state/city for better UX
-	$: locationCounts = {
-		byState: selectedState
-			? shownLocations.filter((loc) => loc.location.state === selectedState.abr).length
-			: 0,
-		byCity: selectedCity
-			? shownLocations.filter((loc) => loc.location.city === selectedCity).length
-			: 0
-	};
 </script>
 
 <div class="flex flex-wrap items-center gap-2">
@@ -121,11 +111,11 @@
 					(loc) => loc.location.state === state.abr
 				).length}
 				<DropdownItem
-					on:click={() => handleStateChange(state)}
-					class={selectedState?.abr === state.abr
+					on:click={() => stateLocationCount > 0 && handleStateChange(state)}
+					aria-disabled={stateLocationCount === 0}
+					class="{selectedState?.abr === state.abr
 						? 'bg-primary-50 font-semibold text-primary-700'
-						: ''}
-					disabled={stateLocationCount === 0}
+						: ''} {stateLocationCount === 0 ? 'cursor-not-allowed opacity-50' : ''}"
 				>
 					<div class="flex w-full items-center justify-between">
 						<span>{state.name}</span>
@@ -154,10 +144,10 @@
 		</button>
 		<Dropdown bind:open={cityOpen} class="z-50 max-h-60 overflow-y-auto">
 			{#if citiesLoading}
-				<DropdownItem disabled>
+				<div class="px-4 py-2 text-sm text-muted">
 					<GlobeOutline class="me-2 inline h-4 w-4 animate-spin" />
 					Loading cities…
-				</DropdownItem>
+				</div>
 			{:else}
 				<DropdownItem on:click={clearCity} class="font-medium text-neutral-600">
 					All cities
@@ -168,9 +158,11 @@
 						(loc) => loc.location.city === city
 					).length}
 					<DropdownItem
-						on:click={() => handleCityChange(city)}
-						class={selectedCity === city ? 'bg-primary-50 font-semibold text-primary-700' : ''}
-						disabled={cityLocationCount === 0}
+						on:click={() => cityLocationCount > 0 && handleCityChange(city)}
+						aria-disabled={cityLocationCount === 0}
+						class="{selectedCity === city
+							? 'bg-primary-50 font-semibold text-primary-700'
+							: ''} {cityLocationCount === 0 ? 'cursor-not-allowed opacity-50' : ''}"
 					>
 						<div class="flex w-full items-center justify-between">
 							<span>{city}</span>
@@ -179,7 +171,7 @@
 					</DropdownItem>
 				{/each}
 				{#if availableCities.length === 0 && selectedState}
-					<DropdownItem disabled>No cities match the current filters</DropdownItem>
+					<div class="px-4 py-2 text-sm text-muted">No cities match the current filters</div>
 				{/if}
 			{/if}
 		</Dropdown>

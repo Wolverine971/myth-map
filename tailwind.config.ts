@@ -1,5 +1,7 @@
 // tailwind.config.ts
 import type { Config } from 'tailwindcss';
+import flowbitePlugin from 'flowbite/plugin';
+import typographyPlugin from '@tailwindcss/typography';
 
 export default {
 	content: [
@@ -24,7 +26,7 @@ export default {
 		}
 	],
 
-	plugins: [require('flowbite/plugin'), require('@tailwindcss/typography')],
+	plugins: [flowbitePlugin, typographyPlugin],
 	darkMode: 'class',
 
 	theme: {

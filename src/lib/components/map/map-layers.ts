@@ -3,6 +3,8 @@ import type { AnyLayer, ExpressionSpecification } from 'mapbox-gl';
 import type { EffectiveTheme } from '$lib/stores/themeStore';
 
 export const SHOWN_LOCATIONS_SOURCE_ID = 'shownLocations';
+export const RADAR_ISOCHRONE_SOURCE_ID = 'radarIsochrones';
+export const RADAR_ENTITIES_SOURCE_ID = 'radarEntities';
 
 /**
  * Map layer styling — Tiny Tribe field-manual palette.
@@ -142,6 +144,129 @@ export const unclusteredPointLayer: AnyLayer = {
 		'icon-image': ['get', 'icon'],
 		'icon-anchor': 'bottom',
 		'icon-size': ['interpolate', ['linear'], ['zoom'], 8, 0.08, 12, 0.12, 16, 0.16, 18, 0.2],
+		'icon-allow-overlap': true,
+		'icon-ignore-placement': true
+	}
+};
+
+// ============================================================
+// Adventure Radar overlays — temporary scan layers
+// ============================================================
+export function buildRadarIsochroneFillLayer(theme: EffectiveTheme): AnyLayer {
+	return {
+		id: 'radar-isochrone-fill',
+		type: 'fill',
+		source: RADAR_ISOCHRONE_SOURCE_ID,
+		paint: {
+			'fill-color': [
+				'match',
+				['to-string', ['get', 'contour']],
+				'15',
+				'#87CEEB',
+				'30',
+				'#D2B48C',
+				'60',
+				theme === 'light' ? '#74AA85' : '#579769',
+				'#87CEEB'
+			],
+			'fill-opacity': [
+				'match',
+				['to-string', ['get', 'contour']],
+				'15',
+				0.22,
+				'30',
+				0.15,
+				'60',
+				0.1,
+				0.14
+			]
+		}
+	};
+}
+
+export function buildRadarIsochroneOutlineLayer(theme: EffectiveTheme): AnyLayer {
+	return {
+		id: 'radar-isochrone-outline',
+		type: 'line',
+		source: RADAR_ISOCHRONE_SOURCE_ID,
+		paint: {
+			'line-color': theme === 'light' ? '#014421' : '#9BC2A7',
+			'line-width': [
+				'match',
+				['to-string', ['get', 'contour']],
+				'15',
+				2.25,
+				'30',
+				1.75,
+				'60',
+				1.25,
+				1.5
+			],
+			'line-opacity': 0.78,
+			'line-dasharray': [2, 1.5]
+		}
+	};
+}
+
+export function buildRadarClusterLayer(theme: EffectiveTheme): AnyLayer {
+	return {
+		id: 'radar-clusters',
+		type: 'circle',
+		source: RADAR_ENTITIES_SOURCE_ID,
+		filter: ['has', 'point_count'],
+		paint: {
+			'circle-color': theme === 'light' ? '#CD5700' : '#E08F54',
+			'circle-radius': ['step', ['get', 'point_count'], 17, 3, 21, 7, 25, 15, 30],
+			'circle-stroke-color': theme === 'light' ? '#FCF9F5' : '#1A1410',
+			'circle-stroke-width': 2.5,
+			'circle-opacity': 0.96
+		}
+	};
+}
+
+export function buildRadarClusterCountLayer(theme: EffectiveTheme): AnyLayer {
+	return {
+		id: 'radar-cluster-count',
+		type: 'symbol',
+		source: RADAR_ENTITIES_SOURCE_ID,
+		filter: ['has', 'point_count'],
+		layout: {
+			'text-field': '{point_count_abbreviated}',
+			'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+			'text-size': 12,
+			'text-allow-overlap': true
+		},
+		paint: {
+			'text-color': theme === 'light' ? '#fff' : '#1A1410',
+			'text-halo-color': theme === 'light' ? '#A44600' : '#F2B489',
+			'text-halo-width': 0.75
+		}
+	};
+}
+
+export const radarFocusRingLayer: AnyLayer = {
+	id: 'radar-focus-ring',
+	type: 'circle',
+	source: RADAR_ENTITIES_SOURCE_ID,
+	filter: ['==', ['get', 'id'], '__none__'],
+	paint: {
+		'circle-radius': 24,
+		'circle-color': 'rgba(135, 206, 235, 0.22)',
+		'circle-stroke-color': '#0B7EA3',
+		'circle-stroke-width': 2.5,
+		'circle-stroke-opacity': 0.95
+	}
+};
+
+export const radarUnclusteredPointLayer: AnyLayer = {
+	id: 'radar-unclustered-point',
+	type: 'symbol',
+	source: RADAR_ENTITIES_SOURCE_ID,
+	filter: ['!', ['has', 'point_count']],
+	layout: {
+		'icon-image': ['get', 'icon'],
+		'icon-anchor': 'bottom',
+		'icon-size': ['interpolate', ['linear'], ['zoom'], 8, 0.1, 12, 0.14, 16, 0.18, 18, 0.22],
 		'icon-allow-overlap': true,
 		'icon-ignore-placement': true
 	}

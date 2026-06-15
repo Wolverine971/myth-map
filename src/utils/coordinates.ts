@@ -1,8 +1,8 @@
 // src/utils/coordinates.ts
-export function metersToMiles(i) {
+export function metersToMiles(i: number): number {
 	return i * 0.000621371192;
 }
-export function milesToMeters(i) {
+export function milesToMeters(i: number): number {
 	return i * 1609.344;
 }
 
@@ -11,15 +11,23 @@ export interface LatLng {
 	longitude: number | string;
 }
 
-function toRadians(degrees) {
+type CoordinatePair = [number, number];
+
+function toRadians(degrees: number): number {
 	return (degrees * Math.PI) / 180;
 }
 
-function toDegrees(radians) {
+function toDegrees(radians: number): number {
 	return radians * (180 / Math.PI);
 }
 
-export const getHeadingAngleBetweenTwoCoordinates = ({ startCoordinates, endCoordinates }) => {
+export const getHeadingAngleBetweenTwoCoordinates = ({
+	startCoordinates,
+	endCoordinates
+}: {
+	startCoordinates: CoordinatePair;
+	endCoordinates: CoordinatePair;
+}): number => {
 	// equations taken from https://stackoverflow.com/a/52079217
 
 	const startLat = toRadians(startCoordinates[0]);
@@ -40,7 +48,15 @@ export const getHeadingAngleBetweenTwoCoordinates = ({ startCoordinates, endCoor
 	return parseFloat(degrees.toFixed(2));
 };
 
-export const getCardinalDirection = ({ startCoordinates, endCoordinates, fancy = false }) => {
+export const getCardinalDirection = ({
+	startCoordinates,
+	endCoordinates,
+	fancy = false
+}: {
+	startCoordinates: CoordinatePair;
+	endCoordinates: CoordinatePair;
+	fancy?: boolean;
+}): string => {
 	const heading = getHeadingAngleBetweenTwoCoordinates({
 		endCoordinates,
 		startCoordinates
@@ -111,13 +127,13 @@ export const calculateMidpoint = (a1: LatLng, a2: LatLng) => {
 	};
 };
 
-export function distanceBetweenTwoAngles(angle1, angle2) {
+export function distanceBetweenTwoAngles(angle1: number, angle2: number): number {
 	const phi = Math.abs(angle2 - angle1) % 360; // This is either the distance or 360 - distance
 	const distance = phi > 180 ? 360 - phi : phi;
 	return distance;
 }
 
-export function convertNegativeAngleToPositive(angle) {
+export function convertNegativeAngleToPositive(angle: number): number {
 	return angle < 0 ? 360 - Math.abs(angle) : angle;
 }
 
@@ -130,7 +146,12 @@ export function convertNegativeAngleToPositive(angle) {
  * @param {number} lon2
  * @returns {number} The distance between two points in meters.
  */
-export function distanceBetweenTwoLatLng(lat1, lon1, lat2, lon2) {
+export function distanceBetweenTwoLatLng(
+	lat1: number,
+	lon1: number,
+	lat2: number,
+	lon2: number
+): number {
 	if (lat1 === lat2 && lon1 === lon2) return 0;
 
 	const radlat1 = (Math.PI * lat1) / 180;
@@ -170,7 +191,14 @@ export function getDetourDistance(lat1: number, lon1: number, lat2: number, lon2
 	return linearDistance * detourIndex;
 }
 
-export function getRoughSpeedEstimateFromTwoLatLng(lat1, lon1, lat2, lon2, startTime, endTime) {
+export function getRoughSpeedEstimateFromTwoLatLng(
+	lat1: number,
+	lon1: number,
+	lat2: number,
+	lon2: number,
+	startTime: number,
+	endTime: number
+): number {
 	const distance = distanceBetweenTwoLatLng(lat1, lon1, lat2, lon2);
 	const timeDiff = (startTime - endTime) / 1000; // startTime and endTime should be in ms
 	const roughSpeed = distance / timeDiff < 0 ? (distance / timeDiff) * -1 : distance / timeDiff;
@@ -183,7 +211,7 @@ export function getRoughSpeedEstimateFromTwoLatLng(lat1, lon1, lat2, lon2, start
  *
  * @param {number} distance The distance in meters.
  */
-export function getEstimatedDurationFromDistance(distance) {
+export function getEstimatedDurationFromDistance(distance: number): number {
 	// The value of 72 seconds of travel per kilometer (about 30 mph) is based on calculating the mode of (duration_from_origin / distance_from_origin) for all records in delivery_driver_fulfillment_requests.
 	// https://metabase.curri.com/dashboard/1182-historical-travel-time-average
 

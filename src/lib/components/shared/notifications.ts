@@ -3,13 +3,14 @@ import { writable, derived } from 'svelte/store';
 
 const DEFAULT_TIMEOUT = 3000;
 
-type NotificationType = 'default' | 'danger' | 'warning' | 'info' | 'success';
+export type NotificationType = 'default' | 'danger' | 'warning' | 'info' | 'success';
 
-interface Notification {
+export interface Notification {
 	id: string;
 	type: NotificationType;
 	message: string;
 	timeout: number;
+	icon?: string;
 }
 
 function createNotificationStore(defaultTimeout: number) {
@@ -25,20 +26,24 @@ function createNotificationStore(defaultTimeout: number) {
 		});
 	}
 
-	const notifications = derived(_notifications, ($_notifications, set) => {
-		set($_notifications);
-		if ($_notifications.length > 0) {
-			const timer = setTimeout(() => {
-				_notifications.update((state) => {
-					state.shift();
-					return state;
-				});
-			}, $_notifications[0].timeout);
-			return () => {
-				clearTimeout(timer);
-			};
-		}
-	});
+	const notifications = derived(
+		_notifications,
+		($_notifications, set: (value: Notification[]) => void) => {
+			set($_notifications);
+			if ($_notifications.length > 0) {
+				const timer = setTimeout(() => {
+					_notifications.update((state) => {
+						state.shift();
+						return state;
+					});
+				}, $_notifications[0].timeout);
+				return () => {
+					clearTimeout(timer);
+				};
+			}
+		},
+		[]
+	);
 
 	const { subscribe } = notifications;
 
