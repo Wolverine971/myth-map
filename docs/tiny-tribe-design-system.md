@@ -338,8 +338,8 @@ Chosen so the fallback renders close to the web font in width and x-height — m
 ```css
 --font-display: 'Bitter Variable', Georgia, 'Times New Roman', Times, serif;
 --font-sans: 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
---font-mono:
-	'JetBrains Mono Variable', ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+--font-mono: 'JetBrains Mono Variable', ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono',
+	monospace;
 ```
 
 ### Type scale — Field Manual (tighter, denser)
