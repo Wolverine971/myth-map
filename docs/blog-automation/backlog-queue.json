@@ -1,81 +1,15 @@
 {
-	"lastUpdated": "2026-06-29T06:01:47.173Z",
+	"lastUpdated": "2026-07-01T06:08:38.815Z",
 	"stats": {
 		"totalLocations": 58,
-		"totalWritten": 30,
-		"totalNeedsBlog": 24,
+		"totalWritten": 32,
+		"totalNeedsBlog": 22,
 		"totalPublished": 14,
 		"totalPublishedButThin": 1,
-		"totalDraftedUnpublished": 17,
-		"completionRate": "51.7%"
+		"totalDraftedUnpublished": 19,
+		"completionRate": "55.2%"
 	},
 	"queue": [
-		{
-			"id": 32,
-			"locationKey": "md/columbia/play-n-learn",
-			"slug": "play-n-learn",
-			"name": "Play n Learn",
-			"city": "Columbia",
-			"state": "MD",
-			"address": "9033 Red Branch Road, Columbia, MD 21045",
-			"contentPath": "src/lib/content/locations/md/columbia/play-n-learn.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 98,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "columbia-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
-		{
-			"id": 18,
-			"locationKey": "md/columbia/robinson-nature-center",
-			"slug": "robinson-nature-center",
-			"name": "Robinson Nature Center",
-			"city": "Columbia",
-			"state": "MD",
-			"address": "6692 Cedar Lane, Columbia, MD 21044",
-			"contentPath": "src/lib/content/locations/md/columbia/robinson-nature-center.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 98,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "columbia-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
 		{
 			"id": 10,
 			"locationKey": "md/columbia/swansfield-neighborhood-playground",
@@ -765,6 +699,81 @@
 	"inProgress": null,
 	"completed": [
 		{
+			"id": 18,
+			"locationKey": "md/columbia/robinson-nature-center",
+			"slug": "robinson-nature-center",
+			"name": "Robinson Nature Center",
+			"city": "Columbia",
+			"state": "MD",
+			"address": "6692 Cedar Lane, Columbia, MD 21044",
+			"contentPath": "src/lib/content/locations/md/columbia/robinson-nature-center.md",
+			"published": false,
+			"contentState": "drafted-unpublished",
+			"priority": 98,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "columbia-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-07-01T06:25:19.000Z",
+			"completedAt": "2026-07-01T06:28:21.000Z",
+			"durationMinutes": 3,
+			"contentPath": "src/lib/content/locations/md/columbia/robinson-nature-center.md",
+			"reviewNote": "Hours/admission/parking verified against the official Howard County Rec & Parks page on 2026-07-01 (Tue–Sun 9–5, closed Mon; $5 adult/$3 child). Older mom-blogs list Wed–Sat/Sun hours — used official current schedule, flagged in an HTML comment. Planetarium show pricing and changing-table/nursing specifics not stated on the official page; FAQs direct readers to call. Conservative structured frontmatter added (verified_at, stroller/wheelchair: partial, weather flags). published left false."
+		},
+		{
+			"id": 32,
+			"locationKey": "md/columbia/play-n-learn",
+			"slug": "play-n-learn",
+			"name": "Play n Learn",
+			"city": "Columbia",
+			"state": "MD",
+			"address": "9033 Red Branch Road, Columbia, MD 21045",
+			"contentPath": "src/lib/content/locations/md/columbia/play-n-learn.md",
+			"published": false,
+			"contentState": "drafted-unpublished",
+			"priority": 98,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "columbia-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-06-30T06:25:47.000Z",
+			"completedAt": "2026-06-30T06:28:22.000Z",
+			"durationMinutes": 2.6,
+			"reviewNote": "Open-play days/hours (Mon–Fri, three 2-hr sessions), $10/child pricing, advance-ticket + waiver policy, and socks/no-food rules verified against the official open-play page on 2026-06-30. Per-session capacity (~15 kids), changing-table/nursing facilities, and AC come from review/social sources, not the official page — flagged in an HTML comment for human confirmation before publishing. published left false."
+		},
+		{
 			"id": 55,
 			"locationKey": "md/columbia/my-gym-columbia",
 			"slug": "my-gym-columbia",
@@ -799,7 +808,6 @@
 			"startedAt": "2026-06-29T06:02:10.000Z",
 			"completedAt": "2026-06-29T06:05:30.000Z",
 			"durationMinutes": 3.3,
-			"contentPath": "src/lib/content/locations/md/columbia/my-gym-columbia.md",
 			"reviewNote": "Address corrected in body (typo 6905-C Oaklan Mills Rd -> 6905 Oakland Mills Rd, Ste C) and phone (410) 290-7008 added. Pricing/membership tuition not published online and exact class-schedule hours unverifiable (third-party '9am-7pm daily' appears generic) — both flagged in an HTML comment for staff confirmation before publishing. Official mygym.com pages returned 403 on direct fetch; facts cross-checked via search excerpts and review aggregators. Conservative structured frontmatter added (verified_at, wheelchair_accessible: partial, noise/sensory: moderate, indoor weather flags). published left false."
 		},
 		{
