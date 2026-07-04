@@ -1,11 +1,11 @@
 ---
 id: 14
-slug: cimbzone
+slug: climbzone
 name: ClimbZone
 city: Laurel
 state: MD
-seeded_at: 2026-05-01
-last_modified: 2026-05-01
+seeded_at: 2026-07-04
+last_modified: 2026-07-04
 published: false
 published_at: null
 ---

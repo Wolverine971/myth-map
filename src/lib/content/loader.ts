@@ -70,6 +70,7 @@ export function citySlug(city: string): string {
 
 function buildIndex(): Map<string, LocationEntry> {
 	const out = new Map<string, LocationEntry>();
+	const byId = new Map<number, LocationEntry>();
 	for (const [path, raw] of Object.entries(RAW_MARKDOWN)) {
 		const { data, body } = parseFrontmatter(raw);
 		if (typeof data.id !== 'number' || !data.slug || !data.city || !data.state) {
@@ -83,11 +84,10 @@ function buildIndex(): Map<string, LocationEntry> {
 		}
 		const stateSlug = data.state.toLowerCase();
 		const cs = citySlug(data.city);
-		const key = `${stateSlug}/${cs}/${data.slug}`;
 		const fm = data as Frontmatter;
 		const bodyHtml = fm.published ? (marked.parse(body, { async: false }) as string) : '';
 		const faqs = fm.published ? extractFaqs(body) : [];
-		out.set(key, {
+		const entry: LocationEntry = {
 			id: fm.id,
 			stateSlug,
 			citySlug: cs,
@@ -97,9 +97,48 @@ function buildIndex(): Map<string, LocationEntry> {
 			bodyHtml,
 			faqs,
 			location
-		});
+		};
+
+		const existing = byId.get(entry.id);
+		if (existing && existing.slug !== entry.slug) {
+			const selected = preferEntry(entry, existing);
+			const skipped = selected === entry ? existing : entry;
+			console.warn(
+				`[content] duplicate id ${entry.id}: using ${selected.stateSlug}/${selected.citySlug}/${selected.slug}, skipping ${skipped.stateSlug}/${skipped.citySlug}/${skipped.slug}`
+			);
+			byId.set(entry.id, selected);
+		} else {
+			byId.set(entry.id, entry);
+		}
+	}
+
+	for (const entry of byId.values()) {
+		const key = `${entry.stateSlug}/${entry.citySlug}/${entry.slug}`;
+		if (out.has(key)) {
+			console.warn(`[content] duplicate route ${key}: keeping first entry`);
+			continue;
+		}
+		out.set(key, entry);
 	}
 	return out;
+}
+
+function preferEntry(candidate: LocationEntry, existing: LocationEntry): LocationEntry {
+	const candidateScore = entryScore(candidate);
+	const existingScore = entryScore(existing);
+	if (candidateScore !== existingScore)
+		return candidateScore > existingScore ? candidate : existing;
+	const candidateModified = candidate.frontmatter.last_modified ?? '';
+	const existingModified = existing.frontmatter.last_modified ?? '';
+	return candidateModified.localeCompare(existingModified) > 0 ? candidate : existing;
+}
+
+function entryScore(entry: LocationEntry): number {
+	const expectedSlug = citySlug(entry.frontmatter.name);
+	const canonicalSlugBonus = entry.slug === expectedSlug ? 1_000 : 0;
+	const publishedBonus = entry.frontmatter.published ? 1_000_000 : 0;
+	const bodyWithoutComments = entry.body.replace(/<!--[\s\S]*?-->/g, '').trim();
+	return publishedBonus + canonicalSlugBonus + bodyWithoutComments.length;
 }
 
 const INDEX = buildIndex();

@@ -26,7 +26,7 @@
 			"website": "https://theshackisback.com/",
 			"location": {
 				"id": 2,
-				"name": "Donut shack",
+				"name": "Donut Shack",
 				"address_line_1": "497 Ritchie Hwy",
 				"address_line_2": "",
 				"city": "Severna Park",
@@ -47,7 +47,7 @@
 			"website": "https://www.facebook.com/CarlsonsDonutsinSevernMD/",
 			"location": {
 				"id": 3,
-				"name": "Carlson's donuts",
+				"name": "Carlson's Donuts",
 				"address_line_1": "7846 Telegraph Rd",
 				"address_line_2": "",
 				"city": "Severn",
@@ -257,7 +257,7 @@
 			"website": "https://www.skyzone.com/columbia/",
 			"location": {
 				"id": 13,
-				"name": "Skyzone",
+				"name": "Sky Zone",
 				"address_line_1": "7175 Oakland Mills Rd",
 				"address_line_2": "",
 				"city": "Columbia",
@@ -278,7 +278,7 @@
 			"website": "https://www.climbzone.us/laurel/?gad_source=1&gclid=CjwKCAjwgdayBhBQEiwAXhMxtlciuxCgo8wFosqP_peAI_9YIwxLAHH54bXEjvcd3FiPaODXedYEaxoCeBAQAvD_BwE",
 			"location": {
 				"id": 14,
-				"name": "Cimbzone",
+				"name": "ClimbZone",
 				"address_line_1": "13200 Mid Atlantic Boulevard - Suite 130",
 				"address_line_2": "",
 				"city": "Laurel",
@@ -488,7 +488,7 @@
 			"website": "https://www.guinnessbrewerybaltimore.com/",
 			"location": {
 				"id": 24,
-				"name": "Guiness Brewery",
+				"name": "Guinness Brewery",
 				"address_line_1": "5001 Washington Blvd",
 				"address_line_2": "",
 				"city": "Halethorpe",
@@ -908,7 +908,7 @@
 			"website": "https://hclibrary.org/locations/central-branch/",
 			"location": {
 				"id": 45,
-				"name": "Howard County LIbrary Central Branch",
+				"name": "Howard County Library Central Branch",
 				"address_line_1": "10375 Little Patuxent Pkwy",
 				"address_line_2": "",
 				"city": "Columbia",
@@ -1328,7 +1328,7 @@
 			"id": 3,
 			"location": {
 				"id": 2,
-				"name": "Donut shack",
+				"name": "Donut Shack",
 				"city": "Severna Park",
 				"state": "MD"
 			},
@@ -1341,7 +1341,7 @@
 			"id": 4,
 			"location": {
 				"id": 3,
-				"name": "Carlson's donuts",
+				"name": "Carlson's Donuts",
 				"city": "Severn",
 				"state": "MD"
 			},
@@ -1679,7 +1679,7 @@
 			"id": 30,
 			"location": {
 				"id": 13,
-				"name": "Skyzone",
+				"name": "Sky Zone",
 				"city": "Columbia",
 				"state": "MD"
 			},
@@ -1692,7 +1692,7 @@
 			"id": 31,
 			"location": {
 				"id": 14,
-				"name": "Cimbzone",
+				"name": "ClimbZone",
 				"city": "Laurel",
 				"state": "MD"
 			},
@@ -2134,7 +2134,7 @@
 			"id": 65,
 			"location": {
 				"id": 24,
-				"name": "Guiness Brewery",
+				"name": "Guinness Brewery",
 				"city": "Halethorpe",
 				"state": "MD"
 			},
@@ -2147,7 +2147,7 @@
 			"id": 66,
 			"location": {
 				"id": 24,
-				"name": "Guiness Brewery",
+				"name": "Guinness Brewery",
 				"city": "Halethorpe",
 				"state": "MD"
 			},
@@ -2706,7 +2706,7 @@
 			"id": 110,
 			"location": {
 				"id": 45,
-				"name": "Howard County LIbrary Central Branch",
+				"name": "Howard County Library Central Branch",
 				"city": "Columbia",
 				"state": "MD"
 			},
@@ -2719,7 +2719,7 @@
 			"id": 111,
 			"location": {
 				"id": 45,
-				"name": "Howard County LIbrary Central Branch",
+				"name": "Howard County Library Central Branch",
 				"city": "Columbia",
 				"state": "MD"
 			},

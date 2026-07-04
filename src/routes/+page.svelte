@@ -4,7 +4,7 @@
 	import { fade } from 'svelte/transition';
 	import { derived, writable } from 'svelte/store';
 
-	import { LazyMap, preloadCriticalComponents } from '$lib/utils/lazyComponents';
+	import { LazyMap } from '$lib/utils/lazyComponents';
 	import { filterService } from '$lib/services/filterService';
 
 	const { componentStore: mapComponentStore, load: loadMap } = LazyMap;
@@ -151,7 +151,6 @@
 
 			userPreferences.updateActivityTime();
 			filterPersistenceCleanup = setupFilterPersistence();
-			preloadCriticalComponents();
 		} catch (error) {
 			console.error('Error loading page data:', error);
 			hasError = true;
@@ -260,7 +259,11 @@
 
 	function handlePageChange(event: CustomEvent) {
 		currentPage = event.detail;
-		document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth' });
+		document.getElementById('results-section')?.scrollIntoView({ behavior: scrollBehavior() });
+	}
+
+	function scrollBehavior(): ScrollBehavior {
+		return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
 	}
 
 	function retryLoadData() {
@@ -305,7 +308,7 @@
 		if (targetPage !== currentPage) currentPage = targetPage;
 		await tick();
 		const el = cardListEl?.querySelector<HTMLElement>(`[data-location-id="${id}"]`);
-		el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		el?.scrollIntoView({ behavior: scrollBehavior(), block: 'center' });
 	}
 
 	function handlePinClick(event: CustomEvent<{ id: string | number }>) {
@@ -326,9 +329,9 @@
 
 <SEOHead
 	title="Tiny Tribe Adventures — Family-tested places for when you need ideas"
-	description="A curated guide to family-friendly adventures in Maryland, Virginia, Delaware, and DC. Built parent-to-parent."
+	description="A curated guide to family-friendly adventures in Maryland, with DC, Virginia, and Delaware on the roadmap. Built parent-to-parent."
 	canonical="/"
-	keywords="family activities, kids activities, Maryland activities, Virginia family fun, Delaware attractions, DC family activities, playgrounds, museums"
+	keywords="family activities, kids activities, Maryland activities, Maryland family fun, playgrounds, museums, family-friendly places"
 	structuredData={{
 		'@context': 'https://schema.org',
 		'@type': 'WebSite',
@@ -349,7 +352,7 @@
 				Field guide
 			</span>
 			<span aria-hidden="true" class="text-subtle">·</span>
-			<span>{stateAbbrs.join(' / ') || 'DC / MD / VA / DE'}</span>
+			<span>{stateAbbrs.join(' / ') || 'MD'}</span>
 			<span aria-hidden="true" class="text-subtle">·</span>
 			<span>{data.locations.length} entries</span>
 		</div>
@@ -361,8 +364,9 @@
 		</h1>
 
 		<p class="mt-3 max-w-2xl text-base text-default sm:text-lg">
-			A curated, parent-to-parent guide to weekend adventures across DC, Maryland, Virginia, and
-			Delaware. Filter the list, pan the map, find your next Saturday.
+			A curated, parent-to-parent guide to weekend adventures across Maryland. DC, Virginia, and
+			Delaware are on the roadmap; for now, filter the Maryland list, pan the map, find your next
+			Saturday.
 		</p>
 
 		<!-- Stat strip — same hairline-grid pattern as /locations -->
@@ -590,8 +594,10 @@
 
 				{#if !isLoading && totalFilteredItems === 0}
 					<div class="mt-6 border border-dashed border-strong bg-sunken px-6 py-12 text-center">
-						<div class="data-label mb-2">No locations in this grid square</div>
-						<p class="mb-4 text-base text-default">Adjust your filters to find more places.</p>
+						<div class="data-label mb-2">No matching locations</div>
+						<p class="mb-4 text-base text-default">
+							Clear filters or try a broader search to see more places.
+						</p>
 						<button
 							on:click={clearAllFilters}
 							class="rounded-sm bg-primary-700 px-4 py-2 font-mono text-xs uppercase tracking-wide text-white transition-colors duration-fast hover:bg-primary-600 dark:bg-primary-500 dark:text-primary-50 dark:hover:bg-primary-400"
@@ -671,8 +677,10 @@
 
 			{#if !isLoading && totalFilteredItems === 0}
 				<div class="border border-dashed border-strong bg-sunken px-6 py-12 text-center">
-					<div class="data-label mb-2">No locations in this grid square</div>
-					<p class="mb-4 text-base text-default">Adjust your filters to find more places.</p>
+					<div class="data-label mb-2">No matching locations</div>
+					<p class="mb-4 text-base text-default">
+						Clear filters or try a broader search to see more places.
+					</p>
 					<button
 						on:click={clearAllFilters}
 						class="rounded-sm bg-primary-700 px-4 py-2 font-mono text-xs uppercase tracking-wide text-white transition-colors duration-fast hover:bg-primary-600 dark:bg-primary-500 dark:text-primary-50 dark:hover:bg-primary-400"

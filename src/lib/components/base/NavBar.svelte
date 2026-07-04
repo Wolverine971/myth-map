@@ -75,7 +75,13 @@
 							href="/about"
 							class="text-default hover:!bg-sunken hover:text-primary-700"
 						>
-							About us
+							About
+						</DropdownItem>
+						<DropdownItem
+							href="/contact"
+							class="text-default hover:!bg-sunken hover:text-primary-700"
+						>
+							Contact
 						</DropdownItem>
 					</Dropdown>
 				</div>
@@ -100,7 +106,13 @@
 					href="/about"
 					class="text-default transition-colors duration-fast hover:text-primary-700 dark:hover:text-primary-300"
 				>
-					About us
+					About
+				</NavLi>
+				<NavLi
+					href="/contact"
+					class="text-default transition-colors duration-fast hover:text-primary-700 dark:hover:text-primary-300"
+				>
+					Contact
 				</NavLi>
 			</NavUl>
 		</Navbar>

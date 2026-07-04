@@ -1,7 +1,6 @@
 // src/lib/utils/appOptimizations.ts
 import { browser } from '$app/environment';
 import { preloadManager, registerPreloads } from './preloadOnIntent';
-import { bundleAnalyzer } from './bundleAnalyzer';
 
 // Initialize app-wide optimizations
 export function initializeOptimizations() {
@@ -10,113 +9,8 @@ export function initializeOptimizations() {
 	// Register preload strategies
 	registerPreloads();
 
-	// Set up critical resource hints
-	setupResourceHints();
-
-	// Optimize third-party scripts
-	optimizeThirdPartyScripts();
-
-	// Setup performance monitoring
-	setupPerformanceMonitoring();
-
 	// Optimize images loading
 	optimizeImageLoading();
-}
-
-function setupResourceHints() {
-	const head = document.head;
-
-	// DNS prefetch for external resources
-	const prefetchDomains = [
-		'https://fonts.googleapis.com',
-		'https://fonts.gstatic.com',
-		'https://api.mapbox.com'
-	];
-
-	prefetchDomains.forEach((domain) => {
-		if (!document.querySelector(`link[href="${domain}"]`)) {
-			const link = document.createElement('link');
-			link.rel = 'dns-prefetch';
-			link.href = domain;
-			head.appendChild(link);
-		}
-	});
-
-	// Preconnect to critical origins
-	const preconnectOrigins = ['https://fonts.gstatic.com', 'https://api.mapbox.com'];
-
-	preconnectOrigins.forEach((origin) => {
-		if (!document.querySelector(`link[href="${origin}"][rel="preconnect"]`)) {
-			const link = document.createElement('link');
-			link.rel = 'preconnect';
-			link.href = origin;
-			link.crossOrigin = 'anonymous';
-			head.appendChild(link);
-		}
-	});
-}
-
-function optimizeThirdPartyScripts() {
-	// Lazy load non-critical third-party scripts
-	const thirdPartyScripts = [
-		{
-			src: 'https://www.googletagmanager.com/gtag/js',
-			condition: () => document.visibilityState === 'visible'
-		}
-	];
-
-	thirdPartyScripts.forEach((script) => {
-		if (script.condition()) {
-			loadScriptAsync(script.src);
-		} else {
-			document.addEventListener(
-				'visibilitychange',
-				() => {
-					if (script.condition()) {
-						loadScriptAsync(script.src);
-					}
-				},
-				{ once: true }
-			);
-		}
-	});
-}
-
-function loadScriptAsync(src: string) {
-	if (document.querySelector(`script[src="${src}"]`)) return;
-
-	const script = document.createElement('script');
-	script.src = src;
-	script.async = true;
-	script.defer = true;
-	document.head.appendChild(script);
-}
-
-function setupPerformanceMonitoring() {
-	// Monitor page load performance
-	window.addEventListener('load', () => {
-		// Report Web Vitals after load
-		setTimeout(() => {
-			const vitals = bundleAnalyzer.getWebVitals();
-			if (vitals) {
-				console.log('Web Vitals:', vitals);
-
-				// Report to analytics if configured
-				bundleAnalyzer.reportToAnalytics();
-			}
-		}, 1000);
-	});
-
-	// Monitor memory usage
-	if ('memory' in performance) {
-		setInterval(() => {
-			const memory = (performance as any).memory;
-			if (memory.usedJSHeapSize > memory.totalJSHeapSize * 0.9) {
-				console.warn('High memory usage detected');
-				// Could trigger garbage collection or cleanup
-			}
-		}, 30000); // Check every 30 seconds
-	}
 }
 
 function optimizeImageLoading() {

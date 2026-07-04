@@ -6,7 +6,7 @@
 
 <SEOHead
 	title="About · Tiny Tribe Adventures"
-	description="A curated guide to family adventures in the DMV, built parent-to-parent by two families who met at a kid's birthday party."
+	description="A curated guide to Maryland family adventures, built parent-to-parent by two families who met at a kid's birthday party."
 	canonical="/about"
 />
 
@@ -71,17 +71,22 @@
 	<section class="border border-subtle bg-surface px-5 py-4">
 		<div class="mb-3 font-mono text-xs uppercase tracking-wide text-muted">§03 Coverage</div>
 		<div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
-			{#each [{ code: 'DC', name: 'Washington' }, { code: 'MD', name: 'Maryland' }, { code: 'VA', name: 'Virginia' }, { code: 'DE', name: 'Delaware' }] as place}
+			{#each [{ code: 'MD', name: 'Maryland', status: 'Live' }, { code: 'DC', name: 'Washington', status: 'Planned' }, { code: 'VA', name: 'Virginia', status: 'Planned' }, { code: 'DE', name: 'Delaware', status: 'Planned' }] as place}
 				<div class="border border-subtle bg-sunken px-3 py-2">
 					<div class="font-mono text-lg font-bold text-primary-700 dark:text-primary-300">
 						{place.code}
 					</div>
 					<div class="font-mono text-xs uppercase tracking-wide text-muted">{place.name}</div>
+					<div
+						class="mt-1 font-mono text-[10px] uppercase tracking-wide text-tertiary-600 dark:text-tertiary-400"
+					>
+						{place.status}
+					</div>
 				</div>
 			{/each}
 		</div>
 		<p class="mt-3 font-mono text-xs uppercase tracking-wide text-muted">
-			Optimized for kids age 0–9 · Mobile-first · Updated continuously
+			Optimized for kids age 0–9 · Mobile-first · Maryland now, broader region next
 		</p>
 	</section>
 

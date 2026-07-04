@@ -1,7 +1,7 @@
 ---
 id: 13
 slug: skyzone
-name: Skyzone
+name: Sky Zone
 city: Columbia
 state: MD
 seeded_at: 2026-05-01
@@ -10,7 +10,7 @@ published: false
 published_at: null
 ---
 
-# Skyzone
+# Sky Zone
 
 **Address:** 7175 Oakland Mills Rd Columbia, MD 21046
 **Website:** [https://www.skyzone.com/columbia/](https://www.skyzone.com/columbia/)

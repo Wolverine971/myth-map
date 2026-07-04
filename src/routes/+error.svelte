@@ -2,7 +2,12 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { Button } from 'flowbite-svelte';
-	import { HomeOutline, MapPinAltOutline, ExclamationCircleOutline } from 'flowbite-svelte-icons';
+	import {
+		EnvelopeOutline,
+		HomeOutline,
+		MapPinAltOutline,
+		ExclamationCircleOutline
+	} from 'flowbite-svelte-icons';
 	import SEOHead from '$lib/components/shared/SEOHead.svelte';
 	import { fade, fly } from 'svelte/transition';
 
@@ -65,10 +70,10 @@
 			icon: MapPinAltOutline
 		},
 		{
-			title: 'Virginia Adventures',
-			description: 'Check out Virginia family activities',
-			href: '/locations/va',
-			icon: MapPinAltOutline
+			title: 'Contact',
+			description: 'Send a location tip or correction',
+			href: '/contact',
+			icon: EnvelopeOutline
 		}
 	];
 </script>
@@ -79,7 +84,7 @@
 	noIndex={true}
 />
 
-<main id="main-content" class="min-h-screen bg-page">
+<section class="min-h-screen bg-page" aria-labelledby="error-heading">
 	<div class="flex min-h-screen items-center justify-center px-4 py-16">
 		<div class="w-full max-w-2xl text-center" in:fade={{ duration: 600 }}>
 			<!-- Error Icon and Status -->
@@ -92,6 +97,7 @@
 
 			<!-- Error Heading -->
 			<h1
+				id="error-heading"
 				class="md:text-6xl mb-4 text-4xl font-extrabold tracking-tight text-primary-700 dark:text-primary-300 sm:text-5xl"
 				in:fly={{ y: 30, duration: 800, delay: 400 }}
 			>
@@ -174,7 +180,7 @@
 			{/if}
 		</div>
 	</div>
-</main>
+</section>
 
 <style>
 	:global(body) {

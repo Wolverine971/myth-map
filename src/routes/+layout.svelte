@@ -2,7 +2,6 @@
 <script lang="ts">
 	import NavBar from '$lib/components/base/NavBar.svelte';
 	import Footer from '$lib/components/base/Footer.svelte';
-	import { preloadCriticalComponents } from '$lib/utils/lazyComponents';
 	import { initializeOptimizations } from '$lib/utils/appOptimizations';
 	import Toast from '$lib/components/shared/Toast.svelte';
 	import '$lib/stores/themeStore'; // wires up sunset-aware theme system
@@ -22,7 +21,6 @@
 
 	onMount(() => {
 		initializeOptimizations();
-		preloadCriticalComponents();
 	});
 
 	$: organizationSchemaScript =

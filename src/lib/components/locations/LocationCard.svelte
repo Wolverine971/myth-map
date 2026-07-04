@@ -1,7 +1,7 @@
 <!-- src/lib/components/locations/LocationCard.svelte -->
 <script lang="ts">
 	import { getLocationIcon } from '../../../utils/locationPhotos';
-	import { hrefForId } from '$lib/content/loader';
+	import { getEntryById, hrefForId } from '$lib/content/loader';
 	import { locationFocus, type LocationFocusKey } from '$lib/stores/locationFocusStore';
 
 	export let name: string;
@@ -40,15 +40,20 @@
 		return parts.slice(1, 3).join(', ');
 	})();
 
-	$: detailsHref = (() => {
-		const id = contentLocation?.location?.id ?? contentLocation?.id;
-		if (typeof id !== 'number') return null;
-		return hrefForId(id);
-	})();
+	$: contentId = contentLocation?.location?.id ?? contentLocation?.id;
+	$: detailsHref = typeof contentId === 'number' ? hrefForId(contentId) : null;
+	$: hasGuide =
+		typeof contentId === 'number' ? !!getEntryById(contentId)?.frontmatter.published : false;
 
 	$: cardHref = detailsHref ?? (website || null);
 	$: external = !detailsHref && !!website;
-	$: ctaLabel = detailsHref ? 'Read guide' : website ? 'Visit site' : null;
+	$: ctaLabel = detailsHref
+		? hasGuide
+			? 'Read guide'
+			: 'View details'
+		: website
+			? 'Visit site'
+			: null;
 
 	const SUPPRESS = new Set(['Activity', 'Eats', 'Indoor', 'Outdoor', 'both']);
 	$: chipTags = tagNames.filter((n) => !SUPPRESS.has(n)).slice(0, 3);

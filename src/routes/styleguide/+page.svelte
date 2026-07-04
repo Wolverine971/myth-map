@@ -442,9 +442,11 @@
 				<h3 class="mb-3 font-display text-lg text-default">Empty state</h3>
 				<div class="border border-dashed border-strong bg-sunken px-6 py-12 text-center">
 					<div class="mb-2 font-mono text-xs uppercase tracking-wide text-muted">
-						No locations in this grid square
+						No matching locations
 					</div>
-					<p class="mb-4 text-base text-default">Adjust your filters to find more places.</p>
+					<p class="mb-4 text-base text-default">
+						Clear filters or try a broader search to see more places.
+					</p>
 					<button
 						class="rounded-sm bg-primary-700 px-4 py-2 font-mono text-xs uppercase tracking-wide text-white transition-colors duration-fast hover:bg-primary-600 dark:bg-primary-500 dark:text-primary-50 dark:hover:bg-primary-400"
 					>

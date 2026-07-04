@@ -37,8 +37,7 @@ export async function GET() {
 		{ loc: SITE, lastmod: today, changefreq: 'weekly', priority: 1.0 },
 		{ loc: `${SITE}/locations`, lastmod: today, changefreq: 'weekly', priority: 0.9 },
 		{ loc: `${SITE}/about`, lastmod: today, changefreq: 'monthly', priority: 0.6 },
-		{ loc: `${SITE}/contact`, lastmod: today, changefreq: 'yearly', priority: 0.4 },
-		{ loc: `${SITE}/blog`, lastmod: today, changefreq: 'monthly', priority: 0.4 }
+		{ loc: `${SITE}/contact`, lastmod: today, changefreq: 'yearly', priority: 0.4 }
 	);
 
 	// State hub pages — lastmod = max last_modified of entries in that state

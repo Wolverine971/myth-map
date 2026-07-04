@@ -1,13 +1,13 @@
 <!-- src/lib/components/base/Footer.svelte -->
 <!--
-	Minimal v1 footer. Compact on purpose — only links to routes that
-	actually exist today (Home, Locations, About).
+	Minimal footer. Compact on purpose — only links to routes that are ready
+	to promote in global navigation.
 
 	Future sections to add as routes ship (do not add until they're real):
-	  · §01 Explore — /map, /locations/states ("by state")
-	  · §02 Project — /contact, /blog ("field notes")
+	  · §01 Explore — /locations/states ("by state")
+	  · §02 Project — /blog and /press once they're ready to promote
 	  · §03 Reference — /styleguide, /sitemap.xml
-	  · §04 Coverage — full DC/MD/VA/DE card grid (currently inlined as one line)
+	  · §04 Coverage — full DC/MD/VA/DE card grid once multi-state coverage is live
 	  · Newsletter / "join the tribe" signup
 	  · Social links once we have any
 -->
@@ -19,7 +19,8 @@
 	const links = [
 		{ href: '/', label: 'Home' },
 		{ href: '/locations', label: 'Locations' },
-		{ href: '/about', label: 'About' }
+		{ href: '/about', label: 'About' },
+		{ href: '/contact', label: 'Contact' }
 	];
 </script>
 
@@ -56,9 +57,9 @@
 		>
 			<div class="flex items-center gap-2">
 				<MapPinAltSolid class="h-3.5 w-3.5 text-tertiary-500" />
-				<span>DC · MD · VA · DE · {year}</span>
+				<span>Maryland now · DC/VA/DE next · {year}</span>
 			</div>
-			<div>Built parent-to-parent · A field guide to the DMV</div>
+			<div>Built parent-to-parent · A field guide for Maryland families</div>
 		</div>
 	</div>
 </footer>

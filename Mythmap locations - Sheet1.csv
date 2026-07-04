@@ -1,7 +1,7 @@
 Name,Type,Tags,Indoor/Outdoor,Price,Link,Notes,Full Address,Zip Code,State
 Science Center,Activity,"Educational, Interactive",Indoor,$$,https://www.mdsci.org/,,"601 Light St, Baltimore, MD 21230",21230,MD
-Donut shack,Food,Treat,Indoor,,https://theshackisback.com/,,"497 Ritchie Hwy, Severna Park, MD 21146",21146,MD
-Carlson's donuts,Food,Treat,Indoor,,https://www.facebook.com/CarlsonsDonutsinSevernMD/,,"7846 Telegraph Rd, Severn, MD 21144",21144,MD
+Donut Shack,Food,Treat,Indoor,,https://theshackisback.com/,,"497 Ritchie Hwy, Severna Park, MD 21146",21146,MD
+Carlson's Donuts,Food,Treat,Indoor,,https://www.facebook.com/CarlsonsDonutsinSevernMD/,,"7846 Telegraph Rd, Severn, MD 21144",21144,MD
 Port Discovery,Activity,"Educational, Interactive, Physical Activity",Indoor,$$,https://www.portdiscovery.org/,,"35 Market Pl, Baltimore, MD 21202",21202,MD
 Bland Air Regional Park North Playground,Activity,"Playground, Park",Outdoor,Free,https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails,,"5685 Oakland Mills Rd, Columbia, MD 21045",21045,MD
 Bland Air Regional Park West Playground,Activity,"Physical Activity, Playground, Park",Outdoor,Free,https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails,," 5750 Oakland Mills Rd, Columbia, MD 21045",21045,MD
@@ -11,8 +11,8 @@ Schooley Mill Playground,Activity,"Physical Activity, Playground, Park",Outdoor,
 Swansfield Neighborhood Playground,Activity,"Physical Activity, Playground, Park",Outdoor,Free,https://search.app.goo.gl/GE2NXpe,,"Harper's Choice, Columbia, MD 21044",21044,MD
 Cedar Lane Park Playground,Activity,"Physical Activity, Playground, Park",Outdoor,Free,https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails#cedar-lane-park-columbia,,"5081 Cedar Ln, Columbia, MD 21044",21044,MD
 Cedar Lane Park East Playground,Activity,"Physical Activity, Playground, Park",Outdoor,Free,https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails#cedar-lane-park-columbia,,"Cedar Lane Path, Columbia, MD 21044",21044,MD
-Skyzone,Activity,Physical Activity,Indoor,$$,https://www.skyzone.com/columbia/,,"7175 Oakland Mills Rd, Columbia, MD 21046",21046,MD
-Cimbzone,Activity,Physical Activity,Indoor,$$,https://www.climbzone.us/laurel/?gad_source=1&gclid=CjwKCAjwgdayBhBQEiwAXhMxtlciuxCgo8wFosqP_peAI_9YIwxLAHH54bXEjvcd3FiPaODXedYEaxoCeBAQAvD_BwE,,"13200 Mid Atlantic Boulevard - Suite 130 Laurel, MD 20708",20708,MD
+Sky Zone,Activity,Physical Activity,Indoor,$$,https://www.skyzone.com/columbia/,,"7175 Oakland Mills Rd, Columbia, MD 21046",21046,MD
+ClimbZone,Activity,Physical Activity,Indoor,$$,https://www.climbzone.us/laurel/?gad_source=1&gclid=CjwKCAjwgdayBhBQEiwAXhMxtlciuxCgo8wFosqP_peAI_9YIwxLAHH54bXEjvcd3FiPaODXedYEaxoCeBAQAvD_BwE,,"13200 Mid Atlantic Boulevard - Suite 130 Laurel, MD 20708",20708,MD
 Hilton Tire Park,Activity,"Hiking, Physical Activity, Playground, Park",Outdoor,Free,https://search.app.goo.gl/5KEbWiF,,"1101 Hilton Ave, Catonsville, MD 21228",21228,MD
 Charlsie's Bakehouse,Food,"Food, Treat",Indoor,$,https://charlsiesbakehouse.com/,,"706 Frederick Road, Catonsville, MD 21228",21228,MD
 Mary’s Land Farm,Activity,"Animals, Physical Activity, Playground","Indoor, Outdoor",Free,https://www.maryslandfarm.com/,,"4979 Sheppard Lane, Ellicott City, MD 21042",21042,MD
@@ -22,7 +22,7 @@ Centennial Park West,Activity,"Hiking, Physical Activity, Playground, Park",Outd
 Centennial Park North,Activity,"Hiking, Physical Activity, Playground, Park",Outdoor,Free,https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails#centennial-park-ellicott-city,,"9801 Old Annapolis Rd, Ellicott City, MD 21042",21042,MD
 Rockburn Branch Park,Activity,"Hiking, Physical Activity, Playground, Park",Outdoor,Free,https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails,,"6105 Rockburn Branch Park Rd, Elkridge, MD 21075",21075,MD
 Rockburn Branch Park East,Activity,"Hiking, Physical Activity, Playground, Park",Outdoor,Free,https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails,,"5400 Landing Rd, Elkridge, MD 21075",21075,MD
-Guiness Brewery,Food,"Food, Drink","Indoor, Outdoor",$$,https://www.guinnessbrewerybaltimore.com/,,"5001 Washington Blvd, Halethorpe, MD 21227",21227,MD
+Guinness Brewery,Food,"Food, Drink","Indoor, Outdoor",$$,https://www.guinnessbrewerybaltimore.com/,,"5001 Washington Blvd, Halethorpe, MD 21227",21227,MD
 Color Burst Park,Activity ,"Water, Food, Drink","Indoor, Outdoor",Free,https://merriweatherdistrict.com/whats-on/color-burst-park-splash-pad-is-open-for-the-summer/,,"6000 Merriweather Dr, Columbia, MD 21044",21044,MD
 Piney Run Park,Activity ,"Hiking, Physical Activity, Playground, Park, Water",Outdoor,$,https://www.carrollcountymd.gov/government/directory/recreation-parks/places-to-go/piney-run-park/,,"30 Martz Rd, Sykesville, MD 21784",21784,MD
 Splash Pad of Sykesville,Activity,"Water, Park, Playground",Outdoor,Free,https://townofsykesville.org/2266/Splash-Pad,,"7282 Cooper Drive, Sykesville, MD 21784",21784,MD
@@ -43,7 +43,7 @@ Baltimore & Ohio Ellicott City Station Museum,Activity,"Educational, Trains","In
 Hyper Kidz,Activity,Playground,Indoor,$$,https://columbia.hyperkidzplay.com/,,"9309 Snowden River Pkwy Columbia, MD 21046",21046,MD
 The Fire Museum of MD,Activity,"Educational, Play",Indoor,$,https://www.firemuseummd.org/,,"1301-R York Road, Lutherville, MD 21093",21093,MD
 The Ice Shack,Food,Treat,Outdoor,$,https://theiceshack.godaddysites.com/,,"603 Wedekind Drive Woodbine, MD 21797",21797,MD
-Howard County LIbrary Central Branch,Activity,"Educational, Play",Indoor,Free,https://hclibrary.org/locations/central-branch/,,"10375 Little Patuxent Pkwy, Columbia, MD 21044",21044,MD
+Howard County Library Central Branch,Activity,"Educational, Play",Indoor,Free,https://hclibrary.org/locations/central-branch/,,"10375 Little Patuxent Pkwy, Columbia, MD 21044",21044,MD
 Howard County Library East Columbia Branch,Activity,"Educational, Play",Indoor,Free,https://hclibrary.org/locations/east-columbia-branch/,,"6600 Cradlerock Way, Columbia, MD 21045",21045,MD
 Howard County Library Elkridge Branch,Activity,"Educational, Play",Indoor,Free,https://hclibrary.org/locations/elkridge-branch/,,"6540 Washington Blvd, Elkridge MD 21075",21075,MD
 Howard County Library Glenwood Branch,Activity,"Educational, Play",Indoor,Free,https://hclibrary.org/locations/glenwood-branch/,,"2350 State Route 97, Cooksville, MD 21723",21723,MD

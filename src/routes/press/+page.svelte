@@ -11,12 +11,12 @@
 		QuoteSolid
 	} from 'flowbite-svelte-icons';
 
-	const contactEmail = 'hello@tinytribeadventures.com';
+	const contactEmail = 'djwayne35@gmail.com';
 	const mailtoPartner = `mailto:${contactEmail}?subject=Partnership%20inquiry%20%E2%80%94%20Tiny%20Tribe%20Adventures`;
 	const mailtoPress = `mailto:${contactEmail}?subject=Press%20inquiry%20%E2%80%94%20Tiny%20Tribe%20Adventures`;
 
 	const stats = [
-		{ value: '57', label: 'Family-tested locations' },
+		{ value: '58', label: 'Family-tested locations' },
 		{ value: '19', label: 'Maryland cities covered' },
 		{ value: '0–9', label: 'Primary kid age range' },
 		{ value: 'DMV', label: 'DC · MD · VA · DE planned' }

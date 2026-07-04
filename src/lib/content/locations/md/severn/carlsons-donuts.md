@@ -1,7 +1,7 @@
 ---
 id: 3
 slug: carlsons-donuts
-name: Carlson's donuts
+name: Carlson's Donuts
 city: Severn
 state: MD
 seeded_at: 2026-05-01

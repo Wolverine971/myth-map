@@ -1,81 +1,15 @@
 {
-	"lastUpdated": "2026-07-01T06:08:38.815Z",
+	"lastUpdated": "2026-07-04T06:01:31.012Z",
 	"stats": {
 		"totalLocations": 58,
-		"totalWritten": 32,
-		"totalNeedsBlog": 22,
+		"totalWritten": 33,
+		"totalNeedsBlog": 20,
 		"totalPublished": 14,
 		"totalPublishedButThin": 1,
-		"totalDraftedUnpublished": 19,
-		"completionRate": "55.2%"
+		"totalDraftedUnpublished": 20,
+		"completionRate": "56.9%"
 	},
 	"queue": [
-		{
-			"id": 10,
-			"locationKey": "md/columbia/swansfield-neighborhood-playground",
-			"slug": "swansfield-neighborhood-playground",
-			"name": "Swansfield Neighborhood Playground",
-			"city": "Columbia",
-			"state": "MD",
-			"address": "5659 Cedar Lane, Columbia, MD 21044",
-			"contentPath": "src/lib/content/locations/md/columbia/swansfield-neighborhood-playground.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 98,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "columbia-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
-		{
-			"id": 39,
-			"locationKey": "md/columbia/village-center",
-			"slug": "village-center",
-			"name": "Village Center",
-			"city": "Columbia",
-			"state": "MD",
-			"address": "10203 Tanager Lane, Suite 102, Columbia, MD 21044",
-			"contentPath": "src/lib/content/locations/md/columbia/village-center.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 98,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "columbia-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
 		{
 			"id": 19,
 			"locationKey": "md/ellicott-city/centennial-park",
@@ -699,6 +633,44 @@
 	"inProgress": null,
 	"completed": [
 		{
+			"id": 39,
+			"locationKey": "md/columbia/village-center",
+			"slug": "village-center",
+			"name": "Village Center",
+			"city": "Columbia",
+			"state": "MD",
+			"address": "10203 Tanager Lane, Suite 102, Columbia, MD 21044",
+			"contentPath": "src/lib/content/locations/md/columbia/village-center.md",
+			"published": false,
+			"contentState": "drafted-unpublished",
+			"priority": 98,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "columbia-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-07-04T06:00:51.000Z",
+			"completedAt": "2026-07-04T06:06:37.000Z",
+			"durationMinutes": 5.8,
+			"reviewNote": "Location appears PERMANENTLY CLOSED (verified 2026-07-04): official domain thevillagecentermd.com returns NXDOMAIN and Yelp lists it CLOSED. Opened May 2024, reviews stop late 2024. Writer produced an honest closure notice with a prominent HUMAN-REVIEW HTML comment and two verified live alternatives (Hyper Kidz Columbia, Robinson Nature Center — both links 200). Template sections \"Tips for families\" and \"Best time to visit\" intentionally omitted because there is nothing to plan; faithful reporting outranks template-filling. published left false. RECOMMEND: human unlist/remove this location or repurpose the page; do not publish.",
+			"reviewFlagPresent": true
+		},
+		{
 			"id": 18,
 			"locationKey": "md/columbia/robinson-nature-center",
 			"slug": "robinson-nature-center",
@@ -733,7 +705,6 @@
 			"startedAt": "2026-07-01T06:25:19.000Z",
 			"completedAt": "2026-07-01T06:28:21.000Z",
 			"durationMinutes": 3,
-			"contentPath": "src/lib/content/locations/md/columbia/robinson-nature-center.md",
 			"reviewNote": "Hours/admission/parking verified against the official Howard County Rec & Parks page on 2026-07-01 (Tue–Sun 9–5, closed Mon; $5 adult/$3 child). Older mom-blogs list Wed–Sat/Sun hours — used official current schedule, flagged in an HTML comment. Planetarium show pricing and changing-table/nursing specifics not stated on the official page; FAQs direct readers to call. Conservative structured frontmatter added (verified_at, stroller/wheelchair: partial, weather flags). published left false."
 		},
 		{
@@ -1463,6 +1434,43 @@
 			"failedAt": "2026-06-26T09:59:35.000Z",
 			"error": "stale inProgress timeout",
 			"logPath": "logs/blog-automation/cron-2026-06-26.log"
+		},
+		{
+			"id": 10,
+			"locationKey": "md/columbia/swansfield-neighborhood-playground",
+			"slug": "swansfield-neighborhood-playground",
+			"name": "Swansfield Neighborhood Playground",
+			"city": "Columbia",
+			"state": "MD",
+			"address": "5659 Cedar Lane, Columbia, MD 21044",
+			"contentPath": "src/lib/content/locations/md/columbia/swansfield-neighborhood-playground.md",
+			"published": false,
+			"contentState": "unstarted",
+			"priority": 98,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "columbia-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-07-03T03:37:38.000Z",
+			"failedAt": "2026-07-04T06:00:51.000Z",
+			"error": "stale inProgress timeout",
+			"logPath": "logs/blog-automation/cron-2026-07-04.log"
 		}
 	],
 	"skipped": []

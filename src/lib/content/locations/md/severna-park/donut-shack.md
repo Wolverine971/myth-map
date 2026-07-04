@@ -1,7 +1,7 @@
 ---
 id: 2
 slug: donut-shack
-name: Donut shack
+name: Donut Shack
 city: Severna Park
 state: MD
 seeded_at: 2026-05-01
