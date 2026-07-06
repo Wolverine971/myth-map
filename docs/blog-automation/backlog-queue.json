@@ -1,13 +1,13 @@
 {
-	"lastUpdated": "2026-07-04T06:01:31.012Z",
+	"lastUpdated": "2026-07-06T11:56:45.159Z",
 	"stats": {
 		"totalLocations": 58,
-		"totalWritten": 33,
+		"totalWritten": 32,
 		"totalNeedsBlog": 20,
 		"totalPublished": 14,
 		"totalPublishedButThin": 1,
-		"totalDraftedUnpublished": 20,
-		"completionRate": "56.9%"
+		"totalDraftedUnpublished": 19,
+		"completionRate": "55.2%"
 	},
 	"queue": [
 		{
@@ -144,13 +144,13 @@
 		},
 		{
 			"id": 14,
-			"locationKey": "md/laurel/cimbzone",
-			"slug": "cimbzone",
-			"name": "Cimbzone",
+			"locationKey": "md/laurel/climbzone",
+			"slug": "climbzone",
+			"name": "ClimbZone",
 			"city": "Laurel",
 			"state": "MD",
 			"address": "13200 Mid Atlantic Boulevard - Suite 130 Laurel, MD 20708",
-			"contentPath": "src/lib/content/locations/md/laurel/cimbzone.md",
+			"contentPath": "src/lib/content/locations/md/laurel/climbzone.md",
 			"published": false,
 			"contentState": "unstarted",
 			"priority": 98,
@@ -158,7 +158,7 @@
 			"estimatedTraffic": "medium",
 			"researchBrief": "docs/location-research-brief.md",
 			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
+			"addedToQueue": "2026-07-06",
 			"retryCount": 0,
 			"strategicValue": "laurel-activity-cluster",
 			"audit": {
@@ -540,13 +540,13 @@
 		},
 		{
 			"id": 24,
-			"locationKey": "md/halethorpe/guiness-brewery",
-			"slug": "guiness-brewery",
-			"name": "Guiness Brewery",
+			"locationKey": "md/halethorpe/guinness-brewery",
+			"slug": "guinness-brewery",
+			"name": "Guinness Brewery",
 			"city": "Halethorpe",
 			"state": "MD",
 			"address": "5001 Washington Blvd, Halethorpe, MD 21227",
-			"contentPath": "src/lib/content/locations/md/halethorpe/guiness-brewery.md",
+			"contentPath": "src/lib/content/locations/md/halethorpe/guinness-brewery.md",
 			"published": false,
 			"contentState": "unstarted",
 			"priority": 87,
@@ -554,7 +554,7 @@
 			"estimatedTraffic": "low",
 			"researchBrief": "docs/location-research-brief.md",
 			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
+			"addedToQueue": "2026-07-06",
 			"retryCount": 0,
 			"strategicValue": "halethorpe-food-cluster",
 			"audit": {
@@ -632,6 +632,44 @@
 	],
 	"inProgress": null,
 	"completed": [
+		{
+			"id": 13,
+			"locationKey": "md/columbia/sky-zone",
+			"slug": "sky-zone",
+			"name": "Sky Zone",
+			"city": "Columbia",
+			"state": "MD",
+			"address": "7175 Oakland Mills Rd, Columbia, MD 21046",
+			"contentPath": "src/lib/content/locations/md/columbia/sky-zone.md",
+			"published": false,
+			"contentState": "drafted-unpublished",
+			"priority": 98,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-07-06",
+			"retryCount": 0,
+			"strategicValue": "columbia-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-07-06T07:56:32.000Z",
+			"completedAt": "2026-07-06T08:03:27.000Z",
+			"durationMinutes": 6.9,
+			"reviewNote": "Full 1576-word parent guide written; all six required sections populated and verified against Sky Zone Columbia's official site. Hours corrected vs. the stale sibling file (Mon–Thu now open 10 a.m.; Fri 10 a.m.–10 p.m.), GLOW confirmed Fri AND Sat nights, pricing re-verified ($26.99/120-min ticket; Basic $26.99/mo; Extra Play $31.99/mo +$10.99 parent add-on; Extra Play Annual $189.99; Summer Play Pass $49.99 through 8/31/26). Dropped an unverifiable Sky Tower height/weight cutoff and a dead Lake Elkhorn county link (swapped to a live AllTrails link). Conservative structured frontmatter added (verified_at, stroller/wheelchair partial, noise loud, sensory high, weather flags). DUPLICATE FILE: skyzone.md (also id:13, slug 'skyzone') covers the same location — flagged in an HTML comment; one of the two must be removed before publishing to avoid a slug clash. Sensory-friendly hours unconfirmed as currently running and health-safety page returned 403, so per-attraction cutoffs were omitted rather than guessed. published left false.",
+			"reviewFlagPresent": true
+		},
 		{
 			"id": 39,
 			"locationKey": "md/columbia/village-center",
