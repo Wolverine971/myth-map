@@ -1,13 +1,13 @@
 {
-	"lastUpdated": "2026-07-06T11:56:45.159Z",
+	"lastUpdated": "2026-07-07T06:02:27.400Z",
 	"stats": {
 		"totalLocations": 58,
-		"totalWritten": 32,
-		"totalNeedsBlog": 20,
+		"totalWritten": 33,
+		"totalNeedsBlog": 19,
 		"totalPublished": 14,
 		"totalPublishedButThin": 1,
-		"totalDraftedUnpublished": 19,
-		"completionRate": "55.2%"
+		"totalDraftedUnpublished": 20,
+		"completionRate": "56.9%"
 	},
 	"queue": [
 		{
@@ -632,6 +632,44 @@
 	],
 	"inProgress": null,
 	"completed": [
+		{
+			"id": 19,
+			"locationKey": "md/ellicott-city/centennial-park",
+			"slug": "centennial-park",
+			"name": "Centennial Park",
+			"city": "Ellicott City",
+			"state": "MD",
+			"address": "10000 Clarksville Pike, Ellicott City, MD 21042",
+			"contentPath": "src/lib/content/locations/md/ellicott-city/centennial-park.md",
+			"published": false,
+			"contentState": "drafted-unpublished",
+			"priority": 98,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "ellicott-city-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-07-07T06:02:38.000Z",
+			"completedAt": "2026-07-07T06:09:14.000Z",
+			"durationMinutes": 6.6,
+			"reviewNote": "Full ~1200-word parent guide written; all six required sections populated. Hours, free entry/parking, boating season, boat-rental pricing (~$15/half-hr or hr resident, $10 deposit + photo ID per boat, Wed half-price June–Aug), fishing-license rules, and winter restroom/parking closures verified against official Howard County Rec & Parks pages and Maryland DNR on 2026-07-07. Two source conflicts flagged in an HTML comment and written around rather than guessed: loop length (2.4 mi county page vs 2.6 mi Wikipedia/Visit Howard County — used ~2.6) and which compass area holds the toddler vs big-kid playground. Changing-table/nursing specifics not verifiable on official pages, so omitted. Boat prices are current-season figures — re-confirm next season. Conservative structured frontmatter added (verified_at, stroller yes, wheelchair partial, rainy_day_ok/hot_day_ok false, pair_with Clarks Elioak Farm). published left false.",
+			"reviewFlagPresent": true
+		},
 		{
 			"id": 13,
 			"locationKey": "md/columbia/sky-zone",
