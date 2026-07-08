@@ -1,81 +1,15 @@
 {
-	"lastUpdated": "2026-07-07T06:02:27.400Z",
+	"lastUpdated": "2026-07-08T06:02:53.512Z",
 	"stats": {
 		"totalLocations": 58,
-		"totalWritten": 33,
-		"totalNeedsBlog": 19,
+		"totalWritten": 34,
+		"totalNeedsBlog": 18,
 		"totalPublished": 14,
 		"totalPublishedButThin": 1,
-		"totalDraftedUnpublished": 20,
-		"completionRate": "56.9%"
+		"totalDraftedUnpublished": 21,
+		"completionRate": "58.6%"
 	},
 	"queue": [
-		{
-			"id": 19,
-			"locationKey": "md/ellicott-city/centennial-park",
-			"slug": "centennial-park",
-			"name": "Centennial Park",
-			"city": "Ellicott City",
-			"state": "MD",
-			"address": "10000 Clarksville Pike, Ellicott City, MD 21042",
-			"contentPath": "src/lib/content/locations/md/ellicott-city/centennial-park.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 98,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "ellicott-city-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
-		{
-			"id": 21,
-			"locationKey": "md/ellicott-city/centennial-park-north",
-			"slug": "centennial-park-north",
-			"name": "Centennial Park North",
-			"city": "Ellicott City",
-			"state": "MD",
-			"address": "9801 Old Annapolis Rd, Ellicott City, MD 21042",
-			"contentPath": "src/lib/content/locations/md/ellicott-city/centennial-park-north.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 98,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "ellicott-city-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
 		{
 			"id": 20,
 			"locationKey": "md/ellicott-city/centennial-park-west",
@@ -632,6 +566,45 @@
 	],
 	"inProgress": null,
 	"completed": [
+		{
+			"id": 21,
+			"locationKey": "md/ellicott-city/centennial-park-north",
+			"slug": "centennial-park-north",
+			"name": "Centennial Park North",
+			"city": "Ellicott City",
+			"state": "MD",
+			"address": "9801 Old Annapolis Rd, Ellicott City, MD 21042",
+			"contentPath": "src/lib/content/locations/md/ellicott-city/centennial-park-north.md",
+			"published": false,
+			"contentState": "drafted-unpublished",
+			"priority": 98,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "ellicott-city-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-07-08T06:03:03.000Z",
+			"completedAt": "2026-07-08T06:09:19.000Z",
+			"durationMinutes": 6.3,
+			"contentPath": "src/lib/content/locations/md/ellicott-city/centennial-park-north.md",
+			"reviewNote": "Full ~1600-word parent guide written; all six required sections populated. Page differentiated from the main Centennial Park entry by leading with what's unique to the North Area: Howard County's flagship all-access/inclusive playground (fully fenced, poured-rubber, ramped structures, Zero-G/expression swings, AAC board) and the Nov 2023 sensory trail loop. Boat-rental seekers pointed to the South Area rather than repeating whole-park lake/loop content. Hours, four-area addresses, and North amenity list verified against official Howard County Rec & Parks pages, the county's Nov 2023 sensory-trail announcement, and the Visit Howard County accessible-playgrounds page on 2026-07-08; crowd/layout/swing details cross-checked against parent reviews. Two items flagged for human review in an HTML comment: the 2026 court/skate expansion phase (may be recently finished or still under construction) and winter restroom status at North (stated conservatively from the verified sibling page). Conservative structured frontmatter added (verified_at, stroller/wheelchair yes, rainy_day_ok/hot_day_ok false, cold_day_ok true, pair_with Clarks Elioak Farm). published left false.",
+			"reviewFlagPresent": true
+		},
 		{
 			"id": 19,
 			"locationKey": "md/ellicott-city/centennial-park",
