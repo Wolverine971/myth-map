@@ -74,6 +74,9 @@
 
 	let mapReady = false;
 	let unsubscribeTheme: (() => void) | null = null;
+	let styleRevision = 0;
+	let stateRequestRevision = 0;
+	let cityRequestRevision = 0;
 
 	let focusedId: LocationFocusKey | null = null;
 	const unsubscribeFocus = locationFocus.subscribe(({ hovered, selected }) => {
@@ -85,6 +88,10 @@
 
 	let prevStateAbr: string | null = null;
 	let prevCity: string | null = null;
+
+	function mapDuration(duration: number): number {
+		return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : duration;
+	}
 
 	$: if (mapReady) syncShownLocations(shownLocations);
 	$: if (mapReady) syncStateFilter(selectedState);
@@ -142,7 +149,7 @@
 			renderWorldCopies: false,
 			preserveDrawingBuffer: false,
 			antialias: false,
-			fadeDuration: 200
+			fadeDuration: mapDuration(200)
 		});
 
 		attachLazyIconLoader(map);
@@ -178,34 +185,47 @@
 		const desired = STYLE_FOR_THEME[theme];
 		if (desired === currentStyleUrl) return;
 		currentStyleUrl = desired;
+		const revision = ++styleRevision;
+		mapReady = false;
 
-		// Capture state we need to restore — the existing prev* trackers prevent
-		// reload-on-no-change, so reset them.
-		const stateToRestore = selectedState;
-		const cityToRestore = selectedCity;
+		// The existing prev* trackers prevent reload-on-no-change, so reset them.
 		prevStateAbr = null;
 		prevCity = null;
 		// setStyle wipes the source + any feature state we set on its features.
 		hoveredClusterId = null;
 
-		map.setStyle(desired);
-
 		map.once('style.load', async () => {
+			if (revision !== styleRevision) return;
 			try {
 				addInitialSourceAndLayers();
+				if (revision !== styleRevision) return;
 				// Restore focus ring synchronously with the layer add — otherwise
 				// awaits below would leave the ring at its default __none__ filter
 				// while polygon GeoJSON fetches resolve.
 				syncFocusRing(focusedId);
 				syncRadarResult(radarResult);
 				syncRadarFocus(radarFocusedId);
-				if (stateToRestore) await syncStateFilter(stateToRestore);
-				if (stateToRestore && cityToRestore) {
-					await syncCityFilter(stateToRestore, cityToRestore);
+				if (selectedState) await syncStateFilter(selectedState);
+				if (selectedState && selectedCity) {
+					await syncCityFilter(selectedState, selectedCity);
 				}
 			} catch (error) {
 				console.error('Error restoring layers after style swap:', error);
+			} finally {
+				if (revision === styleRevision) {
+					mapReady = true;
+					syncShownLocations(shownLocations);
+					dispatchMapViewChange();
+				}
 			}
+		});
+
+		// The two Mapbox base styles use different sprites. A style diff cannot
+		// apply that change, and this component already rebuilds custom layers.
+		map.setStyle(desired, {
+			diff: false,
+			localFontFamily: undefined,
+			localIdeographFontFamily: undefined
 		});
 	}
 
@@ -294,6 +314,7 @@
 		if (!map) return;
 
 		if (!stateObj) {
+			stateRequestRevision += 1;
 			if (prevStateAbr) {
 				removeStateLayers();
 				removeSelectedCityLayers();
@@ -304,10 +325,19 @@
 		}
 
 		if (prevStateAbr === stateObj.abr) return;
+		const requestRevision = ++stateRequestRevision;
+		const requestStyleRevision = styleRevision;
 		prevStateAbr = stateObj.abr;
 
 		try {
 			const stateGeoJSON = await loadStateBoundary(stateObj.abr);
+			if (
+				requestRevision !== stateRequestRevision ||
+				requestStyleRevision !== styleRevision ||
+				selectedState?.abr !== stateObj.abr
+			) {
+				return;
+			}
 
 			if (!stateGeoJSON?.features?.length) {
 				throw new Error('No features found for state');
@@ -319,6 +349,9 @@
 				fitMapToBounds(stateGeoJSON);
 			}
 		} catch (error) {
+			if (requestRevision !== stateRequestRevision || requestStyleRevision !== styleRevision) {
+				return;
+			}
 			console.error('Error loading state boundary:', error);
 			notifications.warning(`Failed to load boundary for ${stateObj.name}`);
 			prevStateAbr = null;
@@ -365,7 +398,7 @@
 		if (!geom) return;
 		const bounds = new mapboxgl.LngLatBounds();
 		extendBoundsForGeometry(geom, bounds);
-		map.fitBounds(bounds, { padding: 40, duration: 1200, curve: 1.42 });
+		map.fitBounds(bounds, { padding: 40, duration: mapDuration(1200), curve: 1.42 });
 	}
 
 	function extendBoundsForGeometry(geometry: GeoJSON.Geometry, bounds: LngLatBounds) {
@@ -385,6 +418,7 @@
 		if (!map) return;
 
 		if (!cityName || !stateObj) {
+			cityRequestRevision += 1;
 			if (prevCity) {
 				removeSelectedCityLayers();
 				prevCity = null;
@@ -393,6 +427,8 @@
 		}
 
 		if (prevCity === cityName) return;
+		const requestRevision = ++cityRequestRevision;
+		const requestStyleRevision = styleRevision;
 		prevCity = cityName;
 
 		try {
@@ -400,17 +436,33 @@
 				stateObj.abr,
 				cityName.toLowerCase().replace(/\s+/g, '-')
 			);
+			if (
+				requestRevision !== cityRequestRevision ||
+				requestStyleRevision !== styleRevision ||
+				selectedState?.abr !== stateObj.abr ||
+				selectedCity !== cityName
+			) {
+				return;
+			}
 
-			if (!cityGeoJSON) throw new Error('No GeoJSON data found for city');
+			if (!cityGeoJSON?.features?.length) {
+				// Some location cities do not yet have a polygon source. Filtering is
+				// still valid, so fit the filtered markers instead of showing an error.
+				removeSelectedCityLayers();
+				fitMapToLocations(shownLocations);
+				return;
+			}
 
-			const cityFeature =
-				cityGeoJSON.type === 'FeatureCollection' ? cityGeoJSON.features[0] : cityGeoJSON;
+			const cityFeature = cityGeoJSON.features[0];
 
 			if (!cityFeature) throw new Error('No valid city feature found');
 
 			updateCityLayer(cityFeature);
 			zoomToFeature(cityFeature);
 		} catch (error) {
+			if (requestRevision !== cityRequestRevision || requestStyleRevision !== styleRevision) {
+				return;
+			}
 			console.error('Error loading city GeoJSON:', error);
 			notifications.warning(`Failed to load boundary for ${cityName}`);
 			prevCity = null;
@@ -432,7 +484,26 @@
 	function zoomToFeature(feature: GeoJSON.Feature) {
 		const bounds = new mapboxgl.LngLatBounds();
 		extendBoundsForGeometry(feature.geometry, bounds);
-		map.fitBounds(bounds, { padding: 40, maxZoom: 14, duration: 1000, curve: 1.2 });
+		map.fitBounds(bounds, {
+			padding: 40,
+			maxZoom: 14,
+			duration: mapDuration(1000),
+			curve: 1.2
+		});
+	}
+
+	function fitMapToLocations(list: any[]) {
+		const bounds = new mapboxgl.LngLatBounds();
+		let hasCoordinates = false;
+		for (const item of list) {
+			const lat = Number(item?.location?.lat);
+			const lng = Number(item?.location?.lng);
+			if (!Number.isFinite(lat) || !Number.isFinite(lng)) continue;
+			bounds.extend([lng, lat]);
+			hasCoordinates = true;
+		}
+		if (!hasCoordinates) return;
+		map.fitBounds(bounds, { padding: 56, maxZoom: 13, duration: mapDuration(700) });
 	}
 
 	function addMapControls() {
@@ -548,7 +619,13 @@
 			const zoom = await clusterExpansionZoom(clusterSource, clusterId);
 			// Nudge half a zoom past the break point so the cluster visibly cracks open.
 			const targetZoom = Math.min(zoom + 0.5, 18);
-			map.flyTo({ center, zoom: targetZoom, duration: 500, curve: 1, essential: true });
+			map.flyTo({
+				center,
+				zoom: targetZoom,
+				duration: mapDuration(500),
+				curve: 1,
+				essential: false
+			});
 		} catch (error) {
 			console.error('Error expanding cluster:', error);
 		}
@@ -568,9 +645,9 @@
 			map.flyTo({
 				center,
 				zoom: Math.min(zoom + 0.5, 18),
-				duration: 500,
+				duration: mapDuration(500),
 				curve: 1,
-				essential: true
+				essential: false
 			});
 		} catch (error) {
 			console.error('Error expanding radar cluster:', error);
@@ -592,7 +669,7 @@
 
 		const canvasHeight = map.getCanvas().clientHeight || 0;
 		const popupOffset: [number, number] = [0, -Math.min(90, Math.round(canvasHeight * 0.16))];
-		map.panTo(coordinates, { duration: 300, offset: popupOffset });
+		map.panTo(coordinates, { duration: mapDuration(300), offset: popupOffset });
 
 		popup
 			.setLngLat(coordinates)
@@ -640,13 +717,13 @@
 			map.flyTo({
 				center: coordinates,
 				zoom: 15,
-				duration: 500,
+				duration: mapDuration(500),
 				curve: 1.2,
 				offset: popupOffset,
-				essential: true
+				essential: false
 			});
 		} else {
-			map.panTo(coordinates, { duration: 300, offset: popupOffset });
+			map.panTo(coordinates, { duration: mapDuration(300), offset: popupOffset });
 		}
 
 		const copyId = `copy-${(props.name || 'location').replace(/\s+/g, '-')}`;
@@ -687,7 +764,16 @@
 	}
 </script>
 
-<div class="map-wrap">
+<div
+	class="map-wrap"
+	role="region"
+	aria-label="Interactive location map"
+	aria-describedby="map-description"
+>
+	<p id="map-description" class="sr-only">
+		Map markers are pointer-operated. Use the List view button before this map to browse the same
+		locations with a keyboard or screen reader.
+	</p>
 	<div class="map" id="map" bind:this={mapContainer}></div>
 </div>
 
@@ -731,15 +817,15 @@
 
 	:global(.mapboxgl-popup-close-button) {
 		font-size: 18px;
-		width: 26px;
-		height: 26px;
+		width: 44px;
+		height: 44px;
 		padding: 0;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		color: var(--text-subtle);
-		right: 8px;
-		top: 8px;
+		right: 2px;
+		top: 2px;
 		border-radius: 2px;
 		background: transparent;
 		transition:
@@ -787,7 +873,7 @@
 		margin: 0 0 0.625rem 0;
 		line-height: 1.25;
 		letter-spacing: -0.01em;
-		padding-right: 1.5rem; /* room for close button */
+		padding-right: 2.75rem; /* room for close button */
 	}
 
 	:global(.dark .popup-title) {
@@ -814,8 +900,8 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 28px;
-		height: 28px;
+		width: 44px;
+		height: 44px;
 		padding: 0;
 		border: 1px solid var(--border-subtle);
 		border-radius: 2px;
@@ -850,6 +936,7 @@
 		align-items: center;
 		justify-content: center;
 		gap: 0.375rem;
+		min-height: 44px;
 		padding: 0.5rem 0.875rem;
 		font-family: theme('fontFamily.mono');
 		font-size: 0.6875rem;
@@ -927,8 +1014,8 @@
 	}
 
 	:global(.mapboxgl-ctrl button) {
-		width: 36px;
-		height: 36px;
+		width: 44px;
+		height: 44px;
 		display: flex;
 		align-items: center;
 		justify-content: center;

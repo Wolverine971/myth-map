@@ -22,8 +22,6 @@ cold_day_ok: false
 pair_with: [md/cooksville/howard-county-library-glenwood-branch]
 ---
 
-# The Ice Shack
-
 **Address:** 603 Wedekind Drive Woodbine, MD 21797
 **Website:** [https://theiceshack.godaddysites.com/](https://theiceshack.godaddysites.com/)
 **Type:** Food

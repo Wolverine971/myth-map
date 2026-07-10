@@ -1,6 +1,6 @@
 // src/lib/server/radar/curated.ts
 import locationsData from '$lib/data/locations.json';
-import { hrefForId } from '$lib/content/loader';
+import { hrefForId } from '$lib/server/content/loader';
 import type { RadarEntity, RadarLayer } from '$lib/types/radar';
 import { boundingBox, haversineMiles, isInsideBoundingBox, kmToMiles } from './geo';
 

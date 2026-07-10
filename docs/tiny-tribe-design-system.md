@@ -63,7 +63,7 @@ This document is the plan for fixing all of that, in order, and the place we'll 
 ### 1.6 Imagery
 
 - No photography. Cards display one of ~30 PNG icons in `static/map/` (with versioning leaks like `xxlibrary.png`, `xxxdonut-shack.png`).
-- Logos: `myth-map.svg`, `myth-map-small.svg`, `myth-map.png`, plus two unattributed `Untitled design (*).svg` files (~1MB each).
+- Logos: `myth-map.svg` and `myth-map.png`, plus two unattributed `Untitled design (*).svg` files (~1MB each). The former `myth-map-small.svg` embedded a 457KB PNG and was retired in favor of the 12.7KB vector mark.
 
 ---
 
@@ -603,7 +603,7 @@ This page is the **truth.** If we change a token, this page changes. If a compon
 - ✅ **Iconography:** Keep existing PNGs in `static/map/` for now. Curated SVG illustration set is a future investment, not v1.
 - ⏸️ **Photography:** Not in scope right now. Decision deferred.
 - ✅ **Dark mode:** Decided — Tier 3 sunset-aware (see Section 5). Removed from open questions.
-- ⏸️ **Logo system:** TBD. Current `myth-map.svg` / `myth-map-small.svg` work for v1; lockup variants can come later.
+- ⏸️ **Logo system:** TBD. The vector `myth-map.svg` works for v1; lockup variants can come later.
 - ✅ **Error & empty states:** Per design judgment — lean into the field-manual aesthetic. Error states use `danger-500` with a topographic / map-style line illustration where appropriate. Empty states use a quiet kraft-toned card with a coordinate-style label (e.g., "No locations found in this grid square") — keeps the brand voice even at moments of nothing.
 
 ---

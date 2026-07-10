@@ -3,10 +3,18 @@ import type { PageServerLoad, Actions } from './$types';
 import { PUBLIC_MAP_KEY } from '$env/static/public';
 import mbxDirections from '@mapbox/mapbox-sdk/services/directions';
 import locationsData from '$lib/data/locations.json';
+import { getEntryById, hrefForId } from '$lib/server/content/loader';
 
 export const load: PageServerLoad = async () => {
 	return {
-		locations: locationsData.locations,
+		locations: locationsData.locations.map((item) => {
+			const id = item.location.id ?? item.id;
+			return {
+				...item,
+				detailsHref: hrefForId(id),
+				hasGuide: !!getEntryById(id)?.frontmatter.published
+			};
+		}),
 		locationTags: locationsData.locationTags,
 		tags: locationsData.tags
 	};

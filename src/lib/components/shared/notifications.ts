@@ -1,7 +1,7 @@
 // src/lib/components/shared/notifications.ts
 import { writable, derived } from 'svelte/store';
 
-const DEFAULT_TIMEOUT = 3000;
+const DEFAULT_TIMEOUT = 8000;
 
 export type NotificationType = 'default' | 'danger' | 'warning' | 'info' | 'success';
 
@@ -24,6 +24,10 @@ function createNotificationStore(defaultTimeout: number) {
 		_notifications.update((state) => {
 			return [...state, { id: id(), type, message, timeout }];
 		});
+	}
+
+	function dismiss(notificationId: string) {
+		_notifications.update((state) => state.filter((item) => item.id !== notificationId));
 	}
 
 	const notifications = derived(
@@ -50,6 +54,7 @@ function createNotificationStore(defaultTimeout: number) {
 	return {
 		subscribe,
 		send,
+		dismiss,
 		default: (msg: string, timeout?: number) => send(msg, 'default', timeout),
 		danger: (msg: string, timeout?: number) => send(msg, 'danger', timeout),
 		warning: (msg: string, timeout?: number) => send(msg, 'warning', timeout),

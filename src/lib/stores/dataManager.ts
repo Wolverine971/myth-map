@@ -179,67 +179,6 @@ class DataManager {
 // Create singleton instance
 export const dataManager = new DataManager();
 
-// City data cache
-class CityDataCache {
-	private cityCache = new Map<string, { data: string[]; timestamp: number }>();
-	private readonly CITY_CACHE_TTL = CacheTTL.VERY_LONG; // Cities don't change often
-
-	async getCityData(stateAbbr: string): Promise<string[]> {
-		const key = stateAbbr.toLowerCase();
-		const cached = this.cityCache.get(key);
-
-		if (cached && Date.now() - cached.timestamp < this.CITY_CACHE_TTL) {
-			return cached.data;
-		}
-
-		try {
-			// Dynamically import city data
-			const indexModule = await import(`../../geographies/cities/${key}/index.json`);
-
-			const cities = indexModule.default.map((city: string) => this.normalizeCityName(city));
-
-			// Cache the result
-			this.cityCache.set(key, { data: cities, timestamp: Date.now() });
-
-			// Also cache in localStorage for persistence
-			if (browser) {
-				cacheManager.set(`cities_${key}`, cities, this.CITY_CACHE_TTL);
-			}
-
-			return cities;
-		} catch (error) {
-			console.error(`Failed to load cities for state ${stateAbbr}:`, error);
-
-			// Try to get from localStorage cache
-			if (browser) {
-				const cached = cacheManager.get<string[]>(`cities_${key}`);
-				if (cached) return cached;
-			}
-
-			return [];
-		}
-	}
-
-	private normalizeCityName(city: string): string {
-		// Simplified normalization - just proper case
-		return city
-			.split(/[\s-]+/)
-			.map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-			.join(' ');
-	}
-
-	clearCache(): void {
-		this.cityCache.clear();
-	}
-
-	preloadCitiesForState(stateAbbr: string): void {
-		// Preload in background
-		this.getCityData(stateAbbr).catch(console.error);
-	}
-}
-
-export const cityDataCache = new CityDataCache();
-
 // Cache for search results with debouncing
 class SearchCacheManager {
 	private searchCache = new Map<string, { data: any; timestamp: number }>();

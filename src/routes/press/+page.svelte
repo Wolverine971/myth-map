@@ -243,21 +243,19 @@
 			<div class="font-mono text-xs uppercase tracking-wide text-muted">§07 Brand assets</div>
 		</div>
 		<div class="space-y-4 text-base text-default">
-			<div class="grid gap-3 sm:grid-cols-3">
+			<div class="grid gap-3 sm:grid-cols-2">
 				<a
 					href="/myth-map.svg"
 					download
 					class="group flex flex-col items-center gap-2 border border-subtle bg-surface p-4 transition-colors duration-fast hover:border-tertiary-500"
 				>
-					<img src="/myth-map.svg" alt="Tiny Tribe Adventures logo" class="h-16 w-auto" />
-					<div class="font-mono text-xs uppercase tracking-wide text-muted">Logo · SVG</div>
-				</a>
-				<a
-					href="/myth-map-small.svg"
-					download
-					class="group flex flex-col items-center gap-2 border border-subtle bg-surface p-4 transition-colors duration-fast hover:border-tertiary-500"
-				>
-					<img src="/myth-map-small.svg" alt="Tiny Tribe Adventures mark" class="h-16 w-auto" />
+					<img
+						src="/myth-map.svg"
+						alt="Tiny Tribe Adventures mark"
+						class="h-16 w-16 dark:invert"
+						width="64"
+						height="64"
+					/>
 					<div class="font-mono text-xs uppercase tracking-wide text-muted">Mark · SVG</div>
 				</a>
 				<a
@@ -265,8 +263,8 @@
 					download
 					class="group flex flex-col items-center gap-2 border border-subtle bg-surface p-4 transition-colors duration-fast hover:border-tertiary-500"
 				>
-					<img src="/myth-map.png" alt="Tiny Tribe Adventures social card" class="h-16 w-auto" />
-					<div class="font-mono text-xs uppercase tracking-wide text-muted">Social · PNG</div>
+					<img src="/myth-map.png" alt="Tiny Tribe Adventures mark" class="h-16 w-auto" />
+					<div class="font-mono text-xs uppercase tracking-wide text-muted">Mark · PNG</div>
 				</a>
 			</div>
 			<div class="border border-subtle bg-sunken px-4 py-3 font-mono text-xs text-muted">

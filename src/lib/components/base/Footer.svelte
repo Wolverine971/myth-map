@@ -30,7 +30,14 @@
 	<div class="mx-auto w-full max-w-[1350px] px-4 py-8 sm:px-6 lg:px-8">
 		<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 			<a href="/" class="inline-flex items-center gap-2">
-				<img src="/myth-map-small.svg" class="h-8 w-auto" alt="" aria-hidden="true" />
+				<img
+					src="/myth-map.svg"
+					class="h-7 w-7 dark:invert"
+					width="28"
+					height="28"
+					alt=""
+					aria-hidden="true"
+				/>
 				<span class="font-display text-base font-bold text-primary-700 dark:text-primary-300">
 					Tiny Tribe Adventures
 				</span>

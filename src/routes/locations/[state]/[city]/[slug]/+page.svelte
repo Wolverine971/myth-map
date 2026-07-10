@@ -222,7 +222,7 @@
 							rel="noopener noreferrer"
 							class="font-mono uppercase tracking-wide text-tertiary-600 transition-colors duration-fast hover:text-tertiary-700 dark:text-tertiary-400 dark:hover:text-tertiary-300"
 						>
-							Visit site →
+							Visit site → <span class="sr-only">(opens in a new tab)</span>
 						</a>
 					</dd>
 				</div>
@@ -291,7 +291,7 @@
 	{/if}
 
 	{#if fm.published && entry.bodyHtml}
-		<article class="prose prose-lg mb-6 max-w-none dark:prose-invert">
+		<article class="location-guide prose prose-lg mb-6 max-w-none dark:prose-invert">
 			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 			{@html entry.bodyHtml}
 		</article>
@@ -368,3 +368,22 @@
 		</section>
 	{/if}
 </div>
+
+<style>
+	:global(.location-guide a),
+	:global(.location-guide code) {
+		overflow-wrap: anywhere;
+		word-break: break-word;
+	}
+
+	:global(.location-guide img) {
+		max-width: 100%;
+		height: auto;
+	}
+
+	:global(.location-guide table) {
+		display: block;
+		max-width: 100%;
+		overflow-x: auto;
+	}
+</style>

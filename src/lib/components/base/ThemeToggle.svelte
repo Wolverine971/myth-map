@@ -14,7 +14,7 @@
 <button
 	type="button"
 	on:click={cycleTheme}
-	class="inline-flex h-9 w-9 items-center justify-center rounded-sm border border-subtle bg-surface text-default transition-colors duration-fast hover:border-strong hover:text-primary-700 dark:hover:text-primary-300"
+	class="inline-flex h-11 w-11 items-center justify-center rounded-sm border border-subtle bg-surface text-default transition-colors duration-fast hover:border-strong hover:text-primary-700 dark:hover:text-primary-300"
 	aria-label={label}
 	title={label}
 >

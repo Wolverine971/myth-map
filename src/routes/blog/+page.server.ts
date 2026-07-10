@@ -1,10 +1,10 @@
-// src/routes/blog/+page.ts
-import { listEntries } from '$lib/content/loader';
-import type { PageLoad } from './$types';
+// src/routes/blog/+page.server.ts
+import { listEntries } from '$lib/server/content/loader';
+import type { PageServerLoad } from './$types';
 
 export const prerender = true;
 
-export const load: PageLoad = async () => {
+export const load: PageServerLoad = async () => {
 	const guides = listEntries()
 		.filter((entry) => entry.frontmatter.published)
 		.sort((a, b) =>

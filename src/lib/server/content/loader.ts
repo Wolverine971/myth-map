@@ -1,11 +1,11 @@
-// src/lib/content/loader.ts
-// Build-time loader for location markdown content. Uses Vite's
+// src/lib/server/content/loader.ts
+// Server-only loader for location markdown content. Uses Vite's
 // import.meta.glob to inline every markdown file at build, parses frontmatter
 // once, and exposes lookup helpers used by routes (entries(), getContent).
 
 import { marked } from 'marked';
 import locationsData from '$lib/data/locations.json';
-import { parseFrontmatter, type Frontmatter } from './frontmatter';
+import { parseFrontmatter, type Frontmatter } from '$lib/content/frontmatter';
 
 export type RawLocation = {
 	id: number;
@@ -52,7 +52,7 @@ export type RouteEntry = {
 const LOCATIONS = (locationsData as { locations: RawLocation[] }).locations;
 const LOCATIONS_BY_ID = new Map<number, RawLocation>(LOCATIONS.map((l) => [l.id, l]));
 
-const RAW_MARKDOWN = import.meta.glob('./locations/**/*.md', {
+const RAW_MARKDOWN = import.meta.glob('../../content/locations/**/*.md', {
 	query: '?raw',
 	import: 'default',
 	eager: true

@@ -65,7 +65,8 @@ have. No content work, no Markdown publishing.
 
 **File:** `src/routes/sitemap.xml/+server.ts`
 
-- Import `listEntries`, `statesAvailable`, `citiesInState` from `src/lib/content/loader.ts`.
+- Import `listEntries`, `statesAvailable`, `citiesInState` from the server-only
+  `src/lib/server/content/loader.ts`.
 - Emit URLs for:
   - Static pages we already have (`/`, `/locations`, `/about`, `/contact`, `/blog`).
   - One URL per state from `statesAvailable()`.

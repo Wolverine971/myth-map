@@ -8,23 +8,32 @@ export class FullscreenControl implements IControl {
 	private _button!: HTMLButtonElement;
 	private _icon!: HTMLSpanElement;
 	private _originalStyles: Record<string, string> = {};
+	private _handleFullscreenChange = () => {
+		if (!this._map) return;
+		this._fullscreen = document.fullscreenElement === this._map.getContainer();
+		this._updateButtonIcon();
+		this._map.resize();
+	};
 
 	onAdd(map: Map) {
 		this._map = map;
 		this._container = document.createElement('div');
 		this._container.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
 		this._button = document.createElement('button');
+		this._button.type = 'button';
 		this._button.className = 'fullscreen-button';
-		this._button.setAttribute('aria-label', 'Toggle fullscreen map');
 		this._icon = document.createElement('span');
 		this._icon.className = 'fullscreen-icon';
 		this._button.appendChild(this._icon);
 		this._container.appendChild(this._button);
 		this._button.addEventListener('click', () => this.toggleFullscreen());
+		document.addEventListener('fullscreenchange', this._handleFullscreenChange);
+		this._updateButtonIcon();
 		return this._container;
 	}
 
 	onRemove() {
+		document.removeEventListener('fullscreenchange', this._handleFullscreenChange);
 		this._container.parentNode?.removeChild(this._container);
 		this._map = undefined;
 	}
@@ -97,5 +106,11 @@ export class FullscreenControl implements IControl {
 	private _updateButtonIcon() {
 		this._icon.classList.toggle('fullscreen-icon', !this._fullscreen);
 		this._icon.classList.toggle('exit-fullscreen-icon', this._fullscreen);
+		this._button.setAttribute(
+			'aria-label',
+			this._fullscreen ? 'Exit fullscreen map' : 'Enter fullscreen map'
+		);
+		this._button.setAttribute('aria-pressed', String(this._fullscreen));
+		this._button.title = this._fullscreen ? 'Exit fullscreen map' : 'Enter fullscreen map';
 	}
 }

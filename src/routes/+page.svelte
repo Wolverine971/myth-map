@@ -1,7 +1,6 @@
 <!-- src/routes/+page.svelte -->
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
-	import { fade } from 'svelte/transition';
 	import { derived, writable } from 'svelte/store';
 
 	import { LazyMap } from '$lib/utils/lazyComponents';
@@ -104,6 +103,16 @@
 
 	$: shownLocations = $filteredLocations.filter(
 		(l) => l?.location?.lat != null && l?.location?.lng != null
+	);
+	$: geoFilterLocations = filterService.getFilteredLocations(
+		data.locations,
+		{
+			selectedTags: $selectedTags,
+			selectedState: null,
+			selectedCity: null,
+			searchQuery: $searchQuery
+		},
+		data.locationTags
 	);
 	$: availableTagsMap = $availableTags;
 	$: totalFilteredItems = shownLocations.length;
@@ -412,8 +421,10 @@
 
 	{#if showFilterRestoreNotice}
 		<div
-			class="mb-4 flex items-center justify-between rounded-sm border border-accent-200 bg-accent-50 px-4 py-3 text-accent-800 dark:border-accent-800 dark:bg-accent-900/20 dark:text-accent-300"
-			transition:fade={{ duration: 150 }}
+			class="mb-4 flex items-center justify-between rounded-sm border border-accent-200 bg-accent-50 px-4 py-3 text-default dark:border-accent-800 dark:bg-accent-900/20 dark:text-accent-300"
+			role="status"
+			aria-live="polite"
+			aria-atomic="true"
 		>
 			<div class="flex items-center gap-2">
 				<InfoCircleSolid class="h-4 w-4" />
@@ -421,7 +432,7 @@
 			</div>
 			<button
 				on:click={() => (showFilterRestoreNotice = false)}
-				class="text-sm font-medium underline-offset-2 hover:underline"
+				class="min-h-11 px-2 text-sm font-medium underline-offset-2 hover:underline"
 			>
 				Dismiss
 			</button>
@@ -438,10 +449,14 @@
 		/>
 		<GeoFilters
 			on:filterChange={handleGeoFilterChange}
-			{shownLocations}
+			shownLocations={geoFilterLocations}
 			selectedState={$selectedState}
 			selectedCity={$selectedCity}
 		/>
+	</div>
+	<div class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+		{totalFilteredItems}
+		{totalFilteredItems === 1 ? 'location' : 'locations'} shown.
 	</div>
 
 	<!-- ─── Status row + view toggle ────────────────────────────── -->
@@ -457,7 +472,7 @@
 				{/if}
 				<button
 					on:click={clearAllFilters}
-					class="ml-1 rounded-sm border border-subtle bg-surface px-2 py-0.5 text-default hover:border-strong hover:text-tertiary-700 dark:hover:text-tertiary-300"
+					class="ml-1 min-h-11 rounded-sm border border-subtle bg-surface px-3 text-default hover:border-strong hover:text-tertiary-700 dark:hover:text-tertiary-300"
 				>
 					Clear filters
 				</button>
@@ -480,13 +495,12 @@
 			<!-- Stamped segmented control -->
 			<div
 				class="view-toggle inline-flex self-start rounded-sm border border-subtle bg-surface p-0.5 sm:self-auto"
-				role="tablist"
+				role="group"
 				aria-label="View mode"
 			>
 				<button
 					type="button"
-					role="tab"
-					aria-selected={viewMode === 'list'}
+					aria-pressed={viewMode === 'list'}
 					class:active={viewMode === 'list'}
 					on:click={() => setView('list')}
 				>
@@ -495,8 +509,7 @@
 				{#if isDesktop}
 					<button
 						type="button"
-						role="tab"
-						aria-selected={viewMode === 'split'}
+						aria-pressed={viewMode === 'split'}
 						class:active={viewMode === 'split'}
 						on:click={() => setView('split')}
 					>
@@ -505,8 +518,7 @@
 				{/if}
 				<button
 					type="button"
-					role="tab"
-					aria-selected={viewMode === 'map'}
+					aria-pressed={viewMode === 'map'}
 					class:active={viewMode === 'map'}
 					on:click={() => setView('map')}
 				>
@@ -531,6 +543,7 @@
 	{/if}
 
 	<!-- ─── Main content ────────────────────────────────────────── -->
+	<h2 id="results-heading" class="sr-only">Location results</h2>
 	{#if hasError}
 		<ErrorState
 			error={errorMessage}
@@ -539,7 +552,7 @@
 			variant="card"
 		/>
 	{:else if viewMode === 'map'}
-		<section class="map-pane">
+		<section class="map-pane" aria-labelledby="results-heading">
 			{#if $mapComponentStore}
 				<svelte:component
 					this={$mapComponentStore}
@@ -555,7 +568,7 @@
 				/>
 			{:else}
 				<div
-					class="flex h-full w-full animate-pulse items-center justify-center rounded-sm border border-subtle bg-sunken"
+					class="flex h-full w-full animate-pulse items-center justify-center rounded-sm border border-subtle bg-sunken motion-reduce:animate-none"
 				>
 					<div class="text-center">
 						<div class="mx-auto mb-3 h-10 w-10 rounded-sm bg-secondary-200"></div>
@@ -566,7 +579,7 @@
 		</section>
 	{:else if viewMode === 'split'}
 		<!-- Two-column field-guide spread: scrollable card column + sticky map -->
-		<section class="split-pane">
+		<section class="split-pane" aria-labelledby="results-heading">
 			<div class="card-column" id="results-section" bind:this={cardListEl}>
 				<div class="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
 					{#if isLoading}
@@ -587,6 +600,8 @@
 									(tag) => tag.location.name === content_location.location.name
 								)}
 								contentLocation={content_location}
+								detailsHref={content_location.detailsHref}
+								hasGuide={content_location.hasGuide}
 							/>
 						{/each}
 					{/if}
@@ -635,7 +650,7 @@
 						/>
 					{:else}
 						<div
-							class="flex h-full w-full animate-pulse items-center justify-center rounded-sm border border-subtle bg-sunken"
+							class="flex h-full w-full animate-pulse items-center justify-center rounded-sm border border-subtle bg-sunken motion-reduce:animate-none"
 						>
 							<div class="text-center">
 								<div class="mx-auto mb-3 h-10 w-10 rounded-sm bg-secondary-200"></div>
@@ -648,7 +663,12 @@
 		</section>
 	{:else}
 		<!-- viewMode === 'list' -->
-		<section id="results-section" class="space-y-6" bind:this={cardListEl}>
+		<section
+			id="results-section"
+			class="space-y-6"
+			bind:this={cardListEl}
+			aria-labelledby="results-heading"
+		>
 			<div
 				class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
 			>
@@ -670,6 +690,8 @@
 								(tag) => tag.location.name === content_location.location.name
 							)}
 							contentLocation={content_location}
+							detailsHref={content_location.detailsHref}
+							hasGuide={content_location.hasGuide}
 						/>
 					{/each}
 				{/if}
@@ -683,7 +705,7 @@
 					</p>
 					<button
 						on:click={clearAllFilters}
-						class="rounded-sm bg-primary-700 px-4 py-2 font-mono text-xs uppercase tracking-wide text-white transition-colors duration-fast hover:bg-primary-600 dark:bg-primary-500 dark:text-primary-50 dark:hover:bg-primary-400"
+						class="min-h-11 rounded-sm bg-primary-700 px-4 py-2 font-mono text-xs uppercase tracking-wide text-white transition-colors duration-fast hover:bg-primary-600 dark:bg-primary-500 dark:text-primary-50 dark:hover:bg-primary-400"
 					>
 						Clear filters
 					</button>
@@ -704,6 +726,7 @@
 <style>
 	/* ─── Stamped segmented view-mode toggle ─────────────────── */
 	.view-toggle button {
+		min-height: 2.75rem;
 		font-family: theme('fontFamily.mono');
 		font-size: 0.6875rem;
 		font-weight: 600;

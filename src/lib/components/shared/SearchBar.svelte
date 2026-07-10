@@ -66,7 +66,7 @@
 
 	<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
 		{#if isLoading}
-			<GlobeOutline class="animate-spin text-subtle {iconSize[size]}" />
+			<GlobeOutline class="animate-spin text-subtle {iconSize[size]}" aria-hidden="true" />
 		{:else}
 			<SearchOutline
 				class="text-subtle transition-colors duration-fast group-focus-within:text-primary-700 dark:group-focus-within:text-primary-300 {iconSize[
@@ -99,7 +99,7 @@
 	{#if showClearButton && value.length > 0}
 		<button
 			type="button"
-			class="absolute inset-y-0 right-0 flex items-center pr-3 text-subtle transition-colors duration-fast hover:text-tertiary-700 dark:hover:text-tertiary-300"
+			class="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-subtle transition-colors duration-fast hover:text-tertiary-700 dark:hover:text-tertiary-300"
 			on:click={handleClear}
 			aria-label="Clear search"
 		>

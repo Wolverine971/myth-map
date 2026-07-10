@@ -1,18 +1,12 @@
 <!-- src/lib/components/base/NavBar.svelte -->
 <script lang="ts">
-	import {
-		Navbar,
-		NavBrand,
-		NavLi,
-		NavUl,
-		NavHamburger,
-		Dropdown,
-		DropdownItem
-	} from 'flowbite-svelte';
+	import { Navbar, NavBrand, NavLi, NavUl } from 'flowbite-svelte';
 	import { afterNavigate } from '$app/navigation';
+	import { tick } from 'svelte';
 	import ThemeToggle from './ThemeToggle.svelte';
 
 	let dropdownNavOpen = false;
+	let mobileMenuButton: HTMLButtonElement;
 
 	afterNavigate(() => {
 		dropdownNavOpen = false;
@@ -21,7 +15,15 @@
 	const toggleDropdownNavItems = () => {
 		dropdownNavOpen = !dropdownNavOpen;
 	};
+
+	function handleWindowKeydown(event: KeyboardEvent) {
+		if (event.key !== 'Escape' || !dropdownNavOpen) return;
+		dropdownNavOpen = false;
+		void tick().then(() => mobileMenuButton?.focus());
+	}
 </script>
+
+<svelte:window on:keydown={handleWindowKeydown} />
 
 <a
 	href="#main-content"
@@ -38,8 +40,19 @@
 			aria-label="Main navigation"
 		>
 			<div class="flex w-full items-center justify-between">
-				<NavBrand href="/" class="flex flex-shrink-0 items-center">
-					<img src="/myth-map-small.svg" class="h-10 sm:h-12" alt="Tiny Tribe Adventures" />
+				<NavBrand
+					href="/"
+					class="flex flex-shrink-0 items-center"
+					aria-label="Tiny Tribe Adventures home"
+				>
+					<img
+						src="/myth-map.svg"
+						class="h-9 w-9 dark:invert sm:h-10 sm:w-10"
+						width="40"
+						height="40"
+						alt=""
+						aria-hidden="true"
+					/>
 					<span
 						class="ml-2 hidden self-center whitespace-nowrap font-display text-lg font-bold text-primary-700 dark:text-primary-300 sm:block"
 					>
@@ -49,43 +62,49 @@
 
 				<div class="flex flex-shrink-0 items-center gap-2">
 					<ThemeToggle />
-					<NavHamburger
-						class="text-default hover:text-primary-700 dark:hover:text-primary-300 md:hidden"
-						aria-haspopup="true"
+					<button
+						bind:this={mobileMenuButton}
+						type="button"
+						class="inline-flex h-11 w-11 items-center justify-center rounded-sm border border-transparent text-default transition-colors duration-fast hover:border-strong hover:text-primary-700 dark:hover:text-primary-300 md:hidden"
 						aria-expanded={dropdownNavOpen}
-						aria-label="Toggle mobile navigation menu"
+						aria-controls="mobile-navigation"
+						aria-label={dropdownNavOpen ? 'Close main menu' : 'Open main menu'}
 						on:click={toggleDropdownNavItems}
-					/>
-					<Dropdown
-						open={dropdownNavOpen}
-						class="mt-2 w-48 rounded-sm border border-subtle !bg-surface md:hidden"
-						placement="bottom-end"
-						role="menu"
 					>
-						<DropdownItem href="/" class="text-default hover:!bg-sunken hover:text-primary-700">
-							Home
-						</DropdownItem>
-						<DropdownItem
-							href="/locations"
-							class="text-default hover:!bg-sunken hover:text-primary-700"
+						<svg
+							class="h-6 w-6"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							aria-hidden="true"
 						>
-							Locations
-						</DropdownItem>
-						<DropdownItem
-							href="/about"
-							class="text-default hover:!bg-sunken hover:text-primary-700"
-						>
-							About
-						</DropdownItem>
-						<DropdownItem
-							href="/contact"
-							class="text-default hover:!bg-sunken hover:text-primary-700"
-						>
-							Contact
-						</DropdownItem>
-					</Dropdown>
+							<path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16" />
+						</svg>
+					</button>
 				</div>
 			</div>
+
+			{#if dropdownNavOpen}
+				<nav
+					id="mobile-navigation"
+					class="absolute right-4 top-full mt-2 w-48 rounded-sm border border-subtle bg-surface p-1 shadow-lg md:hidden"
+					aria-label="Mobile navigation"
+				>
+					<ul class="space-y-1">
+						{#each [{ href: '/', label: 'Home' }, { href: '/locations', label: 'Locations' }, { href: '/about', label: 'About' }, { href: '/contact', label: 'Contact' }] as item}
+							<li>
+								<a
+									href={item.href}
+									class="flex min-h-11 items-center rounded-sm px-3 text-sm font-medium text-default transition-colors duration-fast hover:bg-sunken hover:text-primary-700 dark:hover:text-primary-300"
+								>
+									{item.label}
+								</a>
+							</li>
+						{/each}
+					</ul>
+				</nav>
+			{/if}
 
 			<NavUl
 				class="hidden md:absolute md:left-1/2 md:top-1/2 md:flex md:w-full md:max-w-lg md:-translate-x-1/2 md:-translate-y-1/2 md:transform md:flex-row md:items-center md:justify-center md:space-x-8"

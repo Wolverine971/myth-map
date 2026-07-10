@@ -21,8 +21,6 @@ hot_day_ok: true
 cold_day_ok: false
 ---
 
-# Greenbrier State Park
-
 **Address:** 21843 National Pike, Boonsboro, MD 21713
 **Website:** [https://dnr.maryland.gov/publiclands/Pages/western/greenbrier.aspx](https://dnr.maryland.gov/publiclands/Pages/western/greenbrier.aspx)
 **Type:** Activity

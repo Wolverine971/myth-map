@@ -17,6 +17,7 @@ export function buildFeatureCollection(locations: any[]): GeoJSON.FeatureCollect
 					state: contentLocation.location.state || '',
 					zip_code: contentLocation.location.zip_code || '',
 					website: contentLocation.website || '',
+					detailsHref: contentLocation.detailsHref || '',
 					name: contentLocation.location.name || 'Unknown Location',
 					id: contentLocation.location.id ?? i,
 					icon: `${getLocationIcon(contentLocation.location.name || 'default')}1`

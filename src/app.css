@@ -29,8 +29,8 @@
 
 	/* Text */
 	--text-default: #4e5964; /* neutral-800 — slate ink */
-	--text-muted: #657382; /* neutral-600 */
-	--text-subtle: #708090; /* neutral-500 */
+	--text-muted: #5a6673; /* neutral-700 — 5.6:1+ on light surfaces */
+	--text-subtle: #626f7d; /* slate — 4.5:1+ on every light surface */
 	--text-inverted: #ffffff;
 
 	/* Focus */

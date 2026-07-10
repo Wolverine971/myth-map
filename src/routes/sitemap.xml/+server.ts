@@ -1,5 +1,10 @@
 // src/routes/sitemap.xml/+server.ts
-import { listEntries, statesAvailable, citiesInState, entriesForCity } from '$lib/content/loader';
+import {
+	listEntries,
+	statesAvailable,
+	citiesInState,
+	entriesForCity
+} from '$lib/server/content/loader';
 
 export const prerender = true;
 
@@ -36,7 +41,14 @@ export async function GET() {
 	urls.push(
 		{ loc: SITE, lastmod: today, changefreq: 'weekly', priority: 1.0 },
 		{ loc: `${SITE}/locations`, lastmod: today, changefreq: 'weekly', priority: 0.9 },
+		{
+			loc: `${SITE}/blog`,
+			lastmod: maxLastModified(publishedEntries.map((e) => e.frontmatter.last_modified)),
+			changefreq: 'weekly',
+			priority: 0.7
+		},
 		{ loc: `${SITE}/about`, lastmod: today, changefreq: 'monthly', priority: 0.6 },
+		{ loc: `${SITE}/press`, lastmod: today, changefreq: 'monthly', priority: 0.5 },
 		{ loc: `${SITE}/contact`, lastmod: today, changefreq: 'yearly', priority: 0.4 }
 	);
 
@@ -73,7 +85,7 @@ export async function GET() {
 	}
 
 	const xml = `<?xml version="1.0" encoding="UTF-8" ?>
-<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls
 	.map(
 		(u) => `  <url>
@@ -86,5 +98,10 @@ ${urls
 	.join('\n')}
 </urlset>`;
 
-	return new Response(xml, { headers: { 'Content-Type': 'application/xml' } });
+	return new Response(xml, {
+		headers: {
+			'Cache-Control': 'public, max-age=0, s-maxage=3600',
+			'Content-Type': 'application/xml; charset=utf-8'
+		}
+	});
 }

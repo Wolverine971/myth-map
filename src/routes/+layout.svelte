@@ -2,13 +2,9 @@
 <script lang="ts">
 	import NavBar from '$lib/components/base/NavBar.svelte';
 	import Footer from '$lib/components/base/Footer.svelte';
-	import { initializeOptimizations } from '$lib/utils/appOptimizations';
 	import Toast from '$lib/components/shared/Toast.svelte';
 	import '$lib/stores/themeStore'; // wires up sunset-aware theme system
 	import '../app.css';
-	import { onMount } from 'svelte';
-
-	let innerWidth = 0;
 
 	const organizationSchema = {
 		'@context': 'https://schema.org',
@@ -19,10 +15,6 @@
 		description: 'Family-tested places for when you need ideas.'
 	};
 
-	onMount(() => {
-		initializeOptimizations();
-	});
-
 	$: organizationSchemaScript =
 		`<script type="application/ld+json">${JSON.stringify(organizationSchema)}<` + '/script>';
 </script>
@@ -31,8 +23,6 @@
 	<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 	{@html organizationSchemaScript}
 </svelte:head>
-
-<svelte:window bind:innerWidth />
 
 <div class="flex min-h-screen flex-col">
 	<NavBar />

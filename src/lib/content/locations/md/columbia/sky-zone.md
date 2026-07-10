@@ -19,10 +19,6 @@ hot_day_ok: true
 cold_day_ok: true
 ---
 
-<!-- NOTE FOR HUMAN REVIEW: A duplicate stub for this same location exists at
-     src/lib/content/locations/md/columbia/skyzone.md (also id: 13, slug: skyzone).
-     One of the two files should be removed before publishing to avoid a slug clash. -->
-
 # Sky Zone
 
 **Address:** 7175 Oakland Mills Rd Columbia, MD 21046

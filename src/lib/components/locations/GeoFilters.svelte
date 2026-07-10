@@ -1,11 +1,9 @@
 <!-- src/lib/components/locations/GeoFilters.svelte -->
 <script lang="ts">
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { createEventDispatcher, tick } from 'svelte';
 	import { states } from '../../../utils/geoDataLoader';
 	import { Dropdown, DropdownItem } from 'flowbite-svelte';
-	import { ChevronDownOutline, CloseCircleSolid, GlobeOutline } from 'flowbite-svelte-icons';
-	import { fade } from 'svelte/transition';
-	import { cityDataCache } from '$lib/stores/dataManager';
+	import { ChevronDownOutline, CloseCircleSolid } from 'flowbite-svelte-icons';
 
 	const dispatch = createEventDispatcher();
 
@@ -15,52 +13,33 @@
 
 	let stateOpen = false;
 	let cityOpen = false;
-	let allCities: string[] = [];
 	let availableCities: string[] = [];
-	let citiesLoading = false;
+	let stateTrigger: HTMLButtonElement;
+	let cityTrigger: HTMLButtonElement;
 
-	// Update available cities based on current locations
-	$: if (shownLocations && allCities.length > 0) {
-		const citiesWithLocations = new Set(shownLocations.map((loc) => loc.location.city));
-		availableCities = allCities.filter((city) => citiesWithLocations.has(city));
-	}
+	// The location dataset is the source of truth for selectable cities. This
+	// avoids bundling hundreds of unrelated boundary filenames just to populate
+	// a filter that can only return cities with locations.
+	$: availableCities = selectedState
+		? [
+				...new Set(
+					shownLocations
+						.filter((item) => item.location.state === selectedState?.abr)
+						.map((item) => item.location.city)
+						.filter(Boolean)
+				)
+			].sort()
+		: [];
 
-	onMount(async () => {
-		if (selectedState) {
-			await loadCitiesForSelectedState();
-		}
-	});
-
-	async function loadCitiesForSelectedState() {
-		if (!selectedState) {
-			allCities = [];
-			availableCities = [];
-			return;
-		}
-
-		citiesLoading = true;
-		try {
-			// Use cached city data
-			allCities = await cityDataCache.getCityData(selectedState.abr);
-		} catch (error) {
-			console.error('Failed to load cities:', error);
-			allCities = [];
-		} finally {
-			citiesLoading = false;
-		}
-	}
-
-	async function handleStateChange(state: { name: string; abr: string }) {
+	function handleStateChange(state: { name: string; abr: string }) {
 		selectedState = state;
 		selectedCity = null; // Clear city when state changes
-
-		await loadCitiesForSelectedState();
 
 		dispatch('filterChange', {
 			state: selectedState,
 			city: null
 		});
-		stateOpen = false;
+		closeStateMenu();
 	}
 
 	function handleCityChange(city: string) {
@@ -69,19 +48,18 @@
 			state: selectedState,
 			city: selectedCity
 		});
-		cityOpen = false;
+		closeCityMenu();
 	}
 
 	function clearState() {
 		selectedState = null;
 		selectedCity = null;
-		allCities = [];
 		availableCities = [];
 		dispatch('filterChange', {
 			state: null,
 			city: null
 		});
-		stateOpen = false;
+		closeStateMenu();
 	}
 
 	function clearCity() {
@@ -90,18 +68,53 @@
 			state: selectedState,
 			city: null
 		});
+		closeCityMenu();
+	}
+
+	function closeStateMenu() {
+		stateOpen = false;
+		void tick().then(() => stateTrigger?.focus());
+	}
+
+	function closeCityMenu() {
 		cityOpen = false;
+		void tick().then(() => cityTrigger?.focus());
+	}
+
+	function handleEscape(event: KeyboardEvent) {
+		if (event.key !== 'Escape') return;
+		if (cityOpen) {
+			closeCityMenu();
+		} else if (stateOpen) {
+			closeStateMenu();
+		}
 	}
 </script>
+
+<svelte:window on:keydown={handleEscape} />
 
 <div class="flex flex-wrap items-center gap-2">
 	<!-- State Filter -->
 	<div class="relative">
-		<button type="button" class="filter-trigger" class:filter-trigger--active={!!selectedState}>
+		<button
+			bind:this={stateTrigger}
+			type="button"
+			class="filter-trigger"
+			class:filter-trigger--active={!!selectedState}
+			aria-haspopup="dialog"
+			aria-expanded={stateOpen}
+			aria-controls="state-filter-menu"
+		>
 			<span>{selectedState ? selectedState.name : 'Any state'}</span>
 			<ChevronDownOutline class="h-3.5 w-3.5" />
 		</button>
-		<Dropdown bind:open={stateOpen} class="z-50 max-h-60 overflow-y-auto">
+		<Dropdown
+			id="state-filter-menu"
+			bind:open={stateOpen}
+			class="z-50 max-h-60 overflow-y-auto"
+			role="dialog"
+			aria-label="State filter options"
+		>
 			<DropdownItem on:click={clearState} class="font-medium text-neutral-600">
 				All states
 			</DropdownItem>
@@ -129,50 +142,48 @@
 	<!-- City Filter -->
 	<div class="relative">
 		<button
+			bind:this={cityTrigger}
 			type="button"
 			class="filter-trigger"
 			class:filter-trigger--active={!!selectedCity}
-			disabled={!selectedState || citiesLoading}
+			disabled={!selectedState}
+			aria-haspopup="dialog"
+			aria-expanded={cityOpen}
+			aria-controls="city-filter-menu"
 		>
-			{#if citiesLoading}
-				<GlobeOutline class="h-3.5 w-3.5 animate-spin" />
-				<span>Loading…</span>
-			{:else}
-				<span>{selectedCity ?? 'Any city'}</span>
-				<ChevronDownOutline class="h-3.5 w-3.5" />
-			{/if}
+			<span>{selectedCity ?? 'Any city'}</span>
+			<ChevronDownOutline class="h-3.5 w-3.5" />
 		</button>
-		<Dropdown bind:open={cityOpen} class="z-50 max-h-60 overflow-y-auto">
-			{#if citiesLoading}
-				<div class="px-4 py-2 text-sm text-muted">
-					<GlobeOutline class="me-2 inline h-4 w-4 animate-spin" />
-					Loading cities…
-				</div>
-			{:else}
-				<DropdownItem on:click={clearCity} class="font-medium text-neutral-600">
-					All cities
+		<Dropdown
+			id="city-filter-menu"
+			bind:open={cityOpen}
+			class="z-50 max-h-60 overflow-y-auto"
+			role="dialog"
+			aria-label="City filter options"
+		>
+			<DropdownItem on:click={clearCity} class="font-medium text-neutral-600">
+				All cities
+			</DropdownItem>
+			<div class="my-1 border-t border-subtle"></div>
+			{#each availableCities as city}
+				{@const cityLocationCount = shownLocations.filter(
+					(loc) => loc.location.city === city
+				).length}
+				<DropdownItem
+					on:click={() => cityLocationCount > 0 && handleCityChange(city)}
+					aria-disabled={cityLocationCount === 0}
+					class="{selectedCity === city
+						? 'bg-primary-50 font-semibold text-primary-700'
+						: ''} {cityLocationCount === 0 ? 'cursor-not-allowed opacity-50' : ''}"
+				>
+					<div class="flex w-full items-center justify-between">
+						<span>{city}</span>
+						<span class="ml-2 text-xs text-neutral-500">{cityLocationCount}</span>
+					</div>
 				</DropdownItem>
-				<div class="my-1 border-t border-subtle"></div>
-				{#each availableCities as city}
-					{@const cityLocationCount = shownLocations.filter(
-						(loc) => loc.location.city === city
-					).length}
-					<DropdownItem
-						on:click={() => cityLocationCount > 0 && handleCityChange(city)}
-						aria-disabled={cityLocationCount === 0}
-						class="{selectedCity === city
-							? 'bg-primary-50 font-semibold text-primary-700'
-							: ''} {cityLocationCount === 0 ? 'cursor-not-allowed opacity-50' : ''}"
-					>
-						<div class="flex w-full items-center justify-between">
-							<span>{city}</span>
-							<span class="ml-2 text-xs text-neutral-500">{cityLocationCount}</span>
-						</div>
-					</DropdownItem>
-				{/each}
-				{#if availableCities.length === 0 && selectedState}
-					<div class="px-4 py-2 text-sm text-muted">No cities match the current filters</div>
-				{/if}
+			{/each}
+			{#if availableCities.length === 0 && selectedState}
+				<div class="px-4 py-2 text-sm text-muted">No cities match the current filters</div>
 			{/if}
 		</Dropdown>
 	</div>
@@ -180,7 +191,7 @@
 	{#if selectedState || selectedCity}
 		<div class="flex flex-wrap items-center gap-1.5">
 			{#if selectedState}
-				<div class="active-chip" transition:fade={{ duration: 150 }}>
+				<div class="active-chip">
 					<span>{selectedState.name}</span>
 					<button type="button" aria-label="Clear state filter" on:click={clearState}>
 						<CloseCircleSolid class="h-3.5 w-3.5" />
@@ -188,7 +199,7 @@
 				</div>
 			{/if}
 			{#if selectedCity}
-				<div class="active-chip" transition:fade={{ duration: 150 }}>
+				<div class="active-chip">
 					<span>{selectedCity}</span>
 					<button type="button" aria-label="Clear city filter" on:click={clearCity}>
 						<CloseCircleSolid class="h-3.5 w-3.5" />
@@ -204,6 +215,7 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 0.375rem;
+		min-height: 2.75rem;
 		padding: 0.4375rem 0.75rem;
 		font-family: theme('fontFamily.mono');
 		font-size: 0.6875rem;
@@ -267,6 +279,10 @@
 
 	.active-chip button {
 		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.5rem;
+		height: 1.5rem;
 		color: theme('colors.primary.500');
 		background: transparent;
 		border: none;

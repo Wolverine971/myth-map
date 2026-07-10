@@ -7,18 +7,12 @@
 		ArrowUpRightFromSquareOutline,
 		ArrowRightOutline
 	} from 'flowbite-svelte-icons';
-	import { hrefForId } from '$lib/content/loader';
 
 	export let name: string;
 	export let address: string = '';
 	export let website: string = '';
 	export let tags: Array<{ tags: { name: string } }> = [];
-	export let contentLocation: { id?: number; location?: { id?: number } } | null = null;
-
-	$: detailsHref = (() => {
-		const id = contentLocation?.location?.id ?? contentLocation?.id;
-		return typeof id === 'number' ? hrefForId(id) : null;
-	})();
+	export let detailsHref: string | null = null;
 
 	$: addressParts = address ? address.split(',') : [];
 	$: cityStateZip = addressParts.length > 1 ? addressParts.slice(1).join(',').trim() : '';
@@ -92,13 +86,12 @@
 			{#if detailsHref || website}
 				<div class="mt-auto flex gap-2">
 					{#if detailsHref}
-						<a href={detailsHref} class="flex-1">
-							<button
-								class="flex w-full items-center justify-between rounded-sm bg-primary-700 px-3 py-1.5 font-mono text-xs uppercase tracking-wide text-white transition-colors duration-fast hover:bg-primary-600 dark:bg-primary-500 dark:text-primary-50 dark:hover:bg-primary-400"
-							>
-								<span>Details</span>
-								<ArrowRightOutline class="ml-1 h-3 w-3" />
-							</button>
+						<a
+							href={detailsHref}
+							class="flex min-h-11 flex-1 items-center justify-between rounded-sm bg-primary-700 px-3 py-1.5 font-mono text-xs uppercase tracking-wide text-white transition-colors duration-fast hover:bg-primary-600 dark:bg-primary-500 dark:text-primary-50 dark:hover:bg-primary-400"
+						>
+							<span>Details</span>
+							<ArrowRightOutline class="ml-1 h-3 w-3" />
 						</a>
 					{/if}
 					{#if website}
@@ -106,14 +99,12 @@
 							href={website}
 							target="_blank"
 							rel="noopener noreferrer"
-							class={detailsHref ? '' : 'flex-1'}
+							class="flex min-h-11 items-center justify-between rounded-sm border border-primary-700 bg-surface px-3 py-1.5 font-mono text-xs uppercase tracking-wide text-primary-700 transition-colors duration-fast hover:bg-primary-50 dark:border-primary-300 dark:text-primary-300 dark:hover:bg-primary-900 {detailsHref
+								? ''
+								: 'flex-1'}"
 						>
-							<button
-								class="flex w-full items-center justify-between rounded-sm border border-primary-700 bg-surface px-3 py-1.5 font-mono text-xs uppercase tracking-wide text-primary-700 transition-colors duration-fast hover:bg-primary-50 dark:border-primary-300 dark:text-primary-300 dark:hover:bg-primary-900"
-							>
-								<span>Website</span>
-								<ArrowUpRightFromSquareOutline class="ml-1 h-3 w-3" />
-							</button>
+							<span>Website <span class="sr-only">(opens in a new tab)</span></span>
+							<ArrowUpRightFromSquareOutline class="ml-1 h-3 w-3" />
 						</a>
 					{/if}
 				</div>

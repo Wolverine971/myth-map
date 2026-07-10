@@ -1,7 +1,6 @@
 <!-- src/lib/components/locations/LocationCard.svelte -->
 <script lang="ts">
 	import { getLocationIcon } from '../../../utils/locationPhotos';
-	import { getEntryById, hrefForId } from '$lib/content/loader';
 	import { locationFocus, type LocationFocusKey } from '$lib/stores/locationFocusStore';
 
 	export let name: string;
@@ -10,6 +9,8 @@
 	export let tags: Array<{ tags: { name: string } }> = [];
 	export let coords: { lat: number; lng: number };
 	export let contentLocation: any;
+	export let detailsHref: string | null = null;
+	export let hasGuide = false;
 
 	$: focusKey = (() => {
 		const id = contentLocation?.location?.id ?? contentLocation?.id;
@@ -39,11 +40,6 @@
 		if (parts.length < 2) return '';
 		return parts.slice(1, 3).join(', ');
 	})();
-
-	$: contentId = contentLocation?.location?.id ?? contentLocation?.id;
-	$: detailsHref = typeof contentId === 'number' ? hrefForId(contentId) : null;
-	$: hasGuide =
-		typeof contentId === 'number' ? !!getEntryById(contentId)?.frontmatter.published : false;
 
 	$: cardHref = detailsHref ?? (website || null);
 	$: external = !detailsHref && !!website;
@@ -102,7 +98,10 @@
 						<span aria-hidden="true" class="card__sep">·</span>
 					{/if}
 					{#if ctaLabel}
-						<span class="card__cta">{ctaLabel} →</span>
+						<span class="card__cta">
+							{ctaLabel} →
+							{#if external}<span class="sr-only"> (opens in a new tab)</span>{/if}
+						</span>
 					{/if}
 				</div>
 			{/if}

@@ -65,7 +65,7 @@
 		<div class="flex items-center gap-1">
 			{#if showPreviousNext}
 				<button
-					class="flex h-9 w-9 items-center justify-center rounded-sm border border-subtle bg-surface text-muted transition-colors duration-fast hover:border-strong hover:text-default disabled:cursor-not-allowed disabled:opacity-40 sm:h-10 sm:w-10"
+					class="flex h-11 w-11 items-center justify-center rounded-sm border border-subtle bg-surface text-muted transition-colors duration-fast hover:border-strong hover:text-default disabled:cursor-not-allowed disabled:opacity-40"
 					disabled={currentPage === 1}
 					on:click={previousPage}
 					aria-label="Go to previous page"
@@ -76,7 +76,7 @@
 
 			{#if visiblePages[0] > 1}
 				<button
-					class="flex h-9 w-9 items-center justify-center rounded-sm border border-subtle bg-surface font-mono text-sm font-medium text-default transition-colors duration-fast hover:border-strong sm:h-10 sm:w-10"
+					class="flex h-11 w-11 items-center justify-center rounded-sm border border-subtle bg-surface font-mono text-sm font-medium text-default transition-colors duration-fast hover:border-strong"
 					on:click={() => goToPage(1)}
 					on:keydown={(e) => handleKeydown(e, 1)}
 					aria-label="Go to page 1"
@@ -84,9 +84,7 @@
 					1
 				</button>
 				{#if visiblePages[0] > 2}
-					<span
-						class="flex h-9 w-9 items-center justify-center font-mono text-sm text-subtle sm:h-10 sm:w-10"
-					>
+					<span class="flex h-11 w-5 items-center justify-center font-mono text-sm text-subtle">
 						…
 					</span>
 				{/if}
@@ -94,7 +92,7 @@
 
 			{#each visiblePages as page}
 				<button
-					class="flex h-9 w-9 items-center justify-center rounded-sm border font-mono text-sm font-medium transition-colors duration-fast sm:h-10 sm:w-10 {page ===
+					class="flex h-11 w-11 items-center justify-center rounded-sm border font-mono text-sm font-medium transition-colors duration-fast {page ===
 					currentPage
 						? 'border-primary-700 bg-primary-700 text-white'
 						: 'border-subtle bg-surface text-default hover:border-strong'}"
@@ -109,14 +107,12 @@
 
 			{#if visiblePages[visiblePages.length - 1] < totalPages}
 				{#if visiblePages[visiblePages.length - 1] < totalPages - 1}
-					<span
-						class="flex h-9 w-9 items-center justify-center font-mono text-sm text-subtle sm:h-10 sm:w-10"
-					>
+					<span class="flex h-11 w-5 items-center justify-center font-mono text-sm text-subtle">
 						…
 					</span>
 				{/if}
 				<button
-					class="flex h-9 w-9 items-center justify-center rounded-sm border border-subtle bg-surface font-mono text-sm font-medium text-default transition-colors duration-fast hover:border-strong sm:h-10 sm:w-10"
+					class="flex h-11 w-11 items-center justify-center rounded-sm border border-subtle bg-surface font-mono text-sm font-medium text-default transition-colors duration-fast hover:border-strong"
 					on:click={() => goToPage(totalPages)}
 					on:keydown={(e) => handleKeydown(e, totalPages)}
 					aria-label="Go to page {totalPages}"
@@ -127,7 +123,7 @@
 
 			{#if showPreviousNext}
 				<button
-					class="flex h-9 w-9 items-center justify-center rounded-sm border border-subtle bg-surface text-muted transition-colors duration-fast hover:border-strong hover:text-default disabled:cursor-not-allowed disabled:opacity-40 sm:h-10 sm:w-10"
+					class="flex h-11 w-11 items-center justify-center rounded-sm border border-subtle bg-surface text-muted transition-colors duration-fast hover:border-strong hover:text-default disabled:cursor-not-allowed disabled:opacity-40"
 					disabled={currentPage === totalPages}
 					on:click={nextPage}
 					aria-label="Go to next page"

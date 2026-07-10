@@ -1,5 +1,4 @@
 // src/lib/components/map/map-popup.ts
-import { hrefForId } from '$lib/content/loader';
 
 export type PopupProperties = {
 	id?: number;
@@ -9,6 +8,7 @@ export type PopupProperties = {
 	state?: string;
 	zip_code?: string;
 	website?: string;
+	detailsHref?: string;
 };
 
 export type RadarPopupProperties = {
@@ -34,11 +34,7 @@ export function buildAddress(props: PopupProperties): string {
 }
 
 export function buildDetailsLink(props: PopupProperties): string {
-	if (typeof props.id === 'number') {
-		const href = hrefForId(props.id);
-		if (href) return href;
-	}
-	return '#';
+	return props.detailsHref?.trim() || '#';
 }
 
 function escapeHTML(value: string): string {
@@ -81,7 +77,7 @@ export function buildPopupHTML(props: PopupProperties, copyButtonId: string): st
 	const website = props.website?.trim();
 
 	const websiteButton = website
-		? `<a class="popup-btn popup-btn-secondary" href="${escapeHTML(website)}" target="_blank" rel="noopener noreferrer">
+		? `<a class="popup-btn popup-btn-secondary" href="${escapeHTML(website)}" target="_blank" rel="noopener noreferrer" aria-label="Website for ${name} (opens in a new tab)">
 				<span>Website</span>${EXTERNAL_LINK}
 			</a>`
 		: '';
@@ -120,9 +116,10 @@ export function buildRadarPopupHTML(props: RadarPopupProperties): string {
 				)}</div>`
 			: '';
 	const url = props.url?.trim();
+	const external = !!url && /^https?:\/\//.test(url);
 	const detailsButton = url
-		? `<a class="popup-btn popup-btn-primary" href="${escapeHTML(url)}" target="${/^https?:\/\//.test(url) ? '_blank' : '_self'}" rel="noopener noreferrer">
-				<span>Details</span>${/^https?:\/\//.test(url) ? EXTERNAL_LINK : ARROW_RIGHT}
+		? `<a class="popup-btn popup-btn-primary" href="${escapeHTML(url)}" target="${external ? '_blank' : '_self'}" rel="noopener noreferrer"${external ? ` aria-label="Details for ${name} (opens in a new tab)"` : ''}>
+				<span>Details</span>${external ? EXTERNAL_LINK : ARROW_RIGHT}
 			</a>`
 		: '';
 

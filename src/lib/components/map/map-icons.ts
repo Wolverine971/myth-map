@@ -35,11 +35,48 @@ const FILENAME_BY_ID = new Map<string, string>(
 	ICON_NAMES.map((name) => [`${name}1`, `/map/${name}.png`])
 );
 
-const inFlight = new Map<string, Promise<void>>();
+const inFlightByMap = new WeakMap<MapboxMap, Map<string, Promise<void>>>();
+const placeholdersByMap = new WeakMap<MapboxMap, Set<string>>();
+
+// `styleimagemissing` is synchronous, while `map.loadImage()` is not. Register
+// a same-sized transparent image immediately so Mapbox can finish the frame
+// without logging a missing-image warning, then replace it when the PNG lands.
+// Every map icon in static/map is 256 × 256.
+const TRANSPARENT_PLACEHOLDER = {
+	width: 256,
+	height: 256,
+	data: new Uint8Array(256 * 256 * 4)
+};
+
+function inFlightFor(map: MapboxMap): Map<string, Promise<void>> {
+	let requests = inFlightByMap.get(map);
+	if (!requests) {
+		requests = new Map();
+		inFlightByMap.set(map, requests);
+	}
+	return requests;
+}
+
+function placeholdersFor(map: MapboxMap): Set<string> {
+	let placeholders = placeholdersByMap.get(map);
+	if (!placeholders) {
+		placeholders = new Set();
+		placeholdersByMap.set(map, placeholders);
+	}
+	return placeholders;
+}
+
+function addPlaceholder(map: MapboxMap, id: string) {
+	if (map.hasImage(id) || !FILENAME_BY_ID.has(id)) return;
+	map.addImage(id, TRANSPARENT_PLACEHOLDER);
+	placeholdersFor(map).add(id);
+}
 
 function loadImage(map: MapboxMap, id: string): Promise<void> {
-	if (map.hasImage(id)) return Promise.resolve();
+	const placeholders = placeholdersFor(map);
+	if (map.hasImage(id) && !placeholders.has(id)) return Promise.resolve();
 
+	const inFlight = inFlightFor(map);
 	const existing = inFlight.get(id);
 	if (existing) return existing;
 
@@ -57,7 +94,9 @@ function loadImage(map: MapboxMap, id: string): Promise<void> {
 				resolve();
 				return;
 			}
-			if (!map.hasImage(id)) map.addImage(id, image);
+			if (map.hasImage(id)) map.updateImage(id, image);
+			else map.addImage(id, image);
+			placeholders.delete(id);
 			resolve();
 		});
 	});
@@ -73,6 +112,7 @@ function loadImage(map: MapboxMap, id: string): Promise<void> {
  */
 export function attachLazyIconLoader(map: MapboxMap) {
 	map.on('styleimagemissing', (e) => {
+		addPlaceholder(map, e.id);
 		void loadImage(map, e.id);
 	});
 }

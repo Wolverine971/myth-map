@@ -22,10 +22,23 @@
 	$: sourceNotes =
 		state.result?.sourceStatus.filter((source) => source.status === 'skipped' && source.message) ??
 		[];
+	$: statusMessage =
+		state.status === 'loading'
+			? 'Scanning the map area for family-friendly places.'
+			: state.status === 'error'
+				? `Radar scan failed. ${state.error ?? ''}`.trim()
+				: entities.length
+					? `${entities.length} ranked ${entities.length === 1 ? 'pick' : 'picks'} found${state.result?.partial ? ' in a partial scan' : ''}.`
+					: state.status === 'success'
+						? 'No family-friendly radar picks found for this scan.'
+						: '';
 </script>
 
 {#if isVisible}
-	<section class="tray" aria-live="polite">
+	<section class="tray">
+		<p class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+			{statusMessage}
+		</p>
 		<div class="tray__header">
 			<div>
 				<div class="data-label">Adventure Radar</div>
@@ -122,8 +135,8 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 2rem;
-		height: 2rem;
+		width: 2.75rem;
+		height: 2.75rem;
 		border: 1px solid var(--border-subtle);
 		border-radius: 4px;
 		background: var(--surface-sunken);

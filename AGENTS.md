@@ -61,7 +61,7 @@ Two handles run via `sequence(supabase, authGuard)`:
 ### Data layer
 
 - Server `+page.server.ts` / `+layout.server.ts` files load locations, tags, and `location_tags` from Supabase.
-- `src/lib/stores/dataManager.ts` is a singleton that mirrors that data into `localStorage` via `cacheStore.ts` (`CacheKeys`, `CacheTTL`). It exposes derived stores for `locations`, `tags`, `locationTags`, plus `cityDataCache` (per-state city lists, lazy-imported from `src/geographies/cities/<state>/index.json`) and `searchCacheManager`.
+- `src/lib/stores/dataManager.ts` is a singleton that mirrors that data into `localStorage` via `cacheStore.ts` (`CacheKeys`, `CacheTTL`). It exposes derived stores for `locations`, `tags`, and `locationTags`, plus `searchCacheManager`. Homepage city filters derive their options from the active location dataset instead of importing statewide city indexes.
 - When mutating location/tag data, call `dataManager.invalidateLocations()` (or appropriate cache key) so the next load refetches.
 
 ### Geographic data

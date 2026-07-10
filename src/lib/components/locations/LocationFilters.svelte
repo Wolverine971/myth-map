@@ -1,9 +1,8 @@
 <!-- src/lib/components/locations/LocationFilters.svelte -->
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, tick } from 'svelte';
 	import { Checkbox, Dropdown, DropdownItem } from 'flowbite-svelte';
 	import { ChevronDownOutline, CloseCircleSolid } from 'flowbite-svelte-icons';
-	import { fade } from 'svelte/transition';
 
 	const dispatch = createEventDispatcher();
 
@@ -14,6 +13,9 @@
 	let baseDropdownOpen = false;
 	let indoorOutdoorDropdownOpen = false;
 	let tagsDropdownOpen = false;
+	let baseTrigger: HTMLButtonElement;
+	let settingTrigger: HTMLButtonElement;
+	let tagsTrigger: HTMLButtonElement;
 
 	type TagState = { name: string; checked: boolean; disabled: boolean };
 
@@ -74,12 +76,12 @@
 
 	function pickBase(name: string) {
 		pickOneOf(BASE_OPTIONS, name);
-		baseDropdownOpen = false;
+		closeBaseMenu();
 	}
 
 	function pickIndoorOutdoor(name: string) {
 		pickOneOf(INDOOR_OUTDOOR_OPTIONS, name);
-		indoorOutdoorDropdownOpen = false;
+		closeSettingMenu();
 	}
 
 	function removeTag(tagName: string) {
@@ -90,26 +92,68 @@
 
 	let activeClass =
 		'text-primary-700 hover:text-primary-900 dark:text-primary-300 dark:hover:text-primary-200';
+
+	function closeBaseMenu() {
+		baseDropdownOpen = false;
+		void tick().then(() => baseTrigger?.focus());
+	}
+
+	function closeSettingMenu() {
+		indoorOutdoorDropdownOpen = false;
+		void tick().then(() => settingTrigger?.focus());
+	}
+
+	function clearBase() {
+		clearGroup(BASE_OPTIONS);
+		closeBaseMenu();
+	}
+
+	function clearSetting() {
+		clearGroup(INDOOR_OUTDOOR_OPTIONS);
+		closeSettingMenu();
+	}
+
+	function handleEscape(event: KeyboardEvent) {
+		if (event.key !== 'Escape') return;
+		if (tagsDropdownOpen) {
+			tagsDropdownOpen = false;
+			void tick().then(() => tagsTrigger?.focus());
+		} else if (indoorOutdoorDropdownOpen) {
+			closeSettingMenu();
+		} else if (baseDropdownOpen) {
+			closeBaseMenu();
+		}
+	}
 </script>
+
+<svelte:window on:keydown={handleEscape} />
 
 <div class="flex flex-wrap items-center gap-2">
 	<!-- Base Activity/Eats Filter -->
 	<div class="relative">
-		<button type="button" class="filter-trigger" class:filter-trigger--active={!!baseSelect}>
+		<button
+			bind:this={baseTrigger}
+			type="button"
+			class="filter-trigger"
+			class:filter-trigger--active={!!baseSelect}
+			aria-haspopup="dialog"
+			aria-expanded={baseDropdownOpen}
+			aria-controls="base-filter-menu"
+		>
 			<span>{baseSelect ?? 'Activity / Eats'}</span>
 			<ChevronDownOutline class="h-3.5 w-3.5" />
 		</button>
-		<Dropdown style="z-index: 50" placement="bottom" bind:open={baseDropdownOpen} {activeClass}>
+		<Dropdown
+			id="base-filter-menu"
+			style="z-index: 50"
+			placement="bottom"
+			bind:open={baseDropdownOpen}
+			{activeClass}
+			role="dialog"
+			aria-label="Activity type filter options"
+		>
 			{#if baseSelect}
-				<DropdownItem
-					on:click={() => {
-						clearGroup(BASE_OPTIONS);
-						baseDropdownOpen = false;
-					}}
-					class="font-medium text-neutral-600"
-				>
-					Any
-				</DropdownItem>
+				<DropdownItem on:click={clearBase} class="font-medium text-neutral-600">Any</DropdownItem>
 				<div class="my-1 border-t border-subtle"></div>
 			{/if}
 			{#each BASE_OPTIONS as option}
@@ -134,27 +178,28 @@
 	<!-- Indoor/Outdoor Filter -->
 	<div class="relative">
 		<button
+			bind:this={settingTrigger}
 			type="button"
 			class="filter-trigger"
 			class:filter-trigger--active={!!indoorOutdoorSelect}
+			aria-haspopup="dialog"
+			aria-expanded={indoorOutdoorDropdownOpen}
+			aria-controls="setting-filter-menu"
 		>
 			<span>{indoorOutdoorSelect ?? 'Indoor / Outdoor'}</span>
 			<ChevronDownOutline class="h-3.5 w-3.5" />
 		</button>
 		<Dropdown
+			id="setting-filter-menu"
 			style="z-index: 50"
 			placement="bottom"
 			bind:open={indoorOutdoorDropdownOpen}
 			{activeClass}
+			role="dialog"
+			aria-label="Indoor or outdoor filter options"
 		>
 			{#if indoorOutdoorSelect}
-				<DropdownItem
-					on:click={() => {
-						clearGroup(INDOOR_OUTDOOR_OPTIONS);
-						indoorOutdoorDropdownOpen = false;
-					}}
-					class="font-medium text-neutral-600"
-				>
+				<DropdownItem on:click={clearSetting} class="font-medium text-neutral-600">
 					Any
 				</DropdownItem>
 				<div class="my-1 border-t border-subtle"></div>
@@ -181,21 +226,30 @@
 	<!-- Tags Filter -->
 	<div class="relative">
 		<button
+			bind:this={tagsTrigger}
 			type="button"
 			class="filter-trigger"
 			class:filter-trigger--active={checkedItems.length > 0}
+			aria-haspopup="dialog"
+			aria-expanded={tagsDropdownOpen}
+			aria-controls="tags-filter-menu"
 		>
 			<span>Tags{checkedItems.length > 0 ? ` (${checkedItems.length})` : ''}</span>
 			<ChevronDownOutline class="h-3.5 w-3.5" />
 		</button>
-		<Dropdown placement="bottom" bind:open={tagsDropdownOpen}>
+		<Dropdown
+			id="tags-filter-menu"
+			placement="bottom"
+			bind:open={tagsDropdownOpen}
+			role="dialog"
+			aria-label="Tag filter options"
+		>
 			<div class="max-h-60 overflow-y-auto">
 				{#each displayTags as tag (tag.name)}
 					<li
 						class="rounded-sm p-2 transition-colors duration-fast hover:bg-primary-50 dark:hover:bg-primary-900 {tag.disabled
 							? 'opacity-50'
 							: ''}"
-						transition:fade={{ duration: 100 }}
 					>
 						<Checkbox
 							class={tag.disabled ? 'cursor-not-allowed text-subtle' : ''}
@@ -218,7 +272,7 @@
 	{#if checkedItems.length > 0}
 		<div class="flex flex-wrap gap-1.5">
 			{#each checkedItems as name (name)}
-				<div class="active-chip" transition:fade={{ duration: 150 }}>
+				<div class="active-chip">
 					<span>{name}</span>
 					<button
 						type="button"
@@ -238,6 +292,7 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 0.375rem;
+		min-height: 2.75rem;
 		padding: 0.4375rem 0.75rem;
 		font-family: theme('fontFamily.mono');
 		font-size: 0.6875rem;
@@ -296,6 +351,10 @@
 
 	.active-chip button {
 		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.5rem;
+		height: 1.5rem;
 		color: theme('colors.primary.500');
 		background: transparent;
 		border: none;
