@@ -20,8 +20,6 @@ rainy_day_ok: false
 cold_day_ok: true
 ---
 
-# Lake Elkhorn
-
 **Address:** 6800 Cradlerock Way Columbia, MD 21046
 **Website:** [https://www.visithowardcounty.com/listings/lake-elkhorn/8613/](https://www.visithowardcounty.com/listings/lake-elkhorn/8613/)
 **Type:** Activity

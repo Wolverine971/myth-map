@@ -31,12 +31,33 @@
 	]
 		.filter(Boolean)
 		.join(' ');
+	$: settingLabel = loc.indoor_outdoor
+		? loc.indoor_outdoor.toLowerCase().replace(/,\s*/g, ' and ')
+		: '';
+	$: locationKind =
+		loc.type?.toLowerCase() === 'food'
+			? 'family food stop'
+			: loc.type?.toLowerCase() === 'activity'
+				? 'family activity'
+				: 'family-friendly place';
+	$: locationPhrase = [settingLabel, locationKind].filter(Boolean).join(' ');
+	$: locationArticle = /^[aeiou]/i.test(locationPhrase) ? 'an' : 'a';
+	$: listingSummary = `${loc.name} is ${locationArticle} ${locationPhrase} in ${loc.city}, ${loc.state}.`;
+	$: description = fm.published
+		? `${listingSummary} Read parent-focused planning notes and practical details for a family visit.`
+		: `${listingSummary} Find its address, official website, setting, price range, and nearby family-friendly places.`;
 
 	$: structuredData = {
 		'@context': 'https://schema.org',
 		'@type': 'TouristAttraction',
 		name: loc.name,
+		description,
 		url: `https://tinytribeadventures.com${canonical}`,
+		mainEntityOfPage: `https://tinytribeadventures.com${canonical}`,
+		touristType: {
+			'@type': 'Audience',
+			audienceType: 'Families with children'
+		},
 		address: {
 			'@type': 'PostalAddress',
 			streetAddress: addressLine || undefined,
@@ -52,6 +73,7 @@
 						longitude: loc.lng
 					}
 				: undefined,
+		isAccessibleForFree: loc.price?.trim().toLowerCase() === 'free' ? true : undefined,
 		sameAs: entry.location.website ? [entry.location.website] : undefined
 	};
 
@@ -70,10 +92,6 @@
 	$: faqStructuredDataScript = faqStructuredData
 		? `<script type="application/ld+json">${JSON.stringify(faqStructuredData)}<` + '/script>'
 		: '';
-
-	$: description = fm.published
-		? `${loc.name} in ${loc.city}, ${loc.state}. Family-friendly tips, hours, parking, and what to know before you go.`
-		: `${loc.name} in ${loc.city}, ${loc.state}. Address, website, and family-friendly details.`;
 
 	const ACCESS_LABEL: Record<string, string> = { yes: 'Yes', partial: 'Partial', no: 'No' };
 	const SEASON_LABEL: Record<string, string> = {
@@ -305,13 +323,17 @@
 		<section
 			class="mb-10 rounded-md border border-dashed border-strong bg-sunken p-5 text-sm text-muted"
 		>
-			<p class="font-display font-semibold text-default">
-				We're still writing the family guide for this spot.
+			<h2 class="font-display text-lg font-semibold text-default">Guide status</h2>
+			<p class="mt-2 text-default">{listingSummary}</p>
+			<p class="mt-2">
+				We're still preparing the parent-focused guide. Use the official website above to confirm
+				current hours, admission, closures, and reservation requirements before you leave.
 			</p>
-			<p class="mt-1">
-				The address and website above are verified. Once we publish parent-tested tips, hours, and
-				FAQs, they'll appear right here.
-			</p>
+			{#if verifiedLabel}
+				<p class="mt-3 font-mono text-xs uppercase tracking-wide text-subtle">
+					Listing details checked {verifiedLabel}.
+				</p>
+			{/if}
 		</section>
 	{/if}
 

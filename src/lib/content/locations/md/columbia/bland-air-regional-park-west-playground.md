@@ -20,8 +20,6 @@ cold_day_ok: true
 pair_with: [md/columbia/robinson-nature-center]
 ---
 
-# Bland Air Regional Park West Playground
-
 **Address:** 5750 Oakland Mills Rd, Columbia, MD 21045
 **Website:** [https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails](https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails)
 **Type:** Activity

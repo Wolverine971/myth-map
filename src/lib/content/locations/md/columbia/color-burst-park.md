@@ -10,8 +10,6 @@ published: false
 published_at: null
 ---
 
-# Color Burst Park
-
 **Address:** 6000 Merriweather Dr Columbia, MD 21044
 **Website:** [https://merriweatherdistrict.com/whats-on/color-burst-park-splash-pad-is-open-for-the-summer/](https://merriweatherdistrict.com/whats-on/color-burst-park-splash-pad-is-open-for-the-summer/)
 **Type:** Activity

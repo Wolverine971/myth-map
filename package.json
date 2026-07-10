@@ -18,6 +18,7 @@
 		"build:locations": "tsx scripts/build-locations.ts",
 		"content:sync": "tsx scripts/sync-location-content.ts",
 		"content:status": "tsx scripts/content-status.ts",
+		"content:seo": "tsx scripts/content-seo-audit.ts",
 		"blog:queue": "tsx scripts/generate-location-blog-queue.ts",
 		"gen:all": "tsx scripts/gen.ts",
 		"gen:full": "tsx scripts/gen.ts --all"

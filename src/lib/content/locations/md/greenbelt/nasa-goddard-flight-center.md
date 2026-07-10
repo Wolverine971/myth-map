@@ -10,8 +10,6 @@ published: false
 published_at: null
 ---
 
-# NASA Goddard Flight Center
-
 **Address:** 8800 Greenbelt Road Greenbelt, MD 20771
 **Website:** [https://www.nasa.gov/goddard/visitor-center/](https://www.nasa.gov/goddard/visitor-center/)
 **Type:** Activity

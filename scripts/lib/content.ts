@@ -73,8 +73,6 @@ export function seedBody(loc: RawLocation): string {
 	const fullAddress = [addressLine, cityState, l.zip_code].filter(Boolean).join(' ');
 
 	const lines: string[] = [];
-	lines.push(`# ${l.name}`);
-	lines.push('');
 	if (fullAddress) lines.push(`**Address:** ${fullAddress}`);
 	if (loc.website) lines.push(`**Website:** [${loc.website}](${loc.website})`);
 	if (l.type) lines.push(`**Type:** ${l.type}`);

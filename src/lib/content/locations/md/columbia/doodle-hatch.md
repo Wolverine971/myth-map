@@ -18,8 +18,6 @@ hot_day_ok: true
 cold_day_ok: true
 ---
 
-# Doodle Hatch
-
 **Address:** 8775 Cloudleap Court Columbia, MD 21045
 **Website:** [https://www.doodlehatch.com/](https://www.doodlehatch.com/)
 **Type:** Activity

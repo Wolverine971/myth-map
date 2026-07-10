@@ -19,8 +19,6 @@ cold_day_ok: true
 pair_with: [md/columbia/cedar-lane-park-east-playground]
 ---
 
-# Cedar Lane Park Playground
-
 **Address:** 5081 Cedar Ln, Columbia, MD 21044
 **Website:** [https://www.howardcountymd.gov/CedarLanePark](https://www.howardcountymd.gov/CedarLanePark)
 **Type:** Activity

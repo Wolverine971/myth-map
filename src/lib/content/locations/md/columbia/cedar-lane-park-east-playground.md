@@ -20,8 +20,6 @@ cold_day_ok: true
 pair_with: [md/columbia/robinson-nature-center]
 ---
 
-# Cedar Lane Park East Playground
-
 **Address:** 10745 Clarksville Pike (Route 108), Columbia, MD 21044
 **Website:** [https://www.howardcountymd.gov/CedarLanePark](https://www.howardcountymd.gov/CedarLanePark)
 **Type:** Activity

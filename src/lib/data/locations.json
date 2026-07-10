@@ -275,7 +275,7 @@
 		},
 		{
 			"id": 14,
-			"website": "https://www.climbzone.us/laurel/?gad_source=1&gclid=CjwKCAjwgdayBhBQEiwAXhMxtlciuxCgo8wFosqP_peAI_9YIwxLAHH54bXEjvcd3FiPaODXedYEaxoCeBAQAvD_BwE",
+			"website": "https://www.climbzone.us/laurel/",
 			"location": {
 				"id": 14,
 				"name": "ClimbZone",
@@ -285,7 +285,7 @@
 				"state": "MD",
 				"zip_code": "20708",
 				"full_address": "13200 Mid Atlantic Boulevard - Suite 130 Laurel, MD 20708",
-				"website": "https://www.climbzone.us/laurel/?gad_source=1&gclid=CjwKCAjwgdayBhBQEiwAXhMxtlciuxCgo8wFosqP_peAI_9YIwxLAHH54bXEjvcd3FiPaODXedYEaxoCeBAQAvD_BwE",
+				"website": "https://www.climbzone.us/laurel/",
 				"type": "Activity",
 				"indoor_outdoor": "Indoor",
 				"price": "$$",

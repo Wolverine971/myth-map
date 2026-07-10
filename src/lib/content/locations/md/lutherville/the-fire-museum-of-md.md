@@ -10,8 +10,6 @@ published: false
 published_at: null
 ---
 
-# The Fire Museum of MD
-
 **Address:** 1301-R York Road Lutherville, MD 21093
 **Website:** [https://www.firemuseummd.org/](https://www.firemuseummd.org/)
 **Type:** Activity

@@ -10,8 +10,6 @@ published: false
 published_at: null
 ---
 
-# Guinness Brewery
-
 **Address:** 5001 Washington Blvd Halethorpe, MD 21227
 **Website:** [https://www.guinnessbrewerybaltimore.com/](https://www.guinnessbrewerybaltimore.com/)
 **Type:** Food

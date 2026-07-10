@@ -10,8 +10,6 @@ published: false
 published_at: null
 ---
 
-# Splash Pad of Sykesville
-
 **Address:** 7282 Cooper Drive Sykesville, MD 21784
 **Website:** [https://townofsykesville.org/2266/Splash-Pad](https://townofsykesville.org/2266/Splash-Pad)
 **Type:** Activity

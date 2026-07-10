@@ -10,8 +10,6 @@ published: false
 published_at: null
 ---
 
-# Patuxent Research Refuge - North Tract
-
 **Address:** 230 Bald Eagle Drive Laurel, MD 20724
 **Website:** [https://www.fws.gov/refuge/patuxent-research](https://www.fws.gov/refuge/patuxent-research)
 **Type:** Activity

@@ -10,8 +10,6 @@ published: false
 published_at: null
 ---
 
-# Howard County Library Savage Branch & STEM Education Center
-
 **Address:** 9525 Durness Lane Laurel, MD 20723
 **Website:** [https://hclibrary.org/locations/savage-branch/](https://hclibrary.org/locations/savage-branch/)
 **Type:** Activity

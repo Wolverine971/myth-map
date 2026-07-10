@@ -10,8 +10,6 @@ published: false
 published_at: null
 ---
 
-# Howard County Library Miller Branch & Historical Center
-
 **Address:** 9421 Frederick Rd Ellicott City, MD 21042
 **Website:** [https://hclibrary.org/locations/miller-branch/](https://hclibrary.org/locations/miller-branch/)
 **Type:** Activity

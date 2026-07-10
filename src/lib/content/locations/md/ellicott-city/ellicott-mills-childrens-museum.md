@@ -20,8 +20,6 @@ cold_day_ok: true
 pair_with: [md/ellicott-city/baltimore-ohio-ellicott-city-station-museum]
 ---
 
-# Ellicott Mills Childrens Museum
-
 **Address:** 3725 Park Avenue, Ellicott City, MD 21043
 **Website:** [https://www.hchsmd.org/childrens-museum/](https://www.hchsmd.org/childrens-museum/)
 **Type:** Activity

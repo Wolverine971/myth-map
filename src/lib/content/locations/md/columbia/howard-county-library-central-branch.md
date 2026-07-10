@@ -10,8 +10,6 @@ published: false
 published_at: null
 ---
 
-# Howard County Library Central Branch
-
 **Address:** 10375 Little Patuxent Pkwy Columbia, MD 21044
 **Website:** [https://hclibrary.org/locations/central-branch/](https://hclibrary.org/locations/central-branch/)
 **Type:** Activity

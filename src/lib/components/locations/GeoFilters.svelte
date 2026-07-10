@@ -1,8 +1,7 @@
 <!-- src/lib/components/locations/GeoFilters.svelte -->
 <script lang="ts">
-	import { createEventDispatcher, tick } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
 	import { states } from '../../../utils/geoDataLoader';
-	import { Dropdown, DropdownItem } from 'flowbite-svelte';
 	import { ChevronDownOutline, CloseCircleSolid } from 'flowbite-svelte-icons';
 
 	const dispatch = createEventDispatcher();
@@ -11,11 +10,7 @@
 	export let selectedCity: string | null = null;
 	export let shownLocations: any[] = [];
 
-	let stateOpen = false;
-	let cityOpen = false;
 	let availableCities: string[] = [];
-	let stateTrigger: HTMLButtonElement;
-	let cityTrigger: HTMLButtonElement;
 
 	// The location dataset is the source of truth for selectable cities. This
 	// avoids bundling hundreds of unrelated boundary filenames just to populate
@@ -39,7 +34,6 @@
 			state: selectedState,
 			city: null
 		});
-		closeStateMenu();
 	}
 
 	function handleCityChange(city: string) {
@@ -48,7 +42,26 @@
 			state: selectedState,
 			city: selectedCity
 		});
-		closeCityMenu();
+	}
+
+	function handleStateSelect(event: Event) {
+		const abbreviation = (event.currentTarget as HTMLSelectElement).value;
+		if (!abbreviation) {
+			clearState();
+			return;
+		}
+
+		const state = states.find((candidate) => candidate.abr === abbreviation);
+		if (state) handleStateChange(state);
+	}
+
+	function handleCitySelect(event: Event) {
+		const city = (event.currentTarget as HTMLSelectElement).value;
+		if (city) {
+			handleCityChange(city);
+		} else {
+			clearCity();
+		}
 	}
 
 	function clearState() {
@@ -59,7 +72,6 @@
 			state: null,
 			city: null
 		});
-		closeStateMenu();
 	}
 
 	function clearCity() {
@@ -68,124 +80,55 @@
 			state: selectedState,
 			city: null
 		});
-		closeCityMenu();
-	}
-
-	function closeStateMenu() {
-		stateOpen = false;
-		void tick().then(() => stateTrigger?.focus());
-	}
-
-	function closeCityMenu() {
-		cityOpen = false;
-		void tick().then(() => cityTrigger?.focus());
-	}
-
-	function handleEscape(event: KeyboardEvent) {
-		if (event.key !== 'Escape') return;
-		if (cityOpen) {
-			closeCityMenu();
-		} else if (stateOpen) {
-			closeStateMenu();
-		}
 	}
 </script>
 
-<svelte:window on:keydown={handleEscape} />
-
 <div class="flex flex-wrap items-center gap-2">
 	<!-- State Filter -->
-	<div class="relative">
-		<button
-			bind:this={stateTrigger}
-			type="button"
-			class="filter-trigger"
-			class:filter-trigger--active={!!selectedState}
-			aria-haspopup="dialog"
-			aria-expanded={stateOpen}
-			aria-controls="state-filter-menu"
+	<div class="filter-control">
+		<label class="sr-only" for="state-filter">State filter</label>
+		<select
+			id="state-filter"
+			class="filter-select"
+			class:filter-select--active={!!selectedState}
+			value={selectedState?.abr ?? ''}
+			on:change={handleStateSelect}
 		>
-			<span>{selectedState ? selectedState.name : 'Any state'}</span>
-			<ChevronDownOutline class="h-3.5 w-3.5" />
-		</button>
-		<Dropdown
-			id="state-filter-menu"
-			bind:open={stateOpen}
-			class="z-50 max-h-60 overflow-y-auto"
-			role="dialog"
-			aria-label="State filter options"
-		>
-			<DropdownItem on:click={clearState} class="font-medium text-neutral-600">
-				All states
-			</DropdownItem>
-			<div class="my-1 border-t border-subtle"></div>
+			<option value="">Any state</option>
 			{#each states as state}
 				{@const stateLocationCount = shownLocations.filter(
 					(loc) => loc.location.state === state.abr
 				).length}
-				<DropdownItem
-					on:click={() => stateLocationCount > 0 && handleStateChange(state)}
-					aria-disabled={stateLocationCount === 0}
-					class="{selectedState?.abr === state.abr
-						? 'bg-primary-50 font-semibold text-primary-700'
-						: ''} {stateLocationCount === 0 ? 'cursor-not-allowed opacity-50' : ''}"
-				>
-					<div class="flex w-full items-center justify-between">
-						<span>{state.name}</span>
-						<span class="ml-2 text-xs text-neutral-500">{stateLocationCount}</span>
-					</div>
-				</DropdownItem>
+				<option value={state.abr} disabled={stateLocationCount === 0}>
+					{state.name} ({stateLocationCount})
+				</option>
 			{/each}
-		</Dropdown>
+		</select>
+		<ChevronDownOutline class="select-chevron h-3.5 w-3.5" aria-hidden="true" />
 	</div>
 
 	<!-- City Filter -->
-	<div class="relative">
-		<button
-			bind:this={cityTrigger}
-			type="button"
-			class="filter-trigger"
-			class:filter-trigger--active={!!selectedCity}
+	<div class="filter-control">
+		<label class="sr-only" for="city-filter">City filter</label>
+		<select
+			id="city-filter"
+			class="filter-select"
+			class:filter-select--active={!!selectedCity}
+			value={selectedCity ?? ''}
 			disabled={!selectedState}
-			aria-haspopup="dialog"
-			aria-expanded={cityOpen}
-			aria-controls="city-filter-menu"
+			on:change={handleCitySelect}
 		>
-			<span>{selectedCity ?? 'Any city'}</span>
-			<ChevronDownOutline class="h-3.5 w-3.5" />
-		</button>
-		<Dropdown
-			id="city-filter-menu"
-			bind:open={cityOpen}
-			class="z-50 max-h-60 overflow-y-auto"
-			role="dialog"
-			aria-label="City filter options"
-		>
-			<DropdownItem on:click={clearCity} class="font-medium text-neutral-600">
-				All cities
-			</DropdownItem>
-			<div class="my-1 border-t border-subtle"></div>
+			<option value="">Any city</option>
 			{#each availableCities as city}
 				{@const cityLocationCount = shownLocations.filter(
-					(loc) => loc.location.city === city
+					(loc) => loc.location.state === selectedState?.abr && loc.location.city === city
 				).length}
-				<DropdownItem
-					on:click={() => cityLocationCount > 0 && handleCityChange(city)}
-					aria-disabled={cityLocationCount === 0}
-					class="{selectedCity === city
-						? 'bg-primary-50 font-semibold text-primary-700'
-						: ''} {cityLocationCount === 0 ? 'cursor-not-allowed opacity-50' : ''}"
-				>
-					<div class="flex w-full items-center justify-between">
-						<span>{city}</span>
-						<span class="ml-2 text-xs text-neutral-500">{cityLocationCount}</span>
-					</div>
-				</DropdownItem>
+				<option value={city} disabled={cityLocationCount === 0}>
+					{city} ({cityLocationCount})
+				</option>
 			{/each}
-			{#if availableCities.length === 0 && selectedState}
-				<div class="px-4 py-2 text-sm text-muted">No cities match the current filters</div>
-			{/if}
-		</Dropdown>
+		</select>
+		<ChevronDownOutline class="select-chevron h-3.5 w-3.5" aria-hidden="true" />
 	</div>
 
 	{#if selectedState || selectedCity}
@@ -211,12 +154,16 @@
 </div>
 
 <style>
-	.filter-trigger {
+	.filter-control {
+		position: relative;
 		display: inline-flex;
 		align-items: center;
-		gap: 0.375rem;
+	}
+
+	.filter-select {
+		appearance: none;
 		min-height: 2.75rem;
-		padding: 0.4375rem 0.75rem;
+		padding: 0.4375rem 2rem 0.4375rem 0.75rem;
 		font-family: theme('fontFamily.mono');
 		font-size: 0.6875rem;
 		font-weight: 600;
@@ -233,26 +180,38 @@
 			color 100ms cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
-	.filter-trigger:hover:not(:disabled) {
+	.filter-select:hover:not(:disabled) {
 		border-color: var(--border-strong);
 		color: theme('colors.primary.700');
 	}
 
-	.filter-trigger:disabled {
+	.filter-select:focus-visible {
+		outline: 2px solid theme('colors.primary.500');
+		outline-offset: 2px;
+	}
+
+	.filter-select:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
 	}
 
-	.filter-trigger--active {
+	.filter-select--active {
 		background: theme('colors.primary.50');
 		border-color: theme('colors.primary.500');
 		color: theme('colors.primary.700');
 	}
 
-	:global(.dark) .filter-trigger--active {
+	:global(.dark) .filter-select--active {
 		background: theme('colors.primary.900');
 		border-color: theme('colors.primary.400');
 		color: theme('colors.primary.200');
+	}
+
+	:global(.select-chevron) {
+		position: absolute;
+		right: 0.625rem;
+		pointer-events: none;
+		color: var(--text-muted);
 	}
 
 	.active-chip {
@@ -293,6 +252,11 @@
 
 	.active-chip button:hover {
 		color: theme('colors.tertiary.600');
+	}
+
+	.active-chip button:focus-visible {
+		outline: 2px solid theme('colors.primary.500');
+		outline-offset: 1px;
 	}
 
 	:global(.dark) .active-chip button {

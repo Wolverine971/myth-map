@@ -10,8 +10,6 @@ published: false
 published_at: null
 ---
 
-# Swansfield Neighborhood Playground
-
 **Address:** 5659 Cedar Lane Columbia, MD 21044
 **Website:** [https://search.app.goo.gl/GE2NXpe](https://search.app.goo.gl/GE2NXpe)
 **Type:** Activity

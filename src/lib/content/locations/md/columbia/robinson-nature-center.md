@@ -18,8 +18,6 @@ hot_day_ok: true
 cold_day_ok: true
 ---
 
-# Robinson Nature Center
-
 **Address:** 6692 Cedar Lane Columbia, MD 21044
 **Website:** [https://www.howardcountymd.gov/recreation-parks/robinson-nature-center](https://www.howardcountymd.gov/recreation-parks/robinson-nature-center)
 **Type:** Activity

@@ -18,8 +18,6 @@ hot_day_ok: true
 cold_day_ok: true
 ---
 
-# Howard County Library East Columbia Branch
-
 **Address:** 6600 Cradlerock Way, Columbia, MD 21045
 **Website:** [https://www.hclibrary.org/locations/east-columbia/](https://www.hclibrary.org/locations/east-columbia/)
 **Type:** Activity

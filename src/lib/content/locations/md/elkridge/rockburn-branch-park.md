@@ -10,8 +10,6 @@ published: false
 published_at: null
 ---
 
-# Rockburn Branch Park
-
 **Address:** 6105 Rockburn Branch Park Rd Elkridge, MD 21075
 **Website:** [https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails](https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails)
 **Type:** Activity

@@ -20,8 +20,6 @@ hot_day_ok: true
 cold_day_ok: true
 ---
 
-# Playseum
-
 **Address:** 10300 Little Patuxent Parkway, Suite 1870, Columbia, MD 21044
 **Phone:** 240-507-8965
 **Website:** [playseum.com/columbiaplayseum](https://www.playseum.com/columbiaplayseum)

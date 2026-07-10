@@ -10,8 +10,6 @@ published: false
 published_at: null
 ---
 
-# Centennial Park West
-
 **Address:** 4651 Centennial Ln Ellicott City, MD 21042
 **Website:** [https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails#centennial-park-ellicott-city](https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails#centennial-park-ellicott-city)
 **Type:** Activity

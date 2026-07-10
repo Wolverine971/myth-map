@@ -10,8 +10,6 @@ published: false
 published_at: null
 ---
 
-# Mayo Beach Park
-
 **Address:** 4150 Honeysuckle Drive Edgewater, MD 21037
 **Website:** [https://www.aacounty.org/recreation-parks/parks/mayo-beach-park](https://www.aacounty.org/recreation-parks/parks/mayo-beach-park)
 **Type:** Activity

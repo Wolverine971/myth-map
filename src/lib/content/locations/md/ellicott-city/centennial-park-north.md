@@ -20,8 +20,6 @@ cold_day_ok: true
 pair_with: [md/ellicott-city/clarks-elioak-farm]
 ---
 
-# Centennial Park North
-
 **Address:** 9801 Old Annapolis Rd Ellicott City, MD 21042
 **Website:** [https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails#centennial-park-ellicott-city](https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails#centennial-park-ellicott-city)
 **Type:** Activity

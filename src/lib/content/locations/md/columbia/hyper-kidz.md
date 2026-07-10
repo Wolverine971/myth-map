@@ -18,8 +18,6 @@ hot_day_ok: true
 cold_day_ok: true
 ---
 
-# Hyper Kidz
-
 **Address:** 9309 Snowden River Pkwy Columbia, MD 21046
 **Website:** [https://columbia.hyperkidzplay.com/](https://columbia.hyperkidzplay.com/)
 **Type:** Activity

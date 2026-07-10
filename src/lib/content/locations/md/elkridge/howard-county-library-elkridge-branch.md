@@ -10,8 +10,6 @@ published: false
 published_at: null
 ---
 
-# Howard County Library Elkridge Branch
-
 **Address:** 6540 Washington Blvd Elkridge, MD 21075
 **Website:** [https://hclibrary.org/locations/elkridge-branch/](https://hclibrary.org/locations/elkridge-branch/)
 **Type:** Activity

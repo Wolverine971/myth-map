@@ -10,8 +10,6 @@ published: false
 published_at: null
 ---
 
-# Charlsie's Bakehouse
-
 **Address:** 706 Frederick Road Catonsville, MD 21228
 **Website:** [https://charlsiesbakehouse.com/](https://charlsiesbakehouse.com/)
 **Type:** Food

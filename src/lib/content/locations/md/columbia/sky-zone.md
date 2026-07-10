@@ -19,8 +19,6 @@ hot_day_ok: true
 cold_day_ok: true
 ---
 
-# Sky Zone
-
 **Address:** 7175 Oakland Mills Rd Columbia, MD 21046
 **Website:** [https://www.skyzone.com/columbia/](https://www.skyzone.com/columbia/)
 **Type:** Activity

@@ -22,8 +22,6 @@ cold_day_ok: false
 pair_with: [md/woodbine/the-ice-shack]
 ---
 
-# Larriland Farm
-
 **Address:** 2415 Woodbine Road, Woodbine, MD 21797 (Fine Farm entrance: 3215 Florence Road)
 **Website:** [pickyourown.com](https://www.pickyourown.com/)
 **Today's Harvest hotline:** 410-442-2605

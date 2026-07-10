@@ -10,10 +10,8 @@ published: false
 published_at: null
 ---
 
-# ClimbZone
-
 **Address:** 13200 Mid Atlantic Boulevard - Suite 130 Laurel, MD 20708
-**Website:** [https://www.climbzone.us/laurel/?gad_source=1&gclid=CjwKCAjwgdayBhBQEiwAXhMxtlciuxCgo8wFosqP_peAI_9YIwxLAHH54bXEjvcd3FiPaODXedYEaxoCeBAQAvD_BwE](https://www.climbzone.us/laurel/?gad_source=1&gclid=CjwKCAjwgdayBhBQEiwAXhMxtlciuxCgo8wFosqP_peAI_9YIwxLAHH54bXEjvcd3FiPaODXedYEaxoCeBAQAvD_BwE)
+**Website:** [https://www.climbzone.us/laurel/](https://www.climbzone.us/laurel/)
 **Type:** Activity
 **Setting:** Indoor
 **Price:** $$

@@ -18,8 +18,6 @@ hot_day_ok: true
 cold_day_ok: true
 ---
 
-# Play n Learn
-
 **Address:** 9033 Red Branch Road Columbia, MD 21045
 **Website:** [https://www.playnlearn.com/columbia-md-open-play/](https://www.playnlearn.com/columbia-md-open-play/)
 **Type:** Activity

@@ -22,8 +22,6 @@ repurpose the page as a redirect to a live indoor-play alternative. Do not flip
 `published: true` until the business is confirmed operating again.
 -->
 
-# Village Center
-
 **Address:** 10203 Tanager Lane, Suite 102, Columbia, MD 21044
 **Type:** Activity
 **Setting:** Indoor

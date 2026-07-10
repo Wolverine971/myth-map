@@ -1,7 +1,7 @@
 <!-- src/lib/components/locations/LocationFilters.svelte -->
 <script lang="ts">
 	import { createEventDispatcher, tick } from 'svelte';
-	import { Checkbox, Dropdown, DropdownItem } from 'flowbite-svelte';
+	import { Checkbox } from 'flowbite-svelte';
 	import { ChevronDownOutline, CloseCircleSolid } from 'flowbite-svelte-icons';
 
 	const dispatch = createEventDispatcher();
@@ -10,12 +10,8 @@
 	export let selectableTagsMap: Record<string, number> = {};
 	export let selectedTags: string[] = [];
 
-	let baseDropdownOpen = false;
-	let indoorOutdoorDropdownOpen = false;
-	let tagsDropdownOpen = false;
-	let baseTrigger: HTMLButtonElement;
-	let settingTrigger: HTMLButtonElement;
-	let tagsTrigger: HTMLButtonElement;
+	let tagsOpen = false;
+	let tagsSummary: HTMLElement;
 
 	type TagState = { name: string; checked: boolean; disabled: boolean };
 
@@ -76,12 +72,28 @@
 
 	function pickBase(name: string) {
 		pickOneOf(BASE_OPTIONS, name);
-		closeBaseMenu();
 	}
 
 	function pickIndoorOutdoor(name: string) {
 		pickOneOf(INDOOR_OUTDOOR_OPTIONS, name);
-		closeSettingMenu();
+	}
+
+	function handleBaseSelect(event: Event) {
+		const value = (event.currentTarget as HTMLSelectElement).value;
+		if (value) {
+			pickBase(value);
+		} else {
+			clearGroup(BASE_OPTIONS);
+		}
+	}
+
+	function handleSettingSelect(event: Event) {
+		const value = (event.currentTarget as HTMLSelectElement).value;
+		if (value) {
+			pickIndoorOutdoor(value);
+		} else {
+			clearGroup(INDOOR_OUTDOOR_OPTIONS);
+		}
 	}
 
 	function removeTag(tagName: string) {
@@ -90,38 +102,11 @@
 
 	$: checkedItems = selectedTags.filter((t) => !VIRTUAL_TAGS.has(t));
 
-	let activeClass =
-		'text-primary-700 hover:text-primary-900 dark:text-primary-300 dark:hover:text-primary-200';
-
-	function closeBaseMenu() {
-		baseDropdownOpen = false;
-		void tick().then(() => baseTrigger?.focus());
-	}
-
-	function closeSettingMenu() {
-		indoorOutdoorDropdownOpen = false;
-		void tick().then(() => settingTrigger?.focus());
-	}
-
-	function clearBase() {
-		clearGroup(BASE_OPTIONS);
-		closeBaseMenu();
-	}
-
-	function clearSetting() {
-		clearGroup(INDOOR_OUTDOOR_OPTIONS);
-		closeSettingMenu();
-	}
-
 	function handleEscape(event: KeyboardEvent) {
-		if (event.key !== 'Escape') return;
-		if (tagsDropdownOpen) {
-			tagsDropdownOpen = false;
-			void tick().then(() => tagsTrigger?.focus());
-		} else if (indoorOutdoorDropdownOpen) {
-			closeSettingMenu();
-		} else if (baseDropdownOpen) {
-			closeBaseMenu();
+		if (event.key === 'Escape' && tagsOpen) {
+			event.preventDefault();
+			tagsOpen = false;
+			void tick().then(() => tagsSummary?.focus());
 		}
 	}
 </script>
@@ -130,121 +115,59 @@
 
 <div class="flex flex-wrap items-center gap-2">
 	<!-- Base Activity/Eats Filter -->
-	<div class="relative">
-		<button
-			bind:this={baseTrigger}
-			type="button"
-			class="filter-trigger"
-			class:filter-trigger--active={!!baseSelect}
-			aria-haspopup="dialog"
-			aria-expanded={baseDropdownOpen}
-			aria-controls="base-filter-menu"
+	<div class="filter-control">
+		<label class="sr-only" for="base-filter">Adventure type filter</label>
+		<select
+			id="base-filter"
+			class="filter-select"
+			class:filter-select--active={!!baseSelect}
+			value={baseSelect ?? ''}
+			on:change={handleBaseSelect}
 		>
-			<span>{baseSelect ?? 'Activity / Eats'}</span>
-			<ChevronDownOutline class="h-3.5 w-3.5" />
-		</button>
-		<Dropdown
-			id="base-filter-menu"
-			style="z-index: 50"
-			placement="bottom"
-			bind:open={baseDropdownOpen}
-			{activeClass}
-			role="dialog"
-			aria-label="Activity type filter options"
-		>
-			{#if baseSelect}
-				<DropdownItem on:click={clearBase} class="font-medium text-neutral-600">Any</DropdownItem>
-				<div class="my-1 border-t border-subtle"></div>
-			{/if}
+			<option value="">Activity / Eats</option>
 			{#each BASE_OPTIONS as option}
-				<DropdownItem
-					on:click={() => selectableTagsMap[option] && pickBase(option)}
-					aria-disabled={!selectableTagsMap[option]}
-					class="{baseSelect === option
-						? 'bg-primary-50 font-semibold text-primary-700 dark:bg-primary-900 dark:text-primary-300'
-						: 'hover:bg-primary-50 dark:hover:bg-primary-900'} {!selectableTagsMap[option]
-						? 'cursor-not-allowed opacity-50'
-						: ''}"
-				>
-					<div class="flex w-full items-center justify-between">
-						<span>{option}</span>
-						<span class="ml-2 text-xs text-neutral-500">{selectableTagsMap[option] ?? 0}</span>
-					</div>
-				</DropdownItem>
+				<option value={option} disabled={!selectableTagsMap[option]}>
+					{option} ({selectableTagsMap[option] ?? 0})
+				</option>
 			{/each}
-		</Dropdown>
+		</select>
+		<ChevronDownOutline class="select-chevron h-3.5 w-3.5" aria-hidden="true" />
 	</div>
 
 	<!-- Indoor/Outdoor Filter -->
-	<div class="relative">
-		<button
-			bind:this={settingTrigger}
-			type="button"
-			class="filter-trigger"
-			class:filter-trigger--active={!!indoorOutdoorSelect}
-			aria-haspopup="dialog"
-			aria-expanded={indoorOutdoorDropdownOpen}
-			aria-controls="setting-filter-menu"
+	<div class="filter-control">
+		<label class="sr-only" for="setting-filter">Indoor or outdoor filter</label>
+		<select
+			id="setting-filter"
+			class="filter-select"
+			class:filter-select--active={!!indoorOutdoorSelect}
+			value={indoorOutdoorSelect ?? ''}
+			on:change={handleSettingSelect}
 		>
-			<span>{indoorOutdoorSelect ?? 'Indoor / Outdoor'}</span>
-			<ChevronDownOutline class="h-3.5 w-3.5" />
-		</button>
-		<Dropdown
-			id="setting-filter-menu"
-			style="z-index: 50"
-			placement="bottom"
-			bind:open={indoorOutdoorDropdownOpen}
-			{activeClass}
-			role="dialog"
-			aria-label="Indoor or outdoor filter options"
-		>
-			{#if indoorOutdoorSelect}
-				<DropdownItem on:click={clearSetting} class="font-medium text-neutral-600">
-					Any
-				</DropdownItem>
-				<div class="my-1 border-t border-subtle"></div>
-			{/if}
+			<option value="">Indoor / Outdoor</option>
 			{#each INDOOR_OUTDOOR_OPTIONS as option}
-				<DropdownItem
-					on:click={() => selectableTagsMap[option] && pickIndoorOutdoor(option)}
-					aria-disabled={!selectableTagsMap[option]}
-					class="{indoorOutdoorSelect === option
-						? 'bg-primary-50 font-semibold text-primary-700'
-						: 'hover:bg-primary-50'} {!selectableTagsMap[option]
-						? 'cursor-not-allowed opacity-50'
-						: ''}"
-				>
-					<div class="flex w-full items-center justify-between">
-						<span>{option}</span>
-						<span class="ml-2 text-xs text-neutral-500">{selectableTagsMap[option] ?? 0}</span>
-					</div>
-				</DropdownItem>
+				<option value={option} disabled={!selectableTagsMap[option]}>
+					{option} ({selectableTagsMap[option] ?? 0})
+				</option>
 			{/each}
-		</Dropdown>
+		</select>
+		<ChevronDownOutline class="select-chevron h-3.5 w-3.5" aria-hidden="true" />
 	</div>
 
 	<!-- Tags Filter -->
-	<div class="relative">
-		<button
-			bind:this={tagsTrigger}
-			type="button"
+	<details class="tags-disclosure" bind:open={tagsOpen}>
+		<summary
+			bind:this={tagsSummary}
 			class="filter-trigger"
 			class:filter-trigger--active={checkedItems.length > 0}
-			aria-haspopup="dialog"
-			aria-expanded={tagsDropdownOpen}
+			aria-expanded={tagsOpen}
 			aria-controls="tags-filter-menu"
 		>
 			<span>Tags{checkedItems.length > 0 ? ` (${checkedItems.length})` : ''}</span>
-			<ChevronDownOutline class="h-3.5 w-3.5" />
-		</button>
-		<Dropdown
-			id="tags-filter-menu"
-			placement="bottom"
-			bind:open={tagsDropdownOpen}
-			role="dialog"
-			aria-label="Tag filter options"
-		>
-			<div class="max-h-60 overflow-y-auto">
+			<ChevronDownOutline class="disclosure-chevron h-3.5 w-3.5" aria-hidden="true" />
+		</summary>
+		<div id="tags-filter-menu" class="tag-panel" role="group" aria-label="Tag filter options">
+			<ul class="tag-options">
 				{#each displayTags as tag (tag.name)}
 					<li
 						class="rounded-sm p-2 transition-colors duration-fast hover:bg-primary-50 dark:hover:bg-primary-900 {tag.disabled
@@ -264,9 +187,9 @@
 						</Checkbox>
 					</li>
 				{/each}
-			</div>
-		</Dropdown>
-	</div>
+			</ul>
+		</div>
+	</details>
 
 	<!-- Active Tag Chips (excluding virtual categories — those show on the trigger buttons) -->
 	{#if checkedItems.length > 0}
@@ -288,12 +211,18 @@
 </div>
 
 <style>
+	.filter-control {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+	}
+
+	.filter-select,
 	.filter-trigger {
 		display: inline-flex;
 		align-items: center;
 		gap: 0.375rem;
 		min-height: 2.75rem;
-		padding: 0.4375rem 0.75rem;
 		font-family: theme('fontFamily.mono');
 		font-size: 0.6875rem;
 		font-weight: 600;
@@ -310,21 +239,87 @@
 			color 100ms cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
+	.filter-select {
+		appearance: none;
+		padding: 0.4375rem 2rem 0.4375rem 0.75rem;
+	}
+
+	.filter-trigger {
+		padding: 0.4375rem 0.75rem;
+	}
+
+	.filter-select:hover,
 	.filter-trigger:hover {
 		border-color: var(--border-strong);
 		color: theme('colors.primary.700');
 	}
 
+	.filter-select:focus-visible,
+	.filter-trigger:focus-visible {
+		outline: 2px solid theme('colors.primary.500');
+		outline-offset: 2px;
+	}
+
+	.filter-select--active,
 	.filter-trigger--active {
 		background: theme('colors.primary.50');
 		border-color: theme('colors.primary.500');
 		color: theme('colors.primary.700');
 	}
 
+	:global(.dark) .filter-select--active,
 	:global(.dark) .filter-trigger--active {
 		background: theme('colors.primary.900');
 		border-color: theme('colors.primary.400');
 		color: theme('colors.primary.200');
+	}
+
+	:global(.select-chevron) {
+		position: absolute;
+		right: 0.625rem;
+		pointer-events: none;
+		color: var(--text-muted);
+	}
+
+	.tags-disclosure {
+		position: relative;
+	}
+
+	.tags-disclosure > summary {
+		list-style: none;
+	}
+
+	.tags-disclosure > summary::-webkit-details-marker {
+		display: none;
+	}
+
+	:global(.disclosure-chevron) {
+		transition: transform 100ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.tags-disclosure[open] :global(.disclosure-chevron) {
+		transform: rotate(180deg);
+	}
+
+	.tag-panel {
+		position: absolute;
+		z-index: 50;
+		top: calc(100% + 0.25rem);
+		left: 0;
+		width: min(20rem, calc(100vw - 2rem));
+		padding: 0.375rem;
+		background: var(--surface-surface);
+		border: 1px solid var(--border-subtle);
+		border-radius: 2px;
+		box-shadow: 0 8px 24px rgb(0 0 0 / 0.14);
+	}
+
+	.tag-options {
+		max-height: 15rem;
+		overflow-y: auto;
+		padding: 0;
+		margin: 0;
+		list-style: none;
 	}
 
 	.active-chip {
@@ -367,7 +362,18 @@
 		color: theme('colors.tertiary.600');
 	}
 
+	.active-chip button:focus-visible {
+		outline: 2px solid theme('colors.primary.500');
+		outline-offset: 1px;
+	}
+
 	:global(.dark) .active-chip button {
 		color: theme('colors.primary.300');
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		:global(.disclosure-chevron) {
+			transition: none;
+		}
 	}
 </style>

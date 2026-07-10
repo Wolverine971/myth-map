@@ -10,8 +10,6 @@ published: false
 published_at: null
 ---
 
-# Schooley Mill Playground
-
 **Address:** 12975 Hall Shop Rd Highland, MD 20777
 **Website:** [https://www.visithowardcounty.com/listings/schooley-mill-park/2320/](https://www.visithowardcounty.com/listings/schooley-mill-park/2320/)
 **Type:** Activity

@@ -17,8 +17,6 @@ published: false
 published_at: null
 ---
 
-# My Gym - Columbia
-
 **Address:** 6905 Oakland Mills Rd, Ste C, Columbia, MD 21045
 **Website:** [https://www.mygym.com/columbia](https://www.mygym.com/columbia)
 **Phone:** (410) 290-7008

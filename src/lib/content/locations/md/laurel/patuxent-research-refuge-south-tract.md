@@ -10,8 +10,6 @@ published: false
 published_at: null
 ---
 
-# Patuxent Research Refuge - South Tract
-
 **Address:** 10901 Scarlet Tanager Loop Laurel, MD 20708
 **Website:** [https://www.fws.gov/refuge/patuxent-research](https://www.fws.gov/refuge/patuxent-research)
 **Type:** Activity

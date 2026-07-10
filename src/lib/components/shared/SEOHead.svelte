@@ -29,7 +29,10 @@
 		? title
 		: `${title} | Tiny Tribe Adventures`;
 
-	$: robotsContent = noIndex ? 'noindex, nofollow' : 'index, follow';
+	// Unfinished pages should stay out of search results without becoming dead
+	// ends in the internal link graph. `follow` lets crawlers continue to the
+	// finished guides and directory pages linked from a noindex page.
+	$: robotsContent = noIndex ? 'noindex, follow' : 'index, follow';
 	$: structuredDataScript = structuredData
 		? `<script type="application/ld+json">${JSON.stringify(structuredData)}<` + '/script>'
 		: '';

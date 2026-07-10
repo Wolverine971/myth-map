@@ -19,37 +19,35 @@ function escapeXml(s: string) {
 
 type SitemapUrl = {
 	loc: string;
-	lastmod: string;
-	changefreq: 'daily' | 'weekly' | 'monthly' | 'yearly';
-	priority: number;
+	lastmod?: string;
 };
 
-function maxLastModified(dates: Array<string | undefined | null>): string {
-	const valid = dates.filter((d): d is string => typeof d === 'string' && d.length > 0);
-	if (!valid.length) return new Date().toISOString().split('T')[0];
+function maxLastModified(dates: Array<string | undefined | null>): string | undefined {
+	const valid = dates.filter(
+		(d): d is string => typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)
+	);
+	if (!valid.length) return undefined;
 	return valid.sort().reverse()[0];
 }
 
 export async function GET() {
-	const today = new Date().toISOString().split('T')[0];
 	const allEntries = listEntries();
 	const publishedEntries = allEntries.filter((e) => e.frontmatter.published);
+	const catalogLastModified = maxLastModified(allEntries.map((e) => e.frontmatter.last_modified));
+	const publishedLastModified = maxLastModified(
+		publishedEntries.map((e) => e.frontmatter.last_modified)
+	);
 
 	const urls: SitemapUrl[] = [];
 
 	// Static top-level pages
 	urls.push(
-		{ loc: SITE, lastmod: today, changefreq: 'weekly', priority: 1.0 },
-		{ loc: `${SITE}/locations`, lastmod: today, changefreq: 'weekly', priority: 0.9 },
-		{
-			loc: `${SITE}/blog`,
-			lastmod: maxLastModified(publishedEntries.map((e) => e.frontmatter.last_modified)),
-			changefreq: 'weekly',
-			priority: 0.7
-		},
-		{ loc: `${SITE}/about`, lastmod: today, changefreq: 'monthly', priority: 0.6 },
-		{ loc: `${SITE}/press`, lastmod: today, changefreq: 'monthly', priority: 0.5 },
-		{ loc: `${SITE}/contact`, lastmod: today, changefreq: 'yearly', priority: 0.4 }
+		{ loc: SITE, lastmod: catalogLastModified },
+		{ loc: `${SITE}/locations`, lastmod: catalogLastModified },
+		{ loc: `${SITE}/blog`, lastmod: publishedLastModified },
+		{ loc: `${SITE}/about` },
+		{ loc: `${SITE}/press` },
+		{ loc: `${SITE}/contact` }
 	);
 
 	// State hub pages — lastmod = max last_modified of entries in that state
@@ -57,9 +55,7 @@ export async function GET() {
 		const stateEntries = allEntries.filter((e) => e.stateSlug === state.slug);
 		urls.push({
 			loc: `${SITE}/locations/${state.slug}`,
-			lastmod: maxLastModified(stateEntries.map((e) => e.frontmatter.last_modified)),
-			changefreq: 'weekly',
-			priority: 0.8
+			lastmod: maxLastModified(stateEntries.map((e) => e.frontmatter.last_modified))
 		});
 
 		// City hub pages within this state
@@ -67,9 +63,7 @@ export async function GET() {
 			const cityEntries = entriesForCity(state.slug, city.slug);
 			urls.push({
 				loc: `${SITE}/locations/${state.slug}/${city.slug}`,
-				lastmod: maxLastModified(cityEntries.map((e) => e.frontmatter.last_modified)),
-				changefreq: 'weekly',
-				priority: 0.7
+				lastmod: maxLastModified(cityEntries.map((e) => e.frontmatter.last_modified))
 			});
 		}
 	}
@@ -78,9 +72,7 @@ export async function GET() {
 	for (const entry of publishedEntries) {
 		urls.push({
 			loc: `${SITE}/locations/${entry.stateSlug}/${entry.citySlug}/${entry.slug}`,
-			lastmod: entry.frontmatter.last_modified || today,
-			changefreq: 'monthly',
-			priority: 0.6
+			lastmod: maxLastModified([entry.frontmatter.last_modified])
 		});
 	}
 
@@ -90,10 +82,7 @@ ${urls
 	.map(
 		(u) => `  <url>
     <loc>${escapeXml(u.loc)}</loc>
-    <lastmod>${u.lastmod}</lastmod>
-    <changefreq>${u.changefreq}</changefreq>
-    <priority>${u.priority.toFixed(1)}</priority>
-  </url>`
+${u.lastmod ? `    <lastmod>${u.lastmod}</lastmod>\n` : ''}  </url>`
 	)
 	.join('\n')}
 </urlset>`;
