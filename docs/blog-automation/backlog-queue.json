@@ -1,48 +1,15 @@
 {
-	"lastUpdated": "2026-07-09T06:02:12.988Z",
+	"lastUpdated": "2026-07-12T06:03:30.922Z",
 	"stats": {
 		"totalLocations": 58,
 		"totalWritten": 35,
-		"totalNeedsBlog": 17,
-		"totalPublished": 14,
+		"totalNeedsBlog": 15,
+		"totalPublished": 21,
 		"totalPublishedButThin": 1,
-		"totalDraftedUnpublished": 22,
+		"totalDraftedUnpublished": 15,
 		"completionRate": "60.3%"
 	},
 	"queue": [
-		{
-			"id": 49,
-			"locationKey": "md/ellicott-city/howard-county-library-miller-branch-historical-center",
-			"slug": "howard-county-library-miller-branch-historical-center",
-			"name": "Howard County Library Miller Branch & Historical Center",
-			"city": "Ellicott City",
-			"state": "MD",
-			"address": "9421 Frederick Rd, Ellicott City, MD 21042",
-			"contentPath": "src/lib/content/locations/md/ellicott-city/howard-county-library-miller-branch-historical-center.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 98,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "ellicott-city-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
 		{
 			"id": 14,
 			"locationKey": "md/laurel/climbzone",
@@ -532,14 +499,14 @@
 		}
 	],
 	"inProgress": {
-		"id": 20,
-		"locationKey": "md/ellicott-city/centennial-park-west",
-		"slug": "centennial-park-west",
-		"name": "Centennial Park West",
-		"city": "Ellicott City",
+		"id": 14,
+		"locationKey": "md/laurel/climbzone",
+		"slug": "climbzone",
+		"name": "ClimbZone",
+		"city": "Laurel",
 		"state": "MD",
-		"address": "4651 Centennial Ln, Ellicott City, MD 21042",
-		"contentPath": "src/lib/content/locations/md/ellicott-city/centennial-park-west.md",
+		"address": "13200 Mid Atlantic Boulevard - Suite 130 Laurel, MD 20708",
+		"contentPath": "src/lib/content/locations/md/laurel/climbzone.md",
 		"published": false,
 		"contentState": "unstarted",
 		"priority": 98,
@@ -547,9 +514,9 @@
 		"estimatedTraffic": "medium",
 		"researchBrief": "docs/location-research-brief.md",
 		"researchPrompt": "docs/location-research-prompt.md",
-		"addedToQueue": "2026-05-11",
+		"addedToQueue": "2026-07-06",
 		"retryCount": 0,
-		"strategicValue": "ellicott-city-activity-cluster",
+		"strategicValue": "laurel-activity-cluster",
 		"audit": {
 			"wordCount": 15,
 			"faqCount": 0,
@@ -563,7 +530,7 @@
 				"Helpful links"
 			]
 		},
-		"startedAt": "2026-07-09T06:02:36.000Z"
+		"startedAt": "2026-07-12T06:03:48.000Z"
 	},
 	"completed": [
 		{
@@ -1519,6 +1486,80 @@
 			"failedAt": "2026-07-04T06:00:51.000Z",
 			"error": "stale inProgress timeout",
 			"logPath": "logs/blog-automation/cron-2026-07-04.log"
+		},
+		{
+			"id": 20,
+			"locationKey": "md/ellicott-city/centennial-park-west",
+			"slug": "centennial-park-west",
+			"name": "Centennial Park West",
+			"city": "Ellicott City",
+			"state": "MD",
+			"address": "4651 Centennial Ln, Ellicott City, MD 21042",
+			"contentPath": "src/lib/content/locations/md/ellicott-city/centennial-park-west.md",
+			"published": false,
+			"contentState": "unstarted",
+			"priority": 98,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "ellicott-city-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-07-09T06:02:36.000Z",
+			"failedAt": "2026-07-10T06:02:54.000Z",
+			"error": "stale inProgress timeout",
+			"logPath": "logs/blog-automation/cron-2026-07-10.log"
+		},
+		{
+			"id": 49,
+			"locationKey": "md/ellicott-city/howard-county-library-miller-branch-historical-center",
+			"slug": "howard-county-library-miller-branch-historical-center",
+			"name": "Howard County Library Miller Branch & Historical Center",
+			"city": "Ellicott City",
+			"state": "MD",
+			"address": "9421 Frederick Rd, Ellicott City, MD 21042",
+			"contentPath": "src/lib/content/locations/md/ellicott-city/howard-county-library-miller-branch-historical-center.md",
+			"published": false,
+			"contentState": "unstarted",
+			"priority": 98,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "ellicott-city-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-07-10T06:04:13.000Z",
+			"failedAt": "2026-07-12T06:03:05.000Z",
+			"error": "stale inProgress timeout",
+			"logPath": "logs/blog-automation/cron-2026-07-12.log"
 		}
 	],
 	"skipped": []

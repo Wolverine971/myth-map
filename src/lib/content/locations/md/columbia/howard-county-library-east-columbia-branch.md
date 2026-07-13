@@ -24,6 +24,8 @@ cold_day_ok: true
 **Setting:** Indoor
 **Price:** Free
 
+<!-- HUMAN REVIEW: 2026-07-10 fact-check found an incorrect appointment-only passport claim, unsupported teen-center amenities, and an expired closure notice. Keep unpublished until corrected against current HCLS pages. -->
+
 ## Overview
 
 This is the East Columbia branch of the Howard County Library System, in the Village of Owen Brown. A $4.7 million renovation reopened it in February 2018, so the building is bright, single-level, and easy to push a stroller through. For a family, the draw is the children's area: an open early-literacy section with a play space stocked with a play kitchen, foam building blocks, puzzles, and trucks, plus a deep picture-book and easy-reader collection.

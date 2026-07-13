@@ -26,6 +26,8 @@ pair_with: [md/ellicott-city/baltimore-ohio-ellicott-city-station-museum]
 **Setting:** Indoor
 **Price:** Free
 
+<!-- HUMAN REVIEW: 2026-07-10 fact-check found the wrong room count, stale event cadence, and unverified restroom, stroller, food, and climate-control claims. Keep unpublished until corrected against the museum's current page and calendar. -->
+
 ## Overview
 
 Howard County's first children's museum sits inside a restored 1840s Quaker schoolhouse a block off historic Main Street. The space is small on purpose — three themed rooms plus a tiny 1804 garden — but the whole place is built around a single rule that co-chair Anne Schoenhut summed up at the 2022 opening: "Everything we have in there are things to teach and touch." Kids weigh beans on a balance scale in the general store, take the teacher's seat in the one-room schoolhouse, and poke around the spinning wheels and rope beds in the great room. About 90% of the objects are real period pieces donated for hands-on use.

@@ -18,6 +18,8 @@ cold_day_ok: true
 pair_with: [md/ellicott-city/ellicott-mills-childrens-museum]
 ---
 
+<!-- HUMAN REVIEW: 2026-07-10 fact-check found an incorrect 1830 building date, contradictory ramp language, an unsupported gift-shop claim, and stale holiday/parking links. Keep unpublished until corrected. -->
+
 ## Overview
 
 A small, free, two-floor stone station at the bottom of Main Street that happens to be [the oldest surviving railroad station in the United States](https://en.wikipedia.org/wiki/Ellicott_City_station). Built in 1830 by the [Baltimore & Ohio Railroad](https://savingplaces.org/places/bo-ellicott-city-station-museum) as the original western terminus of the first 13 miles of commercial railroad track in America — and the spot where the Tom Thumb steam locomotive ran its famous race against a horse later that same year. [Operated by Howard County Recreation & Parks](https://www.howardcountymd.gov/ecborail) since 2017.

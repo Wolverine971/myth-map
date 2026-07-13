@@ -1,16 +1,14 @@
 ---
 id: 32
 slug: play-n-learn
-name: Play n Learn
+name: Play N' Learn
 city: Columbia
 state: MD
 seeded_at: 2026-05-01
-last_modified: 2026-06-30
-verified_at: 2026-06-30
-published: false
-published_at: null
-stroller_friendly: partial
-wheelchair_accessible: partial
+last_modified: 2026-07-10
+published: true
+published_at: 2026-07-10
+verified_at: 2026-07-10
 noise_level: moderate
 sensory_load: moderate
 rainy_day_ok: true
@@ -24,8 +22,6 @@ cold_day_ok: true
 **Setting:** Indoor
 **Price:** $
 
-<!-- Hours, session structure, and the weekday-only/advance-ticket policy verified against the official open-play page on 2026-06-30. Capacity (~15 kids/session), changing-table and nursing details, and AC are not stated on the official page; cross-checked review/social sources but a human should confirm before publishing. -->
-
 ## Overview
 
 Play N' Learn is a backyard-playground superstore that opens its showroom floor for indoor open play on weekday afternoons. The "play" is the actual sales inventory — swingsets, slides, trampolines, and basketball goals you could buy and put in your yard — set on safe rubber flooring, plus air hockey, ping pong, and foosball tables. It's the sweet spot for ages 2–8, with baby swings for the under-2 crowd.
@@ -36,13 +32,12 @@ Because tickets are capped per session, it never feels like a bounce-house zoo, 
 
 - **Open play days/hours:** Monday–Friday only, in three two-hour sessions: 10:00 AM–12:00 PM, 12:30–2:30 PM, and 3:00–5:00 PM. Closed for open play on weekends (parties only).
 - **Cost:** $10 per child ages 12 months–15 years. Adults are free. Infants under 12 months are free.
-- **Tickets:** Required in advance — buy online; slots open about a week ahead. Tickets are non-refundable, and a sold-out session means no drop-ins.
+- **Tickets:** Required in advance — buy online; slots open about a week ahead. A sold-out session means no drop-ins.
 - **Session limit:** Up to two hours per visit, one session per child per day.
 - **Waiver:** A signed waiver is required before play. Fill it out online when you book so you're not doing paperwork at the door.
 - **Socks:** Socks or shoes on — no bare feet. They don't sell socks, so bring a pair.
-- **Food:** No food or drink on the showroom floor. There's a party room you can eat in when it isn't booked, plus a snack machine; you can bring your own snacks.
+- **Food:** No food or drink on the showroom floor. There's a party room you can eat in when it isn't booked, and you can bring your own snacks.
 - **Supervision:** Parents stay and supervise their own kids the whole time. No drop-offs.
-- **Restrooms:** Two restrooms on-site.
 - **Parking:** Free lot out front.
 
 ## Tips for families
@@ -67,7 +62,7 @@ Season barely matters since it's all indoor and climate-controlled, which is exa
 No. Open play runs Monday through Friday only. Weekends are reserved entirely for private parties, so there's no weekend walk-in or ticketed play.
 
 **Do I need to buy tickets in advance?**
-Yes. Tickets are sold online and slots open about a week ahead. If a session sells out they can't take drop-ins, and tickets are non-refundable, so book once you're sure of your day.
+Yes. Tickets are sold online and slots open about a week ahead. If a session sells out they can't take drop-ins, so book once you're sure of your day.
 
 **How much does it cost and who pays?**
 It's $10 per child ages 12 months to 15 years. Adults get in free, and infants under 12 months are free.
@@ -79,7 +74,7 @@ Each session is up to two hours, and you can do one session per child per day. T
 It's geared to ages 2–8, with the most fun for that range. There are baby swings for under-2s, but kids 9 and up tend to age out quickly.
 
 **Can we bring our own food?**
-Not onto the showroom floor — no food or drink out where the play equipment is. You can eat in the party room when it isn't booked, and there's a snack machine on-site.
+Not onto the showroom floor — no food or drink out where the play equipment is. You can eat in the party room when it isn't booked.
 
 **Are socks required?**
 Yes. Socks or shoes must stay on; no bare feet. They don't sell socks, so bring your own pair.

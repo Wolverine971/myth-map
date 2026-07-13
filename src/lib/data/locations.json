@@ -86,17 +86,18 @@
 		},
 		{
 			"id": 5,
-			"website": "https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails",
+			"slug": "bland-air-regional-park-north-playground",
+			"website": "https://www.howardcountymd.gov/parks-playgrounds-trails",
 			"location": {
 				"id": 5,
-				"name": "Bland Air Regional Park North Playground",
-				"address_line_1": "5685 Oakland Mills Rd",
+				"name": "Blandair Regional Park North Playground",
+				"address_line_1": "5700 Oakland Mills Rd",
 				"address_line_2": "",
 				"city": "Columbia",
 				"state": "MD",
 				"zip_code": "21045",
-				"full_address": "5685 Oakland Mills Rd, Columbia, MD 21045",
-				"website": "https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails",
+				"full_address": "5700 Oakland Mills Rd, Columbia, MD 21045",
+				"website": "https://www.howardcountymd.gov/parks-playgrounds-trails",
 				"type": "Activity",
 				"indoor_outdoor": "Outdoor",
 				"price": "Free",
@@ -380,7 +381,7 @@
 		},
 		{
 			"id": 19,
-			"website": "https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails#centennial-park-ellicott-city",
+			"website": "https://www.howardcountymd.gov/parks-playgrounds-trails#centennial-park-ellicott-city",
 			"location": {
 				"id": 19,
 				"name": "Centennial Park",
@@ -390,7 +391,7 @@
 				"state": "MD",
 				"zip_code": "21042",
 				"full_address": "10000 Clarksville Pike, Ellicott City, MD 21042",
-				"website": "https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails#centennial-park-ellicott-city",
+				"website": "https://www.howardcountymd.gov/parks-playgrounds-trails#centennial-park-ellicott-city",
 				"type": "Activity",
 				"indoor_outdoor": "Outdoor",
 				"price": "Free",
@@ -401,7 +402,7 @@
 		},
 		{
 			"id": 20,
-			"website": "https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails#centennial-park-ellicott-city",
+			"website": "https://www.howardcountymd.gov/parks-playgrounds-trails#centennial-park-ellicott-city",
 			"location": {
 				"id": 20,
 				"name": "Centennial Park West",
@@ -411,7 +412,7 @@
 				"state": "MD",
 				"zip_code": "21042",
 				"full_address": "4651 Centennial Ln, Ellicott City, MD 21042",
-				"website": "https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails#centennial-park-ellicott-city",
+				"website": "https://www.howardcountymd.gov/parks-playgrounds-trails#centennial-park-ellicott-city",
 				"type": "Activity",
 				"indoor_outdoor": "Outdoor",
 				"price": "Free",
@@ -422,7 +423,7 @@
 		},
 		{
 			"id": 21,
-			"website": "https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails#centennial-park-ellicott-city",
+			"website": "https://www.howardcountymd.gov/parks-playgrounds-trails#centennial-park-ellicott-city",
 			"location": {
 				"id": 21,
 				"name": "Centennial Park North",
@@ -432,7 +433,7 @@
 				"state": "MD",
 				"zip_code": "21042",
 				"full_address": "9801 Old Annapolis Rd, Ellicott City, MD 21042",
-				"website": "https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails#centennial-park-ellicott-city",
+				"website": "https://www.howardcountymd.gov/parks-playgrounds-trails#centennial-park-ellicott-city",
 				"type": "Activity",
 				"indoor_outdoor": "Outdoor",
 				"price": "Free",
@@ -590,17 +591,17 @@
 		},
 		{
 			"id": 29,
-			"website": "http://www.clarklandfarm.com/",
+			"website": "https://clarklandfarm.com/",
 			"location": {
 				"id": 29,
-				"name": "Clarks Elioak Farm",
+				"name": "Clark's Elioak Farm",
 				"address_line_1": "10500 Clarksville Pike",
 				"address_line_2": "",
 				"city": "Ellicott City",
 				"state": "MD",
 				"zip_code": "21042",
 				"full_address": "10500 Clarksville Pike, Ellicott City, MD 21042",
-				"website": "http://www.clarklandfarm.com/",
+				"website": "https://clarklandfarm.com/",
 				"type": "Activity",
 				"indoor_outdoor": "Outdoor",
 				"price": "$",
@@ -656,7 +657,7 @@
 			"website": "https://www.playnlearn.com/columbia-md-open-play/",
 			"location": {
 				"id": 32,
-				"name": "Play n Learn",
+				"name": "Play N' Learn",
 				"address_line_1": "9033 Red Branch Road",
 				"address_line_2": "",
 				"city": "Columbia",
@@ -1119,12 +1120,12 @@
 			"location": {
 				"id": 55,
 				"name": "My Gym - Columbia",
-				"address_line_1": "6905-C Oaklan Mills Rd",
+				"address_line_1": "6905 Oakland Mills Rd, Ste C",
 				"address_line_2": "",
 				"city": "Columbia",
 				"state": "MD",
 				"zip_code": "21045",
-				"full_address": "6905-C Oaklan Mills Rd, Columbia, MD 21045",
+				"full_address": "6905 Oakland Mills Rd, Ste C, Columbia, MD 21045",
 				"website": "https://www.mygym.com/columbia",
 				"type": "Activity",
 				"indoor_outdoor": "Indoor",
@@ -1393,7 +1394,7 @@
 			"id": 8,
 			"location": {
 				"id": 5,
-				"name": "Bland Air Regional Park North Playground",
+				"name": "Blandair Regional Park North Playground",
 				"city": "Columbia",
 				"state": "MD"
 			},
@@ -1406,7 +1407,7 @@
 			"id": 9,
 			"location": {
 				"id": 5,
-				"name": "Bland Air Regional Park North Playground",
+				"name": "Blandair Regional Park North Playground",
 				"city": "Columbia",
 				"state": "MD"
 			},
@@ -2342,7 +2343,7 @@
 			"id": 81,
 			"location": {
 				"id": 29,
-				"name": "Clarks Elioak Farm",
+				"name": "Clark's Elioak Farm",
 				"city": "Ellicott City",
 				"state": "MD"
 			},
@@ -2355,7 +2356,7 @@
 			"id": 82,
 			"location": {
 				"id": 29,
-				"name": "Clarks Elioak Farm",
+				"name": "Clark's Elioak Farm",
 				"city": "Ellicott City",
 				"state": "MD"
 			},
@@ -2368,7 +2369,7 @@
 			"id": 83,
 			"location": {
 				"id": 29,
-				"name": "Clarks Elioak Farm",
+				"name": "Clark's Elioak Farm",
 				"city": "Ellicott City",
 				"state": "MD"
 			},
@@ -2381,7 +2382,7 @@
 			"id": 84,
 			"location": {
 				"id": 29,
-				"name": "Clarks Elioak Farm",
+				"name": "Clark's Elioak Farm",
 				"city": "Ellicott City",
 				"state": "MD"
 			},
@@ -2446,7 +2447,7 @@
 			"id": 89,
 			"location": {
 				"id": 32,
-				"name": "Play n Learn",
+				"name": "Play N' Learn",
 				"city": "Columbia",
 				"state": "MD"
 			},
@@ -2459,7 +2460,7 @@
 			"id": 90,
 			"location": {
 				"id": 32,
-				"name": "Play n Learn",
+				"name": "Play N' Learn",
 				"city": "Columbia",
 				"state": "MD"
 			},

@@ -27,6 +27,8 @@ cold_day_ok: true
 **Setting:** Indoor
 **Price:** $$
 
+<!-- HUMAN REVIEW: 2026-07-10 fact-check found incorrect food, changing-station, and sock policies plus a dead mall-domain link. Keep unpublished until corrected against Playseum's current policy page. -->
+
 ## Overview
 
 Playseum is an indoor pretend-play space inside [The Mall in Columbia](https://www.mallincolumbia.com/) with 20+ themed "Cityshops" — a grocery store, vet, bakery, barber shop, art studio, science bar, and a Pet Shop with real animals (bunnies, bearded dragons, birds). It's the Columbia outpost of the [Be With Me Playseum](https://www.playseum.com/) chain that started in Bethesda in 2006 and is built around unstructured, parent-with-kid imaginative play rather than a big-bouncer kid-drop-off scene.

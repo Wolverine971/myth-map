@@ -1,14 +1,14 @@
 ---
 id: 5
 slug: bland-air-regional-park-north-playground
-name: Bland Air Regional Park North Playground
+name: Blandair Regional Park North Playground
 city: Columbia
 state: MD
 seeded_at: 2026-05-01
-last_modified: 2026-06-03
-verified_at: 2026-06-03
-published: false
-published_at: null
+last_modified: 2026-07-10
+published: true
+published_at: 2026-07-10
+verified_at: 2026-07-10
 stroller_friendly: yes
 wheelchair_accessible: yes
 changing_table: true
@@ -21,8 +21,8 @@ cold_day_ok: true
 pair_with: [md/columbia/robinson-nature-center]
 ---
 
-**Address:** 5685 Oakland Mills Rd, Columbia, MD 21045
-**Website:** [https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails](https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails)
+**Address:** 5700 Oakland Mills Rd, Columbia, MD 21045
+**Website:** [https://www.howardcountymd.gov/parks-playgrounds-trails](https://www.howardcountymd.gov/parks-playgrounds-trails)
 **Type:** Activity
 **Setting:** Outdoor
 **Price:** Free
@@ -35,10 +35,10 @@ Sweet spot is roughly ages 1–10. There's genuinely something for a baby and a 
 
 ## What to know before you go
 
-- **Hours:** Open daily, roughly 7am to sunset (standard Howard County park hours). It's an outdoor playground with no gate-closing staff, but the park itself follows dawn-to-dusk rules.
+- **Hours:** Open daily from sunrise to sunset, the standard hours for Howard County parks.
 - **Cost:** Free.
 - **Parking:** Large free lot right beside the North playground. It fills up on spring and summer weekends; weekday mornings you'll have your pick.
-- **Restrooms:** A real restroom building sits next to the playground — you walk through the gate to reach it. Reviewers call it clean and note it's heated in cooler months.
+- **Restrooms:** A restroom building with an adult changing table sits in the North area.
 - **Water:** Water fountains on site, but bring your own bottles for a long visit.
 - **Stroller / wheelchair:** Fully accessible. Poured rubber and accessible surfacing throughout, wide paths, no required transfers. This is one of the better wheelchair- and stroller-friendly playgrounds in Howard County.
 - **Shade:** Sun shades cover parts of the play areas, but large stretches are open turf and equipment that bakes in midday summer sun. Bring hats and sunscreen.
@@ -59,7 +59,7 @@ Sweet spot is roughly ages 1–10. There's genuinely something for a baby and a 
 
 - **Time of day:** Mornings are coolest and least crowded. In summer, avoid the midday sun on the open turf; come before 11am or after 4pm.
 - **Day of week:** Weekdays beat weekends by a wide margin. Spring and summer Saturdays and Sundays draw real crowds.
-- **Season:** Spring and fall are ideal — comfortable temperatures and full sun isn't a problem. It's usable on sunny winter days (bundle up; the restroom is heated). In steady rain it's a pass — there's no indoor option here.
+- **Season:** Spring and fall are ideal — comfortable temperatures and full sun isn't a problem. It's usable on sunny winter days if everyone bundles up. In steady rain it's a pass — there's no indoor option here.
 - **Weather backup:** If rain rolls in, the nearby [Robinson Nature Center](https://www.howardcountymd.gov/recreation-parks/robinson-nature-center) makes a good indoor pivot.
 
 ## FAQs
@@ -77,7 +77,7 @@ Roughly 1 to 10. There are dedicated zones for ages 0–2, 2–5, and two areas 
 Yes. It's an ADA "Play-for-All" playground with accessible surfacing, wide paths, and no required transfers, so strollers and wheelchairs roll throughout.
 
 **Are there bathrooms?**
-Yes. A restroom building is next to the playground, reachable through the gate. Reviewers describe it as clean and note it's heated in cold weather.
+Yes. The North area has a restroom building with an adult changing table.
 
 **Can we bring our own food?**
 Yes. There are picnic tables, benches, and a pavilion. There's no concession stand, so pack snacks, lunch, and water.
@@ -90,7 +90,7 @@ Partly. Sun shades cover sections of the play areas, but a lot of the equipment 
 
 ## Helpful links
 
-- [Howard County Recreation & Parks — parks, playgrounds & trails](https://www.howardcountymd.gov/recreation-parks/parks-playgrounds-trails) — operating authority; hours and park alerts post here.
+- [Howard County Recreation & Parks — parks, playgrounds & trails](https://www.howardcountymd.gov/parks-playgrounds-trails) — operating authority; current address, hours, amenities, and park alerts.
 - [Howard County dedication announcement for Laura's Place](https://www.howardcountymd.gov/News05161521) — the story behind the inclusive playground and a full list of the six themed zones.
 - [Visit Howard County — Blandair Regional Park listing](https://www.visithowardcounty.com/listings/blandair-regional-park/2293/) — overview of all three play areas and park amenities.
 - [Visit Howard County — accessible playgrounds guide](https://www.visithowardcounty.com/accessible-playgrounds/) — context on Laura's Place among the county's inclusive playgrounds.

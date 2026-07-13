@@ -18,6 +18,9 @@ export const CONTENT_ROOT = path.join(ROOT, 'src/lib/content/locations');
 
 export type RawLocation = {
 	id: number;
+	// Optional canonical slug for records whose public name has been corrected
+	// without changing an established route.
+	slug?: string;
 	website?: string;
 	location: {
 		id: number;
@@ -101,7 +104,7 @@ export function buildSlugMap(locations: RawLocation[]): Map<number, string> {
 	const used = new Map<string, number>(); // key = `${cityKey}::${slug}` -> first id
 	const result = new Map<number, string>();
 	for (const loc of locations) {
-		const base = slugify(loc.location.name || `location-${loc.id}`);
+		const base = loc.slug || slugify(loc.location.name || `location-${loc.id}`);
 		const cityKey = slugify(loc.location.city || 'unknown');
 		const key = `${cityKey}::${base}`;
 		const prior = used.get(key);

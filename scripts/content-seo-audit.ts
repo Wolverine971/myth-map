@@ -87,7 +87,11 @@ function audit(): AuditRow[] {
 			(heading) => wordCount(sectionBody(body, heading)) < 8
 		);
 
-		if (/HUMAN REVIEW REQUIRED|do NOT publish/i.test(source)) {
+		if (
+			/HUMAN REVIEW|Recommendation:\s*do NOT publish|human should confirm|before publishing|staff confirmation/i.test(
+				source
+			)
+		) {
 			issues.push('blocking editorial review note');
 		}
 		if (!data.verified_at) issues.push('details not verified');

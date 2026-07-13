@@ -25,6 +25,8 @@ cold_day_ok: true
 **Setting:** Indoor
 **Price:** $$
 
+<!-- HUMAN REVIEW: 2026-07-10 fact-check found unsupported waiver, Wi-Fi, spectator, nursing-room, food, and complaint claims. Keep unpublished until those are removed or confirmed by the Columbia location. -->
+
 ## Overview
 
 An indoor trampoline park off Oakland Mills Road with the standard Sky Zone lineup: a wall-to-wall freestyle jump court, a Foam Zone pit, SkySlam basketball dunk lanes, Ultimate Dodgeball courts, an iWall interactive climbing wall, a Speed Zone running lane, and a fenced [Little Ninja](https://www.skyzone.com/columbia/attractions/toddler-zone/) toddler area for kids who aren't ready for the open court. Friday and Saturday nights run as [GLOW](https://www.skyzone.com/columbia/programs/glow/) — blacklight, lasers, and loud music.

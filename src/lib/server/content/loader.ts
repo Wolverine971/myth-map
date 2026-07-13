@@ -9,6 +9,7 @@ import { parseFrontmatter, type Frontmatter } from '$lib/content/frontmatter';
 
 export type RawLocation = {
 	id: number;
+	slug?: string;
 	website?: string;
 	location: {
 		id: number;

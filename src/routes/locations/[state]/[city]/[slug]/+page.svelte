@@ -43,9 +43,10 @@
 	$: locationPhrase = [settingLabel, locationKind].filter(Boolean).join(' ');
 	$: locationArticle = /^[aeiou]/i.test(locationPhrase) ? 'an' : 'a';
 	$: listingSummary = `${loc.name} is ${locationArticle} ${locationPhrase} in ${loc.city}, ${loc.state}.`;
-	$: description = fm.published
-		? `${listingSummary} Read parent-focused planning notes and practical details for a family visit.`
-		: `${listingSummary} Find its address, official website, setting, price range, and nearby family-friendly places.`;
+	$: editorialSummary = data.editorialSummary;
+	$: description =
+		editorialSummary ||
+		`${listingSummary} Find its address, official website, setting, price range, and nearby family-friendly places.`;
 
 	$: structuredData = {
 		'@context': 'https://schema.org',
