@@ -218,20 +218,19 @@
 		radarStore.clear();
 	}
 
-	function handleRadarEntityFocus(event: CustomEvent<{ id: string | null }>) {
-		radarFocusedId = event.detail.id;
+	function handleRadarEntityFocus(detail: { id: string | null }) {
+		radarFocusedId = detail.id;
 	}
 
-	function handleRadarEntitySelect(event: CustomEvent<{ id: string }>) {
-		radarFocusedId = event.detail.id;
+	function handleRadarEntitySelect(detail: { id: string }) {
+		radarFocusedId = detail.id;
 	}
 
 	function handleRadarPinClick(event: CustomEvent<{ id: string }>) {
 		radarFocusedId = event.detail.id;
 	}
 
-	async function handleRadarLayerChange(event: CustomEvent<RadarLayer[]>) {
-		const layers = event.detail;
+	async function handleRadarLayerChange(layers: RadarLayer[]) {
 		radarStore.setLayers(layers);
 		const center = $radarStore.lastCenter ?? userLocation ?? mapCenter;
 		if ($radarStore.status === 'success' || $radarStore.status === 'error') {
@@ -489,7 +488,7 @@
 			<RadarButton
 				status={$radarStore.status}
 				hasLocation={!!userLocation}
-				on:scan={handleRadarScan}
+				onscan={handleRadarScan}
 			/>
 
 			<!-- Stamped segmented control -->
@@ -534,10 +533,10 @@
 			<RadarResultsTray
 				state={$radarStore}
 				focusedId={radarFocusedId}
-				on:clear={handleRadarClear}
-				on:entityfocus={handleRadarEntityFocus}
-				on:entityselect={handleRadarEntitySelect}
-				on:layerchange={handleRadarLayerChange}
+				onclear={handleRadarClear}
+				onentityfocus={handleRadarEntityFocus}
+				onentityselect={handleRadarEntitySelect}
+				onlayerchange={handleRadarLayerChange}
 			/>
 		</div>
 	{/if}

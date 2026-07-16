@@ -125,7 +125,7 @@ We do **not** build an index of the world. We **query sources live, on demand, n
 
 ### Platform constraints (must design around)
 
-- **Vercel function cap is 10s** (`svelte.config.js`, `nodejs20.x`, `iad1`, 1024 MB). The fan-out must be **parallel with a hard per-source timeout (~2.5s)** via `Promise.allSettled`. A slow source degrades gracefully — it just doesn't show — it never blocks the answer.
+- **Vercel function cap is 10s** (`svelte.config.js`, `nodejs24.x`, `iad1`, 1024 MB). The fan-out must be **parallel with a hard per-source timeout (~2.5s)** via `Promise.allSettled`. A slow source degrades gracefully — it just doesn't show — it never blocks the answer.
 - **Caching:** key results by **geohash tile + radius + source** with a short TTL (weather ~10 min, events ~6 h, curated places ~24 h, aircraft = never cached). Start with a Supabase `radar_cache` table or Vercel KV. Caching is what makes the button feel _instant_ on the second tap and keeps us inside free-tier rate limits.
 - **Own-location radius query:** add a Supabase RPC `locations_within(lat, lng, meters)` (PostGIS `ST_DWithin`, or a bounding-box prefilter + Haversine sort if PostGIS isn't enabled).
 
@@ -318,9 +318,7 @@ The map is a commodity — Mapbox hands it to anyone, and an AI can scaffold a "
 	],
 	"isochrones": {
 		"type": "FeatureCollection",
-		"features": [
-			/* 15/30/60-min polygons */
-		]
+		"features": [/* 15/30/60-min polygons */]
 	},
 	"generatedAt": "2026-06-13T17:02:01Z",
 	"partial": false

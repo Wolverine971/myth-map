@@ -19,7 +19,7 @@ export default {
 	kit: {
 		// Use Vercel adapter with explicit runtime configuration
 		adapter: adapter({
-			runtime: 'nodejs20.x', // Explicitly specify Node 20 runtime
+			runtime: 'nodejs24.x', // Explicitly specify Node 24 runtime
 			regions: ['iad1'], // Optional: specify region (iad1 is US East)
 			memory: 1024, // Optional: specify memory limit in MB
 			maxDuration: 10 // Optional: max execution time in seconds

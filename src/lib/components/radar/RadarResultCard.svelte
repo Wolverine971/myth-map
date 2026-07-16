@@ -1,26 +1,28 @@
 <!-- src/lib/components/radar/RadarResultCard.svelte -->
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-	import { ArrowUpRight, MapPin } from 'lucide-svelte';
+	import { ArrowUpRight, MapPin } from '@lucide/svelte';
 	import type { RadarEntity } from '$lib/types/radar';
 
-	export let entity: RadarEntity;
-	export let focused = false;
+	type Props = {
+		entity: RadarEntity;
+		focused?: boolean;
+		onentityfocus?: (detail: { id: string | null }) => void;
+		onentityselect?: (detail: { id: string }) => void;
+	};
 
-	const dispatch = createEventDispatcher<{
-		entityfocus: { id: string | null };
-		entityselect: { id: string };
-	}>();
+	let { entity, focused = false, onentityfocus, onentityselect }: Props = $props();
 
-	$: external = !!entity.url && /^https?:\/\//.test(entity.url);
-	$: driveLabel = entity.driveMinutes
-		? `${entity.driveMinutes} min ring`
-		: entity.distanceMiles != null
-			? `${entity.distanceMiles.toFixed(1)} mi away`
-			: 'nearby';
-	$: layerLabel = labelForLayer(entity.layer);
-	$: sourceLabel = labelForSource(entity.source);
-	$: reasonText = entity.reasons.slice(0, 2).join(' / ');
+	let external = $derived(!!entity.url && /^https?:\/\//.test(entity.url));
+	let driveLabel = $derived(
+		entity.driveMinutes
+			? `${entity.driveMinutes} min ring`
+			: entity.distanceMiles != null
+				? `${entity.distanceMiles.toFixed(1)} mi away`
+				: 'nearby'
+	);
+	let layerLabel = $derived(labelForLayer(entity.layer));
+	let sourceLabel = $derived(labelForSource(entity.source));
+	let reasonText = $derived(entity.reasons.slice(0, 2).join(' / '));
 
 	function labelForLayer(layer: string): string {
 		return layer.replace(/_/g, ' ');
@@ -46,17 +48,16 @@
 	}
 
 	function focus(id: string | null) {
-		dispatch('entityfocus', { id });
+		onentityfocus?.({ id });
 	}
 </script>
 
 <article
-	class="radar-card"
-	class:focused
-	on:mouseenter={() => focus(entity.id)}
-	on:mouseleave={() => focus(null)}
-	on:focusin={() => focus(entity.id)}
-	on:focusout={() => focus(null)}
+	class={['radar-card', focused && 'focused']}
+	onmouseenter={() => focus(entity.id)}
+	onmouseleave={() => focus(null)}
+	onfocusin={() => focus(entity.id)}
+	onfocusout={() => focus(null)}
 >
 	<svelte:element
 		this={entity.url ? 'a' : 'button'}
@@ -66,7 +67,7 @@
 		type={!entity.url ? 'button' : undefined}
 		role={entity.url ? undefined : 'button'}
 		class="radar-card__body"
-		on:click={() => dispatch('entityselect', { id: entity.id })}
+		onclick={() => onentityselect?.({ id: entity.id })}
 	>
 		<div class="radar-card__meta">
 			<span>{sourceLabel}</span>

@@ -12,7 +12,7 @@
 			aria-atomic="true"
 		>
 			<div class="content">{notification.message}</div>
-			{#if notification.icon}<i class={notification.icon} aria-hidden="true" />{/if}
+			{#if notification.icon}<i class={notification.icon} aria-hidden="true"></i>{/if}
 			<button
 				type="button"
 				class="dismiss"

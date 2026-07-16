@@ -1,12 +1,14 @@
 <!-- src/lib/components/radar/RadarLayerToggles.svelte -->
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import { DEFAULT_RADAR_LAYERS, type RadarLayer } from '$lib/types/radar';
 
-	export let selected: RadarLayer[] = [];
-	export let disabled = false;
+	type Props = {
+		selected?: RadarLayer[];
+		disabled?: boolean;
+		onchange?: (layers: RadarLayer[]) => void;
+	};
 
-	const dispatch = createEventDispatcher<{ change: RadarLayer[] }>();
+	let { selected = [], disabled = false, onchange }: Props = $props();
 
 	const options: Array<{ layer: RadarLayer; label: string }> = [
 		{ layer: 'playground', label: 'Playgrounds' },
@@ -24,23 +26,24 @@
 
 	function toggle(layer: RadarLayer) {
 		if (disabled) return;
-		const set = new Set(selected);
-		if (set.has(layer)) set.delete(layer);
-		else set.add(layer);
-
-		const next = options.map((option) => option.layer).filter((option) => set.has(option));
-		dispatch('change', next.length ? next : [...DEFAULT_RADAR_LAYERS]);
+		const nextSelection = selected.includes(layer)
+			? selected.filter((selectedLayer) => selectedLayer !== layer)
+			: [...selected, layer];
+		const next = options
+			.map((option) => option.layer)
+			.filter((option) => nextSelection.includes(option));
+		onchange?.(next.length ? next : [...DEFAULT_RADAR_LAYERS]);
 	}
 </script>
 
 <div class="toggles" aria-label="Adventure Radar layers">
-	{#each options as option}
+	{#each options as option (option.layer)}
 		<button
 			type="button"
 			class:active={selected.includes(option.layer)}
 			{disabled}
 			aria-pressed={selected.includes(option.layer)}
-			on:click={() => toggle(option.layer)}
+			onclick={() => toggle(option.layer)}
 		>
 			{option.label}
 		</button>

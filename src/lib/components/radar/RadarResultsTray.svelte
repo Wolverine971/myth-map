@@ -1,28 +1,36 @@
 <!-- src/lib/components/radar/RadarResultsTray.svelte -->
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-	import { X } from 'lucide-svelte';
+	import { X } from '@lucide/svelte';
 	import type { RadarState } from '$lib/stores/radarStore';
 	import type { RadarLayer } from '$lib/types/radar';
 	import RadarLayerToggles from './RadarLayerToggles.svelte';
 	import RadarResultCard from './RadarResultCard.svelte';
 
-	export let state: RadarState;
-	export let focusedId: string | null = null;
+	type Props = {
+		state: RadarState;
+		focusedId?: string | null;
+		onclear?: () => void;
+		onentityfocus?: (detail: { id: string | null }) => void;
+		onentityselect?: (detail: { id: string }) => void;
+		onlayerchange?: (layers: RadarLayer[]) => void;
+	};
 
-	const dispatch = createEventDispatcher<{
-		clear: void;
-		entityfocus: { id: string | null };
-		entityselect: { id: string };
-		layerchange: RadarLayer[];
-	}>();
+	let {
+		state,
+		focusedId = null,
+		onclear,
+		onentityfocus,
+		onentityselect,
+		onlayerchange
+	}: Props = $props();
 
-	$: entities = state.result?.entities ?? [];
-	$: isVisible = state.status !== 'idle';
-	$: sourceNotes =
+	let entities = $derived(state.result?.entities ?? []);
+	let isVisible = $derived(state.status !== 'idle');
+	let sourceNotes = $derived(
 		state.result?.sourceStatus.filter((source) => source.status === 'skipped' && source.message) ??
-		[];
-	$: statusMessage =
+			[]
+	);
+	let statusMessage = $derived(
 		state.status === 'loading'
 			? 'Scanning the map area for family-friendly places.'
 			: state.status === 'error'
@@ -31,7 +39,8 @@
 					? `${entities.length} ranked ${entities.length === 1 ? 'pick' : 'picks'} found${state.result?.partial ? ' in a partial scan' : ''}.`
 					: state.status === 'success'
 						? 'No family-friendly radar picks found for this scan.'
-						: '';
+						: ''
+	);
 </script>
 
 {#if isVisible}
@@ -44,12 +53,7 @@
 				<div class="data-label">Adventure Radar</div>
 				<h2>Right now near you</h2>
 			</div>
-			<button
-				type="button"
-				class="tray__clear"
-				aria-label="Clear radar scan"
-				on:click={() => dispatch('clear')}
-			>
+			<button type="button" class="tray__clear" aria-label="Clear radar scan" onclick={onclear}>
 				<X size={16} />
 			</button>
 		</div>
@@ -58,13 +62,13 @@
 			<RadarLayerToggles
 				selected={state.layers}
 				disabled={state.status === 'loading'}
-				on:change={(event) => dispatch('layerchange', event.detail)}
+				onchange={onlayerchange}
 			/>
 		</div>
 
 		{#if sourceNotes.length}
 			<div class="tray__sources">
-				{#each sourceNotes as source}
+				{#each sourceNotes as source (source.source)}
 					<span>{source.source}: {source.message}</span>
 				{/each}
 			</div>
@@ -92,8 +96,8 @@
 					<RadarResultCard
 						{entity}
 						focused={focusedId === entity.id}
-						on:entityfocus={(event) => dispatch('entityfocus', event.detail)}
-						on:entityselect={(event) => dispatch('entityselect', event.detail)}
+						{onentityfocus}
+						{onentityselect}
 					/>
 				{/each}
 			</div>

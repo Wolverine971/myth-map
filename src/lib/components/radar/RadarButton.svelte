@@ -1,24 +1,27 @@
 <!-- src/lib/components/radar/RadarButton.svelte -->
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-	import { LoaderCircle, Radar } from 'lucide-svelte';
+	import { LoaderCircle, Radar } from '@lucide/svelte';
 	import type { RadarStatus } from '$lib/stores/radarStore';
 
-	export let status: RadarStatus = 'idle';
-	export let hasLocation = false;
+	type Props = {
+		status?: RadarStatus;
+		hasLocation?: boolean;
+		onscan?: () => void;
+	};
 
-	const dispatch = createEventDispatcher<{ scan: void }>();
+	let { status = 'idle', hasLocation = false, onscan }: Props = $props();
 
-	$: isLoading = status === 'loading';
-	$: label = isLoading ? 'Scanning...' : hasLocation ? "What's around us?" : 'Scan map area';
+	let isLoading = $derived(status === 'loading');
+	let label = $derived(
+		isLoading ? 'Scanning...' : hasLocation ? "What's around us?" : 'Scan map area'
+	);
 </script>
 
 <button
 	type="button"
-	class="radar-button"
-	class:is-loading={isLoading}
+	class={['radar-button', isLoading && 'is-loading']}
 	aria-busy={isLoading}
-	on:click={() => dispatch('scan')}
+	onclick={onscan}
 	disabled={isLoading}
 	title={hasLocation ? "Scan what's nearby" : 'Scan the current map area'}
 >

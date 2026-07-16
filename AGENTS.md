@@ -19,7 +19,7 @@ pnpm format             # Prettier write
 pnpm label-paths        # Run labelFilePaths.ts to add/refresh `// path/to/file` headers in source files
 ```
 
-There is no test framework configured. Package manager is **pnpm** (>=7.13), Node **>=18** (deploy target Node 20).
+There is no test framework configured. Package manager is **pnpm 11** (>=11.13), Node **24.x** (deploy target Node 24).
 
 ### Regenerating Supabase types
 
@@ -35,12 +35,12 @@ Note: `src/schema.ts` is gitignored / generated; do not hand-edit. The previous 
 
 ### Tech Stack
 
-- **SvelteKit 2 + Svelte 4 + TypeScript**, Vite 5
-- **Tailwind 3** + Flowbite Svelte + lucide-svelte
+- **SvelteKit 2 + Svelte 5 + TypeScript**, Vite 8
+- **Tailwind 3** + Flowbite Svelte + `@lucide/svelte`
 - **Supabase** (`@supabase/ssr` for server, `@supabase/supabase-js` for browser) for auth + Postgres
 - **Mapbox GL JS** + `@mapbox/mapbox-sdk` for the interactive map and geocoding
 - **mdsvex** for `.svx` / `.md` blog content
-- **Vercel adapter** — runtime `nodejs20.x`, region `iad1`, 1024 MB, 10s max duration (configured in `svelte.config.js`)
+- **Vercel adapter** — runtime `nodejs24.x`, region `iad1`, 1024 MB, 10s max duration (configured in `svelte.config.js`)
 
 ### Path aliases (svelte.config.js)
 
@@ -73,7 +73,7 @@ Two handles run via `sequence(supabase, authGuard)`:
 ### Build config notes (`vite.config.ts`)
 
 - `assetsInlineLimit: 0` — assets stay as separate files (matters for icon SVGs).
-- Manual chunk: `vendor-ui` bundles `flowbite-svelte` + `flowbite-svelte-icons`.
+- Rolldown code-splitting group: `vendor-ui` bundles `flowbite-svelte` + `flowbite-svelte-icons`.
 - `@mapbox/mapbox-sdk` is excluded from `optimizeDeps` and should be loaded on demand.
 - Sourcemaps are enabled in production builds.
 

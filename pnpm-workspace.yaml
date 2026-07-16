@@ -2,8 +2,11 @@
 packages:
   - '.'
 
+overrides:
+  cookie: 0.7.2
+
 allowBuilds:
-  '@parcel/watcher': set this to true or false
-  '@sveltejs/kit': set this to true or false
-  esbuild: set this to true or false
-  svelte-preprocess: set this to true or false
+  '@parcel/watcher': true
+  '@sveltejs/kit': true
+  esbuild: true
+  svelte-preprocess: false

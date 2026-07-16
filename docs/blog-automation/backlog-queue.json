@@ -1,114 +1,15 @@
 {
-	"lastUpdated": "2026-07-12T06:03:30.922Z",
+	"lastUpdated": "2026-07-16T06:03:08.230Z",
 	"stats": {
 		"totalLocations": 58,
 		"totalWritten": 35,
-		"totalNeedsBlog": 15,
+		"totalNeedsBlog": 13,
 		"totalPublished": 21,
 		"totalPublishedButThin": 1,
 		"totalDraftedUnpublished": 15,
 		"completionRate": "60.3%"
 	},
 	"queue": [
-		{
-			"id": 14,
-			"locationKey": "md/laurel/climbzone",
-			"slug": "climbzone",
-			"name": "ClimbZone",
-			"city": "Laurel",
-			"state": "MD",
-			"address": "13200 Mid Atlantic Boulevard - Suite 130 Laurel, MD 20708",
-			"contentPath": "src/lib/content/locations/md/laurel/climbzone.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 98,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-07-06",
-			"retryCount": 0,
-			"strategicValue": "laurel-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
-		{
-			"id": 50,
-			"locationKey": "md/laurel/howard-county-library-savage-branch-stem-education-center",
-			"slug": "howard-county-library-savage-branch-stem-education-center",
-			"name": "Howard County Library Savage Branch & STEM Education Center",
-			"city": "Laurel",
-			"state": "MD",
-			"address": "9525 Durness Lane, Laurel, MD 20723",
-			"contentPath": "src/lib/content/locations/md/laurel/howard-county-library-savage-branch-stem-education-center.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 98,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "laurel-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
-		{
-			"id": 54,
-			"locationKey": "md/laurel/patuxent-research-refuge-north-tract",
-			"slug": "patuxent-research-refuge-north-tract",
-			"name": "Patuxent Research Refuge - North Tract",
-			"city": "Laurel",
-			"state": "MD",
-			"address": "230 Bald Eagle Drive Laurel, MD 20724",
-			"contentPath": "src/lib/content/locations/md/laurel/patuxent-research-refuge-north-tract.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 98,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "laurel-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
 		{
 			"id": 53,
 			"locationKey": "md/laurel/patuxent-research-refuge-south-tract",
@@ -498,41 +399,46 @@
 			}
 		}
 	],
-	"inProgress": {
-		"id": 14,
-		"locationKey": "md/laurel/climbzone",
-		"slug": "climbzone",
-		"name": "ClimbZone",
-		"city": "Laurel",
-		"state": "MD",
-		"address": "13200 Mid Atlantic Boulevard - Suite 130 Laurel, MD 20708",
-		"contentPath": "src/lib/content/locations/md/laurel/climbzone.md",
-		"published": false,
-		"contentState": "unstarted",
-		"priority": 98,
-		"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-		"estimatedTraffic": "medium",
-		"researchBrief": "docs/location-research-brief.md",
-		"researchPrompt": "docs/location-research-prompt.md",
-		"addedToQueue": "2026-07-06",
-		"retryCount": 0,
-		"strategicValue": "laurel-activity-cluster",
-		"audit": {
-			"wordCount": 15,
-			"faqCount": 0,
-			"helpfulLinkCount": 0,
-			"missingSections": [
-				"Overview",
-				"What to know before you go",
-				"Tips for families",
-				"Best time to visit",
-				"FAQs",
-				"Helpful links"
-			]
-		},
-		"startedAt": "2026-07-12T06:03:48.000Z"
-	},
+	"inProgress": null,
 	"completed": [
+		{
+			"id": 54,
+			"locationKey": "md/laurel/patuxent-research-refuge-north-tract",
+			"slug": "patuxent-research-refuge-north-tract",
+			"name": "Patuxent Research Refuge - North Tract",
+			"city": "Laurel",
+			"state": "MD",
+			"address": "230 Bald Eagle Drive Laurel, MD 20724",
+			"contentPath": "src/lib/content/locations/md/laurel/patuxent-research-refuge-north-tract.md",
+			"published": false,
+			"contentState": "unstarted",
+			"priority": 98,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "laurel-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-07-16T06:02:51.000Z",
+			"completedAt": "2026-07-16T06:10:27.000Z",
+			"durationMinutes": 7.6,
+			"reviewNote": "Full ~1300-word parent guide written; all six required sections populated, 8 FAQs, 6 verified helpful links. Page framed around the load-bearing constraint that the North Tract is open Sundays only 8am-4pm (staffing policy since Oct 2023, confirmed on fws.gov 2026-07-16) — flagged in an HTML review comment as the fact most likely to change before publishing. Covers mandatory sign-in/out, stay-on-trail rule (former Army land, unexploded-ordnance risk), tick precautions, fishing rules (under-16 exemption, earthworms-only bait, Lake Allen restricted dates), and points structure-seeking families to the South Tract visitor center. Picnic facilities, changing tables, and cell coverage unverifiable and omitted; trail mileage totals conflict across official FWS pages so no precise figure used. Conservative structured frontmatter added (verified_at, stroller/wheelchair partial, sensory low, season spring/fall, pair_with South Tract). published left false.",
+			"reviewFlagPresent": true
+		},
 		{
 			"id": 21,
 			"locationKey": "md/ellicott-city/centennial-park-north",
@@ -1560,6 +1466,80 @@
 			"failedAt": "2026-07-12T06:03:05.000Z",
 			"error": "stale inProgress timeout",
 			"logPath": "logs/blog-automation/cron-2026-07-12.log"
+		},
+		{
+			"id": 14,
+			"locationKey": "md/laurel/climbzone",
+			"slug": "climbzone",
+			"name": "ClimbZone",
+			"city": "Laurel",
+			"state": "MD",
+			"address": "13200 Mid Atlantic Boulevard - Suite 130 Laurel, MD 20708",
+			"contentPath": "src/lib/content/locations/md/laurel/climbzone.md",
+			"published": false,
+			"contentState": "unstarted",
+			"priority": 98,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-07-06",
+			"retryCount": 0,
+			"strategicValue": "laurel-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-07-12T06:03:48.000Z",
+			"failedAt": "2026-07-14T06:02:50.000Z",
+			"error": "stale inProgress timeout",
+			"logPath": "logs/blog-automation/cron-2026-07-14.log"
+		},
+		{
+			"id": 50,
+			"locationKey": "md/laurel/howard-county-library-savage-branch-stem-education-center",
+			"slug": "howard-county-library-savage-branch-stem-education-center",
+			"name": "Howard County Library Savage Branch & STEM Education Center",
+			"city": "Laurel",
+			"state": "MD",
+			"address": "9525 Durness Lane, Laurel, MD 20723",
+			"contentPath": "src/lib/content/locations/md/laurel/howard-county-library-savage-branch-stem-education-center.md",
+			"published": false,
+			"contentState": "unstarted",
+			"priority": 98,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "laurel-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-07-14T06:05:32.000Z",
+			"failedAt": "2026-07-16T06:02:51.000Z",
+			"error": "stale inProgress timeout",
+			"logPath": "logs/blog-automation/cron-2026-07-16.log"
 		}
 	],
 	"skipped": []

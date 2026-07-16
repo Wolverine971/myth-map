@@ -30,7 +30,7 @@
 		aria-label="Close modal"
 		on:click={closeModal}
 		transition:fade={{ duration: 200 }}
-	/>
+	></button>
 
 	<!-- Modal -->
 	<div
