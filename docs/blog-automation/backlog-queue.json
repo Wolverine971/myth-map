@@ -1,48 +1,15 @@
 {
-	"lastUpdated": "2026-07-16T06:03:08.230Z",
+	"lastUpdated": "2026-07-17T06:01:44.864Z",
 	"stats": {
 		"totalLocations": 58,
-		"totalWritten": 35,
-		"totalNeedsBlog": 13,
+		"totalWritten": 36,
+		"totalNeedsBlog": 12,
 		"totalPublished": 21,
 		"totalPublishedButThin": 1,
-		"totalDraftedUnpublished": 15,
-		"completionRate": "60.3%"
+		"totalDraftedUnpublished": 16,
+		"completionRate": "62.1%"
 	},
 	"queue": [
-		{
-			"id": 53,
-			"locationKey": "md/laurel/patuxent-research-refuge-south-tract",
-			"slug": "patuxent-research-refuge-south-tract",
-			"name": "Patuxent Research Refuge - South Tract",
-			"city": "Laurel",
-			"state": "MD",
-			"address": "10901 Scarlet Tanager Loop Laurel, MD 20708",
-			"contentPath": "src/lib/content/locations/md/laurel/patuxent-research-refuge-south-tract.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 98,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "laurel-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
 		{
 			"id": 36,
 			"locationKey": "md/edgewater/mayo-beach-park",
@@ -363,7 +330,9 @@
 				"wordCount": 1277,
 				"faqCount": 10,
 				"helpfulLinkCount": 0,
-				"missingSections": ["Helpful links"]
+				"missingSections": [
+					"Helpful links"
+				]
 			}
 		},
 		{
@@ -401,6 +370,44 @@
 	],
 	"inProgress": null,
 	"completed": [
+		{
+			"id": 53,
+			"locationKey": "md/laurel/patuxent-research-refuge-south-tract",
+			"slug": "patuxent-research-refuge-south-tract",
+			"name": "Patuxent Research Refuge - South Tract",
+			"city": "Laurel",
+			"state": "MD",
+			"address": "10901 Scarlet Tanager Loop Laurel, MD 20708",
+			"contentPath": "src/lib/content/locations/md/laurel/patuxent-research-refuge-south-tract.md",
+			"published": false,
+			"contentState": "unstarted",
+			"priority": 98,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "laurel-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-07-17T06:02:09.000Z",
+			"completedAt": "2026-07-17T17:28:08.000Z",
+			"durationMinutes": 686,
+			"reviewNote": "Full ~1500-word parent guide written; all six required sections populated, 9 FAQs, and 6 verified official links. Page distinguishes South Tract as the family-oriented refuge side: National Wildlife Visitor Center Wednesday-Saturday 10am-4pm, free exhibits and programs, ages 3-10 Kids Discovery sessions, paved 0.3-mile Story Trail, accessible bird blind, and 1.5-mile Cash Lake Trail. Grounds hours, trail distances, foot-traffic-only rule, leash policy, picnic patio, parking access, and April-September Cash Lake fishing rules were checked against current FWS pages and the 2026 fishing brochure on 2026-07-17. One official-source conflict is flagged in an HTML review comment: the Kids Discovery page says both registration required and strongly urged, so the draft conservatively tells families to call ahead. Changing-table and nursing-room details were unverifiable and omitted. Conservative structured frontmatter added (verified_at, stroller/wheelchair partial, sensory low, spring/fall, indoor weather flags). published left false.",
+			"reviewFlagPresent": true
+		},
 		{
 			"id": 54,
 			"locationKey": "md/laurel/patuxent-research-refuge-north-tract",
