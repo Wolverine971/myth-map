@@ -2,7 +2,7 @@
 <script lang="ts">
 	import SEOHead from '$lib/components/shared/SEOHead.svelte';
 	import Breadcrumbs from '$lib/components/shared/Breadcrumbs.svelte';
-	import { getLocationIcon } from '../../../../../utils/locationPhotos';
+	import LocationIcon from '$lib/components/locations/LocationIcon.svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -11,8 +11,6 @@
 	$: paired = data.paired;
 	$: loc = entry.location.location;
 	$: fm = entry.frontmatter;
-	$: iconSlug = getLocationIcon(loc.name || '');
-	$: iconSrc = iconSlug ? `/map/${iconSlug}.png` : '';
 
 	$: canonical = `/locations/${entry.stateSlug}/${entry.citySlug}/${entry.slug}`;
 	$: cityHref = `/locations/${entry.stateSlug}/${entry.citySlug}`;
@@ -175,14 +173,7 @@
 	</div>
 
 	<header class="mb-6 flex items-start gap-4">
-		{#if iconSrc}
-			<img
-				class="mt-1 h-16 w-16 flex-shrink-0 object-contain md:h-20 md:w-20"
-				src={iconSrc}
-				alt=""
-				loading="lazy"
-			/>
-		{/if}
+		<LocationIcon name={loc.name} size="lg" loading="eager" />
 		<div class="min-w-0 flex-1">
 			<h1
 				class="mb-2 text-3xl font-extrabold tracking-tight text-primary-700 dark:text-primary-300 md:text-4xl"
@@ -349,15 +340,18 @@
 					<li>
 						<a
 							href={`/locations/${p.stateSlug}/${p.citySlug}/${p.slug}`}
-							class="group block rounded-md border border-subtle bg-surface p-3 transition duration-fast hover:border-strong hover:shadow-md dark:hover:bg-elevated"
+							class="group flex h-full items-start gap-2.5 rounded-md border border-subtle bg-surface p-3 transition duration-fast hover:border-strong hover:shadow-md dark:hover:bg-elevated"
 						>
-							<div
-								class="font-display font-semibold text-default transition-colors duration-fast group-hover:text-primary-700 dark:group-hover:text-primary-300"
-							>
-								{p.frontmatter.name}
-							</div>
-							<div class="mt-1 font-mono text-xs uppercase tracking-wide text-subtle">
-								{p.frontmatter.city}, {p.frontmatter.state}
+							<LocationIcon name={p.frontmatter.name} size="sm" />
+							<div class="min-w-0 flex-1">
+								<div
+									class="font-display font-semibold leading-tight text-default transition-colors duration-fast group-hover:text-primary-700 dark:group-hover:text-primary-300"
+								>
+									{p.frontmatter.name}
+								</div>
+								<div class="mt-1 font-mono text-xs uppercase tracking-wide text-subtle">
+									{p.frontmatter.city}, {p.frontmatter.state}
+								</div>
 							</div>
 						</a>
 					</li>
@@ -374,15 +368,18 @@
 					<li>
 						<a
 							href={`/locations/${n.stateSlug}/${n.citySlug}/${n.slug}`}
-							class="group block rounded-md border border-subtle bg-surface p-3 transition duration-fast hover:border-strong hover:shadow-md dark:hover:bg-elevated"
+							class="group flex h-full items-start gap-2.5 rounded-md border border-subtle bg-surface p-3 transition duration-fast hover:border-strong hover:shadow-md dark:hover:bg-elevated"
 						>
-							<div
-								class="font-display font-semibold text-default transition-colors duration-fast group-hover:text-primary-700 dark:group-hover:text-primary-300"
-							>
-								{n.frontmatter.name}
-							</div>
-							<div class="mt-1 font-mono text-xs uppercase tracking-wide text-subtle">
-								{n.frontmatter.city}, {n.frontmatter.state} · {n.distanceMiles.toFixed(1)} mi
+							<LocationIcon name={n.frontmatter.name} size="sm" />
+							<div class="min-w-0 flex-1">
+								<div
+									class="font-display font-semibold leading-tight text-default transition-colors duration-fast group-hover:text-primary-700 dark:group-hover:text-primary-300"
+								>
+									{n.frontmatter.name}
+								</div>
+								<div class="mt-1 font-mono text-xs uppercase tracking-wide text-subtle">
+									{n.frontmatter.city}, {n.frontmatter.state} · {n.distanceMiles.toFixed(1)} mi
+								</div>
 							</div>
 						</a>
 					</li>

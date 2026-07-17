@@ -2,6 +2,7 @@
 <script lang="ts">
 	import SEOHead from '$lib/components/shared/SEOHead.svelte';
 	import Breadcrumbs from '$lib/components/shared/Breadcrumbs.svelte';
+	import LocationIcon from '$lib/components/locations/LocationIcon.svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -43,13 +44,14 @@
 		</p>
 	</header>
 
-	<ul class="grid gap-3">
+	<ul class="grid gap-3 sm:grid-cols-2">
 		{#each items as item (item.id)}
 			<li>
 				<a
 					href={`/locations/${item.stateSlug}/${item.citySlug}/${item.slug}`}
-					class="group flex items-start justify-between gap-3 rounded-md border border-subtle bg-surface p-4 transition duration-fast hover:border-strong hover:shadow-md dark:hover:bg-elevated"
+					class="group flex h-full items-start gap-3 rounded-md border border-subtle bg-surface p-3 transition duration-fast hover:border-strong hover:shadow-md dark:hover:bg-elevated"
 				>
+					<LocationIcon name={item.frontmatter.name} />
 					<div class="min-w-0 flex-1">
 						<div class="flex flex-wrap items-center gap-2">
 							<h2

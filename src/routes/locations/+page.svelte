@@ -1,8 +1,8 @@
 <!-- src/routes/locations/+page.svelte -->
 <script lang="ts">
 	import SEOHead from '$lib/components/shared/SEOHead.svelte';
+	import LocationIcon from '$lib/components/locations/LocationIcon.svelte';
 	import type { PageData } from './$types';
-	import { getLocationIcon } from '../../utils/locationPhotos';
 
 	export let data: PageData;
 
@@ -166,12 +166,7 @@
 							href={detailHref}
 							class="group relative flex h-full items-start gap-3 rounded-md border border-subtle bg-surface p-3 transition duration-fast hover:border-strong hover:shadow-md dark:hover:bg-elevated"
 						>
-							<img
-								class="h-14 w-14 flex-shrink-0 object-contain"
-								src={`/map/${getLocationIcon(entry.frontmatter.name)}.png`}
-								alt=""
-								loading="lazy"
-							/>
+							<LocationIcon name={entry.frontmatter.name} />
 							<div class="min-w-0 flex-1">
 								<div class="flex items-start justify-between gap-2">
 									<h3
