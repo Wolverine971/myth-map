@@ -272,6 +272,44 @@
 	},
 	"completed": [
 		{
+			"id": 47,
+			"locationKey": "md/elkridge/howard-county-library-elkridge-branch",
+			"slug": "howard-county-library-elkridge-branch",
+			"name": "Howard County Library Elkridge Branch",
+			"city": "Elkridge",
+			"state": "MD",
+			"address": "6540 Washington Blvd, Elkridge MD 21075",
+			"contentPath": "src/lib/content/locations/md/elkridge/howard-county-library-elkridge-branch.md",
+			"published": false,
+			"contentState": "unstarted",
+			"priority": 93,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "elkridge-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-07-20T06:07:43.000Z",
+			"completedAt": "2026-07-22T21:17:48Z",
+			"durationMinutes": 3790.1,
+			"reviewNote": "Manual recovery completed after the original writer timed out. Full parent guide written with all six required sections, 9 FAQs, and 8 helpful links. Current hours, summer Sunday closure through 2026-09-12, play-space inventory, early-learning ticket pattern, accessibility, Wi-Fi/printing, room inventory, card eligibility, and DIY borrowing rules were checked against official HCLS pages on 2026-07-22. Visitor feedback informed the open-floor noise caution. Changing-table, nursing-room, and outside-food details remain unverified and are called out for review. The planned branch expansion is not described as a current disruption because no active visitor impact was posted. Conservative frontmatter added; published remains false.",
+			"reviewFlagPresent": true
+		},
+		{
 			"id": 22,
 			"locationKey": "md/elkridge/rockburn-branch-park",
 			"slug": "rockburn-branch-park",
@@ -1523,43 +1561,6 @@
 			"failedAt": "2026-07-20T06:03:46.000Z",
 			"error": "stale inProgress timeout",
 			"logPath": "logs/blog-automation/cron-2026-07-20.log"
-		},
-		{
-			"id": 47,
-			"locationKey": "md/elkridge/howard-county-library-elkridge-branch",
-			"slug": "howard-county-library-elkridge-branch",
-			"name": "Howard County Library Elkridge Branch",
-			"city": "Elkridge",
-			"state": "MD",
-			"address": "6540 Washington Blvd, Elkridge MD 21075",
-			"contentPath": "src/lib/content/locations/md/elkridge/howard-county-library-elkridge-branch.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 93,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "elkridge-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			},
-			"startedAt": "2026-07-20T06:07:43.000Z",
-			"failedAt": "2026-07-21T06:09:03Z",
-			"error": "stale inProgress timeout",
-			"logPath": "logs/blog-automation/cron-2026-07-21.log"
 		}
 	],
 	"skipped": []
