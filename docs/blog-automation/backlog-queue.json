@@ -1,147 +1,15 @@
 {
-	"lastUpdated": "2026-07-17T06:01:44.864Z",
+	"lastUpdated": "2026-07-22T06:01:29.978Z",
 	"stats": {
 		"totalLocations": 58,
-		"totalWritten": 36,
-		"totalNeedsBlog": 12,
+		"totalWritten": 38,
+		"totalNeedsBlog": 8,
 		"totalPublished": 21,
 		"totalPublishedButThin": 1,
-		"totalDraftedUnpublished": 16,
-		"completionRate": "62.1%"
+		"totalDraftedUnpublished": 18,
+		"completionRate": "65.5%"
 	},
 	"queue": [
-		{
-			"id": 36,
-			"locationKey": "md/edgewater/mayo-beach-park",
-			"slug": "mayo-beach-park",
-			"name": "Mayo Beach Park",
-			"city": "Edgewater",
-			"state": "MD",
-			"address": "4150 Honeysuckle Drive, Edgewater, MD 21037",
-			"contentPath": "src/lib/content/locations/md/edgewater/mayo-beach-park.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 93,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "edgewater-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
-		{
-			"id": 47,
-			"locationKey": "md/elkridge/howard-county-library-elkridge-branch",
-			"slug": "howard-county-library-elkridge-branch",
-			"name": "Howard County Library Elkridge Branch",
-			"city": "Elkridge",
-			"state": "MD",
-			"address": "6540 Washington Blvd, Elkridge MD 21075",
-			"contentPath": "src/lib/content/locations/md/elkridge/howard-county-library-elkridge-branch.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 93,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "elkridge-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
-		{
-			"id": 22,
-			"locationKey": "md/elkridge/rockburn-branch-park",
-			"slug": "rockburn-branch-park",
-			"name": "Rockburn Branch Park",
-			"city": "Elkridge",
-			"state": "MD",
-			"address": "6105 Rockburn Branch Park Rd, Elkridge, MD 21075",
-			"contentPath": "src/lib/content/locations/md/elkridge/rockburn-branch-park.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 93,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "elkridge-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
-		{
-			"id": 9,
-			"locationKey": "md/highland/schooley-mill-playground",
-			"slug": "schooley-mill-playground",
-			"name": "Schooley Mill Playground",
-			"city": "Highland",
-			"state": "MD",
-			"address": "12975 Hall Shop Rd, Highland, MD 20777",
-			"contentPath": "src/lib/content/locations/md/highland/schooley-mill-playground.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 93,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "highland-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
 		{
 			"id": 26,
 			"locationKey": "md/sykesville/piney-run-park",
@@ -368,8 +236,79 @@
 			}
 		}
 	],
-	"inProgress": null,
+	"inProgress": {
+		"id": 9,
+		"locationKey": "md/highland/schooley-mill-playground",
+		"slug": "schooley-mill-playground",
+		"name": "Schooley Mill Playground",
+		"city": "Highland",
+		"state": "MD",
+		"address": "12975 Hall Shop Rd, Highland, MD 20777",
+		"contentPath": "src/lib/content/locations/md/highland/schooley-mill-playground.md",
+		"published": false,
+		"contentState": "unstarted",
+		"priority": 93,
+		"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+		"estimatedTraffic": "medium",
+		"researchBrief": "docs/location-research-brief.md",
+		"researchPrompt": "docs/location-research-prompt.md",
+		"addedToQueue": "2026-05-11",
+		"retryCount": 0,
+		"strategicValue": "highland-activity-cluster",
+		"audit": {
+			"wordCount": 15,
+			"faqCount": 0,
+			"helpfulLinkCount": 0,
+			"missingSections": [
+				"Overview",
+				"What to know before you go",
+				"Tips for families",
+				"Best time to visit",
+				"FAQs",
+				"Helpful links"
+			]
+		},
+		"startedAt": "2026-07-22T06:01:45Z"
+	},
 	"completed": [
+		{
+			"id": 22,
+			"locationKey": "md/elkridge/rockburn-branch-park",
+			"slug": "rockburn-branch-park",
+			"name": "Rockburn Branch Park",
+			"city": "Elkridge",
+			"state": "MD",
+			"address": "6105 Rockburn Branch Park Rd, Elkridge, MD 21075",
+			"contentPath": "src/lib/content/locations/md/elkridge/rockburn-branch-park.md",
+			"published": false,
+			"contentState": "unstarted",
+			"priority": 93,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "elkridge-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-07-21T06:12:17Z",
+			"completedAt": "2026-07-21T06:17:37Z",
+			"durationMinutes": 5.3,
+			"reviewNote": "Full ~1400-word parent guide written; all six required sections populated, 9 FAQs, 6 verified official links. Page splits the park into its West Area (playground, free 18-hole disc golf, tennis/basketball, pavilions at 6105 Rockburn Branch Park Rd) and East Area (ball/turf fields + BMX skills track at 5400 Landing Rd). Hours (7am-dusk, or as posted), free entry/parking, leash/no-alcohol/tobacco-free rules, pavilion rental season (Apr 1-Nov 30, 410-313-4682), restroom vs porta-potty locations, and disc-golf accessibility (3in step on holes 8/9) verified against visithowardcounty.com, howardcountymd.gov, UDisc, and Birders Guide to MD & DC on 2026-07-21. Flagged in an HTML comment: acreage/trail-length source conflict (415ac & ~9mi official vs 450ac & 7.4mi Wikipedia; used official), inconsistent playground-shade reviews (reported as spotty), and unverified changing-table/nursing (omitted, FAQ tells families to pack a pad). Conservative structured frontmatter added (verified_at, stroller/wheelchair partial, sensory low, season spring/fall, pair_with Elkridge library). published left false.",
+			"reviewFlagPresent": true
+		},
 		{
 			"id": 53,
 			"locationKey": "md/laurel/patuxent-research-refuge-south-tract",
@@ -1547,6 +1486,80 @@
 			"failedAt": "2026-07-16T06:02:51.000Z",
 			"error": "stale inProgress timeout",
 			"logPath": "logs/blog-automation/cron-2026-07-16.log"
+		},
+		{
+			"id": 36,
+			"locationKey": "md/edgewater/mayo-beach-park",
+			"slug": "mayo-beach-park",
+			"name": "Mayo Beach Park",
+			"city": "Edgewater",
+			"state": "MD",
+			"address": "4150 Honeysuckle Drive, Edgewater, MD 21037",
+			"contentPath": "src/lib/content/locations/md/edgewater/mayo-beach-park.md",
+			"published": false,
+			"contentState": "unstarted",
+			"priority": 93,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "edgewater-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-07-19T06:02:49.000Z",
+			"failedAt": "2026-07-20T06:03:46.000Z",
+			"error": "stale inProgress timeout",
+			"logPath": "logs/blog-automation/cron-2026-07-20.log"
+		},
+		{
+			"id": 47,
+			"locationKey": "md/elkridge/howard-county-library-elkridge-branch",
+			"slug": "howard-county-library-elkridge-branch",
+			"name": "Howard County Library Elkridge Branch",
+			"city": "Elkridge",
+			"state": "MD",
+			"address": "6540 Washington Blvd, Elkridge MD 21075",
+			"contentPath": "src/lib/content/locations/md/elkridge/howard-county-library-elkridge-branch.md",
+			"published": false,
+			"contentState": "unstarted",
+			"priority": 93,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "elkridge-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-07-20T06:07:43.000Z",
+			"failedAt": "2026-07-21T06:09:03Z",
+			"error": "stale inProgress timeout",
+			"logPath": "logs/blog-automation/cron-2026-07-21.log"
 		}
 	],
 	"skipped": []

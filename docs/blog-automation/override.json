@@ -4,8 +4,8 @@
 	"forceNext": null,
 	"rateLimit": {
 		"maxPerWeek": 5,
-		"currentWeekCount": 2,
-		"weekStartDate": "2026-07-13"
+		"currentWeekCount": 1,
+		"weekStartDate": "2026-07-20"
 	},
-	"lastUpdated": "2026-07-17T17:28:08.000Z"
+	"lastUpdated": "2026-07-21T06:17:37Z"
 }
