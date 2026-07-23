@@ -44,12 +44,7 @@ The daily Claude Code command does this:
 5. Refresh `docs/blog-automation/backlog-queue.json`.
 6. Select the highest-priority queued location, or `forceNext` if set.
 7. Mark the item as `inProgress`.
-8. Trigger Claude Code:
-
-```bash
-/Users/djwayne/.local/bin/claude --chrome --dangerously-skip-permissions -p "/location_blog_creator md/city-slug/location-slug --unattended"
-```
-
+8. In the current Claude process, follow `.claude/commands/location_blog_creator.md` for the selected key in unattended mode. Do not launch a nested Claude process or background writer.
 9. Verify that the markdown file changed and contains the required sections.
 10. Move the item to `completed`, `failed`, or back to the queue with an incremented `retryCount`.
 
@@ -71,6 +66,8 @@ Operational log path:
 ```bash
 logs/blog-automation/cron-YYYY-MM-DD.log
 ```
+
+The runner sets `HOME=/Users/djwayne` explicitly so Claude can resolve the authenticated `~/.claude` configuration under cron. Run `scripts/run-daily-location-blog-creator.sh --check` to verify the repo, binary, log directory, and Claude authentication together.
 
 ## Manual Controls
 

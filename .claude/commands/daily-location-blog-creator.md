@@ -7,7 +7,7 @@ You are the unattended queue runner for Tiny Tribe Adventures location blogs. Ru
 - Read and write `docs/blog-automation/backlog-queue.json`
 - Read and write `docs/blog-automation/override.json`
 - Run `pnpm blog:queue`
-- Run Claude Code for one selected location
+- Research and write one selected location blog
 - Write logs under `logs/blog-automation/`
 
 ## Pre-Flight
@@ -47,7 +47,7 @@ Mark the selected item as:
 
 and write it to `inProgress`.
 
-## Execute Writer
+## Execute Writer In This Process
 
 Create the log directory:
 
@@ -55,13 +55,9 @@ Create the log directory:
 mkdir -p logs/blog-automation
 ```
 
-Run Claude Code from repo root:
+Do not invoke another Claude process, use the Task tool, or start a background job. Nested/background writers are not durable in unattended prompt mode and can leave the selected item stuck in `inProgress`.
 
-```bash
-/Users/djwayne/.local/bin/claude --chrome --dangerously-skip-permissions -p "/location_blog_creator SELECTED_LOCATION_KEY --unattended" 2>&1 | tee -a logs/blog-automation/cron-$(date +%Y-%m-%d).log
-```
-
-Replace `SELECTED_LOCATION_KEY` with the exact selected key, for example `md/ellicott-city/clarks-elioak-farm`.
+Instead, continue in this process and perform every instruction in `.claude/commands/location_blog_creator.md` for the exact selected location key in unattended mode. Research, write, and verify the selected markdown file before proceeding to the queue update. Append a concise writer summary or failure message to `logs/blog-automation/cron-$(date +%Y-%m-%d).log`.
 
 ## Verify
 

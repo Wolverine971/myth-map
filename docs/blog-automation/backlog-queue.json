@@ -1,48 +1,15 @@
 {
-	"lastUpdated": "2026-07-22T06:01:29.978Z",
+	"lastUpdated": "2026-07-23T12:45:19Z",
 	"stats": {
 		"totalLocations": 58,
-		"totalWritten": 38,
-		"totalNeedsBlog": 8,
+		"totalWritten": 40,
+		"totalNeedsBlog": 6,
 		"totalPublished": 21,
 		"totalPublishedButThin": 1,
-		"totalDraftedUnpublished": 18,
-		"completionRate": "65.5%"
+		"totalDraftedUnpublished": 20,
+		"completionRate": "69.0%"
 	},
 	"queue": [
-		{
-			"id": 26,
-			"locationKey": "md/sykesville/piney-run-park",
-			"slug": "piney-run-park",
-			"name": "Piney Run Park",
-			"city": "Sykesville",
-			"state": "MD",
-			"address": "30 Martz Rd, Sykesville, MD 21784",
-			"contentPath": "src/lib/content/locations/md/sykesville/piney-run-park.md",
-			"published": false,
-			"contentState": "unstarted",
-			"priority": 93,
-			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-			"estimatedTraffic": "medium",
-			"researchBrief": "docs/location-research-brief.md",
-			"researchPrompt": "docs/location-research-prompt.md",
-			"addedToQueue": "2026-05-11",
-			"retryCount": 0,
-			"strategicValue": "sykesville-activity-cluster",
-			"audit": {
-				"wordCount": 15,
-				"faqCount": 0,
-				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Overview",
-					"What to know before you go",
-					"Tips for families",
-					"Best time to visit",
-					"FAQs",
-					"Helpful links"
-				]
-			}
-		},
 		{
 			"id": 27,
 			"locationKey": "md/sykesville/splash-pad-of-sykesville",
@@ -198,9 +165,7 @@
 				"wordCount": 1277,
 				"faqCount": 10,
 				"helpfulLinkCount": 0,
-				"missingSections": [
-					"Helpful links"
-				]
+				"missingSections": ["Helpful links"]
 			}
 		},
 		{
@@ -236,41 +201,46 @@
 			}
 		}
 	],
-	"inProgress": {
-		"id": 9,
-		"locationKey": "md/highland/schooley-mill-playground",
-		"slug": "schooley-mill-playground",
-		"name": "Schooley Mill Playground",
-		"city": "Highland",
-		"state": "MD",
-		"address": "12975 Hall Shop Rd, Highland, MD 20777",
-		"contentPath": "src/lib/content/locations/md/highland/schooley-mill-playground.md",
-		"published": false,
-		"contentState": "unstarted",
-		"priority": 93,
-		"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
-		"estimatedTraffic": "medium",
-		"researchBrief": "docs/location-research-brief.md",
-		"researchPrompt": "docs/location-research-prompt.md",
-		"addedToQueue": "2026-05-11",
-		"retryCount": 0,
-		"strategicValue": "highland-activity-cluster",
-		"audit": {
-			"wordCount": 15,
-			"faqCount": 0,
-			"helpfulLinkCount": 0,
-			"missingSections": [
-				"Overview",
-				"What to know before you go",
-				"Tips for families",
-				"Best time to visit",
-				"FAQs",
-				"Helpful links"
-			]
-		},
-		"startedAt": "2026-07-22T06:01:45Z"
-	},
+	"inProgress": null,
 	"completed": [
+		{
+			"id": 26,
+			"locationKey": "md/sykesville/piney-run-park",
+			"slug": "piney-run-park",
+			"name": "Piney Run Park",
+			"city": "Sykesville",
+			"state": "MD",
+			"address": "30 Martz Rd, Sykesville, MD 21784",
+			"contentPath": "src/lib/content/locations/md/sykesville/piney-run-park.md",
+			"published": false,
+			"contentState": "unstarted",
+			"priority": 93,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 0,
+			"strategicValue": "sykesville-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-07-23T06:03:30Z",
+			"completedAt": "2026-07-23T12:45:19Z",
+			"durationMinutes": 401.8,
+			"reviewNote": "Full 1,288-word parent guide written with all six required sections, 8 FAQs, and 7 helpful links. Seasonal hours, entrance fees, boat rules and rentals, nature center hours, fishing requirements, bathrooms, trails, accessibility, dog rules, and picnic logistics were checked against Carroll County and Maryland DNR sources on 2026-07-23. The current day-by-day boathouse rental schedule could not be verified, so families are told to call ahead. The AllTrails link was verified through search results because automated requests returned 403. Changing-table and nursing-room fields remain unset because unverified. Published remains false.",
+			"reviewFlagPresent": false
+		},
 		{
 			"id": 47,
 			"locationKey": "md/elkridge/howard-county-library-elkridge-branch",
@@ -1561,6 +1531,43 @@
 			"failedAt": "2026-07-20T06:03:46.000Z",
 			"error": "stale inProgress timeout",
 			"logPath": "logs/blog-automation/cron-2026-07-20.log"
+		},
+		{
+			"id": 9,
+			"locationKey": "md/highland/schooley-mill-playground",
+			"slug": "schooley-mill-playground",
+			"name": "Schooley Mill Playground",
+			"city": "Highland",
+			"state": "MD",
+			"address": "12975 Hall Shop Rd, Highland, MD 20777",
+			"contentPath": "src/lib/content/locations/md/highland/schooley-mill-playground.md",
+			"published": false,
+			"contentState": "unstarted",
+			"priority": 93,
+			"priorityReason": "Seeded stub with empty family-guide sections; medium family-search intent.",
+			"estimatedTraffic": "medium",
+			"researchBrief": "docs/location-research-brief.md",
+			"researchPrompt": "docs/location-research-prompt.md",
+			"addedToQueue": "2026-05-11",
+			"retryCount": 1,
+			"strategicValue": "highland-activity-cluster",
+			"audit": {
+				"wordCount": 15,
+				"faqCount": 0,
+				"helpfulLinkCount": 0,
+				"missingSections": [
+					"Overview",
+					"What to know before you go",
+					"Tips for families",
+					"Best time to visit",
+					"FAQs",
+					"Helpful links"
+				]
+			},
+			"startedAt": "2026-07-22T06:01:45Z",
+			"failedAt": "2026-07-23T06:02:27Z",
+			"error": "stale inProgress timeout",
+			"logPath": "logs/blog-automation/cron-2026-07-23.log"
 		}
 	],
 	"skipped": []
